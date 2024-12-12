@@ -1,0 +1,498 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Apply custom scrollbar styles */
+body::-webkit-scrollbar {
+  width: 0px;
+  /* Set scrollbar width */
+}
+
+body::-webkit-scrollbar-track {
+  background: transparent;
+  /* Transparent background for track */
+}
+
+
+
+/* Apply styles for Firefox */
+html {
+  scrollbar-width: 0px;
+  /* Thin scrollbar */
+
+}
+
+html::-webkit-scrollbar {
+  width: 0px;
+}
+
+html::-webkit-scrollbar-track {
+  background: transparent;
+  /* Transparent background for track */
+}
+
+
+/* Apply styles for Firefox */
+html {
+  scrollbar-width: 0px;
+  /* Thin scrollbar */
+  scrollbar-color: linear-gradient(to bottom, blue, purple) transparent;
+}
+
+/* Apply border-top to the table */
+.dt-container {
+  /* border-top: 2px solid rgb(96 165 250 ); Top border color */
+  border-radius: 5px;
+}
+
+
+/* Style the table rows */
+table.dataTable tbody tr {
+  /* background-color: #F0F0F0FF; */
+  /* Gray background for odd rows (e.g., gray-200) */
+  font-size: 14px;
+}
+
+/* Style even rows */
+table.dataTable tbody tr:nth-child(even) {
+  background-color: white;
+  /* White background for even rows */
+}
+
+/* Minimize padding inside table cells */
+table.dataTable td,
+table.dataTable th {
+  padding: 2px 4px;
+  /* Reduce the padding to minimize the row height */
+}
+
+table.dataTable>tbody>tr>th,
+table.dataTable>tbody>tr>td {
+  padding: 3px 4px;
+  text-align: left;
+  font-size: 14px;
+}
+
+/* Optional: Hover effect on rows */
+table.dataTable tbody tr:hover {
+  background-color: #F3F3F3FF;
+  /* Light blue on hover for better interactivity */
+}
+
+/* Style the 'entries per page' and 'Search' container */
+.dataTables_wrapper .dataTables_info,
+.dataTables_wrapper .dataTables_filter {
+  background-color: #f1f5f9;
+  /* Light gray background */
+  padding: 8px 12px;
+  /* Padding for spacing */
+  border-radius: 5px;
+  /* Optional: Rounded corners */
+  margin-bottom: 10px;
+  /* Optional: Space below the container */
+}
+
+/* Style the 'Search' input box */
+.dataTables_wrapper .dataTables_filter input {
+  padding: 6px 10px;
+  /* Padding inside the input */
+  font-size: 14px;
+  /* Font size */
+  border-radius: 4px;
+  /* Rounded corners for the input */
+  border: 1px solid #ccc;
+  /* Border color for the input */
+}
+
+/* Style the 'entries per page' dropdown */
+.dataTables_wrapper .dataTables_length select {
+  padding: 6px 10px;
+  /* Padding inside the select dropdown */
+  font-size: 14px;
+  /* Font size */
+  border-radius: 4px;
+  /* Rounded corners for the dropdown */
+  border: 1px solid #ccc;
+  /* Border color for the select */
+}
+
+.colorr {
+  /* color: #991b1b; */
+  color: #4b565f;
+}
+
+.colorr:hover {
+  color: #991b1b;
+}
+
+table.dataTable th.dt-type-date,
+table.dataTable td.dt-type-numeric,
+table.dataTable td.dt-type-date {
+  text-align: left;
+}
+
+table.dataTable th.dt-type-numeric {
+  text-align: center;
+}
+
+.dropdownmenu {
+  border-bottom: 1px solid #eff0e7;
+  font-size: 14px;
+  padding: 10px;
+  color: #777;
+  text-align: left;
+  border-radius: 5px;
+}
+
+.dropdownmenu:hover {
+  background-color: #dddddd;
+  color: #444;
+}
+
+a.active {
+  background-color: #3d8dbc !important;
+  color: white !important;
+}
+
+table.dataTable>tbody>tr>th,
+table.dataTable>tbody>tr>td {
+  padding: 7px 10px;
+  text-align: left;
+  font-size: 12px;
+  text-align: left !important;
+}
+
+.dt-container .dt-info {
+  color: #707070 !important;
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 15px;
+}
+
+div.dt-container .dt-paging .dt-paging-button.current {
+  color: #fff !important;
+}
+
+div.dt-container .dt-paging .dt-paging-button:hover {
+  background-color: #fff !important;
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(100%, #fff));
+  border: 1px solid #fff !important;
+  color: #f39c12 !important;
+  text-decoration: underline !important;
+}
+
+div.dt-container .dt-paging .dt-paging-button {
+  padding: 0 .5em;
+  font-size: 13px;
+}
+
+.dt-paging {
+  margin: 0 15px 0 0 !important;
+}
+
+.dt-container .dt-paging .dt-paging-button.current,
+div.dt-container .dt-paging .dt-paging-button.current:hover {
+  background: #f39c12 !important;
+  border: none !important;
+  color: #fff !important;
+}
+
+.dt-container .dt-input {
+  outline: none;
+}
+
+select.dt-input {
+  font-size: 12px;
+  height: 25px;
+  padding: 0 !important;
+}
+
+.dt-length select {
+  margin-right: .7rem;
+}
+
+.dt-container .dt-search input {
+  height: 27px;
+}
+
+div.dt-container div.dt-length label {
+  font-size: 14px;
+}
+
+table.dataTable>thead>tr>th {
+  font-size: 14px;
+  font-weight: 500;
+  color: #212529;
+  padding: 10px;
+}
+
+.dt-container div.dt-search label {
+  font-size: 14px;
+}
+
+.aql .form-control {
+  height: 27px;
+  font-size: 14px;
+  background-color: #fff;
+  border: 1px solid #b8b8b8;
+  border-radius: 4px;
+}
+
+.aql button {
+  height: 25px;
+  font-size: 10px;
+  padding: 8px 7px;
+  border-radius: 4px;
+}
+
+.ss .form-control {
+  line-height: 15px !important;
+  color: #586068 !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+  color: #212529 !important;
+  line-height: 22px !important;
+  font-size: 14px;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+  color: #586068 !important;
+}
+
+.select2-container--default .select2-selection--single {
+  border: 1px solid #b8b8b8 !important;
+  height: 27px !important;
+}
+
+.dataTable thead {
+  background-color: #c4e1f6;
+  color: #1b476b;
+}
+
+.dataTable td,
+.dataTable th {
+  border: 1px solid #e6e6e6;
+}
+
+.pnav {
+  padding: 0 4rem;
+}
+
+.sobut button {
+  font-size: 10px;
+  width: max-content;
+  background: darkgray;
+  color: #fff;
+  padding: 4px 7px;
+  background-color: #ad2020;
+}
+
+.sobut button svg {
+  display: inline-block;
+}
+
+.sobut {
+  margin-top: 18px;
+  margin-right: -2px;
+}
+
+.n-dp-dn .sobut:before {
+  right: -27px !important;
+}
+
+.sobut:before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 12px solid transparent;
+  border-right: 12px solid transparent;
+  border-bottom: 12px solid #fff;
+  position: absolute;
+  top: -12px;
+  margin: 0 auto;
+  text-align: center;
+  left: 0;
+  right: 0;
+}
+
+.scrollscope {
+  width: auto;
+  height: 54px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  /* scrollbar-width: thin; */
+}
+
+.vd {
+  background-color: #00c0ef;
+}
+
+.vd:hover {
+  background-color: #06a7cf;
+}
+
+.dt {
+  padding: 20px 20px 20px 30px;
+}
+
+.table-scrollable table.dataTable tbody tr {
+  max-height: 550px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.select2-results__option {
+  font-size: 12px;
+}
+
+.dataTable thead {
+  background-color: #c4e1f6;
+  color: #1b476b;
+  position: sticky;
+  width: 100%;
+  top: 0;
+}
+
+.dt-layout-cell.dt-layout-full {
+  min-height: auto;
+  height: 67.5vh;
+  overflow-y: scroll;
+}
+
+.space-x-1 {
+  font-size: 12px;
+  display: inline-flex;
+}
+
+.space-x-1 span{
+  padding: 0px 7px !important;
+  font-size: 12px;
+}
+
+.qss span {
+  padding: 4px 7px !important;
+  font-size: 12px;
+}
+
+.mllt {
+  margin-left: 15px;
+}
+
+.mlr {
+  margin: 10px 50px;
+}
+
+.modal-footer button {
+  padding: 4px 7px;
+  font-size: 12px;
+}
+
+.direct-chat-msg {
+  margin-bottom: 17px !important;
+}
+
+.direct-chat-text {
+  padding: 3.5px 10px;
+  background-color: #fff;
+}
+
+.chatsbut {
+  padding: 4px 7px;
+  font-size: 12px;
+  background-color: #1b476b;
+  border-radius: 4px;
+}
+
+.chatsbut:hover {
+  background-color: #27679b;
+}
+
+.chats {
+  border: 1px solid #efefef;
+  padding: 10px;
+  border-radius: 7px;
+  background-color: #e9f7ff;
+}
+
+.box-body .form-group{
+margin-bottom:10px;
+}
+
+.gree{
+  background-color:#198754;
+}
+
+.gree:hover{
+  background-color:#2ab373;
+}
+
+.assi input{
+  background-color: #1b476b;
+  padding: 4px 7px;
+  font-size: 12px;
+  margin-top: 10px;
+  color: #fff;
+}
+
+.assi input:hover{
+  background-color: #27679b;
+  color: #fff;
+}
+
+.greens input{
+  background-color: #198754;
+  padding: 4px 7px;
+  font-size: 12px;
+  margin-top: 10px;
+  color: #fff;
+}
+
+.greens input:hover{
+  background-color: #2ab373;
+  color: #fff;
+}
+
+.tabb ul {
+  padding: 10px;
+}
+
+.tabb .form-control {
+  border-radius: 5px;
+  font-size: 12px;
+}
+
+/* .tabb ul li a{
+  background-color: #0073b7 !important;
+  color: #fff !important;
+  font-size: 12px;
+} */
+
+.nav-tabs-custom>.nav-tabs>li>a {
+  padding: 4px 5px !important; 
+  border-radius: 4px;
+  color: #fff !important;
+  font-size: 12px;
+}
+
+.nav-tabs-custom>.nav-tabs>li:not(.active){
+  background-color: #003b5e !important;
+  color: #fff !important;
+  border-radius: 5px;
+  /* padding: 4px 5px !important;  */
+}
+
+.cir:hover{
+border: 1px solid #efefef;
+border-radius: 50px;
+}
