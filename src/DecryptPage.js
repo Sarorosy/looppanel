@@ -37,6 +37,7 @@ function DecryptPage() {
                 if (data.status === "success") {
                     setResponseMessage("Verification successful."); // Message for step 1
                     setSuccessStep1(true); // Step 1 success
+                    sessionStorage.setItem("loopuser", JSON.stringify(data.data))
                     setStep(2); // Move to step 2 (Authentication)
                 } else {
                     setResponseMessage(data.message || "Unauthorized access.");
@@ -71,9 +72,14 @@ function DecryptPage() {
                     setSuccessStep2(true); // Step 2 success
                     sessionStorage.setItem("user", JSON.stringify(data.data));
                     sessionStorage.setItem('authenticated', true);
-                    setTimeout(()=>{
-                        navigate('/assignquery')
-                    }, 1000)
+                    const userType = data.data.user_type; // Retrieve user type from response
+                    setTimeout(() => {
+                        if (userType == "admin") {
+                            navigate("/query"); // Navigate to '/query' for admin users
+                        } else {
+                            navigate("/assignquery"); // Navigate to '/assignquery' for other users
+                        }
+                    }, 1000);
                 } else {
                     setResponseMessage2(data.message || "Authentication failed.");
                     setSuccessStep2(false); // Step 2 failure

@@ -9,9 +9,10 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter } from 'lucide-react';
+import { RefreshCcw, Filter, ListIcon } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import { AnimatePresence, motion } from 'framer-motion';
+import SummaryPage from './SummaryPage';
 
 
 
@@ -26,10 +27,10 @@ const ManageContactMadeQueries = () => {
     const selectUserRef = useRef(null);
     const [selectedQuery, setSelectedQuery] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [summaryOpen, setSummaryOpen] = useState(false);
 
     const userData = sessionStorage.getItem('user');
 
-    // Parse the JSON string into an object
     const userObject = JSON.parse(userData);
 
     // Access the 'id' field
@@ -44,6 +45,12 @@ const ManageContactMadeQueries = () => {
     const handleViewButtonClick = (query) => {
         setSelectedQuery(query);
         setIsDetailsOpen(true);
+    };
+    const handleSummaryButtonClick = (query) => {
+        setSummaryOpen(true);
+    };
+    const toggleSummaryPage = () => {
+        setSummaryOpen(!summaryOpen);
     };
 
     useEffect(() => {
@@ -82,7 +89,7 @@ const ManageContactMadeQueries = () => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ user_id: userId, search_keywords:keyword , ref_id:RefId }), // Pass the POST data as JSON
+                    body: JSON.stringify({ user_id: userId, search_keywords: keyword, ref_id: RefId }), // Pass the POST data as JSON
                 }
             );
 
@@ -112,41 +119,39 @@ const ManageContactMadeQueries = () => {
         {
             title: 'Ref Id',
             data: 'assign_id',
-            orderable: true,
+            orderable: false,
         },
         {
             title: 'User Name',
             data: 'user_name',
-            orderable: true,
+            orderable: false,
         },
         {
             title: 'Email',
             data: 'email_id',
-            orderable: true,
+            orderable: false,
+            render: function (data, type, row) {
+                return `<div class="flex items-center">${data} ${row.showBellicon == 1 ? ('<i class="fa fa-bell ml-2 text-red-400" aria-hidden="false"></i>') : ""}</div> `;
+            }
         },
         {
             title: 'Client Name',
             data: 'name',
-            orderable: true,
-            render: function(data, type, row) {
-                return `<div>${data || "N/A"}</div>`; 
+            orderable: false,
+            render: function (data, type, row) {
+                return `<div>${data || "N/A"}</div>`;
             }
-        },    
+        },
         {
             title: 'Contact',
             data: 'phone',
-            orderable: true,
-        },    
-        
+            orderable: false,
+        },
+
         {
             title: 'Website',
             data: 'website_name',
-            orderable: true,
-        },
-        {
-            title: 'Tags',
-            data: 'tags',
-            orderable: true,
+            orderable: false,
         },
         {
             title: 'Actions',
@@ -200,7 +205,9 @@ const ManageContactMadeQueries = () => {
                     <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic" onClick={resetFilters}>
                         <RefreshCcw size={12} />
                     </button>
-
+                    <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic" onClick={handleSummaryButtonClick} title='View Summary'>
+                        <ListIcon size={12} />
+                    </button>
                 </div>
             </div>
 
@@ -231,7 +238,15 @@ const ManageContactMadeQueries = () => {
                     <QueryDetails
                         onClose={toggleDetailsPage}
 
-                        queryId={selectedQuery}
+                        queryId={selectedQuery.assign_id}
+                    />
+
+                )}
+                {summaryOpen && (
+
+                    <SummaryPage
+                        onClose={toggleSummaryPage}
+
                     />
 
                 )}

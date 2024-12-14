@@ -8,6 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { CircleX, HistoryIcon, X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import AskForScope from './AskForScope';
+import SubmitRequestQuote from './SubmitRequestQuote';
 
 
 const QueryDetails = ({ onClose, queryId }) => {
@@ -23,6 +24,7 @@ const QueryDetails = ({ onClose, queryId }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [activityloading, setActivityLoading] = useState(false);
 
+    
     const fetchActivityHistory = async () => {
 
         try {
@@ -52,7 +54,7 @@ const QueryDetails = ({ onClose, queryId }) => {
     const fetchQueryDetails = async () => {
         setLoading(true); // Show loading spinner
 
-
+        console.log("cominggg is " + queryId)
         try {
             const response = await fetch(
                 'https://instacrm.rapidcollaborate.com/api/viewquerydetails',
@@ -61,7 +63,7 @@ const QueryDetails = ({ onClose, queryId }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ query_id: queryId.assign_id }),
+                    body: JSON.stringify({ query_id: queryId }),
                 }
             );
 
@@ -136,7 +138,7 @@ const QueryDetails = ({ onClose, queryId }) => {
             {loading ? (
                 <CustomLoader />
             ) : (
-                <div className=' flex items-start justify-between space-x-1 pnav'>
+                <div className=' flex items-start justify-between space-x-1 pnav text-black'>
                     <div className='col-md-3'>
                         <div className="space-y-4 bg-white p-6 shadow rounded-md border-t-2 border-blue-400 m-2 text-sm">
                             <div className="relative">
@@ -183,9 +185,13 @@ const QueryDetails = ({ onClose, queryId }) => {
                             {queryInfo.profile_name && <p><strong>Profile:</strong> {queryInfo.profile_name}</p>}
                             {queryInfo.name && <p><strong>Name:</strong> {queryInfo.name}</p>}
                             {queryInfo.email_id && <p><strong>Email:</strong> {queryInfo.email_id}</p>}
-                            <p><strong>Alternate Email ID:</strong> {queryInfo.alt_email_id || 'N/A'}</p>
+                            {queryInfo.alt_email_id && (
+                                <p><strong>Alternate Email ID:</strong> {queryInfo.alt_email_id || 'N/A'}</p>
+                            )}
                             {queryInfo.phone && <p><strong>Contact No.:</strong> {queryInfo.phone}</p>}
-                            <p><strong>Alternate Contact No.:</strong> {queryInfo.alt_contact_no || 'N/A'}</p>
+                            {queryInfo.alt_contact_no && (
+                                <p><strong>Alternate Contact No.:</strong> {queryInfo.alt_contact_no || 'N/A'}</p>
+                            )}
                             {queryInfo.latest_requirement && (
                                 <div className="bg-green-100 p-4 rounded">
                                     <p><strong>Latest Requirement:</strong> {queryInfo.latest_requirement}</p>
@@ -312,7 +318,8 @@ const QueryDetails = ({ onClose, queryId }) => {
 
                         </div>
                     </div>
-                    <AskForScope quoteId={quoteId} />
+                    <AskForScope queryId={queryInfo.assign_id} />
+
                 </div>
             )}
 

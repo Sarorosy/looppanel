@@ -6,6 +6,7 @@ import ManageContactMadeQueries from "./pages/ManageContactMadeQueries";
 import Layout from './components/Layout'; // Import Layout
 import './output.css';
 import './index.css';
+import ManageQuery from './pages/ManageQuery';
 
 
 function App() {
@@ -22,13 +23,13 @@ function App() {
 
         {/* Protected routes */}
         <Route
-          path="/assignquery"
+          path="/"
           element={
             <Layout  />
           }
         >
           <Route path="/assignquery" element={<ManageContactMadeQueries />} />
-
+          <Route path="/query" element={<ManageQuery />} />
           
         </Route>
 
