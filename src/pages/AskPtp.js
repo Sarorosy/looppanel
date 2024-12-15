@@ -3,9 +3,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AnimatePresence, motion } from 'framer-motion';
 
-function AskPtp({ scopeDetails, quoteId , after}) {
+function AskPtp({ scopeDetails, quoteId, after }) {
     const [showForm, setShowForm] = useState(false);
-    const [ptp, setPtp] = useState('');
+    const [ptp, setPtp] = useState('No'); // Default value is "No"
     const [ptpComments, setPtpComments] = useState('');
     const [ptploading, setPtpLoading] = useState(false);
 
@@ -13,16 +13,18 @@ function AskPtp({ scopeDetails, quoteId , after}) {
         setPtpLoading(true);
         e.preventDefault();
 
-        if (!ptp && !ptpComments) {
+        if (!ptpComments) {
             toast.error("Please fill all fields");
+            setPtpLoading(false);
             return;
         }
+
         // Prepare the data for posting
         const postData = {
             ptp,
             ptp_comments: ptpComments,
-            ref_id: scopeDetails.ref_id,
-            quote_id : quoteId
+            ref_id: scopeDetails.assign_id,
+            quote_id: quoteId,
         };
 
         try {
@@ -34,19 +36,19 @@ function AskPtp({ scopeDetails, quoteId , after}) {
                 body: JSON.stringify(postData),
             });
             const result = await response.json();
-            if (result.status == "success") {
+            if (result.status === "success") {
                 toast.success('Request submitted successfully');
-                setShowForm(false); 
-                setTimeout(()=>{
+                setShowForm(false);
+                setTimeout(() => {
                     after();
-                }, 1000)
+                }, 1000);
             } else {
                 toast.error('Failed to submit the request');
             }
         } catch (error) {
             console.error('Error posting data:', error);
             toast.error('An error occurred while submitting the request');
-        }finally{
+        } finally {
             setPtpLoading(false);
         }
     };
@@ -54,10 +56,9 @@ function AskPtp({ scopeDetails, quoteId , after}) {
     return (
         <div className='flex flex-col'>
             <button onClick={() => setShowForm(!showForm)} className="bg-blue-100 hover:bg-blue-200 text-blue-900 px-4 py-2 rounded-3xl w-44 max-w-44">
-                Request PTP
+                Ask Discount
             </button>
 
-            {/* Show form to submit PTP details with motion */}
             {showForm && (
                 <AnimatePresence>
                     <motion.div
@@ -69,15 +70,16 @@ function AskPtp({ scopeDetails, quoteId , after}) {
                     >
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
-                                <label htmlFor="ptp" className="block text-sm font-semibold">PTP</label>
-                                <input
-                                    type="text"
-                                    id="ptp"
-                                    name="ptp"
-                                    value={ptp}
-                                    onChange={(e) => setPtp(e.target.value)}
-                                    className="w-full p-2 border border-gray-300 rounded form-control"
-                                />
+                                <div className="flex items-center space-x-2">
+                                    <input
+                                        type="checkbox"
+                                        id="ptp"
+                                        checked={ptp === 'Yes'}
+                                        onChange={(e) => setPtp(e.target.checked ? 'Yes' : 'No')}
+                                        className="form-checkbox h-5 w-5 text-blue-600"
+                                    />
+                                    <label htmlFor="ptp" className="text-sm font-semibold">PTP Client</label>
+                                </div>
                             </div>
                             <div className="mb-4">
                                 <label htmlFor="ptp_comments" className="block text-sm font-semibold">Comments</label>
@@ -89,7 +91,9 @@ function AskPtp({ scopeDetails, quoteId , after}) {
                                     className="w-full p-2 border border-gray-300 rounded form-control"
                                 />
                             </div>
-                            <button type="submit" disabled={ptploading} className="bg-blue-500 text-white px-4 py-2 rounded">{ptploading ? "Submitting..." : "Submit"}</button>
+                            <button type="submit" disabled={ptploading} className="bg-blue-500 text-white px-4 py-2 rounded">
+                                {ptploading ? "Submitting..." : "Submit"}
+                            </button>
                         </form>
                     </motion.div>
                 </AnimatePresence>

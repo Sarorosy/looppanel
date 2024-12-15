@@ -124,7 +124,7 @@ const Header = () => {
   useEffect(() => {
     fetchNotificationsCount();
     const interval = setInterval(() => {
-      fetchNotificationsCount(); // Fetch count every 5 seconds
+      //fetchNotificationsCount(); // Fetch count every 5 seconds
     }, 5000);
 
     return () => clearInterval(interval); // Cleanup on component unmount

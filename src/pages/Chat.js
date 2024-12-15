@@ -93,7 +93,7 @@ export const Chat = ({ quoteId, refId }) => {
             </div>
 
             {loadingMessages ? (
-                <p><ScaleLoader /></p>
+                <p><CustomLoader /></p>
             ) : (
                 <div
                     className="mt-4 space-y-2 max-h-56 overflow-y-auto chats"

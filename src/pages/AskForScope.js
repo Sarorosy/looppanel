@@ -5,8 +5,9 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle, RefreshCcw } from 'lucide-react';
+import { CheckCheckIcon, CheckCircle, CheckCircle2, PlusCircle, RefreshCcw } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
+import { AnimatePresence } from 'framer-motion';
 
 const AskForScope = ({ queryId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
@@ -24,16 +25,19 @@ const AskForScope = ({ queryId }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [adminComments, setAdminComments] = useState('');
     const userData = sessionStorage.getItem('user');
+    const loopuserData = sessionStorage.getItem('loopuser');
     const [expandedRowIndex, setExpandedRowIndex] = useState(null);
-    
+    const [addNewFormOpen, setAddNewFormOpen] = useState(false);
 
     const toggleRow = (index) => {
         setExpandedRowIndex(expandedRowIndex === index ? null : index);
     };
 
     const userObject = JSON.parse(userData);
+    const loopUserObject = JSON.parse(loopuserData);
 
-    const thisUserId = userObject.id
+    const thisUserId = loopUserObject.id
+
 
     const fetchScopeDetails = async () => {
         setLoading(true); // Show loading spinner
@@ -102,13 +106,18 @@ const AskForScope = ({ queryId }) => {
     };
     const referenceUrl = `https://instacrm.rapidcollaborate.com/managequote/view-askforscope/${scopeDetails?.ref_id}`;
 
-
+    const toggleAddNewForm = () => setAddNewFormOpen((prev) => !prev);
 
     return (
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
+                <div className='flex items-center justify-between'>
+                    <button onClick={toggleAddNewForm} className='flex items-center mr-3 border rounded px-2 py-1'>
+                       <PlusCircle className='mr-3' /> Add New
+                    </button>
                 <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
+                </div>
             </div>
 
             {loading ? (
@@ -126,6 +135,7 @@ const AskForScope = ({ queryId }) => {
                                 <th className="border px-4 py-2 text-left">Ref No.</th>
                                 <th className="border px-4 py-2 text-left">Quote Id.</th>
                                 <th className="border px-4 py-2 text-left">Currency</th>
+                                <th className="border px-4 py-2 text-left">Plan</th>
                                 <th className="border px-4 py-2 text-left">Service Name</th>
                                 <th className="border px-4 py-2 text-left">Status</th>
                             </tr>
@@ -139,28 +149,29 @@ const AskForScope = ({ queryId }) => {
                                         className="cursor-pointer hover:bg-gray-50"
                                         onClick={() => toggleRow(index)}
                                     >
-                                        <td className="border px-4 py-2">{quote.ref_id}</td>
-                                        <td className="border px-4 py-2">{quote.id}</td>
+                                        <td className="border px-4 py-2">{quote.assign_id}</td>
+                                        <td className="border px-4 py-2">{quote.quoteid}</td>
                                         <td className="border px-4 py-2">{quote.currency}</td>
+                                        <td className="border px-4 py-2">{quote.plan}</td>
                                         <td className="border px-4 py-2">{quote.service_name || 'N/A'}</td>
                                         <td className="border px-4 py-2">
                                             <span
                                                 className={
-                                                    quote.status == 0
+                                                    quote.quote_status == 0
                                                         ? 'text-red-600'
                                                         : 'text-green-600'
                                                 }
                                             >
-                                                {quote.status == 0 ? 'Pending' : 'Approved'}
+                                                {quote.quote_status == 0 ? 'Pending' : 'Approved'}
                                             </span>
                                         </td>
                                     </tr>
                                     {/* Accordion */}
                                     {expandedRowIndex == index && (
                                         <tr>
-                                            <td colSpan={5} className="border px-4 py-4 bg-gray-50">
+                                            <td colSpan={6} className="border px-4 py-4 bg-gray-50">
                                                 <div className="space-y-4 text-sm">
-                                                    <p><strong>Ref No.:</strong> {quote.ref_id}</p>
+                                                    <p><strong>Ref No.:</strong> {quote.assign_id}</p>
                                                     <p><strong>Currency:</strong> {quote.currency}</p>
                                                     {quote.service_name && quote.plan && (
                                                         <>
@@ -177,7 +188,7 @@ const AskForScope = ({ queryId }) => {
                                                                 {quote.relevant_file.map((file, fileIndex) => (
                                                                     <div key={fileIndex}>
                                                                         <a
-                                                                            href={`https://instacrm.rapidcollaborate.com/public/QuotationFolder/${file.file_path}`}
+                                                                            href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
                                                                             download
                                                                             target='_blank'
                                                                             className="text-blue-500"
@@ -189,17 +200,28 @@ const AskForScope = ({ queryId }) => {
                                                             </div>
                                                         </div>
                                                     )}
-                                                    <p><strong>Status:</strong> <span className={quote.status == 0 ? "text-red-600 text-md" : "text-green-600 text-md"}>{quote.status == 0 ? "Pending" : "Approved"}</span></p>
+                                                    {quote.ptp != null && (
+                                                        <>
+                                                         <p><strong>PTP:</strong> {quote.ptp}</p>
+                                                         <p><strong>PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                         </>
+                                                    )}
+                                                    {quote.demodone != 0 && (
+                                                        <>
+                                                         <p className='flex items-center '><span className='bg-green-100 px-2 py-1 rounded-full text-green-900 font-semibold flex items-center'>Demo Completed <CheckCircle2 size={15} className='ml-2'/> </span> <p className='ml-3'> <strong>Demo Id : </strong> {quote.demo_id}</p></p>
+                                                         </>
+                                                    )}
+                                                    <p><strong>Status:</strong> <span className={quote.quote_status == 0 ? "text-red-600 text-md" : "text-green-600 text-md"}>{quote.quote_status == 0 ? "Pending" : "Approved"}</span></p>
                                                     <p><strong>Reference Url:</strong> <a href={referenceUrl} target="_blank" rel="noopener noreferrer" className='text-blue-400'>{referenceUrl}</a></p>
                                                     {assignQuoteInfo && assignQuoteInfo != false && (
                                                         <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                                     )}
                                                     <div className='flex items-start space-x-1'>
-                                                        {quote.status == 0 && quote.user_id == thisUserId && !quote.ptp && (
-                                                            <AskPtp scopeDetails={quote} quoteId={queryId} after={fetchScopeDetails} />
+                                                        {quote.quote_status == 0 && quote.user_id == thisUserId && quote.ptp == null && (
+                                                            <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
                                                         )}
                                                         {quote.user_id == thisUserId && quote.demodone != 1 && (
-                                                            <DemoDone scopeDetails={quote} quoteId={queryId} after={fetchScopeDetails} />
+                                                            <DemoDone scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
                                                         )}
                                                     </div>
                                                 </div>
@@ -214,8 +236,11 @@ const AskForScope = ({ queryId }) => {
                     <Chat quoteId={queryId} refId={scopeDetails[0]?.ref_id} />
                 </div>
             )}
-
-                    <SubmitRequestQuote refId={queryId} />
+            <AnimatePresence>
+                {addNewFormOpen && (
+                    <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails}/>
+                )}
+            </AnimatePresence>        
                     
                 </div>
             )}

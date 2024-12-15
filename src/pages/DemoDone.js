@@ -18,7 +18,7 @@ function DemoDone({ scopeDetails, quoteId , after}) {
         // Prepare the data for posting
         const postData = {
             demoId,
-            ref_id: scopeDetails.ref_id,
+            ref_id: scopeDetails.assign_id,
             quote_id: quoteId,
         };
 

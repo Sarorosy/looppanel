@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { CheckCircle, RefreshCcw } from 'lucide-react';
+import { CheckCircle, CheckCircle2, RefreshCcw } from 'lucide-react';
 const AskForScopeAdmin = ({ queryId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -16,6 +16,7 @@ const AskForScopeAdmin = ({ queryId }) => {
     const [userComments, setUserComments] = useState('');
     const [ConsultantUserData, setConsultantUserData] = useState([]);
     const [quoteAmount, setQuoteAmount] = useState('');
+    const [amounts, setAmounts] = useState({});
     const [comment, setComment] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [adminComments, setAdminComments] = useState('');
@@ -103,16 +104,12 @@ const AskForScopeAdmin = ({ queryId }) => {
     };
 
     const PriceSubmitValidate = async (refId, quoteId) => {
-        if (!quoteAmount || !comment) {
+        console.log(amounts)
+        if (!amounts || !comment) {
             toast.error('Please fill in all the required fields');
             return; // Prevent form submission if validation fails
         }
-        const data = {
-            ref_id: refId,
-            quote_id: quoteId,
-            quote_amount: quoteAmount,
-            comment: comment,
-        };
+
 
         try {
             // Show loading spinner
@@ -126,7 +123,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                 body: JSON.stringify({
                     ref_id: refId,
                     quote_id: quoteId,
-                    quote_amount: quoteAmount,
+                    quote_amount: Object.values(amounts).join(','),
                     comment: comment,
                 }), // Send the data as JSON
             });
@@ -218,7 +215,7 @@ const AskForScopeAdmin = ({ queryId }) => {
 
     return (
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
-             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
+            <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
                 <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
             </div>
@@ -238,6 +235,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                         <th className="border px-4 py-2 text-left">Ref No.</th>
                                         <th className="border px-4 py-2 text-left">Quote Id.</th>
                                         <th className="border px-4 py-2 text-left">Currency</th>
+                                        <th className="border px-4 py-2 text-left">Plan</th>
                                         <th className="border px-4 py-2 text-left">Service Name</th>
                                         <th className="border px-4 py-2 text-left">Status</th>
                                     </tr>
@@ -251,28 +249,29 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                 className="cursor-pointer hover:bg-gray-50"
                                                 onClick={() => toggleRow(index)}
                                             >
-                                                <td className="border px-4 py-2">{quote.ref_id}</td>
-                                                <td className="border px-4 py-2">{quote.id}</td>
+                                                <td className="border px-4 py-2">{quote.assign_id}</td>
+                                                <td className="border px-4 py-2">{quote.quoteid}</td>
                                                 <td className="border px-4 py-2">{quote.currency}</td>
+                                                <td className="border px-4 py-2">{quote.plan}</td>
                                                 <td className="border px-4 py-2">{quote.service_name || 'N/A'}</td>
                                                 <td className="border px-4 py-2">
                                                     <span
                                                         className={
-                                                            quote.status == 0
+                                                            quote.quote_status == 0
                                                                 ? 'text-red-600'
                                                                 : 'text-green-600'
                                                         }
                                                     >
-                                                        {quote.status == 0 ? 'Pending' : 'Approved'}
+                                                        {quote.quote_status == 0 ? 'Pending' : 'Approved'}
                                                     </span>
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
                                             {expandedRowIndex == index && (
                                                 <tr>
-                                                    <td colSpan={5} className="border px-4 py-4 bg-gray-50">
+                                                    <td colSpan={6} className="border px-4 py-4 bg-gray-50">
                                                         <div className="space-y-4 text-sm">
-                                                            <p><strong>Ref No.:</strong> {quote.ref_id}</p>
+                                                            <p><strong>Ref No.:</strong> {quote.assign_id}</p>
                                                             <p><strong>Currency:</strong> {quote.currency}</p>
                                                             {quote.service_name && quote.plan && (
                                                                 <>
@@ -301,8 +300,34 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                     </div>
                                                                 </div>
                                                             )}
-                                                            <p><strong>Status:</strong> <span className={quote.status == 0 ? "text-red-600 text-md" : "text-green-600 text-md"}>{quote.status == 0 ? "Pending" : "Approved"}</span></p>
+                                                            <p><strong>Status:</strong> <span className={quote.quote_status == 0 ? "text-red-600 text-md" : "text-green-600 text-md"}>{quote.quote_status == 0 ? "Pending" : "Approved"}</span></p>
                                                             <p><strong>Reference Url:</strong> <a href={referenceUrl} target="_blank" rel="noopener noreferrer" className='text-blue-400'>{referenceUrl}</a></p>
+                                                            {quote.ptp != null && (
+                                                                <>
+                                                                    <p><strong>PTP:</strong> {quote.ptp}</p>
+                                                                    <p><strong>PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                                </>
+                                                            )}
+                                                            {quote.demodone != 0 && (
+                                                                <>
+                                                                    <p className='flex items-center '><span className='bg-green-100 px-2 py-1 rounded-full text-green-900 font-semibold flex items-center'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> <p className='ml-3'> <strong>Demo Id : </strong> {quote.demo_id}</p></p>
+                                                                </>
+                                                            )}
+                                                            {quote.quote_status != 0 && quote.quote_price && quote.plan && (
+                                                                <>
+                                                                <p>
+                                                                    <strong>Quote Price:</strong>{' '}
+                                                                    {(() => {
+                                                                        const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                        const plans = quote.plan.split(','); // Split plan into an array
+                                                                        return plans
+                                                                            .map((plan, index) => `${plan}: ${prices[index]}`) // Map plans to corresponding prices
+                                                                            .join(', '); // Join the resulting array with commas
+                                                                    })()}
+                                                                </p>
+                                                                <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                </>
+                                                            )}
                                                             {assignQuoteInfo && assignQuoteInfo != false && (
                                                                 <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                                             )}
@@ -380,7 +405,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                     )}
                                                                 </>
                                                             )}
-                                                            {quote.status == 0 && (
+                                                            {quote.quote_status == 0 && (
                                                                 <>
                                                                     <div className="nav-tabs-custom tabb">
                                                                         <ul className="nav nav-tabs">
@@ -394,18 +419,36 @@ const AskForScopeAdmin = ({ queryId }) => {
 
                                                                             <div className="tab-pane active" id="tab_2">
                                                                                 <form method="post" name="submitQuoteForm" id="submitQuoteForm" className="form-horizontal">
-                                                                                    <input type="hidden" name="ref_id" value={quote.ref_id} />
-                                                                                    <input type="hidden" name="quote_id" value={quote.id} />
+                                                                                    <input type="hidden" name="ref_id" value={quote.assign_id} />
+                                                                                    <input type="hidden" name="quote_id" value={quote.quoteid} />
                                                                                     <div className="box-body">
-                                                                                        <div className="form-group">
-                                                                                            <label htmlFor="quote_amount" className="col-sm-3 control-label">
-                                                                                                Amount ({quote.currency})
-                                                                                            </label>
-                                                                                            <div className="col-sm-12">
-                                                                                                <input type="text" name="quote_amount" id="quote_amount" className="form-control" value={quoteAmount} onChange={(e) => setQuoteAmount(e.target.value)} />
-                                                                                                <div className="error" id="quote_amountError"></div>
-                                                                                            </div>
-                                                                                        </div>
+                                                                                        {quote.plan &&
+                                                                                            quote.plan.split(',').map((plan, index) => (
+                                                                                                <div className="form-group" key={index}>
+                                                                                                    <label
+                                                                                                        htmlFor={`amount_${plan.trim()}`}
+                                                                                                        className="col-sm-3 control-label"
+                                                                                                    >
+                                                                                                        Amount for <strong>{plan.trim()} ({quote.currency}) </strong>
+                                                                                                    </label>
+                                                                                                    <div className="col-sm-12">
+                                                                                                        <input
+                                                                                                            type="text"
+                                                                                                            name={`amount_${plan.trim()}`}
+                                                                                                            id={`amount_${plan.trim()}`}
+                                                                                                            className="form-control"
+                                                                                                            value={amounts[plan.trim()] || ''}
+                                                                                                            onChange={(e) =>
+                                                                                                                setAmounts({
+                                                                                                                    ...amounts,
+                                                                                                                    [plan.trim()]: e.target.value,
+                                                                                                                })
+                                                                                                            }
+                                                                                                        />
+                                                                                                        <div className="error" id={`amountError_${plan.trim()}`}></div>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            ))}
                                                                                         <div className="form-group">
                                                                                             <label htmlFor="comment" className="col-sm-3 control-label">Comments</label>
                                                                                             <div className="col-sm-12">
@@ -420,7 +463,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                                             name="priceSubmitted"
                                                                                             className="btn pull-right"
                                                                                             value="Submit"
-                                                                                            onClick={() => PriceSubmitValidate(quote.ref_id, quote.id)}
+                                                                                            onClick={() => PriceSubmitValidate(quote.assign_id, quote.quoteid)}
                                                                                             disabled={priceLoading}
                                                                                         />
                                                                                     </div>

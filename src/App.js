@@ -1,22 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import DecryptPage from "./DecryptPage"; // Create this component
-import './output.css';
+import DecryptPage from "./DecryptPage";
+import Layout from './components/Layout';
 import ManageContactMadeQueries from "./pages/ManageContactMadeQueries";
-import Layout from './components/Layout'; // Import Layout
-import './output.css';
-import './index.css';
 import ManageQuery from './pages/ManageQuery';
-
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        
-        
-      </Routes>
-
+    <Router basename="/askforscope">
       <Routes>
         {/* Public route */}
         <Route path="/:email/:token" element={<DecryptPage />} />
@@ -24,13 +15,10 @@ function App() {
         {/* Protected routes */}
         <Route
           path="/"
-          element={
-            <Layout  />
-          }
+          element={<Layout />}
         >
           <Route path="/assignquery" element={<ManageContactMadeQueries />} />
           <Route path="/query" element={<ManageQuery />} />
-          
         </Route>
 
         {/* Fallback route */}

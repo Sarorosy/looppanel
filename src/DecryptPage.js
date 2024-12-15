@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FadeLoader } from "react-spinners"; // Import the spinner
 import CustomLoader from "./CustomLoader";
+import Swal from "sweetalert2";
+import 'sweetalert2/src/sweetalert2.scss'
 
 function DecryptPage() {
     const { email, token } = useParams();
@@ -17,7 +19,34 @@ function DecryptPage() {
     const decryptedEmail = decodeURIComponent(email); // Assuming no additional encryption
     const decryptedToken = token;
     const navigate = useNavigate();
+    
 
+    useEffect(() => {
+        localStorage.openpages = Date.now();
+        var onLocalStorageEvent = function(e){
+          if(e.key == "openpages"){
+            // Emit that you're already available.
+            localStorage.page_available = Date.now();
+          }
+          if(e.key == "page_available"){
+            
+            Swal.fire({
+                title: "Page already opened in another tab",
+                text: "Please close the other tab and try again.",
+                icon: "warning",
+                confirmButtonText: "OK",
+                allowOutsideClick: false,
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.close(); // This will close the window after confirmation
+                }
+              });
+              
+          }
+        };
+        window.addEventListener('storage', onLocalStorageEvent, false);
+      }, []);
+      
     useEffect(() => {
         // First step: Validate credentials (verify email & token)
         const validateCredentials = async () => {

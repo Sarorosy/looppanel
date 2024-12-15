@@ -244,8 +244,8 @@ const QueryDetailsAdmin = ({ onClose, queryId }) => {
                             })}
                         </p>
                     )}
-
-                    {queryInfo.update_status !== undefined && (
+                    
+                    {queryInfo.update_status != undefined && (
                         <p className='qss'>
                             <strong>Query Status:</strong>{' '}
                             <span
@@ -289,7 +289,7 @@ const QueryDetailsAdmin = ({ onClose, queryId }) => {
                             </span>
                         </p>
                     )}
-                    {queryInfo.sourceoflead && (
+                    {queryInfo.sourceoflead && queryInfo.sourceoflead != 0 && (
                                 <div>
                                     <strong>Source of Lead:</strong>{" "}
                                     {queryInfo.sourceoflead === 100 && (

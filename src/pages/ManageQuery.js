@@ -18,7 +18,7 @@ import { useNavigate } from 'react-router-dom';
 
 const ManageQuery = () => {
     const [quotes, setQuotes] = useState([]);
-    const [filterDate, setFilterDate] = useState('');
+    const [refID, setRefId] = useState('');
     const [keyword, setKeyword] = useState('');
     const [status, setStatus] = useState('');
     const [users, setUsers] = useState([]);
@@ -71,26 +71,12 @@ const ManageQuery = () => {
     useEffect(() => {
         fetchQuotes();
 
-        // Initialize the date range picker on component mount
-        $('#filterDate').daterangepicker(
-            {
-                locale: {
-                    format: 'MM/DD/YYYY',
-                },
-                startDate: moment().startOf('month'),
-                endDate: moment().endOf('month'),
-            },
-            function (start, end, label) {
-                setFilterDate(start.format('MM/DD/YYYY') + ' - ' + end.format('MM/DD/YYYY'));
-            }
-        );
-
     }, []);
 
     const fetchQuotes = async () => {
         setLoading(true); // Show loading spinner
         const userid = selectedUser;
-        const filter_date = filterDate;
+        const ref_id = refID;
         const search_keywords = keyword;
         
         try {
@@ -101,14 +87,14 @@ const ManageQuery = () => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ userid, filter_date,search_keywords ,status }), // Pass the POST data as JSON
+                    body: JSON.stringify({ userid, ref_id,search_keywords ,status }), // Pass the POST data as JSON
                 }
             );
     
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
                 setQuotes(data.allQuoteData); // Update the quotes state
-                
+                setUsers(data.users);
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
@@ -135,10 +121,15 @@ const ManageQuery = () => {
             orderable: true,
         },
         {
+            title: 'Quote Id',
+            data: 'id',
+            orderable: true,
+        },
+        {
             title: 'CRM Name',
             data: 'fld_first_name',
             orderable: false,
-            render: (data, type,row) => `<div style="text-align: left;">${row.fld_first_name + " " + row.fld_last_name}</div>`,
+            render: (data, type,row) => `<div style="text-align: left;">${row.fld_first_name + " " + (row.fld_last_name != null ? row.fld_last_name : "")}</div>`,
         },
         {
             title: 'Currency',
@@ -189,7 +180,7 @@ const ManageQuery = () => {
     ];
 
     const resetFilters = () => {
-        setFilterDate('');
+        setRefId('');
         setKeyword('');
         setSelectedUser('');
         setStatus('')
@@ -204,22 +195,12 @@ const ManageQuery = () => {
             {/* Filter Section */}
             <div className="flex items-center space-x-2 my-3 bg-white px-4 py-2 rounded aql">
                 <div className="w-1/2">
-                    <input
-                        id="filterDate"
+                <input
                         type="text"
                         className="form-control"
-                        placeholder="From Date - To Date"
-                        value={filterDate}
-                        readOnly // Make the input read-only as it's controlled by daterangepicker
-                    />
-                </div>
-                <div className="w-1/2">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder='Enter Search Keywords'
-                        value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
+                        placeholder='Ref ID'
+                        value={refID}
+                        onChange={(e) => setRefId(e.target.value)}
                     />
                 </div>
                 <div className="w-1/2">
@@ -231,11 +212,11 @@ const ManageQuery = () => {
                         ref={selectUserRef}
                     >
                         <option value="">Select User</option>
-                        {/* {users.map(user => (
+                        {users.map(user => (
                             <option key={user.id} value={user.id}>
-                                {user.name}
+                                {user.fld_first_name}
                             </option>
-                        ))} */}
+                        ))}
                     </select>
                 </div>
                 <div className="w-1/2 ss">
@@ -247,7 +228,7 @@ const ManageQuery = () => {
                     >
                         <option value="">Select Status</option>
                         <option value="Pending">Pending</option>
-                        <option value="1">Price Submitted</option>
+                        <option value="1">Approved</option>
                     </select>
                 </div>
                 <div className="w-1/2 flex justify-content-end space-x-2 mt-1">

@@ -17,7 +17,7 @@ const SummaryPage = ({ onClose }) => {
     const [selectedQuery, setSelectedQuery] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-    const userData = sessionStorage.getItem('user');
+    const userData = sessionStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
 
@@ -87,13 +87,8 @@ const SummaryPage = ({ onClose }) => {
             orderable: false,
         },
         {
-            title: 'Name',
-            data: 'name', // Replace with actual field name
-            orderable: false,
-        },
-        {
-            title: 'Email Id',
-            data: 'email_id', // Replace with actual field name
+            title: 'Quote Id',
+            data: 'id', // Replace with actual field name
             orderable: false,
         },
         {
@@ -112,6 +107,11 @@ const SummaryPage = ({ onClose }) => {
         {
             title: 'Service',
             data: 'service_name', // Replace with actual field name
+            orderable: false,
+        },
+        {
+            title: 'Currency',
+            data: 'currency', // Replace with actual field name
             orderable: false,
         },
         {
