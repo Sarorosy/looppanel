@@ -4,7 +4,8 @@ import DecryptPage from "./DecryptPage";
 import Layout from './components/Layout';
 import ManageContactMadeQueries from "./pages/ManageContactMadeQueries";
 import ManageQuery from './pages/ManageQuery';
-
+import './output.css';
+import './index.css';
 function App() {
   return (
     <Router >
