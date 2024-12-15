@@ -7,7 +7,7 @@ import ManageQuery from './pages/ManageQuery';
 
 function App() {
   return (
-    <Router basename="/askforscope">
+    <Router >
       <Routes>
         {/* Public route */}
         <Route path="/:email/:token" element={<DecryptPage />} />

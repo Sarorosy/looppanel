@@ -1,6 +1,5 @@
 {
   "name": "looppanel",
-  "homepage": "https://apacvault.com/askforscope",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
