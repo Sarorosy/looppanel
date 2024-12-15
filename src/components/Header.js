@@ -4,6 +4,7 @@ import { LogOut, Bell } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import { AnimatePresence } from 'framer-motion';
 import QueryDetails from '../pages/QueryDetails';
+import QueryDetailsAdmin from '../pages/QueryDetailsAdmin';
 
 const Header = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -23,7 +24,7 @@ const Header = () => {
 
   const toggleDetailsPage = () => {
     setIsDetailsOpen(!isDetailsOpen);
-};
+  };
 
   useEffect(() => {
     const authenticated = sessionStorage.getItem('authenticated');
@@ -40,6 +41,9 @@ const Header = () => {
   const userData = sessionStorage.getItem('loopuser');
   const userObject = JSON.parse(userData);
   const userName = userObject.fld_first_name;
+
+  const userData2 = sessionStorage.getItem('user');
+  const userObject2 = JSON.parse(userData2);
 
   const handleNavigation = (path) => {
     setUserMenuOpen(false);
@@ -60,7 +64,7 @@ const Header = () => {
       const data = await response.json(); // Parse the response as JSON
 
       if (data.status) {
-        setNotificationCount(data.unread_count); 
+        setNotificationCount(data.unread_count);
       } else {
         console.error('Failed to fetch notification count:', data.message);
       }
@@ -93,7 +97,7 @@ const Header = () => {
       }
     } catch (error) {
       console.error('Error while marking notification as read', error);
-    } 
+    }
   };
   const fetchNotifications = async () => {
     setLoading(true); // Show loading spinner
@@ -107,7 +111,7 @@ const Header = () => {
       });
 
       const data = await response.json(); // Parse the response as JSON
-      
+
 
       if (data.status) {
         setNotifications(data.notifications); // Update notifications state
@@ -156,7 +160,7 @@ const Header = () => {
           <button onClick={toggleNotifications} className="text-white ml-6 relative">
             <Bell size={24} />
             {notificationCount > 0 && (
-              <span className="absolute top-0 right-0 text-xs bg-red-600 text-white rounded-full px-1 py-0.5">
+              <span className="absolute text-xs bg-red-600 text-white rounded-full px-1 py-0.5" style={{ position:"absolute", top:"-10px",right:"-10px"}}>
                 {notificationCount}
               </span>
             )}
@@ -171,16 +175,18 @@ const Header = () => {
               ) : notifications.length === 0 ? (
                 <p>No notifications</p>
               ) : (
-                <ul>
-                  {notifications.map((notification, index) => (
-                    <li key={index} className="border-b py-2 cursor-pointer" onClick={() => handleNotificationClick(notification.id, notification.ref_id)}>
-                      <p>
-                        {notification.fld_first_name} {notification.message} on quotation for ref_id{' '}
-                        <strong>{notification.ref_id}</strong>
-                      </p>
-                    </li>
-                  ))}
-                </ul>
+                <div className=' overflow-y-scroll' style={{ height: "200px" }}>
+                  <ul>
+                    {notifications.map((notification, index) => (
+                      <li key={index} className="border-b py-2 cursor-pointer" onClick={() => handleNotificationClick(notification.id, notification.ref_id)}>
+                        <p>
+                          {notification.fld_first_name} {notification.message} on quotation for ref_id{' '}
+                          <strong>{notification.ref_id}</strong>
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               )}
             </div>
           )}
@@ -208,19 +214,21 @@ const Header = () => {
 
       </div>
       <AnimatePresence>
+        {isDetailsOpen && (
+          userObject2.user_type == "admin" ? (
+            <QueryDetailsAdmin
+              onClose={toggleDetailsPage}
+              queryId={selectedQuery}
+            />
+          ) : (
+            <QueryDetails
+              onClose={toggleDetailsPage}
+              queryId={selectedQuery}
+            />
+          )
+        )}
+      </AnimatePresence>
 
-
-                {isDetailsOpen && (
-
-                    <QueryDetails
-                        onClose={toggleDetailsPage}
-
-                        queryId={selectedQuery}
-                    />
-
-                )}
-                
-            </AnimatePresence>
     </header>
   );
 };

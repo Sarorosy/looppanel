@@ -135,7 +135,7 @@ const QueryDetailsAdmin = ({ onClose, queryId }) => {
             {loading ? (
                 <CustomLoader />
             ) : (
-                <div className=' flex items-start justify-between space-x-1 pnav'>
+                <div className=' flex items-start justify-between space-x-1 pnav text-black'>
                     <div className='col-md-3'>
                 <div className="space-y-4 bg-white p-6 shadow rounded-md border-t-2 border-blue-400 m-2 text-sm">
                     <div className="relative">
