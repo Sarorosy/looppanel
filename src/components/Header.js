@@ -147,11 +147,7 @@ const Header = () => {
         {/* Logo and Navigation Links */}
         <div className="flex items-center">
           <h1 className="text-xl font-bold mr-6 bg-[#f39c12] py-3 px-2">Query Management</h1>
-          <nav className="flex space-x-6">
-            <button onClick={() => handleNavigation('/assignquery')} className="">
-              Dashboard
-            </button>
-          </nav>
+          
         </div>
 
         {/* User Session Info */}
