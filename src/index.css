@@ -496,3 +496,6 @@ margin-bottom:10px;
 border: 1px solid #efefef;
 border-radius: 50px;
 }
+.ql-editor {
+  height: 120px !important;
+}

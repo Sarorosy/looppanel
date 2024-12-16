@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCheckIcon, CheckCircle, CheckCircle2, Info, PlusCircle, RefreshCcw } from 'lucide-react';
+import { CheckCheckIcon, CheckCircle, CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 
@@ -114,9 +114,9 @@ const AskForScope = ({ queryId }) => {
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
                 <div className='flex items-center justify-between'>
                     <button onClick={toggleAddNewForm} className='flex items-center mr-3 border rounded px-2 py-1'>
-                       <PlusCircle className='mr-3' /> Add New
+                        <PlusCircle className='mr-3' /> Add New
                     </button>
-                <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
+                    <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
                 </div>
             </div>
 
@@ -127,140 +127,219 @@ const AskForScope = ({ queryId }) => {
                     {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
                     {scopeDetails && scopeDetails.length > 0 ? (
-                <div>
-                    {/* Table Header */}
-                    <table className="w-full border-collapse border border-gray-200">
-                        <thead>
-                            <tr className="bg-gray-100">
-                                <th className="border px-4 py-2 text-left">Ref No.</th>
-                                <th className="border px-4 py-2 text-left">Quote Id.</th>
-                                <th className="border px-4 py-2 text-left">Currency</th>
-                                <th className="border px-4 py-2 text-left">Plan</th>
-                                <th className="border px-4 py-2 text-left">Service Name</th>
-                                <th className="border px-4 py-2 text-left">Status</th>
-                            </tr>
-                        </thead>
-                        {/* Table Body */}
-                        <tbody>
-                            {scopeDetails.map((quote, index) => (
-                                <React.Fragment key={index}>
-                                    {/* Row */}
-                                    <tr
-                                        className="cursor-pointer hover:bg-gray-50"
-                                        onClick={() => toggleRow(index)}
-                                    >
-                                        <td className="border px-4 py-2">{quote.assign_id}</td>
-                                        <td className="border px-4 py-2">{quote.quoteid}</td>
-                                        <td className="border px-4 py-2">{quote.currency}</td>
-                                        <td className="border px-4 py-2">{quote.plan}</td>
-                                        <td className="border px-4 py-2">{quote.service_name || 'N/A'}</td>
-                                        <td className="border px-4 py-2">
-                                            <span
-                                                className={
-                                                    quote.quote_status == 0
-                                                        ? 'text-red-600'
-                                                        : 'text-green-600'
-                                                }
-                                            >
-                                                {quote.quote_status == 0 ? 'Pending' : 'Approved'}
-                                            </span>
-                                        </td>
+                        <div>
+                            {/* Table Header */}
+                            <table className="w-full border-collapse border border-gray-200">
+                                <thead>
+                                    <tr className="bg-gray-100">
+                                        <th className="border px-4 py-2 text-left">Ref No.</th>
+                                        <th className="border px-4 py-2 text-left">Quote Id.</th>
+                                        <th className="border px-4 py-2 text-left">Currency</th>
+                                        <th className="border px-4 py-2 text-left">Plan</th>
+                                        <th className="border px-4 py-2 text-left">Service Name</th>
+                                        <th className="border px-4 py-2 text-left">Status</th>
+                                        <th className="border px-4 py-2 text-left">Action</th>
                                     </tr>
-                                    {/* Accordion */}
-                                    {expandedRowIndex == index && (
-                                        <tr>
-                                            <td colSpan={6} className="border px-4 py-4 bg-gray-50">
-                                                <div className="space-y-4 text-sm">
-                                                    <p><strong>Ref No.:</strong> {quote.assign_id}</p>
-                                                    <p><strong>Currency:</strong> {quote.currency}</p>
-                                                    {quote.service_name && quote.plan && (
-                                                        <>
-                                                            <p><strong>Service Required:</strong> {quote.service_name}</p>
-                                                            <p><strong>Plan:</strong> {quote.plan}</p>
-                                                        </>
+                                </thead>
+                                {/* Table Body */}
+                                <tbody>
+                                    {scopeDetails.map((quote, index) => (
+                                        <React.Fragment key={index}>
+                                            {/* Row */}
+                                            <tr
+                                                className="cursor-pointer hover:bg-gray-50"
+                                                onClick={() => toggleRow(index)}
+                                            >
+                                                <td className="border px-4 py-2 ">
+                                                    <p className='flex items-center'>
+                                                    {quote.assign_id}
+                                                    {quote.ptp == "Yes" && (
+                                                        <span
+                                                            className="inline-block p-1 ml-1" // Increased padding for more space
+                                                            style={{
+                                                                backgroundColor: '#2B9758FF', // Green color for PTP
+                                                                clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
+                                                                color: '#ffffff',
+                                                                fontSize: '14px', // Increased font size for better visibility
+                                                                fontWeight: 'bold',
+                                                                lineHeight: '1.3', // Increased line height to make it visually balanced
+                                                            }}
+                                                        >
+                                                            PTP
+                                                        </span>
                                                     )}
-                                                    <p><strong>Comments:</strong> {quote.comments}</p>
-                                                    <p><strong>Created Date:</strong> {quote.created_date}</p>
-                                                    {quote.relevant_file && quote.relevant_file.length > 0 && (
-                                                        <div>
-                                                            <strong>Relevant Files:</strong>
-                                                            <div className="space-y-2 mt-2">
-                                                                {quote.relevant_file.map((file, fileIndex) => (
-                                                                    <div key={fileIndex}>
-                                                                        <a
-                                                                            href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
-                                                                            download
-                                                                            target='_blank'
-                                                                            className="text-blue-500"
-                                                                        >
-                                                                            {file.filename}
-                                                                        </a>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                    {quote.ptp != null && (
-                                                        <>
-                                                         <p><strong>PTP:</strong> {quote.ptp}</p>
-                                                         <p><strong>PTP Comments:</strong> {quote.ptp_comments}</p>
-                                                         </>
-                                                    )}
-                                                    {quote.demodone != 0 && (
-                                                        <>
-                                                         <p className='flex items-center '><span className='bg-green-100 px-2 py-1 rounded-full text-green-900 font-semibold flex items-center'>Demo Completed <CheckCircle2 size={15} className='ml-2'/> </span> <p className='ml-3'> <strong>Demo Id : </strong> {quote.demo_id}</p></p>
-                                                         </>
-                                                    )}
-                                                    {quote.quote_status != 0 && quote.quote_price && quote.plan && (
+                                                    </p>
+                                                    </td>
+                                                <td className="border px-4 py-2">{quote.quoteid}</td>
+                                                <td className="border px-4 py-2">{quote.currency}</td>
+                                                <td className="border px-4 py-2">{quote.plan}</td>
+                                                <td className="border px-4 py-2">{quote.service_name || 'N/A'}</td>
+                                                <td className="border px-4 py-2">
+                                                    <span
+                                                        className={
+                                                            quote.quote_status == 0
+                                                                ? 'text-red-600' // Pending - Red
+                                                                : quote.quote_status == 1
+                                                                    ? 'text-green-600' // Submitted - Green
+                                                                    : quote.quote_status == 2
+                                                                        ? 'text-yellow-600' // Discount Requested - Yellow
+                                                                        : 'text-gray-600' // Default - Gray for Unknown
+                                                        }
+                                                    >
+                                                        {quote.quote_status == 0
+                                                            ? 'Pending'
+                                                            : quote.quote_status == 1
+                                                                ? 'Submitted'
+                                                                : quote.quote_status == 2
+                                                                    ? 'Discount Requested'
+                                                                    : 'Unknown'}
+                                                    </span>
+                                                </td>
+
+                                                <td className="border px-4 py-2">
+                                                    {/* Up/Down Arrow Button */}
+                                                    <button
+                                                        onClick={() => toggleRow(index)}
+                                                        className="flex items-center justify-center p-2"
+                                                    >
+                                                        {expandedRowIndex === index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {/* Accordion */}
+                                            {expandedRowIndex == index && (
+                                                <tr>
+                                                    <td colSpan={7} className="border px-4 py-4 bg-gray-50">
+                                                        <div className="space-y-4 text-sm">
+                                                            <p>
+                                                                <strong>Ref No.:</strong> {quote.assign_id}
+                                                                {quote.ptp === "Yes" && (
+                                                                    <span
+                                                                        className="inline-block ml-2 py-3 px-4" // Increased padding for more space
+                                                                        style={{
+                                                                            backgroundColor: '#2B9758FF', // Green color for PTP
+                                                                            clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
+                                                                            color: '#ffffff',
+                                                                            fontSize: '14px', // Increased font size for better visibility
+                                                                            fontWeight: 'bold',
+                                                                            lineHeight: '1.5', // Increased line height to make it visually balanced
+                                                                        }}
+                                                                    >
+                                                                        PTP
+                                                                    </span>
+                                                                )}
+                                                            </p>
+
+
+
+
+                                                            <p><strong>Currency:</strong> {quote.currency == "Other" ? quote.other_currency : quote.currency}</p>
+                                                            {quote.service_name && quote.plan && (
                                                                 <>
-                                                                <p>
-                                                                    <strong>Quote Price:</strong>{' '}
-                                                                    {(() => {
-                                                                        const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                        const plans = quote.plan.split(','); // Split plan into an array
-                                                                        return plans
-                                                                            .map((plan, index) => `${plan}: ${prices[index]}`) // Map plans to corresponding prices
-                                                                            .join(', '); // Join the resulting array with commas
-                                                                    })()}
-                                                                </p>
-                                                                <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                    <p><strong>Service Required:</strong> {quote.service_name}</p>
+                                                                    <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                    <p><strong>Status:</strong> <span className={quote.quote_status == 0 ? "text-red-600 text-md" : "text-green-600 text-md"}>{quote.quote_status == 0 ? "Pending" : "Approved"}</span></p>
-                                                    <p><strong>Reference Url:</strong> <a href={referenceUrl} target="_blank" rel="noopener noreferrer" className='text-blue-400'>{referenceUrl}</a></p>
-                                                    {assignQuoteInfo && assignQuoteInfo != false && (
-                                                        <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
-                                                    )}
-                                                    <div className='flex items-start space-x-1'>
-                                                        {quote.quote_status == 0 && quote.user_id == thisUserId && quote.ptp == null && (
-                                                            <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
-                                                        )}
-                                                        {quote.user_id == thisUserId && quote.demodone != 1 && (
-                                                            <DemoDone scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )}
-                                </React.Fragment>
-                            ))}
-                        </tbody>
-                    </table>
-                    {/* Chat Component */}
-                    <Chat quoteId={queryId} refId={scopeDetails[0]?.ref_id} />
-                </div>
-            ) : (
-                <div className="flex justify-center items-center">
-                    <p className='flex items-center justify-between'> <Info className='mr-2'/> No Previous Requests </p>
-                </div>
-            )}
-            <AnimatePresence>
-                {addNewFormOpen && (
-                    <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails}/>
-                )}
-            </AnimatePresence>        
-                    
+                                                            <p><strong>Comments:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
+                                                            {quote.relevant_file && quote.relevant_file.length > 0 && (
+                                                                <div>
+                                                                    <strong>Relevant Files:</strong>
+                                                                    <div className="space-y-2 mt-2">
+                                                                        {quote.relevant_file.map((file, fileIndex) => (
+                                                                            <div key={fileIndex}>
+                                                                                <a
+                                                                                    href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
+                                                                                    download
+                                                                                    target='_blank'
+                                                                                    className="text-blue-500"
+                                                                                >
+                                                                                    {file.filename}
+                                                                                </a>
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {quote.ptp != null && (
+                                                                <>
+                                                                    <p><strong>PTP:</strong> {quote.ptp}</p>
+                                                                    <p><strong>PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                                </>
+                                                            )}
+                                                            {quote.demodone != 0 && (
+                                                                <>
+                                                                    <p className='flex items-center '><span className='bg-green-100 px-2 py-1 rounded-full text-green-900 font-semibold flex items-center'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> <p className='ml-3'> <strong>Demo Id : </strong> {quote.demo_id}</p></p>
+                                                                </>
+                                                            )}
+                                                            {quote.quote_status != 0 && quote.quote_price && quote.plan && (
+                                                                <>
+                                                                    <p>
+                                                                        <strong>Quote Price:</strong>{' '}
+                                                                        {(() => {
+                                                                            const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                            const plans = quote.plan.split(','); // Split plan into an array
+                                                                            return plans.map((plan, index) => (
+                                                                                <span key={index}>
+                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                    {index < plans.length - 1 && ', '}
+                                                                                </span>
+                                                                            ));
+                                                                        })()}
+                                                                    </p>
+                                                                    <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                </>
+                                                            )}
+                                                            <p>
+                                                                <strong>Status:</strong>
+                                                                <span
+                                                                    className={quote.quote_status == 0
+                                                                        ? "text-red-600 text-md" // Red for Pending
+                                                                        : quote.quote_status == 1
+                                                                            ? "text-green-600 text-md" // Green for Submitted
+                                                                            : "text-yellow-600 text-md"} // Yellow for Discount Requested
+                                                                >
+                                                                    {quote.quote_status == 0
+                                                                        ? "Pending"
+                                                                        : quote.quote_status == 1
+                                                                            ? "Submitted"
+                                                                            : "Discount Requested"}
+                                                                </span>
+                                                            </p>
+
+                                                            {assignQuoteInfo && assignQuoteInfo != false && (
+                                                                <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
+                                                            )}
+                                                            <div className='flex items-start space-x-1'>
+                                                                {quote.quote_status == 1 && quote.user_id == thisUserId && quote.ptp == null && (
+                                                                    <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
+                                                                )}
+                                                                {quote.user_id == thisUserId && quote.demodone != 1 && (
+                                                                    <DemoDone scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </React.Fragment>
+                                    ))}
+                                </tbody>
+                            </table>
+                            {/* Chat Component */}
+                            <Chat quoteId={queryId} refId={scopeDetails[0]?.ref_id} />
+                        </div>
+                    ) : (
+                        <div className="flex justify-center items-center">
+                            <p className='flex items-center justify-between'> <Info className='mr-2' /> No Previous Requests </p>
+                        </div>
+                    )}
+                    <AnimatePresence>
+                        {addNewFormOpen && (
+                            <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails} />
+                        )}
+                    </AnimatePresence>
+
                 </div>
             )}
             <ToastContainer />

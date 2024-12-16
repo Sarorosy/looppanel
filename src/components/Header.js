@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell } from 'lucide-react';
+import { LogOut, Bell, Quote, MessageSquareMore, MessageSquareText, CircleCheck, BellIcon, CirclePercent } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import { AnimatePresence } from 'framer-motion';
 import QueryDetails from '../pages/QueryDetails';
@@ -24,6 +24,27 @@ const Header = () => {
 
   const toggleDetailsPage = () => {
     setIsDetailsOpen(!isDetailsOpen);
+  };
+
+  const timeAgo = (timestamp) => {
+    const currentTime = Math.floor(Date.now() / 1000); // Get current time in seconds
+    const diff = currentTime - timestamp; // Time difference in seconds
+  
+    const seconds = diff;
+    const minutes = Math.floor(diff / 60);
+    const hours = Math.floor(diff / 3600);
+    const days = Math.floor(diff / 86400);
+    const weeks = Math.floor(diff / 604800);
+    const months = Math.floor(diff / 2628000);
+    const years = Math.floor(diff / 31536000);
+  
+    if (seconds < 60) return `${seconds} sec ago`;
+    if (minutes < 60) return `${minutes} min ago`;
+    if (hours < 24) return `${hours} hr ago`;
+    if (days === 1) return 'Yesterday';
+    if (days < 30) return `${days} d ago`;
+    if (months < 12) return `${months} month ago`;
+    return `${years} year ago`;
   };
 
   useEffect(() => {
@@ -128,7 +149,7 @@ const Header = () => {
   useEffect(() => {
     fetchNotificationsCount();
     const interval = setInterval(() => {
-      fetchNotificationsCount(); // Fetch count every 5 seconds
+      //fetchNotificationsCount(); 
     }, 5000);
 
     return () => clearInterval(interval); // Cleanup on component unmount
@@ -147,7 +168,7 @@ const Header = () => {
         {/* Logo and Navigation Links */}
         <div className="flex items-center">
           <h1 className="text-xl font-bold mr-6 bg-[#f39c12] py-3 px-2">Query Management</h1>
-          
+
         </div>
 
         {/* User Session Info */}
@@ -156,7 +177,7 @@ const Header = () => {
           <button onClick={toggleNotifications} className="text-white ml-6 relative">
             <Bell size={24} />
             {notificationCount > 0 && (
-              <span className="absolute text-xs bg-red-600 text-white rounded-full px-1 py-0.5" style={{ position:"absolute", top:"-10px",right:"-10px"}}>
+              <span className="absolute text-xs bg-red-600 text-white rounded-full px-1 py-0.5" style={{ position: "absolute", top: "-10px", right: "-10px" }}>
                 {notificationCount}
               </span>
             )}
@@ -164,20 +185,51 @@ const Header = () => {
 
           {/* Notifications Dropdown */}
           {notificationsVisible && (
-            <div className="absolute top-12 right-0 bg-white text-black shadow-lg w-64 border-t-2 border-blue-400 p-3 rounded">
-              <h3 className="font-bold mb-2">Notifications</h3>
+            <div className="absolute top-12 right-0 bg-white text-black shadow-lg w-72 border-t-2 border-blue-400 py-3 px-1 rounded">
+              <h3 className="font-bold mb-2 ml-2">Notifications</h3>
               {loading ? (
                 <CustomLoader />
               ) : notifications.length === 0 ? (
                 <p>No notifications</p>
               ) : (
                 <div className=' overflow-y-scroll' style={{ height: "200px" }}>
-                  <ul>
+                  <ul className='p-1 text-sm'>
                     {notifications.map((notification, index) => (
-                      <li key={index} className={`border-b py-2 cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id)}>
-                        <p>
+                      <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id)}>
+                        <p className='flex items-center'>
+                          {/* Display icon based on notification type */}
+                          {notification.icon == 'quote' && (
+                            <span className="mr-2">
+                              <Quote size={22} className='bg-green-100 text-green-800 rounded-full border-1 p-1 border-green-800'/>
+                            </span>
+                          )}
+                          {notification.icon == 'chat' && (
+                            <span className="mr-2">
+                              <MessageSquareText size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800'/> 
+                            </span>
+                          )}
+                          {notification.icon == 'completed' && (
+                            <span className="mr-2">
+                              <CircleCheck size={22} className='bg-green-100 text-green-800 rounded-full border-1 p-1 border-green-800'/> {/* Completed icon */}
+                            </span>
+                          )}
+                          {notification.icon == 'discount' && (
+                            <span className="mr-2">
+                              <CirclePercent size={24} className='bg-red-100 text-red-800 rounded-full '/> {/* Completed icon */}
+                            </span>
+                          )}
+                          {(!notification.icon || notification.icon == null) && (
+                            <span className="mr-2">
+                              <BellIcon size={22}  className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800'/> 
+                            </span>
+                          )}
+                          <span>
                           {notification.fld_first_name} {notification.message} on quotation for ref_id{' '}
                           <strong>{notification.ref_id}</strong>
+                          <span className="text-gray-500 text-xs ml-2">
+                        {timeAgo(notification.date)} {/* Display time ago */}
+                      </span>
+                          </span>
                         </p>
                       </li>
                     ))}

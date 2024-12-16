@@ -121,9 +121,10 @@ const ManageQuery = () => {
             orderable: true,
         },
         {
-            title: 'Quote Id',
+            title: 'Ask For Scope ID',
             data: 'id',
             orderable: true,
+            className: 'text-center',
         },
         {
             title: 'CRM Name',
@@ -133,9 +134,15 @@ const ManageQuery = () => {
         },
         {
             title: 'Currency',
-            data: 'currency',
+            data: 'null',
             orderable: false,
-            render: (data) => `<div style="text-align: left;">${data}</div>`,
+            render: function (data, type, row) {
+                if (row.currency == "Other") {
+                    return row.other_currency;
+                } else {
+                    return row.currency;
+                }
+            },
         },
         {
             title: 'Comments',
@@ -143,7 +150,7 @@ const ManageQuery = () => {
             orderable: false,
             render: (data) => {
                 // Check if the data is not empty and its length is greater than 50 characters
-                const truncatedData = (data && data.length > 50) ? data.substring(0, 50) + '...' : (data || 'N/A');
+                const truncatedData = (data && data.length > 40) ? data.substring(0, 40) + '...' : (data || 'N/A');
                 return `<div style="text-align: left;">${truncatedData}</div>`;
             },
         },        
@@ -155,9 +162,18 @@ const ManageQuery = () => {
         },
         {
             title: 'Status',
-            data: 'status',
+            data: 'status', // Replace with actual field name
             orderable: false,
-            render: (data, type,row) => `<div style="text-align: left;color:${data == 0 ? "red" : "green"}">${data == 0 ? "Pending" : "Approved"}</div>`,
+            render: function (data, type, row) {
+                if (data == 0) {
+                    return '<span class="text-red-600 font-bold">Pending</span>';
+                } else if (data == 1) {
+                    return '<span class="text-green-600 font-bold">Submitted</span>';
+                } else if (data == 2) {
+                    return '<span class="text-yellow-600 font-bold">Discount Requested</span>';
+                }
+                return '<span class="text-gray-600">Unknown</span>';
+            },
         },
         {
             title: 'Created Date',
@@ -228,7 +244,8 @@ const ManageQuery = () => {
                     >
                         <option value="">Select Status</option>
                         <option value="Pending">Pending</option>
-                        <option value="1">Approved</option>
+                        <option value="1">Submitted</option>
+                        <option value="2">Discount Requested</option>
                     </select>
                 </div>
                 <div className="w-1/2 flex justify-content-end space-x-2 mt-1">

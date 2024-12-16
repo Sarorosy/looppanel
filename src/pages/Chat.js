@@ -102,34 +102,7 @@ export const Chat = ({ quoteId, refId }) => {
             )}
 
             <div className="mt-4">
-                {/* Emoji Section */}
-                <div className="flex mb-2 justify-between">
-                    <div>
-                    {["👍", "👏", "👎"].map((emoji) => (
-                        <button
-                            key={emoji}
-                            onClick={() => setNewMessage((prev) => prev + emoji)}
-                            className="text-xl hover:bg-yellow-300 p-1 rounded"
-                        >
-                            {emoji}
-                        </button>
-                    ))}
-                    </div>
-                    <div className='space-x-1'>
-                    {["Okay", "Done","Let me know", "I'll check"].map((text) => (
-                        <button
-                            key={text}
-                            onClick={() => setNewMessage((prev) => prev + " " +text)}
-                            className="text-sm bg-blue-100 hover:bg-blue-200 rounded"
-                            style={{padding:"1px 4px"}}
-                        >
-                            {text}
-                        </button>
-                    ))}
-                    </div>
-                </div>
-
-
+                
                 {/* Input Section */}
                 <div className="flex items-center space-x-2">
                     <input

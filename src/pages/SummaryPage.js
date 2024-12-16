@@ -87,9 +87,10 @@ const SummaryPage = ({ onClose }) => {
             orderable: false,
         },
         {
-            title: 'Quote Id',
+            title: 'Ask For Scope Id',
             data: 'id', // Replace with actual field name
             orderable: false,
+            className: 'text-center',
         },
         {
             title: 'Status',
@@ -99,11 +100,14 @@ const SummaryPage = ({ onClose }) => {
                 if (data == 0) {
                     return '<span class="text-red-600 font-bold">Pending</span>';
                 } else if (data == 1) {
-                    return '<span class="text-green-600 font-bold">Approved</span>';
+                    return '<span class="text-green-600 font-bold">Submitted</span>';
+                } else if (data == 2) {
+                    return '<span class="text-yellow-600 font-bold">Discount Requested</span>';
                 }
-                return '<span>Unknown</span>';
+                return '<span class="text-gray-600">Unknown</span>';
             },
         },
+        
         {
             title: 'Service',
             data: 'service_name', // Replace with actual field name
@@ -112,7 +116,13 @@ const SummaryPage = ({ onClose }) => {
         {
             title: 'Currency',
             data: 'currency', // Replace with actual field name
-            orderable: false,
+            render: function (data, type, row) {
+                if (data == "Other") {
+                    return row.other_currency;
+                } else {
+                    return row.currency;
+                }
+            },
         },
         {
             title: 'RC Demo',
@@ -167,7 +177,7 @@ const SummaryPage = ({ onClose }) => {
                 </div>
 
                 <div className="flex items-center bg-green-200 text-green-800 px-4 py-2 rounded shadow mx-3">
-                    <span className="text-sm font-medium">Approved:</span>
+                    <span className="text-sm font-medium">Submitted:</span>
                     <span className="ml-2 font-bold">{approvedCount}</span> {/* Replace 5 with dynamic count */}
                 </div>
                 <button

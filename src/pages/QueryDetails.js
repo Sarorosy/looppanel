@@ -181,9 +181,8 @@ const QueryDetails = ({ onClose, queryId }) => {
                                     </div>
                                 )}
                             </div>
-                            <p><strong>Referred By:</strong> {queryInfo.referred_by}</p>
                             {queryInfo.profile_name && <p><strong>Profile:</strong> {queryInfo.profile_name}</p>}
-                            {queryInfo.name && <p><strong>Name:</strong> {queryInfo.name}</p>}
+                            {queryInfo.name && <p><strong>Client Name:</strong> {queryInfo.name}</p>}
                             {queryInfo.email_id && <p><strong>Email:</strong> {queryInfo.email_id}</p>}
                             {queryInfo.alt_email_id && (
                                 <p><strong>Alternate Email ID:</strong> {queryInfo.alt_email_id || 'N/A'}</p>
@@ -239,7 +238,7 @@ const QueryDetails = ({ onClose, queryId }) => {
                             {queryInfo.assign_date && (
                                 <p>
                                     <strong>Query Created Date:</strong>
-                                    {new Date(queryInfo.assign_date * 1000).toLocaleDateString('en-GB')}
+                                    {new Date(queryInfo.assign_date * 1000).toLocaleDateString('en-GB')}{' '}
                                     {new Date(queryInfo.assign_date * 1000).toLocaleTimeString('en-GB', {
                                         hour: '2-digit',
                                         minute: '2-digit',

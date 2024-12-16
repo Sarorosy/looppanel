@@ -9,6 +9,10 @@ function AskPtp({ scopeDetails, quoteId, after }) {
     const [ptpComments, setPtpComments] = useState('');
     const [ptploading, setPtpLoading] = useState(false);
 
+    const userData = sessionStorage.getItem('loopuser');
+
+    const userObject = JSON.parse(userData);
+
     const handleSubmit = async (e) => {
         setPtpLoading(true);
         e.preventDefault();
@@ -25,6 +29,8 @@ function AskPtp({ scopeDetails, quoteId, after }) {
             ptp_comments: ptpComments,
             ref_id: scopeDetails.assign_id,
             quote_id: quoteId,
+            user_name : userObject.fld_first_name + " " + userObject.fld_last_name,
+            user_id : userObject.id
         };
 
         try {

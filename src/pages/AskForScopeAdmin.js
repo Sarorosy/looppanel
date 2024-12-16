@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { CheckCircle, CheckCircle2, RefreshCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, CheckCircle, CheckCircle2, RefreshCcw } from 'lucide-react';
 const AskForScopeAdmin = ({ queryId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -104,12 +104,27 @@ const AskForScopeAdmin = ({ queryId }) => {
     };
 
     const PriceSubmitValidate = async (refId, quoteId) => {
-        console.log(amounts)
-        if (!amounts || !comment) {
-            toast.error('Please fill in all the required fields');
-            return; // Prevent form submission if validation fails
-        }
+        let isAmountEmpty = false;
+        Object.keys(amounts).forEach((key) => {
+            const amount = amounts[key].trim();
+    
+            if (!amount || !/^\d+(\.\d{1,2})?$/.test(amount)) {
+                isAmountEmpty = true;  // If it's empty or not a valid number, flag it
+            }
+        });
 
+    // Check if the comment field is empty
+    if (isAmountEmpty || !comment.trim()) {
+        toast.error('Please check all fields');
+        return; // Prevent form submission if validation fails
+    }
+    const form = document.getElementById('submitQuoteForm');
+
+    // Trigger native form validation
+    if (!form.checkValidity()) {
+        toast.error('Please fill in all the required fields');
+        return; // Prevent form submission if validation fails
+    }
 
         try {
             // Show loading spinner
@@ -238,6 +253,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                         <th className="border px-4 py-2 text-left">Plan</th>
                                         <th className="border px-4 py-2 text-left">Service Name</th>
                                         <th className="border px-4 py-2 text-left">Status</th>
+                                        <th className="border px-4 py-2 text-left">Action</th>
                                     </tr>
                                 </thead>
                                 {/* Table Body */}
@@ -249,7 +265,26 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                 className="cursor-pointer hover:bg-gray-50"
                                                 onClick={() => toggleRow(index)}
                                             >
-                                                <td className="border px-4 py-2">{quote.assign_id}</td>
+                                                <td className="border px-4 py-2">
+                                                    <p className='flex items-center'>
+                                                        {quote.assign_id}
+                                                        {quote.ptp == "Yes" && (
+                                                            <span
+                                                                className="inline-block p-1 ml-1" // Increased padding for more space
+                                                                style={{
+                                                                    backgroundColor: '#2B9758FF', // Green color for PTP
+                                                                    clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
+                                                                    color: '#ffffff',
+                                                                    fontSize: '14px', // Increased font size for better visibility
+                                                                    fontWeight: 'bold',
+                                                                    lineHeight: '1.3', // Increased line height to make it visually balanced
+                                                                }}
+                                                            >
+                                                                PTP
+                                                            </span>
+                                                        )}
+                                                    </p>
+                                                </td>
                                                 <td className="border px-4 py-2">{quote.quoteid}</td>
                                                 <td className="border px-4 py-2">{quote.currency}</td>
                                                 <td className="border px-4 py-2">{quote.plan}</td>
@@ -258,29 +293,65 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                     <span
                                                         className={
                                                             quote.quote_status == 0
-                                                                ? 'text-red-600'
-                                                                : 'text-green-600'
+                                                                ? 'text-red-600' // Pending - Red
+                                                                : quote.quote_status == 1
+                                                                    ? 'text-green-600' // Submitted - Green
+                                                                    : quote.quote_status == 2
+                                                                        ? 'text-yellow-600' // Discount Requested - Yellow
+                                                                        : 'text-gray-600' // Default - Gray for Unknown
                                                         }
                                                     >
-                                                        {quote.quote_status == 0 ? 'Pending' : 'Approved'}
+                                                        {quote.quote_status == 0
+                                                            ? 'Pending'
+                                                            : quote.quote_status == 1
+                                                                ? 'Submitted'
+                                                                : quote.quote_status == 2
+                                                                    ? 'Discount Requested'
+                                                                    : 'Unknown'}
                                                     </span>
+                                                </td>
+                                                <td className="border px-4 py-2">
+                                                    {/* Up/Down Arrow Button */}
+                                                    <button
+                                                        onClick={() => toggleRow(index)}
+                                                        className="flex items-center justify-center p-2"
+                                                    >
+                                                        {expandedRowIndex === index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
+                                                    </button>
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
                                             {expandedRowIndex == index && (
                                                 <tr>
-                                                    <td colSpan={6} className="border px-4 py-4 bg-gray-50">
+                                                    <td colSpan={7} className="border px-4 py-4 bg-gray-50">
                                                         <div className="space-y-4 text-sm">
-                                                            <p><strong>Ref No.:</strong> {quote.assign_id}</p>
-                                                            <p><strong>Currency:</strong> {quote.currency}</p>
+                                                            <p><strong>Ref No.:</strong>
+                                                                {quote.assign_id}
+                                                                {quote.ptp == "Yes" && (
+                                                                    <span
+                                                                        className="inline-block ml-2 py-3 px-4" // Increased padding for more space
+                                                                        style={{
+                                                                            backgroundColor: '#2B9758FF', // Green color for PTP
+                                                                            clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
+                                                                            color: '#ffffff',
+                                                                            fontSize: '14px', // Increased font size for better visibility
+                                                                            fontWeight: 'bold',
+                                                                            lineHeight: '1.5', // Increased line height to make it visually balanced
+                                                                        }}
+                                                                    >
+                                                                        PTP
+                                                                    </span>
+                                                                )}
+                                                            </p>
+                                                            <p><strong>Currency:</strong> {quote.currency == "Other" ? quote.other_currency : quote.currency}</p>
                                                             {quote.service_name && quote.plan && (
                                                                 <>
                                                                     <p><strong>Service Required:</strong> {quote.service_name}</p>
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p><strong>Comments:</strong> {quote.comments}</p>
-                                                            <p><strong>Created Date:</strong> {quote.created_date}</p>
+                                                            <p><strong>Comments:</strong><span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
                                                                 <div>
                                                                     <strong>Relevant Files:</strong>
@@ -288,7 +359,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                         {quote.relevant_file.map((file, fileIndex) => (
                                                                             <div key={fileIndex}>
                                                                                 <a
-                                                                                    href={`https://instacrm.rapidcollaborate.com/public/QuotationFolder/${file.file_path}`}
+                                                                                    href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
                                                                                     download
                                                                                     target='_blank'
                                                                                     className="text-blue-500"
@@ -300,8 +371,23 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                     </div>
                                                                 </div>
                                                             )}
-                                                            <p><strong>Status:</strong> <span className={quote.quote_status == 0 ? "text-red-600 text-md" : "text-green-600 text-md"}>{quote.quote_status == 0 ? "Pending" : "Approved"}</span></p>
-                                                            <p><strong>Reference Url:</strong> <a href={referenceUrl} target="_blank" rel="noopener noreferrer" className='text-blue-400'>{referenceUrl}</a></p>
+                                                            <p>
+                                                                <strong>Status:</strong>
+                                                                <span
+                                                                    className={quote.quote_status == 0
+                                                                        ? "text-red-600 text-md" // Red for Pending
+                                                                        : quote.quote_status == 1
+                                                                            ? "text-green-600 text-md" // Green for Submitted
+                                                                            : "text-yellow-600 text-md"} // Yellow for Discount Requested
+                                                                >
+                                                                    {quote.quote_status == 0
+                                                                        ? "Pending"
+                                                                        : quote.quote_status == 1
+                                                                            ? "Submitted"
+                                                                            : "Discount Requested"}
+                                                                </span>
+                                                            </p>
+
                                                             {quote.ptp != null && (
                                                                 <>
                                                                     <p><strong>PTP:</strong> {quote.ptp}</p>
@@ -315,17 +401,20 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                             )}
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                 <>
-                                                                <p>
-                                                                    <strong>Quote Price:</strong>{' '}
-                                                                    {(() => {
-                                                                        const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                        const plans = quote.plan.split(','); // Split plan into an array
-                                                                        return plans
-                                                                            .map((plan, index) => `${plan}: ${prices[index]}`) // Map plans to corresponding prices
-                                                                            .join(', '); // Join the resulting array with commas
-                                                                    })()}
-                                                                </p>
-                                                                <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                    <p>
+                                                                        <strong>Quote Price:</strong>{' '}
+                                                                        {(() => {
+                                                                            const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                            const plans = quote.plan.split(','); // Split plan into an array
+                                                                            return plans.map((plan, index) => (
+                                                                                <span key={index}>
+                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                    {index < plans.length - 1 && ', '}
+                                                                                </span>
+                                                                            ));
+                                                                        })()}
+                                                                    </p>
+                                                                    <p><strong>Comments:</strong> {quote.user_comments}</p>
                                                                 </>
                                                             )}
                                                             {assignQuoteInfo && assignQuoteInfo != false && (
@@ -405,7 +494,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                     )}
                                                                 </>
                                                             )}
-                                                            {quote.quote_status == 0 && (
+                                                            {quote.quote_status !=1 && (
                                                                 <>
                                                                     <div className="nav-tabs-custom tabb">
                                                                         <ul className="nav nav-tabs">
@@ -438,6 +527,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                                                             id={`amount_${plan.trim()}`}
                                                                                                             className="form-control"
                                                                                                             value={amounts[plan.trim()] || ''}
+                                                                                                            required
                                                                                                             onChange={(e) =>
                                                                                                                 setAmounts({
                                                                                                                     ...amounts,
@@ -483,7 +573,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                 </tbody>
                             </table>
                             {/* Chat Component */}
-                            <Chat quoteId={queryId} refId={scopeDetails[0]?.ref_id} />
+                            <Chat quoteId={queryId} refId={scopeDetails[0]?.assign_id} />
                         </div>
                     )}
                 </div>

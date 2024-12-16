@@ -3,11 +3,14 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
 
 const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const [currencies, setCurrencies] = useState([]);
     const [services, setServices] = useState([]);
     const [selectedCurrency, setSelectedCurrency] = useState('');
+    const [otherCurrency, setOtherCurrency] = useState('');
     const [selectedService, setSelectedService] = useState('');
     const [selectedPlans, setSelectedPlans] = useState([]);
     const [comments, setComments] = useState('');
@@ -95,12 +98,20 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
 
         if (!selectedCurrency || !selectedService || !selectedPlans || !comments) {
             toast.error('Please fill in all fields');
+            setSubmitting(false);
+            return;
+            
+        }
+        if(selectedCurrency == "Other" && !otherCurrency){
+            toast.error('Please enter other currrency name!');
+            setSubmitting(false);
             return;
         }
 
         const formData = new FormData();
         formData.append('ref_id', refId);
         formData.append('currency', selectedCurrency);
+        formData.append('other_currency', otherCurrency);
         formData.append('service_name', selectedService);
         formData.append('plan', selectedPlans);
         formData.append('comments', comments);
@@ -179,6 +190,21 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                                 ))}
                             </select>
                         </div>
+                        {selectedCurrency == 'Other' && (
+                            <div className="w-1/2">
+                                <label htmlFor="otherCurrency" className="block text-sm font-medium text-gray-700">
+                                    Other Currency Name
+                                </label>
+                                <input
+                                    type="text"
+                                    id="otherCurrency"
+                                    value={otherCurrency}
+                                    onChange={(e) => setOtherCurrency(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control"
+                                    placeholder="Currency name"
+                                />
+                            </div>
+                        )}
 
                         {/* Service Name Dropdown */}
                         <div className='w-1/2'>
@@ -227,19 +253,19 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
 
                     <div className='flex items-start justify-between space-x-1 mt-4'>
                         {/* Comments */}
-                        <div className='w-full '>
-                            <label htmlFor="comments" className="block text-sm font-medium text-gray-700">
-                                Comments
-                            </label>
-                            <textarea
-                                id="comments"
-                                value={comments}
-                                onChange={(e) => setComments(e.target.value)}
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control"
-                                rows={4}
-                                placeholder="Add your comments here"
-                            />
-                        </div>
+                        <div className="w-full">
+                        <label htmlFor="comments" className="block text-sm font-medium text-gray-700">
+                            Comments
+                        </label>
+                        <ReactQuill
+                            value={comments}
+                            onChange={setComments}
+                            className="mt-1"
+                            theme="snow"
+                            placeholder="Add your comments here"
+                            
+                        />
+                    </div>
 
                         {/* File Upload */}
                         <div className='w-full '>
