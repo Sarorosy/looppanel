@@ -174,7 +174,7 @@ const Header = () => {
                 <div className=' overflow-y-scroll' style={{ height: "200px" }}>
                   <ul>
                     {notifications.map((notification, index) => (
-                      <li key={index} className="border-b py-2 cursor-pointer" onClick={() => handleNotificationClick(notification.id, notification.ref_id)}>
+                      <li key={index} className={`border-b py-2 cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id)}>
                         <p>
                           {notification.fld_first_name} {notification.message} on quotation for ref_id{' '}
                           <strong>{notification.ref_id}</strong>
