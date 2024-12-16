@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCheckIcon, CheckCircle, CheckCircle2, PlusCircle, RefreshCcw } from 'lucide-react';
+import { CheckCheckIcon, CheckCircle, CheckCircle2, Info, PlusCircle, RefreshCcw } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 
@@ -126,7 +126,7 @@ const AskForScope = ({ queryId }) => {
                 <div className="bg-white p-6 m-2 shadow rounded-md space-y-4">
                     {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
-                    {scopeDetails && scopeDetails.length > 0 && (
+                    {scopeDetails && scopeDetails.length > 0 ? (
                 <div>
                     {/* Table Header */}
                     <table className="w-full border-collapse border border-gray-200">
@@ -249,6 +249,10 @@ const AskForScope = ({ queryId }) => {
                     </table>
                     {/* Chat Component */}
                     <Chat quoteId={queryId} refId={scopeDetails[0]?.ref_id} />
+                </div>
+            ) : (
+                <div className="flex justify-center items-center">
+                    <p className='flex items-center justify-between'> <Info className='mr-2'/> No Previous Requests </p>
                 </div>
             )}
             <AnimatePresence>
