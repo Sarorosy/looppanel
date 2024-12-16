@@ -211,6 +211,21 @@ const AskForScope = ({ queryId }) => {
                                                          <p className='flex items-center '><span className='bg-green-100 px-2 py-1 rounded-full text-green-900 font-semibold flex items-center'>Demo Completed <CheckCircle2 size={15} className='ml-2'/> </span> <p className='ml-3'> <strong>Demo Id : </strong> {quote.demo_id}</p></p>
                                                          </>
                                                     )}
+                                                    {quote.quote_status != 0 && quote.quote_price && quote.plan && (
+                                                                <>
+                                                                <p>
+                                                                    <strong>Quote Price:</strong>{' '}
+                                                                    {(() => {
+                                                                        const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                        const plans = quote.plan.split(','); // Split plan into an array
+                                                                        return plans
+                                                                            .map((plan, index) => `${plan}: ${prices[index]}`) // Map plans to corresponding prices
+                                                                            .join(', '); // Join the resulting array with commas
+                                                                    })()}
+                                                                </p>
+                                                                <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                </>
+                                                            )}
                                                     <p><strong>Status:</strong> <span className={quote.quote_status == 0 ? "text-red-600 text-md" : "text-green-600 text-md"}>{quote.quote_status == 0 ? "Pending" : "Approved"}</span></p>
                                                     <p><strong>Reference Url:</strong> <a href={referenceUrl} target="_blank" rel="noopener noreferrer" className='text-blue-400'>{referenceUrl}</a></p>
                                                     {assignQuoteInfo && assignQuoteInfo != false && (
