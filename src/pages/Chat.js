@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect ,useRef } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
@@ -18,7 +18,8 @@ export const Chat = ({ quoteId, refId }) => {
 
     const loopUserData = sessionStorage.getItem('loopuser');
 
-    
+    const chatContainerRef = useRef(null);
+
     const loopUserObject = JSON.parse(loopUserData);
 
     const fetchMessages = async () => {
@@ -83,6 +84,15 @@ export const Chat = ({ quoteId, refId }) => {
         }
     }, [quoteId]);
 
+    useEffect(() => {
+        if (chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [messages]);
+
+    // Scroll to bottom when messages update
+    https://looppanel.vercel.app/mandeep.tamang%40dissertationindia.net/4dd88559e7c33602bf469723afee58a41018a37d2e0b6c8eb8eaceb86e1d6848
+
     return (
         <div className="mt-6 py-4 px-2 border-t border-gray-300">
             <div className='flex items-center justify-between'>
@@ -96,9 +106,11 @@ export const Chat = ({ quoteId, refId }) => {
                 <p><CustomLoader /></p>
             ) : (
                 <div
-                    className="mt-4 space-y-2 max-h-56 overflow-y-auto chats"
-                    dangerouslySetInnerHTML={{ __html: messages }}
-                />
+                className="mt-4 space-y-2 max-h-56 overflow-y-auto chats"
+                id="chatContainer"
+                ref={chatContainerRef} 
+                dangerouslySetInnerHTML={{ __html: messages }}
+            />
             )}
 
             <div className="mt-4">

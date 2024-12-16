@@ -108,14 +108,6 @@ const ManageQuery = () => {
 
     const columns = [
         {
-            title: 'Sr. No.',
-            data: null,
-            orderable: false,
-            render: (data, type, row, meta) => {
-                return `<div style="text-align: center;">${meta.row + 1}</div>`;
-            },
-        },
-        {
             title: 'Ref Id',
             data: 'ref_id',
             orderable: true,

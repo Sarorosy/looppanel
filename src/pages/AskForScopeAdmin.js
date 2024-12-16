@@ -114,7 +114,7 @@ const AskForScopeAdmin = ({ queryId }) => {
         });
 
     // Check if the comment field is empty
-    if (isAmountEmpty || !comment.trim()) {
+    if (isAmountEmpty) {
         toast.error('Please check all fields');
         return; // Prevent form submission if validation fails
     }
@@ -252,7 +252,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                         <th className="border px-4 py-2 text-left">Currency</th>
                                         <th className="border px-4 py-2 text-left">Plan</th>
                                         <th className="border px-4 py-2 text-left">Service Name</th>
-                                        <th className="border px-4 py-2 text-left">Status</th>
+                                        <th className="border px-4 py-2 text-left">Quote Status</th>
                                         <th className="border px-4 py-2 text-left">Action</th>
                                     </tr>
                                 </thead>
@@ -407,14 +407,31 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                             const prices = quote.quote_price.split(','); // Split quote_price into an array
                                                                             const plans = quote.plan.split(','); // Split plan into an array
                                                                             return plans.map((plan, index) => (
-                                                                                <span key={index}>
+                                                                                <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded" : ""}`}>
                                                                                     <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
                                                                                     {index < plans.length - 1 && ', '}
                                                                                 </span>
                                                                             ));
                                                                         })()}
                                                                     </p>
+                                                                    {quote.discount_price && (
+                                                                    <p>
+                                                                        <strong>Discounted Price:</strong>{' '}
+                                                                        {(() => {
+                                                                            const prices = quote.discount_price.split(','); // Split quote_price into an array
+                                                                            const plans = quote.plan.split(','); // Split plan into an array
+                                                                            return plans.map((plan, index) => (
+                                                                                <span key={index} className='bg-[#FFD700] px-1 py-2 rounded'>
+                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                    {index < plans.length - 1 && ', '}
+                                                                                </span>
+                                                                            ));
+                                                                        })()}
+                                                                    </p>
+                                                                    )}
+                                                                    {quote.user_comments && (
                                                                     <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                )}
                                                                 </>
                                                             )}
                                                             {assignQuoteInfo && assignQuoteInfo != false && (
@@ -565,6 +582,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                             )}
 
                                                         </div>
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} />
                                                     </td>
                                                 </tr>
                                             )}
@@ -572,8 +590,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                     ))}
                                 </tbody>
                             </table>
-                            {/* Chat Component */}
-                            <Chat quoteId={queryId} refId={scopeDetails[0]?.assign_id} />
+                            
                         </div>
                     )}
                 </div>
