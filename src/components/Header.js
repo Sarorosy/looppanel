@@ -210,7 +210,7 @@ const Header = () => {
                           )}
                           {notification.icon == 'completed' && (
                             <span className="mr-2">
-                              <CircleCheck size={22} className='bg-green-100 text-green-800 rounded-full border-1 p-1 border-green-800'/> {/* Completed icon */}
+                              <CircleCheck size={24} className='bg-green-100 text-green-800 rounded-full border-1 border-green-800'/> {/* Completed icon */}
                             </span>
                           )}
                           {notification.icon == 'discount' && (
