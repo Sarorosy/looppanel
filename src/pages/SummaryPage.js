@@ -14,6 +14,7 @@ const SummaryPage = ({ onClose }) => {
     const [loading, setLoading] = useState(false);
     const [pendingCount, setPendingCount] = useState(0);
     const [approvedCount, setApprovedCount] = useState(0);
+    const [discountCount, setDiscountCount] = useState(0);
     const [selectedQuery, setSelectedQuery] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
@@ -44,6 +45,7 @@ const SummaryPage = ({ onClose }) => {
                 setQuoteSummary(data.data); // Update the quotes state
                 setPendingCount(data.pending_count);
                 setApprovedCount(data.approved_count);
+                setDiscountCount(data.discount_count);
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
@@ -171,11 +173,15 @@ const SummaryPage = ({ onClose }) => {
                 </button>
             </div>
             <div className="flex justify-end mr-5 my-3">
-                <div className="flex items-center bg-yellow-500 text-white px-4 py-2 rounded shadow">
+            
+                <div className="flex items-center bg-red-400 text-white px-4 py-2 rounded shadow">
                     <span className="text-sm font-medium">Pending:</span>
                     <span className="ml-2 font-bold">{pendingCount}</span>
                 </div>
-
+                <div className="flex items-center bg-yellow-400 text-white px-4 py-2 rounded shadow">
+                    <span className="text-sm font-medium">Discount Requested:</span>
+                    <span className="ml-2 font-bold">{discountCount}</span>
+                </div>
                 <div className="flex items-center bg-green-200 text-green-800 px-4 py-2 rounded shadow mx-3">
                     <span className="text-sm font-medium">Submitted:</span>
                     <span className="ml-2 font-bold">{approvedCount}</span> {/* Replace 5 with dynamic count */}
