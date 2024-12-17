@@ -170,11 +170,11 @@ const SummaryPage = ({ onClose }) => {
                     <span className="text-sm font-medium">Pending:</span>
                     <span className="ml-2 font-bold">{pendingCount}</span>
                 </div>
-                <div className="flex items-center bg-yellow-400 text-white px-4 py-2 rounded shadow">
+                <div className="flex items-center bg-yellow-400 text-white px-4 py-2 rounded shadow mx-3">
                     <span className="text-sm font-medium">Discount Requested:</span>
                     <span className="ml-2 font-bold">{discountCount}</span>
                 </div>
-                <div className="flex items-center bg-green-200 text-green-800 px-4 py-2 rounded shadow mx-3">
+                <div className="flex items-center bg-green-200 text-green-800 px-4 py-2 rounded shadow ">
                     <span className="text-sm font-medium">Submitted:</span>
                     <span className="ml-2 font-bold">{approvedCount}</span> {/* Replace 5 with dynamic count */}
                 </div>
