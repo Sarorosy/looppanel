@@ -243,13 +243,15 @@ const ManageQuery = () => {
             title: 'Tags',
             data: 'tag_names', // Replace with actual field name from your dataset
             orderable: false,
+            width:"130px",
+            className:"text-sm",
             render: function (data, type, row) {
                 if (!data) return ''; // Handle empty or null data
         
                 // Split tags, wrap each in a styled span, and join them
                 return data.split(',')
                     .map(tag => 
-                        `<span class="text-blue-500 hover:bg-blue-100 hover:text-blue-600 p-1 rounded-full text-sm inline-block ml-1">
+                        `<span class="text-blue-500 inline-block" style="font-sze:10px">
                             #${tag.trim()}
                         </span>`
                     )
