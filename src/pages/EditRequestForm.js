@@ -54,6 +54,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                     comments: details.comments || '',
                     tags: tagsArray, // Set tags as an array
                 });
+                $(tagsRef.current).val(tagsArray).trigger('change');
             } else {
                 toast.error('Failed to fetch request details.');
             }
