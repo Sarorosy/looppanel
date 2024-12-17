@@ -171,9 +171,9 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             setFormData((prev) => ({ ...prev, tags: selectedValues }));
         });
 
-        if (formData.tags.length) {
-            $(tagsRef.current).val(formData.tags).trigger('change');
-        }
+        
+        $(tagsRef.current).val(formData.tags).trigger('change');
+        
 
         return () => {
             // Clean up select2 on component unmount
