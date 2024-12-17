@@ -240,6 +240,24 @@ const ManageQuery = () => {
             },
         },
         {
+            title: 'Tags',
+            data: 'tag_names', // Replace with actual field name from your dataset
+            orderable: false,
+            render: function (data, type, row) {
+                if (!data) return ''; // Handle empty or null data
+        
+                // Split tags, wrap each in a styled span, and join them
+                return data.split(',')
+                    .map(tag => 
+                        `<span class="text-blue-500 hover:bg-blue-100 hover:text-blue-600 p-1 rounded-full text-sm inline-block ml-1">
+                            #${tag.trim()}
+                        </span>`
+                    )
+                    .join(''); // Combine all spans into one HTML string
+            }
+        },
+        
+        {
             title: 'Created Date',
             data: 'created_date',
             orderable: false,
