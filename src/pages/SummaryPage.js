@@ -196,6 +196,7 @@ const SummaryPage = ({ onClose }) => {
                             columns={columns}
                             options={{
                                 pageLength: 50,
+                                ordering: false,
                                 createdRow: (row, data) => {
                                     $(row).find('.view-btn').on('click', () => handleViewBtnClick(data));
                                 },

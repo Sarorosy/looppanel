@@ -502,3 +502,23 @@ border-radius: 50px;
 th{
   z-index:5 !important;
 }
+
+/* Add this to your CSS file */
+.form-wrapper {
+  position: relative;
+}
+
+.form-wrapper.loading {
+  filter: blur(4px);
+}
+
+.form-wrapper.loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.5); /* Light overlay */
+  z-index: 1;
+}

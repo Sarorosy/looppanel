@@ -283,6 +283,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                 PTP
                                                             </span>
                                                         )}
+                                                        
                                                     </p>
                                                 </td>
                                                 <td className="border px-4 py-2">{quote.quoteid}</td>
@@ -343,6 +344,19 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                     </span>
                                                                 )}
                                                             </p>
+                                                            {quote.tag_names && (
+                                                                <p>
+                                                                    <strong>Tags:</strong>
+                                                                    {quote.tag_names.split(',').map((tag, index) => (
+                                                                        <span
+                                                                            key={index}
+                                                                            className="text-blue-500 hover:bg-blue-100 hover:text-blue-600  p-1 rounded-full text-sm font-medium inline-block ml-1"
+                                                                        >
+                                                                            #{tag.trim()}
+                                                                        </span>
+                                                                    ))}
+                                                                </p>
+                                                            )}
                                                             <p><strong>Currency:</strong> {quote.currency == "Other" ? quote.other_currency : quote.currency}</p>
                                                             {quote.service_name && quote.plan && (
                                                                 <>

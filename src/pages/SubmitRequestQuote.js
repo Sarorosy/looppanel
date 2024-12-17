@@ -134,6 +134,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         formData.append('currency', selectedCurrency);
         formData.append('other_currency', otherCurrency);
         formData.append('service_name', selectedService);
+        formData.append('tags', selectedTags);
         formData.append('plan', selectedPlans);
         formData.append('comments', comments);
         formData.append('user_id', loopUserObject.id);

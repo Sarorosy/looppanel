@@ -5,9 +5,10 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCheckIcon, CheckCircle, CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp } from 'lucide-react';
+import { CheckCheckIcon, CheckCircle, CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2 } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
+import EditRequestForm from './EditRequestForm';
 
 const AskForScope = ({ queryId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
@@ -28,6 +29,9 @@ const AskForScope = ({ queryId }) => {
     const loopuserData = sessionStorage.getItem('loopuser');
     const [expandedRowIndex, setExpandedRowIndex] = useState(null);
     const [addNewFormOpen, setAddNewFormOpen] = useState(false);
+    const [editFormOpen, setEditFormOpen] = useState(false);
+    const [selectedQuoteId, setSelectedQuoteId] = useState('');
+    const [selectedRefId, setSelectedRefId] = useState('');
 
     const toggleRow = (index) => {
         setExpandedRowIndex(expandedRowIndex === index ? null : index);
@@ -107,6 +111,10 @@ const AskForScope = ({ queryId }) => {
     const referenceUrl = `https://instacrm.rapidcollaborate.com/managequote/view-askforscope/${scopeDetails?.ref_id}`;
 
     const toggleAddNewForm = () => setAddNewFormOpen((prev) => !prev);
+    const toggleEditForm = (id) => {
+        setSelectedQuoteId(id);
+        setEditFormOpen((prev) => !prev)
+    };
 
     return (
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
@@ -148,28 +156,28 @@ const AskForScope = ({ queryId }) => {
                                             {/* Row */}
                                             <tr
                                                 className="cursor-pointer hover:bg-gray-50"
-                                                onClick={() => toggleRow(index)}
                                             >
                                                 <td className="border px-4 py-2 ">
                                                     <p className='flex items-center'>
-                                                    {quote.assign_id}
-                                                    {quote.ptp == "Yes" && (
-                                                        <span
-                                                            className="inline-block p-1 ml-1" // Increased padding for more space
-                                                            style={{
-                                                                backgroundColor: '#2B9758FF', // Green color for PTP
-                                                                clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
-                                                                color: '#ffffff',
-                                                                fontSize: '14px', // Increased font size for better visibility
-                                                                fontWeight: 'bold',
-                                                                lineHeight: '1.3', // Increased line height to make it visually balanced
-                                                            }}
-                                                        >
-                                                            PTP
-                                                        </span>
-                                                    )}
+                                                        {quote.assign_id}
+                                                        {quote.ptp == "Yes" && (
+                                                            <span
+                                                                className="inline-block p-1 ml-1" // Increased padding for more space
+                                                                style={{
+                                                                    backgroundColor: '#2B9758FF', // Green color for PTP
+                                                                    clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
+                                                                    color: '#ffffff',
+                                                                    fontSize: '14px', // Increased font size for better visibility
+                                                                    fontWeight: 'bold',
+                                                                    lineHeight: '1.3', // Increased line height to make it visually balanced
+                                                                }}
+                                                            >
+                                                                PTP
+                                                            </span>
+                                                        )}
+
                                                     </p>
-                                                    </td>
+                                                </td>
                                                 <td className="border px-4 py-2">{quote.quoteid}</td>
                                                 <td className="border px-4 py-2">{quote.currency}</td>
                                                 <td className="border px-4 py-2">{quote.plan}</td>
@@ -196,7 +204,7 @@ const AskForScope = ({ queryId }) => {
                                                     </span>
                                                 </td>
 
-                                                <td className="border px-4 py-2">
+                                                <td className="border px-4 py-2 flex items-center">
                                                     {/* Up/Down Arrow Button */}
                                                     <button
                                                         onClick={() => toggleRow(index)}
@@ -204,6 +212,13 @@ const AskForScope = ({ queryId }) => {
                                                     >
                                                         {expandedRowIndex === index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
+
+                                                    {quote.quote_status == 0 && quote.user_id == thisUserId && (
+                                                        <button onClick={() => { toggleEditForm(quote.quoteid) }}
+                                                            className='flex items-center rounded-full border-2 border-blue-500'>
+                                                            <Settings2 className='p-1' />
+                                                        </button>
+                                                    )}
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
@@ -231,6 +246,19 @@ const AskForScope = ({ queryId }) => {
                                                             </p>
 
 
+                                                            {quote.tag_names && (
+                                                                <p>
+                                                                    <strong>Tags:</strong>
+                                                                    {quote.tag_names.split(',').map((tag, index) => (
+                                                                        <span
+                                                                            key={index}
+                                                                            className="text-blue-500 hover:bg-blue-100 hover:text-blue-600  p-1 rounded-full text-sm font-medium inline-block ml-1"
+                                                                        >
+                                                                            #{tag.trim()}
+                                                                        </span>
+                                                                    ))}
+                                                                </p>
+                                                            )}
 
 
                                                             <p><strong>Currency:</strong> {quote.currency == "Other" ? quote.other_currency : quote.currency}</p>
@@ -288,23 +316,23 @@ const AskForScope = ({ queryId }) => {
                                                                         })()}
                                                                     </p>
                                                                     {quote.discount_price && (
-                                                                    <p>
-                                                                        <strong>Discounted Price:</strong>{' '}
-                                                                        {(() => {
-                                                                            const prices = quote.discount_price.split(','); // Split quote_price into an array
-                                                                            const plans = quote.plan.split(','); // Split plan into an array
-                                                                            return plans.map((plan, index) => (
-                                                                                <span key={index} className='bg-[#FFD700] px-1 py-2 rounded'>
-                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
-                                                                                    {index < plans.length - 1 && ', '}
-                                                                                </span>
-                                                                            ));
-                                                                        })()}
-                                                                    </p>
+                                                                        <p>
+                                                                            <strong>Discounted Price:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.discount_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className='bg-[#FFD700] px-1 py-2 rounded'>
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
                                                                     )}
                                                                     {quote.user_comments && (
-                                                                    <p><strong>Comments:</strong> {quote.user_comments}</p>
-                                                                )}
+                                                                        <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                    )}
                                                                 </>
                                                             )}
                                                             <p>
@@ -338,15 +366,15 @@ const AskForScope = ({ queryId }) => {
                                                         </div>
                                                         <Chat quoteId={quote.quoteid} refId={quote.assign_id} />
                                                     </td>
-                                                    
+
                                                 </tr>
                                             )}
                                         </React.Fragment>
                                     ))}
                                 </tbody>
                             </table>
-                           
-                            
+
+
                         </div>
                     ) : (
                         <div className="flex justify-center items-center">
@@ -356,6 +384,9 @@ const AskForScope = ({ queryId }) => {
                     <AnimatePresence>
                         {addNewFormOpen && (
                             <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails} />
+                        )}
+                        {editFormOpen && (
+                            <EditRequestForm quoteId={selectedQuoteId} refId={queryId} onClose={()=>{setEditFormOpen(!editFormOpen)}} after={fetchScopeDetails} />
                         )}
                     </AnimatePresence>
 

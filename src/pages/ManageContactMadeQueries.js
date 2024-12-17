@@ -257,7 +257,9 @@ const ManageContactMadeQueries = () => {
                         <DataTable
                             data={quotes}
                             columns={columns}
+                            
                             options={{
+                                ordering: false,
                                 pageLength: 50,
                                 createdRow: (row, data) => {
                                     $(row).find('.view-btn').on('click', () => handleViewButtonClick(data));
