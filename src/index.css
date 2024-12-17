@@ -499,3 +499,6 @@ border-radius: 50px;
 .ql-editor {
   height: 120px !important;
 }
+th{
+  z-index:5 !important;
+}

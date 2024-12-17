@@ -18,6 +18,8 @@ import SummaryPage from './SummaryPage';
 
 const ManageContactMadeQueries = () => {
     const [quotes, setQuotes] = useState([]);
+    const [websites, setWebsites] = useState([]);
+    const [selectedWebsite, setSelectedWebsite] = useState('');
     const [filterDate, setFilterDate] = useState('');
     const [keyword, setKeyword] = useState('');
     const [RefId, setRefId] = useState('');
@@ -56,10 +58,10 @@ const ManageContactMadeQueries = () => {
     useEffect(() => {
         // Initialize select2 for Select Team
         $(selectUserRef.current).select2({
-            placeholder: "Select User",
+            placeholder: "Select Website",
             allowClear: true,
         }).on('change', (e) => {
-            setSelectedUser($(e.target).val());
+            setSelectedWebsite($(e.target).val());
         });
 
 
@@ -69,13 +71,39 @@ const ManageContactMadeQueries = () => {
                 $(selectUserRef.current).select2('destroy');
             }
         };
-    }, [users]);
+    }, [websites]);
 
     // Fetch all data on initial render
     useEffect(() => {
         fetchQuotes();
+        fetchWebsites();
 
     }, []);
+
+    const fetchWebsites = async () => {
+        
+        try {
+            const response = await fetch(
+                'https://instacrm.rapidcollaborate.com/api/getallwebsites',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify(), // Pass the POST data as JSON
+                }
+            );
+    
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+                setWebsites(data.data); 
+            } else {
+                console.error('Failed to fetch Websites:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching Websites:', error);
+        } 
+    };
 
     const fetchQuotes = async () => {
         setLoading(true);
@@ -89,7 +117,7 @@ const ManageContactMadeQueries = () => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ user_id: userId, search_keywords: keyword, ref_id: RefId }), // Pass the POST data as JSON
+                    body: JSON.stringify({ user_id: userId, search_keywords: keyword, ref_id: RefId, website:selectedWebsite }), // Pass the POST data as JSON
                 }
             );
 
@@ -105,6 +133,7 @@ const ManageContactMadeQueries = () => {
             setLoading(false); // Hide loading spinner
         }
     };
+
 
 
     const columns = [
@@ -160,6 +189,7 @@ const ManageContactMadeQueries = () => {
     const resetFilters = () => {
         setKeyword('');
         setRefId('');
+        setSelectedWebsite('');
         $(selectUserRef.current).val(null).trigger('change');
         fetchQuotes();
     };
@@ -187,6 +217,22 @@ const ManageContactMadeQueries = () => {
                         value={keyword}
                         onChange={(e) => setKeyword(e.target.value)}
                     />
+                </div>
+                <div className="w-1/2">
+                    <select
+                        id="user_id"
+                        className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
+
+                        value={selectedWebsite}
+                        ref={selectUserRef}
+                    >
+                        <option value="">Select Website</option>
+                        {websites.map(website => (
+                            <option key={website.id} value={website.id}>
+                                {website.website}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="w-1/2 flex justify-content-end space-x-2 mt-1">
                     <label>&nbsp;</label>

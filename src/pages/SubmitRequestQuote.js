@@ -1,21 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
+import $ from 'jquery';
+import 'select2/dist/css/select2.min.css'; // Import Select2 CSS
+import 'select2';
+
 
 const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const [currencies, setCurrencies] = useState([]);
     const [services, setServices] = useState([]);
     const [selectedCurrency, setSelectedCurrency] = useState('');
+    const [tags, setTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
     const [otherCurrency, setOtherCurrency] = useState('');
     const [selectedService, setSelectedService] = useState('');
     const [selectedPlans, setSelectedPlans] = useState([]);
     const [comments, setComments] = useState('');
     const [file, setFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+    const tagsRef = useRef(null);
 
     const plans = ['Basic', 'Standard', 'Advanced']; // Hardcoded plans
 
@@ -87,6 +94,20 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         }
     };
 
+    const fetchTags = async () => {
+        try {
+            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const data = await response.json();
+            if (data.status) {
+                setTags(data.data || []);
+            } else {
+                toast.error('Failed to fetch Tags');
+            }
+        } catch (error) {
+            console.error('Error fetching tags:', error);
+            toast.error('Error fetching tags');
+        }
+    };
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]); // Get the selected file
@@ -100,9 +121,9 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             toast.error('Please fill in all fields');
             setSubmitting(false);
             return;
-            
+
         }
-        if(selectedCurrency == "Other" && !otherCurrency){
+        if (selectedCurrency == "Other" && !otherCurrency) {
             toast.error('Please enter other currrency name!');
             setSubmitting(false);
             return;
@@ -136,7 +157,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             }
         } catch (error) {
             console.error('Error submitting quote request:', error);
-            
+
         } finally {
             setSubmitting(false);
         }
@@ -145,7 +166,28 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     useEffect(() => {
         fetchCurrencies();
         fetchServices();
+        fetchTags();
     }, []);
+
+    useEffect(() => {
+        // Initialize select2 for Select Team
+        $(tagsRef.current).select2({
+            placeholder: "Select Tags",
+            allowClear: true,
+            multiple: true,
+        }).on('change', (e) => {
+            const selectedValues = $(e.target).val(); // Use select2's value retrieval method
+            setSelectedTags(selectedValues);
+        });
+
+
+        return () => {
+            // Destroy select2 when the component unmounts
+            if (tagsRef.current) {
+                $(tagsRef.current).select2('destroy');
+            }
+        };
+    }, [tags]);
 
     return (
         <motion.div
@@ -154,7 +196,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             exit={{ x: '100%' }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="fixed right-0 h-full w-1/2 bg-gray-100 shadow-lg z-50 overflow-y-auto "
-            style={{top:"-20px"}}
+            style={{ top: "-20px" }}
         >
             <div className="bg-white p-6 shadow rounded-md space-y-4 w-xl">
                 <div className='flex items-center justify-between bg-blue-400 text-white p-2'>
@@ -170,9 +212,9 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input type="hidden" name="ref_id" value={refId} />
 
-                    <div className='w-full flex items-start justify-between space-x-1'>
+                    <div className='w-full grid grid-cols-3 gap-4 space-x-1'>
                         {/* Currency Dropdown */}
-                        <div className='w-1/2'>
+                        <div className='w-full'>
                             <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
                                 Currency
                             </label>
@@ -191,7 +233,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                             </select>
                         </div>
                         {selectedCurrency == 'Other' && (
-                            <div className="w-1/2">
+                            <div className="w-full">
                                 <label htmlFor="otherCurrency" className="block text-sm font-medium text-gray-700">
                                     Other Currency Name
                                 </label>
@@ -207,7 +249,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                         )}
 
                         {/* Service Name Dropdown */}
-                        <div className='w-1/2'>
+                        <div className='w-full'>
                             <label htmlFor="service_name" className="block text-sm font-medium text-gray-700">
                                 Service Name
                             </label>
@@ -219,15 +261,14 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                             >
                                 <option value="">Select Service</option>
                                 {services.map((service) => (
-                                    <option key={service.id} value={service.name}>
+                                    <option key={service.id} value={service.id}>
                                         {service.name}
                                     </option>
                                 ))}
                             </select>
                         </div>
-
                         {/* Plan Dropdown */}
-                        <div className="w-1/2">
+                        <div className="w-full ">
                             <label htmlFor="plan" className="block text-sm font-medium text-gray-700">
                                 Plan
                             </label>
@@ -249,23 +290,46 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                                 ))}
                             </div>
                         </div>
+
+                        <div className='w-1/2 max-w-56'>
+                            <label htmlFor="service_name" className="block text-sm font-medium text-gray-700">
+                               Select Tags
+                            </label>
+                            <select
+                                name="tags"
+                                id="tags"
+                                className="form-select select2 w-96 py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                multiple
+                                value={selectedTags}
+                                ref={tagsRef}
+                            >
+                                <option value="">Select Tags</option>
+                                {tags.map((tag) => (
+                                    <option key={tag.id} value={tag.id}>
+                                        {tag.tag_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        
                     </div>
 
                     <div className='flex items-start justify-between space-x-1 mt-4'>
                         {/* Comments */}
                         <div className="w-full">
-                        <label htmlFor="comments" className="block text-sm font-medium text-gray-700">
-                            Comments
-                        </label>
-                        <ReactQuill
-                            value={comments}
-                            onChange={setComments}
-                            className="mt-1"
-                            theme="snow"
-                            placeholder="Add your comments here"
-                            
-                        />
-                    </div>
+                            <label htmlFor="comments" className="block text-sm font-medium text-gray-700">
+                                Comments
+                            </label>
+                            <ReactQuill
+                                value={comments}
+                                onChange={setComments}
+                                className="mt-1"
+                                theme="snow"
+                                placeholder="Add your comments here"
+
+                            />
+                        </div>
 
                         {/* File Upload */}
                         <div className='w-full '>

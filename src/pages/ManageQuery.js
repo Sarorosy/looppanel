@@ -22,9 +22,13 @@ const ManageQuery = () => {
     const [keyword, setKeyword] = useState('');
     const [status, setStatus] = useState('');
     const [users, setUsers] = useState([]);
-    const [selectedUser, setSelectedUser] = useState('')
+    const [services, setServices] = useState([]);
+    const [selectedService, setSelectedService] = useState('');
+    const [selectedUser, setSelectedUser] = useState('');
+    const [ptp, setPtp] = useState('');
     const [loading, setLoading] = useState(false);
     const selectUserRef = useRef(null);
+    const selectServiceRef = useRef(null);
     const [selectedQuery, setSelectedQuery] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const navigate = useNavigate();
@@ -67,9 +71,28 @@ const ManageQuery = () => {
         };
     }, [users]);
 
+    useEffect(() => {
+        // Initialize select2 for Select Team
+        $(selectServiceRef.current).select2({
+            placeholder: "Select Service",
+            allowClear: true,
+        }).on('change', (e) => {
+            setSelectedService($(e.target).val());
+        });
+
+
+        return () => {
+            // Destroy select2 when the component unmounts
+            if (selectServiceRef.current) {
+                 $(selectServiceRef.current).select2('destroy');
+            }
+        };
+    }, [services]);
+
     // Fetch all data on initial render
     useEffect(() => {
         fetchQuotes();
+        fetchServices();
 
     }, []);
 
@@ -78,6 +101,8 @@ const ManageQuery = () => {
         const userid = selectedUser;
         const ref_id = refID;
         const search_keywords = keyword;
+        const service_name = selectedService;
+        
         
         try {
             const response = await fetch(
@@ -87,7 +112,7 @@ const ManageQuery = () => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ userid, ref_id,search_keywords ,status }), // Pass the POST data as JSON
+                    body: JSON.stringify({ userid, ref_id,search_keywords ,status, service_name, ptp }), // Pass the POST data as JSON
                 }
             );
     
@@ -104,6 +129,31 @@ const ManageQuery = () => {
             setLoading(false); // Hide loading spinner
         }
     };
+
+    const fetchServices = async () => {
+        
+        try {
+            const response = await fetch(
+                'https://apacvault.com/Webapi/getAllServices',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify(), // Pass the POST data as JSON
+                }
+            );
+    
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+                setServices(data.data); 
+            } else {
+                console.error('Failed to fetch Services:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching Services:', error);
+        } 
+    };
     
 
     const columns = [
@@ -111,7 +161,29 @@ const ManageQuery = () => {
             title: 'Ref Id',
             data: 'ref_id',
             orderable: true,
-        },
+            render: function (data, type, row) {
+                if (row.ptp === "Yes") {
+                    return `
+                        ${data}
+                        <span 
+                            style="
+                                margin-left: 8px; 
+                                padding: 2px 4px; 
+                                background-color: #2B9758FF;
+                                color: #ffffff; 
+                                font-size: 11px; 
+                                font-weight: bold; 
+                                line-height: 1.2;
+                                z-index:1 !important;
+                            ">
+                            PTP
+                        </span>
+                    `;
+                } else {
+                    return data; // Default case
+                }
+            },
+        },        
         {
             title: 'Ask For Scope ID',
             data: 'id',
@@ -190,9 +262,11 @@ const ManageQuery = () => {
     const resetFilters = () => {
         setRefId('');
         setKeyword('');
+        setStatus('');
+        $(selectUserRef.current).val('').trigger('change');
+        $(selectServiceRef.current).val('').trigger('change');
+        setSelectedService('');
         setSelectedUser('');
-        setStatus('')
-        $(selectUserRef.current).val(null).trigger('change');
         fetchQuotes();  // Fetch unfiltered data
     };
 
@@ -225,6 +299,33 @@ const ManageQuery = () => {
                                 {user.fld_first_name}
                             </option>
                         ))}
+                    </select>
+                </div>
+                <div className="w-1/2">
+                    <select
+                        id="service_name"
+                        className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
+
+                        value={selectedService}
+                        ref={selectServiceRef}
+                    >
+                        <option value="">Select Service</option>
+                        {services.map(service => (
+                            <option key={service.id} value={service.id}>
+                                {service.name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="w-1/2 ss">
+                    
+                    <select
+                        className="form-control"
+                        value={ptp}
+                        onChange={(e) => setPtp(e.target.value)}
+                    >
+                        <option value="">Select PTP</option>
+                        <option value="Yes">Yes</option>
                     </select>
                 </div>
                 <div className="w-1/2 ss">
