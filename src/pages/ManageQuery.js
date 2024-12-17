@@ -160,6 +160,7 @@ const ManageQuery = () => {
         {
             title: 'Ref Id',
             data: 'ref_id',
+           
             orderable: true,
             render: function (data, type, row) {
                 if (row.ptp === "Yes") {
@@ -187,6 +188,7 @@ const ManageQuery = () => {
         {
             title: 'Ask For Scope ID',
             data: 'id',
+            width:"50x",
             orderable: true,
             className: 'text-center',
         },
