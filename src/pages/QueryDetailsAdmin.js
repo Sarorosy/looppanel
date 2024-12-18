@@ -10,7 +10,7 @@ import CustomLoader from '../CustomLoader';
 import AskForScopeAdmin from './AskForScopeAdmin';
 
 
-const QueryDetailsAdmin = ({ onClose, queryId }) => {
+const QueryDetailsAdmin = ({ onClose, queryId, quotationId }) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -318,7 +318,7 @@ const QueryDetailsAdmin = ({ onClose, queryId }) => {
 
                 </div>
                 </div>
-                <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type}/>
+                <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId}/>
                 </div>
             )}
 

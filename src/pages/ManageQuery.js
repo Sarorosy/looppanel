@@ -30,6 +30,7 @@ const ManageQuery = () => {
     const selectUserRef = useRef(null);
     const selectServiceRef = useRef(null);
     const [selectedQuery, setSelectedQuery] = useState('');
+    const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const navigate = useNavigate();
 
@@ -50,6 +51,7 @@ const ManageQuery = () => {
     };
     const handleViewButtonClick = (query) => {
         setSelectedQuery(query);
+        setSelectedQuote(query.id)
         setIsDetailsOpen(true);
     };
 
@@ -403,7 +405,7 @@ const ManageQuery = () => {
                    
                         <QueryDetailsAdmin
                             onClose={toggleDetailsPage}
-                            
+                            quotationId={selectedQuote}
                             queryId={selectedQuery.ref_id}
                         />
                     

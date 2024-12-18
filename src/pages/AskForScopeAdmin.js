@@ -6,7 +6,7 @@ import { Chat } from './Chat';
 import { ArrowDown, ArrowUp, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
-const AskForScopeAdmin = ({ queryId, userType }) => {
+const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -22,7 +22,7 @@ const AskForScopeAdmin = ({ queryId, userType }) => {
     const [comment, setComment] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [adminComments, setAdminComments] = useState('');
-    const [expandedRowIndex, setExpandedRowIndex] = useState(null);
+    const [expandedRowIndex, setExpandedRowIndex] = useState(0);
     const [editFormOpen, setEditFormOpen] = useState(false);
     const [selectedQuoteId, setSelectedQuoteId] = useState('');
 
@@ -40,7 +40,7 @@ const AskForScopeAdmin = ({ queryId, userType }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ ref_id: queryId, user_type:userType }),
+                    body: JSON.stringify({ ref_id: queryId, user_type:userType, quote_id:quotationId }),
                 }
             );
 
