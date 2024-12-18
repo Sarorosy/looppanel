@@ -23,6 +23,10 @@ const QueryDetailsAdmin = ({ onClose, queryId }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [activityloading, setActivityLoading] = useState(false);
 
+    const userData = sessionStorage.getItem('loopuser');
+
+    const userObject = JSON.parse(userData);
+
     const fetchActivityHistory = async () => {
         try {
             setIsVisible(true);
@@ -124,7 +128,7 @@ const QueryDetailsAdmin = ({ onClose, queryId }) => {
             )}
              <button
                 onClick={onClose}
-                className=" text-white hover:text-red-600 transition-colors mr-2 cir"
+                className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
             >
                 {/* <CircleX size={32} /> */}
                 <X size={15} />
@@ -314,7 +318,7 @@ const QueryDetailsAdmin = ({ onClose, queryId }) => {
 
                 </div>
                 </div>
-                <AskForScopeAdmin queryId={queryInfo.assign_id} />
+                <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type}/>
                 </div>
             )}
 

@@ -9,10 +9,11 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, ListIcon } from 'lucide-react';
+import { RefreshCcw, Filter, ListIcon, FileQuestion } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import { AnimatePresence, motion } from 'framer-motion';
 import SummaryPage from './SummaryPage';
+import FeasabilityPage from './FeasabilityPage';
 
 
 
@@ -30,6 +31,7 @@ const ManageContactMadeQueries = () => {
     const [selectedQuery, setSelectedQuery] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [summaryOpen, setSummaryOpen] = useState(false);
+    const [feasPageOpen, setFeasPageOpen] = useState(false);
 
     const userData = sessionStorage.getItem('user');
 
@@ -53,6 +55,14 @@ const ManageContactMadeQueries = () => {
     };
     const toggleSummaryPage = () => {
         setSummaryOpen(!summaryOpen);
+    };
+
+    const handleFeasButtonClick = (query) => {
+        setFeasPageOpen(true);
+    };
+
+    const toggleFeasPage = () => {
+        setFeasPageOpen(!feasPageOpen);
     };
 
     useEffect(() => {
@@ -237,14 +247,20 @@ const ManageContactMadeQueries = () => {
                 <div className="w-1/2 flex justify-content-end space-x-2 mt-1">
                     <label>&nbsp;</label>
                     <button className="gree text-white mr-2 flex items-center" onClick={fetchQuotes}>
-                        <Filter size={12} /> &nbsp;
-                        Apply Filters
+                        <Filter size={12} />
+                        Apply
                     </button>
-                    <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic" onClick={resetFilters}>
+                    <button className="bg-gray-200 mr-2 flex items-center" onClick={resetFilters}>
                         <RefreshCcw size={12} />
+                        Refresh
                     </button>
-                    <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic" onClick={handleSummaryButtonClick} title='View Summary'>
+                    <button className="bg-gray-200 mr-2 flex items-center" onClick={handleSummaryButtonClick} title='View Summary'>
                         <ListIcon size={12} />
+                        Summary
+                    </button>
+                    <button className="bg-gray-200 mr-2 flex items-center" onClick={handleFeasButtonClick} title='Feasability Check'>
+                        <FileQuestion size={12} />
+                        Feasability
                     </button>
                 </div>
             </div>
@@ -289,6 +305,9 @@ const ManageContactMadeQueries = () => {
 
                     />
 
+                )}
+                {feasPageOpen && (
+                    <FeasabilityPage onClose={toggleFeasPage} />
                 )}
             </AnimatePresence>
 

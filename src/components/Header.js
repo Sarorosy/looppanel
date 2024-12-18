@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell, Quote, MessageSquareMore, MessageSquareText, CircleCheck, BellIcon, CirclePercent } from 'lucide-react';
+import { LogOut, Bell, Quote, MessageSquareMore, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import { AnimatePresence } from 'framer-motion';
 import QueryDetails from '../pages/QueryDetails';
 import QueryDetailsAdmin from '../pages/QueryDetailsAdmin';
+import FeasabilityQueryDetails from '../pages/FeasabilityQueryDetails';
 
 const Header = () => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -13,7 +14,11 @@ const Header = () => {
   const [notificationsVisible, setNotificationsVisible] = useState(false); // To control visibility of notifications dropdown
   const [loading, setLoading] = useState(false); // State for loading spinner
   const [selectedQuery, setSelectedQuery] = useState('');
+  const [selectedQuote, setSelectedQuote] = useState('');
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+  const [isFeasDetailsOpen, setIsFeasDetailsOpen] = useState(false);
+
+  
 
   const navigate = useNavigate();
 
@@ -24,6 +29,10 @@ const Header = () => {
 
   const toggleDetailsPage = () => {
     setIsDetailsOpen(!isDetailsOpen);
+  };
+
+  const toggleFeasDetailsPage = () => {
+    setIsFeasDetailsOpen(!isFeasDetailsOpen);
   };
 
   const timeAgo = (timestamp) => {
@@ -94,10 +103,17 @@ const Header = () => {
     }
   };
 
-  const handleNotificationClick = async (notificationId, refId) => {
+  const handleNotificationClick = async (notificationId, refId, quoteId, isfeasability) => {
 
     setSelectedQuery(refId);
+    setSelectedQuote(quoteId)
+    if(isfeasability == 0){
+
     setIsDetailsOpen(true);
+    }else{
+      setIsDetailsOpen(false);
+    }
+
     try {
       const response = await fetch('https://apacvault.com/Webapi/readmessage', {
         method: 'POST',
@@ -195,12 +211,17 @@ const Header = () => {
                 <div className=' overflow-y-scroll' style={{ height: "200px" }}>
                   <ul className='p-1 text-sm'>
                     {notifications.map((notification, index) => (
-                      <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id)}>
+                      <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id, notification.quote_id, notification.isfeasability)}>
                         <p className='flex items-center'>
                           {/* Display icon based on notification type */}
                           {notification.icon == 'quote' && (
                             <span className="mr-2">
                               <Quote size={22} className='bg-green-100 text-green-800 rounded-full border-1 p-1 border-green-800'/>
+                            </span>
+                          )}
+                          {notification.icon == 'feasability' && (
+                            <span className="mr-2">
+                              <i class="fa fa-question bg-orange-100 text-orange-800 rounded-full border-1 p-1 border-orange-800" aria-hidden="true"></i>
                             </span>
                           )}
                           {notification.icon == 'chat' && (
@@ -211,6 +232,11 @@ const Header = () => {
                           {notification.icon == 'completed' && (
                             <span className="mr-2">
                               <CircleCheck size={24} className='bg-green-100 text-green-800 rounded-full'/> {/* Completed icon */}
+                            </span>
+                          )}
+                          {notification.icon == 'transferred' && (
+                            <span className="mr-2">
+                              <ArrowLeftRight size={26} className='bg-orange-100 text-orange-800 rounded-full border border-orange-600 p-1'/> {/* Completed icon */}
                             </span>
                           )}
                           {notification.icon == 'discount' && (
@@ -275,6 +301,11 @@ const Header = () => {
             />
           )
         )}
+        {
+          isFeasDetailsOpen && (
+            <FeasabilityQueryDetails queryId={selectedQuery} quotationId={selectedQuote} onClose={toggleFeasDetailsPage} />
+          )
+        }
       </AnimatePresence>
 
     </header>

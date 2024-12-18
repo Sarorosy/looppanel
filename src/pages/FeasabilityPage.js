@@ -7,15 +7,16 @@ import $ from 'jquery';
 import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCcw, X } from 'lucide-react';
 import QueryDetails from './QueryDetails';
+import FeasabilityQueryDetails from './FeasabilityQueryDetails';
 
 
-const SummaryPage = ({ onClose }) => {
+const FeasabilityPage = ({ onClose }) => {
     const [quoteSummary, setQuoteSummary] = useState([]);
     const [loading, setLoading] = useState(false);
     const [pendingCount, setPendingCount] = useState(0);
     const [approvedCount, setApprovedCount] = useState(0);
-    const [discountCount, setDiscountCount] = useState(0);
     const [selectedQuery, setSelectedQuery] = useState('');
+    const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     const userData = sessionStorage.getItem('loopuser');
@@ -29,7 +30,7 @@ const SummaryPage = ({ onClose }) => {
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getQuoteSummary',
+                'https://apacvault.com/Webapi/getAllFeasabilityAssignedToUser',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -45,7 +46,6 @@ const SummaryPage = ({ onClose }) => {
                 setQuoteSummary(data.data); // Update the quotes state
                 setPendingCount(data.pending_count);
                 setApprovedCount(data.approved_count);
-                setDiscountCount(data.discount_count);
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
@@ -62,10 +62,15 @@ const SummaryPage = ({ onClose }) => {
 
     const handleViewBtnClick = (query) => {
         setSelectedQuery(query.ref_id);
-        console.log(selectedQuery)
+        setSelectedQuote(query.id);
         setIsDetailsOpen(true);
         
     };
+
+    const finalFunction = () =>{
+        setIsDetailsOpen(false);
+        fetchQuoteSummary();
+    }
 
     // Use DataTable library
     DataTable.use(DT);
@@ -87,26 +92,16 @@ const SummaryPage = ({ onClose }) => {
             className: 'text-center',
         },
         {
-            title: 'Status',
-            data: 'status', // Replace with actual field name
+            title: 'Feasability Status',
+            data: 'feasability_status', // Replace with actual field name
             orderable: false,
             render: function (data, type, row) {
-                if(row.isfeasability == 0){
-                if (data == 0) {
+                if (data == 'Pending') {
                     return '<span class="text-red-600 font-bold">Pending</span>';
-                } else if (data == 1) {
+                } else if (data == 'Completed') {
                     return '<span class="text-green-600 font-bold">Submitted</span>';
-                } else if (data == 2) {
-                    return '<span class="text-yellow-600 font-bold">Discount Requested</span>';
-                }
+                } 
                 return '<span class="text-gray-600">Unknown</span>';
-            }else{
-                if (row.feasability_status == 'Pending') {
-                    return '<span class="text-red-600 font-bold">Feasability Submitted</span>';
-                } else {
-                    return '<span class="text-green-600 font-bold">Feasability Completed</span>';
-                }
-            }
             },
         },
         
@@ -161,7 +156,7 @@ const SummaryPage = ({ onClose }) => {
             className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
         >
             <div className='flex items-center justify-between bg-blue-400 text-white pnav py-2'>
-                <h2 className="text-xl font-semibold mllt">All Quote Summary </h2>
+                <h2 className="text-xl font-semibold mllt">Feasability Check</h2>
 
 
                 <button
@@ -178,12 +173,8 @@ const SummaryPage = ({ onClose }) => {
                     <span className="text-sm font-medium">Pending:</span>
                     <span className="ml-2 font-bold">{pendingCount}</span>
                 </div>
-                <div className="flex items-center bg-yellow-400 text-white px-4 py-2 rounded shadow mx-3">
-                    <span className="text-sm font-medium">Discount Requested:</span>
-                    <span className="ml-2 font-bold">{discountCount}</span>
-                </div>
-                <div className="flex items-center bg-green-200 text-green-800 px-4 py-2 rounded shadow ">
-                    <span className="text-sm font-medium">Submitted:</span>
+                <div className="flex items-center bg-green-200 text-green-800 px-4 py-2 rounded shadow mx-2">
+                    <span className="text-sm font-medium">Completed:</span>
                     <span className="ml-2 font-bold">{approvedCount}</span> {/* Replace 5 with dynamic count */}
                 </div>
                 <button
@@ -218,10 +209,11 @@ const SummaryPage = ({ onClose }) => {
 
                 {isDetailsOpen && (
 
-                    <QueryDetails
+                    <FeasabilityQueryDetails
                         onClose={toggleDetailsPage}
-
+                        quotationId={selectedQuote}
                         queryId={selectedQuery}
+                        finalFunction={finalFunction}
                     />
 
                 )}
@@ -230,4 +222,4 @@ const SummaryPage = ({ onClose }) => {
     );
 };
 
-export default SummaryPage;
+export default FeasabilityPage;

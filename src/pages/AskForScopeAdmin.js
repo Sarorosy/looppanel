@@ -6,7 +6,7 @@ import { Chat } from './Chat';
 import { ArrowDown, ArrowUp, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
-const AskForScopeAdmin = ({ queryId }) => {
+const AskForScopeAdmin = ({ queryId, userType }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -40,7 +40,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ ref_id: queryId }),
+                    body: JSON.stringify({ ref_id: queryId, user_type:userType }),
                 }
             );
 

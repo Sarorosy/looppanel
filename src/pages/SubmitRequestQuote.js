@@ -14,16 +14,16 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const [currencies, setCurrencies] = useState([]);
     const [services, setServices] = useState([]);
     const [selectedCurrency, setSelectedCurrency] = useState('');
-    const [tags, setTags] = useState([]);
-    const [selectedTags, setSelectedTags] = useState([]);
     const [otherCurrency, setOtherCurrency] = useState('');
     const [selectedService, setSelectedService] = useState('');
     const [selectedPlans, setSelectedPlans] = useState([]);
     const [comments, setComments] = useState('');
     const [file, setFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
-    const tagsRef = useRef(null);
-
+    const [isfeasability, setIsFeasability] = useState(0);
+    const [users, setUsers] = useState([]);
+    const [selectedUser, setSelectedUser] = useState('');
+    const userRef = useRef(null);
     const plans = ['Basic', 'Standard', 'Advanced']; // Hardcoded plans
 
     const handleCheckboxChange = (plan) => {
@@ -94,18 +94,34 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         }
     };
 
-    const fetchTags = async () => {
+    const fetchUsers = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const user = JSON.parse(sessionStorage.getItem('loopuser')); // Parse user object from sessionStorage
+            const user_id = user?.id; // Retrieve the category
+
+            if (!user_id) {
+                toast.error('User is not available in sessionStorage');
+                return;
+            }
+
+            const response = await fetch('https://apacvault.com/Webapi/getAllUsers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id }), // Send category in the request body
+            });
+
             const data = await response.json();
+
             if (data.status) {
-                setTags(data.data || []);
+                setUsers(data.data || []); // Set fetched services
             } else {
-                toast.error('Failed to fetch Tags');
+                toast.error('Failed to fetch users');
             }
         } catch (error) {
-            console.error('Error fetching tags:', error);
-            toast.error('Error fetching tags');
+            console.error('Error fetching users:', error);
+            toast.error('Error fetching users');
         }
     };
 
@@ -128,15 +144,21 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             setSubmitting(false);
             return;
         }
+        if(isfeasability == 1 && !selectedUser){
+            toast.error('Please select user to assign!');
+            setSubmitting(false);
+            return;
+        }
 
         const formData = new FormData();
         formData.append('ref_id', refId);
         formData.append('currency', selectedCurrency);
         formData.append('other_currency', otherCurrency);
         formData.append('service_name', selectedService);
-        formData.append('tags', selectedTags);
         formData.append('plan', selectedPlans);
         formData.append('comments', comments);
+        formData.append('isfeasability', isfeasability);
+        formData.append('feasability_user', selectedUser);
         formData.append('user_id', loopUserObject.id);
         formData.append('user_name', loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name);
         formData.append('category', userObject.category);
@@ -167,28 +189,31 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     useEffect(() => {
         fetchCurrencies();
         fetchServices();
-        fetchTags();
+        fetchUsers();
     }, []);
 
     useEffect(() => {
-        // Initialize select2 for Select Team
-        $(tagsRef.current).select2({
-            placeholder: "Select Tags",
+        // Initialize select2 for Tags
+        $(userRef.current).select2({
+            placeholder: "Select User",
             allowClear: true,
-            multiple: true,
         }).on('change', (e) => {
-            const selectedValues = $(e.target).val(); // Use select2's value retrieval method
-            setSelectedTags(selectedValues);
+            setSelectedUser($(e.target).val());
+            console.log(selectedUser);
         });
 
+        
+        $(userRef.current).val(selectedUser).trigger('change');
+        
 
         return () => {
-            // Destroy select2 when the component unmounts
-            if (tagsRef.current) {
-                $(tagsRef.current).select2('destroy');
+            // Clean up select2 on component unmount
+            if (userRef.current) {
+                $(userRef.current).select2('destroy');
             }
         };
-    }, [tags]);
+    }, [users]);
+
 
     return (
         <motion.div
@@ -200,16 +225,40 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             style={{ top: "-20px" }}
         >
             <div className="bg-white p-6 shadow rounded-md space-y-4 w-xl">
-                <div className='flex items-center justify-between bg-blue-400 text-white p-2'>
-                    <h2 className="text-xl font-semibold">Submit Request Quote</h2>
-                    <button
-                        onClick={onClose}
-                        className=" text-white hover:text-red-600 transition-colors mr-2 cir"
-                    >
-                        {/* <CircleX size={32} /> */}
-                        <X size={15} />
-                    </button>
-                </div>
+            <div className="flex items-center justify-between bg-gradient-to-r from-blue-500 to-blue-700 text-white px-3 py-2 rounded-lg shadow-lg">
+    {/* Tabs */}
+    <div className="flex items-center space-x-4">
+        <h2
+            className={`text-lg font-medium cursor-pointer px-2 py-1 rounded-lg transition-colors ${
+                isfeasability == 0
+                    ? "bg-white text-blue-700 shadow-md"
+                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
+            }`}
+            onClick={() => setIsFeasability(0)}
+        >
+            Ask For Scope
+        </h2>
+        <h2
+            className={`text-lg font-medium cursor-pointer px-2 py-1 rounded-lg transition-colors ${
+                isfeasability == 1
+                    ? "bg-white text-blue-700 shadow-md"
+                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
+            }`}
+            onClick={() => setIsFeasability(1)}
+        >
+            Ask For Feasibility Check
+        </h2>
+    </div>
+
+    {/* Close Button */}
+    <button
+        onClick={onClose}
+        className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
+    >
+        <X size={18} />
+    </button>
+</div>
+
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input type="hidden" name="ref_id" value={refId} />
 
@@ -292,30 +341,27 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                             </div>
                         </div>
 
-                        <div className='w-1/2 max-w-56'>
-                            <label htmlFor="service_name" className="block text-sm font-medium text-gray-700">
-                               Select Tags
-                            </label>
-                            <select
-                                name="tags"
-                                id="tags"
-                                className="form-select select2 w-96 py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                multiple
-                                value={selectedTags}
-                                ref={tagsRef}
-                            >
-                                <option value="">Select Tags</option>
-                                {tags.map((tag) => (
-                                    <option key={tag.id} value={tag.id}>
-                                        {tag.tag_name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
 
-                        
                     </div>
-
+                    <div className={`w-full ${isfeasability == 0 ? "hidden" : "block"}`}>
+                                {/* Tags */}
+                                <label>Select User to Assign</label>
+                                <select
+                                    name="user"
+                                    id="user"
+                                    className="form-select select2 w-72 py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    
+                                    value={selectedUser}
+                                    ref={userRef}
+                                >
+                                    <option value="">Select User</option>
+                                    {users.map((user) => (
+                                        <option key={user.id} value={user.id}>
+                                            {user.fld_first_name + " " + user.fld_last_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                     <div className='flex items-start justify-between space-x-1 mt-4'>
                         {/* Comments */}
                         <div className="w-full">
@@ -331,6 +377,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
 
                             />
                         </div>
+                        
 
                         {/* File Upload */}
                         <div className='w-full '>

@@ -9,9 +9,10 @@ import { CircleX, HistoryIcon, X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import AskForScope from './AskForScope';
 import SubmitRequestQuote from './SubmitRequestQuote';
+import FeasabilityUpdate from './FeasabilityUpdate';
 
 
-const QueryDetails = ({ onClose, queryId }) => {
+const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction }) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -320,7 +321,7 @@ const QueryDetails = ({ onClose, queryId }) => {
 
                         </div>
                     </div>
-                    <AskForScope queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} />
+                    <FeasabilityUpdate queryId={queryInfo.assign_id} quotationId={quotationId} userType={userObject.fld_admin_type} finalFunction={finalFunction}/>
 
                 </div>
             )}
@@ -331,4 +332,4 @@ const QueryDetails = ({ onClose, queryId }) => {
 
 };
 
-export default QueryDetails;
+export default FeasabilityQueryDetails;
