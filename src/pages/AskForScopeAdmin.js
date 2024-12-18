@@ -3,7 +3,9 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp, CheckCircle, CheckCircle2, RefreshCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
+import AddTags from './AddTags';
 const AskForScopeAdmin = ({ queryId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -21,6 +23,8 @@ const AskForScopeAdmin = ({ queryId }) => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [adminComments, setAdminComments] = useState('');
     const [expandedRowIndex, setExpandedRowIndex] = useState(null);
+    const [editFormOpen, setEditFormOpen] = useState(false);
+    const [selectedQuoteId, setSelectedQuoteId] = useState('');
 
     const toggleRow = (index) => {
         setExpandedRowIndex(expandedRowIndex === index ? null : index);
@@ -101,6 +105,11 @@ const AskForScopeAdmin = ({ queryId }) => {
             // Hide loading spinner
             setPriceLoading(false);
         }
+    };
+
+    const toggleEditForm = (id) => {
+        setSelectedQuoteId(id);
+        setEditFormOpen((prev) => !prev)
     };
 
     const PriceSubmitValidate = async (refId, quoteId) => {
@@ -263,7 +272,6 @@ const AskForScopeAdmin = ({ queryId }) => {
                                             {/* Row */}
                                             <tr
                                                 className="cursor-pointer hover:bg-gray-50"
-                                                onClick={() => toggleRow(index)}
                                             >
                                                 <td className="border px-4 py-2">
                                                     <p className='flex items-center'>
@@ -311,7 +319,7 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                                     : 'Unknown'}
                                                     </span>
                                                 </td>
-                                                <td className="border px-4 py-2">
+                                                <td className="border px-4 py-2 flex items-center">
                                                     {/* Up/Down Arrow Button */}
                                                     <button
                                                         onClick={() => toggleRow(index)}
@@ -319,6 +327,12 @@ const AskForScopeAdmin = ({ queryId }) => {
                                                     >
                                                         {expandedRowIndex === index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
+                                                   
+                                                        <button onClick={() => { toggleEditForm(quote.quoteid) }}
+                                                            className='flex items-center rounded-full border-2 border-blue-500'>
+                                                            <Hash className='p-1' />
+                                                        </button>
+                                                    
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
@@ -610,6 +624,12 @@ const AskForScopeAdmin = ({ queryId }) => {
                 </div>
             )}
             <ToastContainer />
+            <AnimatePresence>
+                       
+                        {editFormOpen && (
+                            <AddTags quoteId={selectedQuoteId} refId={queryId} onClose={()=>{setEditFormOpen(!editFormOpen)}} after={fetchScopeDetails} />
+                        )}
+                    </AnimatePresence>
         </div>
     );
 };

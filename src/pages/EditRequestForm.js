@@ -17,13 +17,10 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         service_name: '',
         plan: [],
         comments: '',
-        tags: [],
     });
 
     const [currencies, setCurrencies] = useState([]);
     const [services, setServices] = useState([]);
-    const [tags, setTags] = useState([]);
-    const tagsRef = useRef(null);
     const [file, setFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -43,7 +40,6 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             if (data.status) {
                 const details = data.data;
                 // Convert tags from comma-separated string to an array
-                const tagsArray = details.tags ? details.tags.split(',') : [];
                 const planArray = details.plan ? details.plan.split(',') : [];
 
                 setFormData({
@@ -52,9 +48,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                     service_name: details.service_name || '',
                     plan: planArray,
                     comments: details.comments || '',
-                    tags: tagsArray, // Set tags as an array
                 });
-                $(tagsRef.current).val(tagsArray).trigger('change');
             } else {
                 toast.error('Failed to fetch request details.');
             }
@@ -92,15 +86,6 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         }
     };
 
-    const fetchTags = async () => {
-        try {
-            const response = await fetch('https://apacvault.com/Webapi/getTags');
-            const data = await response.json();
-            if (data.status) setTags(data.data || []);
-        } catch (error) {
-            toast.error('Failed to fetch tags.');
-        }
-    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -128,7 +113,6 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             payload.append('currency', formData.currency);
             payload.append('other_currency', formData.otherCurrency);
             payload.append('service_name', formData.service_name);
-            payload.append('tags', formData.tags);
             payload.append('plan', formData.plan);
             payload.append('comments', formData.comments);
 
@@ -156,33 +140,10 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     useEffect(() => {
         fetchCurrencies();
         fetchServices();
-        fetchTags();
         fetchInitialData();
     }, []);
 
 
-    useEffect(() => {
-        // Initialize select2 for Tags
-        $(tagsRef.current).select2({
-            placeholder: "Select Tags",
-            allowClear: true,
-            multiple: true,
-        }).on('change', (e) => {
-            const selectedValues = $(e.target).val();
-            setFormData((prev) => ({ ...prev, tags: selectedValues }));
-        });
-
-        
-        $(tagsRef.current).val(formData.tags).trigger('change');
-        
-
-        return () => {
-            // Clean up select2 on component unmount
-            if (tagsRef.current) {
-                $(tagsRef.current).select2('destroy');
-            }
-        };
-    }, [tags]);
    
 
     const planColors = {
@@ -272,26 +233,6 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                         <label className={`text-sm font-medium ${planColors[plan] || 'text-gray-700'}`}>{plan}</label> {/* Default text color */}
                                     </div>
                                 ))}
-                            </div>
-
-                            <div className='w-full'>
-                                {/* Tags */}
-                                <label>Tags</label>
-                                <select
-                                    name="tags"
-                                    id="tags"
-                                    className="form-select select2 w-96 py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    multiple
-                                    value={formData.tags}
-                                    ref={tagsRef}
-                                >
-                                    <option value="">Select Tags</option>
-                                    {tags.map((tag) => (
-                                        <option key={tag.id} value={tag.id}>
-                                            {tag.tag_name}
-                                        </option>
-                                    ))}
-                                </select>
                             </div>
                         </div>
                         <div className='w-full'>
