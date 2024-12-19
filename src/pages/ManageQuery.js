@@ -9,10 +9,11 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw,Filter} from 'lucide-react';
+import { RefreshCcw,Filter, FileQuestion} from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
+import AllFeasPage from './AllFeasPage';
 
 
 
@@ -32,6 +33,7 @@ const ManageQuery = () => {
     const [selectedQuery, setSelectedQuery] = useState('');
     const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [isAllFeasOpen, setIsAllFeasOpen] = useState(false);
     const navigate = useNavigate();
 
     DataTable.use(DT);
@@ -49,6 +51,11 @@ const ManageQuery = () => {
     const toggleDetailsPage = () => {
         setIsDetailsOpen(!isDetailsOpen);
     };
+
+    const toggleAllFeasPage = () => {
+        setIsAllFeasOpen(!isAllFeasOpen);
+    };
+
     const handleViewButtonClick = (query) => {
         setSelectedQuery(query);
         setSelectedQuote(query.id)
@@ -369,10 +376,14 @@ const ManageQuery = () => {
                     <label>&nbsp;</label>
                     <button className="gree text-white mr-2 flex items-center" onClick={fetchQuotes}>
                     <Filter size={12}/> &nbsp;
-                        Apply Filters
+                        Apply
                     </button>
                     <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic" onClick={resetFilters}>
                         <RefreshCcw size={12}/>
+                    </button>
+                    <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic flex items-center" onClick={toggleAllFeasPage}>
+                        <FileQuestion size={15}/>
+                        Feasability
                     </button>
 
                 </div>
@@ -409,6 +420,9 @@ const ManageQuery = () => {
                             queryId={selectedQuery.ref_id}
                         />
                     
+                )}
+                {isAllFeasOpen && (
+                    <AllFeasPage onClose={toggleAllFeasPage} />
                 )}
             </AnimatePresence>
            
