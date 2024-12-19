@@ -192,11 +192,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                                 </span>
                                             )}
                                         </p>
-                                        {quote.feasability_status == 'Pending' && (
-                                            <button onClick={toggleTransferForm} className='flex items-center mr-3 border px-2 py-1 bg-green-100 rounded'>
-                                                <ArrowLeftRight className='mr-3' /> Transfer
-                                            </button>
-                                        )}
+                                        
                                     </div>
                                     {quote.tag_names && (
                                         <p>
