@@ -374,10 +374,10 @@ const AskForScope = ({ queryId, userType }) => {
                                                                     <strong>Quote Status:</strong>
                                                                     <span
                                                                         className={quote.quote_status == 0
-                                                                            ? "text-red-600 text-md" // Red for Pending
+                                                                            ? "badge-danger p-1" // Red for Pending
                                                                             : quote.quote_status == 1
-                                                                                ? "text-green-600 text-md" // Green for Submitted
-                                                                                : "text-yellow-600 text-md"} // Yellow for Discount Requested
+                                                                                ? "badge-success p-1" // Green for Submitted
+                                                                                : "badge-warning p-1"} // Yellow for Discount Requested
                                                                     >
                                                                         {quote.quote_status == 0
                                                                             ? "Pending"
@@ -439,26 +439,26 @@ const AskForScope = ({ queryId, userType }) => {
                                                                 {historyLoading && <CustomLoader />}
                                                                 {historyData.length > 0 && (
                                                                     <div className="mt-4 space-y-4">
-                                                                        <h3 className="font-semibold text-lg">Feasibility Check History:</h3>
+                                                                        <strong className="">Feasibility Check History:</strong>
                                                                         <div className="border-l-2 border-gray-300 pl-4">
                                                                             {historyData.map((historyItem, index) => (
                                                                                 <div key={historyItem.id} className="mb-4">
-                                                                                    <div className="flex items-center space-x-3">
+                                                                                    <div className="flex items-start space-x-3">
                                                                                         {/* Timeline Icon */}
-                                                                                        <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+                                                                                        <div className="w-h-2 bg-blue-500 rounded-full mt-1"></div>
                                                                                         <div className="flex flex-col">
                                                                                             {/* User Details */}
-                                                                                            <p className="text-sm font-semibold text-gray-700">
+                                                                                            <p className=" font-semibold text-gray-700">
                                                                                                 {historyItem.from_first_name} {historyItem.from_last_name}
                                                                                                 {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs">to</span>)}
 
                                                                                                 {historyItem.to_first_name} {historyItem.to_last_name}
                                                                                             </p>
-                                                                                            <p className="text-xs text-gray-500">{historyItem.created_at}</p>
+                                                                                            <p className=" text-gray-500">{historyItem.created_at}</p>
                                                                                         </div>
                                                                                     </div>
                                                                                     {/* Message */}
-                                                                                    <p className="ml-7 text-sm text-gray-600">{historyItem.message}</p>
+                                                                                    <p className="ml-7  text-gray-600">{historyItem.message}</p>
                                                                                 </div>
                                                                             ))}
                                                                         </div>

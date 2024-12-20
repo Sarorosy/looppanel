@@ -170,15 +170,15 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                 </div>
                 
                     <form onSubmit={handleSubmit} className={`form-wrapper ${loading ? 'loading' : ''}`} >
-                        <div className="w-full grid grid-cols-3 gap-4 space-x-1">
+                        <div className="w-full grid grid-cols-3 gap-2 space-x-1">
                             {/* Currency Dropdown */}
-                            <div className='w-full'>
+                            <div className='w-full mb-3'>
                                 <label>Currency</label>
                                 <select
                                     name="currency"
                                     value={formData.currency}
                                     onChange={handleInputChange}
-                                    className="form-control"
+                                    className="form-control form-control-sm"
                                 >
                                     <option value="">Select Currency</option>
                                     {currencies.map((currency) => (
@@ -195,12 +195,12 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                         placeholder="Enter other currency"
                                         value={formData.otherCurrency}
                                         onChange={handleInputChange}
-                                        className="form-control"
+                                        className="form-control form-control-sm"
                                     />
                                 )}
                             </div>
 
-                            <div className='w-full'>
+                            <div className='w-full mb-3'>
 
                                 {/* Service Dropdown */}
                                 <label>Service</label>
@@ -208,7 +208,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                     name="service_name"
                                     value={formData.service_name}
                                     onChange={handleInputChange}
-                                    className="form-control"
+                                    className="form-control form-control-sm"
                                 >
                                     <option value="">Select Service</option>
                                     {services.map((service) => (
@@ -219,23 +219,26 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                 </select>
 
                             </div>
-                            <div className='w-full'>
-                                {/* Plan Checkboxes */}
-                                <label className="ml-2 text-sm font-medium">Plan</label>
+                            
+                        </div>
+                        <div className='w-full mb-3'>
+                            {/* Plan Checkboxes */}
+                            <label className="">Plan</label>
+                            <div className='flex'>
                                 {plans.map((plan) => (
-                                    <div key={plan} className="flex items-center space-x-2">
+                                    <div key={plan} className="flex items-center space-x-2 mr-4">
                                         <input
                                             type="checkbox"
                                             checked={formData.plan.includes(plan)}
                                             onChange={() => handleCheckboxChange(plan)}
-                                            className={`form-checkbox h-4 w-4 border-gray-300 rounded ${planColors[plan] || ''}`} // Default to empty string if no color is found
+                                            className={`form-checkbox h-4 w-4 f-12 border-gray-300 rounded ${planColors[plan] || ''}`} // Default to empty string if no color is found
                                         />
-                                        <label className={`text-sm font-medium ${planColors[plan] || 'text-gray-700'}`}>{plan}</label> {/* Default text color */}
+                                        <label className={` font-medium mb-0 ${planColors[plan] || 'text-gray-700'}`}>{plan}</label> {/* Default text color */}
                                     </div>
                                 ))}
                             </div>
                         </div>
-                        <div className='w-full'>
+                        <div className='w-full mb-3'>
                             {/* Comments */}
                             <label>Comments</label>
                             <ReactQuill value={formData.comments} onChange={(value) => setFormData({ ...formData, comments: value })} />

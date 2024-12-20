@@ -317,7 +317,7 @@ table.dataTable>thead>tr>th {
   height: 0;
   border-left: 12px solid transparent;
   border-right: 12px solid transparent;
-  border-bottom: 12px solid #fff;
+  border-bottom: 12px solid #f3f4f6;
   position: absolute;
   top: -12px;
   margin: 0 auto;
@@ -376,7 +376,7 @@ table.dataTable>thead>tr>th {
 }
 
 .space-x-1 span{
-  padding: 0px 7px !important;
+  /* padding: 0px 7px !important; */
   font-size: 12px;
 }
 
@@ -521,4 +521,52 @@ th{
   bottom: 0;
   background: rgba(255, 255, 255, 0.5); /* Light overlay */
   z-index: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.select2-selection__clear {
+  margin: 0px !important;
+  float: unset !important;
+  height: 0px !important;
+  padding: 0px !important;
+  position: absolute;
+  top: 3px;
+  right: 20px;
+}
+img.nav-logo {
+  width: 30%;
+}
+.top-30 {
+  top: 30px;
+}
+.f-12{
+  font-size: 12px !important;
+}
+
+.w-h-2{
+    width: 10px;
+    height: 10px;
 }

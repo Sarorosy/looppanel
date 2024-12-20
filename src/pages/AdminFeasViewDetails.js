@@ -163,7 +163,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
             {loading ? (
                 <CustomLoader /> // A loader component when data is being fetched
             ) : (
-                <div className="bg-white p-6 m-2 shadow rounded-md space-y-4">
+                <div className="p-2">
                     {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
                     {scopeDetails && scopeDetails.length > 0 ? (
@@ -216,16 +216,16 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                             <p><strong>Plan:</strong> {quote.plan}</p>
                                         </>
                                     )}
-                                    <p>
-                                        <strong>Comments:</strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} />
-                                    </p>
-                                    <p>
+                                    <p className=''>
+                                        <strong className=''>Comments:</strong> 
+                                    </p><span dangerouslySetInnerHTML={{ __html: quote.comments }} />
+                                    <p className='flex '>
                                         <strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString("en-GB")}
                                     </p>
                                     {quote.relevant_file && quote.relevant_file.length > 0 && (
-                                        <div>
+                                        <div  className='flex '>
                                             <strong>Relevant Files:</strong>
-                                            <div className="space-y-2 mt-2">
+                                            <div className="space-y-2">
                                                 {quote.relevant_file.map((file, fileIndex) => (
                                                     <div key={fileIndex}>
                                                         <a
@@ -302,10 +302,10 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                         <span
                                             className={
                                                 quote.quote_status == 0
-                                                    ? "text-red-600 text-md"
+                                                    ? "badge-danger p-1"
                                                     : quote.quote_status == 1
-                                                        ? "text-green-600 text-md"
-                                                        : "text-yellow-600 text-md"
+                                                        ? "badge-success p-1"
+                                                        : "text-warning p-1"
                                             }
                                         >
                                             {quote.quote_status == 0
@@ -318,42 +318,43 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                     {assignQuoteInfo && assignQuoteInfo !== false && (
                                         <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                     )}
-                                    <p className={quote.feasability_status == 'Pending' ? "text-red-600" : "text-green-700"}>
-                                        Feasibility status is <strong>{quote.feasability_status}</strong>.
+                                    <p className=''>
+                                        <strong className='mr-1'>Feasibility status is : </strong>
+                                    <span className={quote.feasability_status == 'Pending' ? "text-red-600" : "badge-success p-1"}>{quote.feasability_status}</span>
                                     </p>
-                                    {quote.feasability_status == 'Completed' && (
                                         <p>
-                                            Feasibility Comments:
+                                            <strong>Feasibility Comments:</strong>
+                                    {quote.feasability_status == 'Completed' && (
                                             <span
                                                 className='mt-2'
                                                 dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
                                             />
+                                        )}
                                         </p>
-                                    )}
                                     
 
                                     {historyData.length > 0 && (
                                         <div className="mt-4 space-y-4">
-                                            <h3 className="font-semibold text-lg">Feasibility Check History:</h3>
+                                            <strong className=" f-12">Feasibility Check History:</strong>
                                             <div className="border-l-2 border-gray-300 pl-4">
                                                 {historyData.map((historyItem, index) => (
                                                     <div key={historyItem.id} className="mb-4">
-                                                        <div className="flex items-center space-x-3">
+                                                        <div className="flex items-start space-x-3">
                                                             {/* Timeline Icon */}
-                                                            <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+                                                            <div className="w-h-2 bg-blue-500 rounded-full mt-1"></div>
                                                             <div className="flex flex-col">
                                                                 {/* User Details */}
-                                                                <p className="text-sm font-semibold text-gray-700">
+                                                                <p className="font-semibold text-gray-700">
                                                                     {historyItem.from_first_name} {historyItem.from_last_name}
-                                                                    {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs">to</span>)}
+                                                                    {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs"> to </span>)}
 
                                                                     {historyItem.to_first_name} {historyItem.to_last_name}
                                                                 </p>
-                                                                <p className="text-xs text-gray-500">{historyItem.created_at}</p>
+                                                                <p className="text-gray-500">{historyItem.created_at}</p>
                                                             </div>
                                                         </div>
                                                         {/* Message */}
-                                                        <p className="ml-7 text-sm text-gray-600">{historyItem.message}</p>
+                                                        <p className="ml-7  text-gray-600">{historyItem.message}</p>
                                                     </div>
                                                 ))}
                                             </div>

@@ -105,10 +105,10 @@ const QueryDetails = ({ onClose, queryId }) => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
         >
-            <div className='flex items-center justify-between bg-blue-400 text-white pnav py-2'>
+            <div className='flex items-center justify-between bg-blue-400 text-white pnav py-3'>
                 <h2 className="text-xl font-semibold mllt">Query Details </h2>
 
-                {tatScore && tatScore.total_rows > 0 ? (
+                {/* {tatScore && tatScore.total_rows > 0 ? (
                     <div className="flex items-center justify-between space-x-2 mr-16">
                         <p>
                             <span className="font-bold">Average TAT:</span>{" "}
@@ -127,7 +127,7 @@ const QueryDetails = ({ onClose, queryId }) => {
                     </div>
                 ) : (
                     <p className="text-gray-500"></p>
-                )}
+                )} */}
                 <button
                     onClick={onClose}
                     className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
@@ -148,9 +148,10 @@ const QueryDetails = ({ onClose, queryId }) => {
                                 {queryInfo.assign_id && (
                                     <p
 
-                                        className="cursor-pointer flex"
+                                        className="flex"
                                     >
-                                        <strong>Ref. No.:</strong> {queryInfo.assign_id} <HistoryIcon className='ml-2 bg-blue-300 p-1 rounded' onClick={fetchActivityHistory} />
+                                        <strong>Ref. No.:</strong> {queryInfo.assign_id} 
+                                        {/* <HistoryIcon className='ml-2 bg-blue-300 p-1 rounded' onClick={fetchActivityHistory} /> */}
                                     </p>
                                 )}
 
@@ -218,14 +219,14 @@ const QueryDetails = ({ onClose, queryId }) => {
                             <p>
                                 <strong>Tag: </strong>
                                 {queryInfo.tags && queryInfo.tags.length > 0 ? (
-                                    <span className="space-x-1">
+                                    <span className="d-flex px-0">
                                         {queryInfo.tags.map((tag, index) => (
-                                            <span
+                                            <div
                                                 key={index}
-                                                className="bg-yellow-500 p-1 rounded text-white mr-1"
+                                                className="bg-yellow-500 px-1 rounded text-white mr-1 d-inline-block"
                                             >
                                                 {tag}
-                                            </span>
+                                            </div>
                                         ))}
                                     </span>
                                 ) : (

@@ -189,7 +189,7 @@ const ManageContactMadeQueries = () => {
             data: null,
             orderable: false,
             render: (data, type, row) => `
-        <button class="view-btn vd mx-1 p-1  text-white" style="font-size:10px;border-radius:3px;" data-id="${row.assign_id}">
+        <button class="view-btn vd mx-1 p-1  text-white" style="font-size:10px;border-radius:3px;white-space: nowrap;" data-id="${row.assign_id}">
             View Details
         </button>
       `,
@@ -206,69 +206,71 @@ const ManageContactMadeQueries = () => {
 
     return (
         <div className="container bg-gray-100 w-full">
-            <h1 className='text-xl font-bold'>Query History</h1>
 
             {/* Filter Section */}
-            <div className="flex items-center space-x-2 my-3 bg-white px-4 py-2 rounded aql">
-                <div className="w-1/2">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder='Ref ID'
-                        value={RefId}
-                        onChange={(e) => setRefId(e.target.value)}
-                    />
-                </div>
-                <div className="w-1/2">
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder='Enter Search Keywords'
-                        value={keyword}
-                        onChange={(e) => setKeyword(e.target.value)}
-                    />
-                </div>
-                <div className="w-1/2">
-                    <select
-                        id="user_id"
-                        className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
+            <div className="mb-3 bg-white px-3 py-3 rounded aql">
+            <h1 className='text-xl font-bold mb-3'>Query History</h1>
+                <div className='flex items-center space-x-2 '>
+                    <div className="w-1/2">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder='Ref ID'
+                            value={RefId}
+                            onChange={(e) => setRefId(e.target.value)}
+                        />
+                    </div>
+                    <div className="w-1/2">
+                        <input
+                            type="text"
+                            className="form-control"
+                            placeholder='Enter Search Keywords'
+                            value={keyword}
+                            onChange={(e) => setKeyword(e.target.value)}
+                        />
+                    </div>
+                    <div className="w-1/2">
+                        <select
+                            id="user_id"
+                            className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
 
-                        value={selectedWebsite}
-                        ref={selectUserRef}
-                    >
-                        <option value="">Select Website</option>
-                        {websites.map(website => (
-                            <option key={website.id} value={website.id}>
-                                {website.website}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="w-1/2 flex justify-content-end space-x-2 mt-1">
-                    <label>&nbsp;</label>
-                    <button className="gree text-white mr-2 flex items-center" onClick={fetchQuotes}>
-                        <Filter size={12} />
-                        Apply
-                    </button>
-                    <button className="bg-gray-200 mr-2 flex items-center" onClick={resetFilters}>
-                        <RefreshCcw size={12} />
-                        Refresh
-                    </button>
-                    <button className="bg-gray-200 mr-2 flex items-center" onClick={handleSummaryButtonClick} title='View Summary'>
-                        <ListIcon size={12} />
-                        Summary
-                    </button>
-                    <button className="bg-gray-200 mr-2 flex items-center" onClick={handleFeasButtonClick} title='Feasability Check'>
-                        <FileQuestion size={12} />
-                        Feasability
-                    </button>
+                            value={selectedWebsite}
+                            ref={selectUserRef}
+                        >
+                            <option value="">Select Website</option>
+                            {websites.map(website => (
+                                <option key={website.id} value={website.id}>
+                                    {website.website}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="w-1/2 flex justify-content-end space-x-2 items-center">
+                        <label>&nbsp;</label>
+                        <button className="gree text-white flex items-center" onClick={fetchQuotes}>
+                            <Filter size={12} />
+                            Apply
+                        </button>
+                        <button className="bg-gray-200 flex items-center" onClick={resetFilters}>
+                            <RefreshCcw size={12} />
+                            Refresh
+                        </button>
+                        <button className="bg-gray-200 flex items-center" onClick={handleSummaryButtonClick} title='View Summary'>
+                            <ListIcon size={12} />
+                            Summary
+                        </button>
+                        <button className="bg-gray-200 flex items-center" onClick={handleFeasButtonClick} title='Feasability Check'>
+                            <FileQuestion size={12} />
+                            Feasability
+                        </button>
+                    </div>
                 </div>
             </div>
 
             {loading ? (
                 <CustomLoader />
             ) : (
-                <div className='bg-white dt border-t-2 border-blue-400 rounded'>
+                <div className='bg-white p-4 border-t-2 border-blue-400 rounded'>
                     <div className="table-scrollable">
                         <DataTable
                             data={quotes}

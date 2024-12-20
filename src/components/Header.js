@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, Bell, Quote, MessageSquareMore, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
+import LogoNew from '../logo-new.png';
 import { AnimatePresence } from 'framer-motion';
 import QueryDetails from '../pages/QueryDetails';
 import QueryDetailsAdmin from '../pages/QueryDetailsAdmin';
@@ -179,18 +180,24 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-blue-400 text-white">
-      <div className="mx-auto w-full flex justify-between items-center pnav">
+    <header className="bg-white text-dark">
+      <div className="mx-auto w-full flex justify-between items-center container">
         {/* Logo and Navigation Links */}
         <div className="flex items-center">
-          <h1 className="text-xl font-bold mr-6 bg-[#f39c12] py-3 px-2">Query Management</h1>
+          <h1 className="text-xl font-bold mr-6  py-3 px-2">
+          <img
+          src={LogoNew}
+          alt="Company Logo"
+          className="nav-logo"
+        />
+          </h1>
 
         </div>
 
         {/* User Session Info */}
-        <div className="relative n-dp-dn z-50 items-center">
+        <div className="relative n-dp-dn z-50 items-center flex">
           {/* Bell Button with Notification Count */}
-          <button onClick={toggleNotifications} className="text-white ml-6 relative">
+          <button onClick={toggleNotifications} className="text-dark ml-6 relative">
             <Bell size={24} />
             {notificationCount > 0 && (
               <span className="absolute text-xs bg-red-600 text-white rounded-full px-1 py-0.5" style={{ position: "absolute", top: "-10px", right: "-10px" }}>
@@ -268,12 +275,12 @@ const Header = () => {
           {/* User Menu */}
           <button
             onClick={toggleUserMenu}
-            className="text-white ml-6"
+            className="text-dark ml-6"
           >
             {userName}
           </button>
           {userMenuOpen && (
-            <div className="absolute right-0 mt-2 bg-white text-black shadow-md border px-2 py-1 rounded sobut">
+            <div className="absolute right-0 top-30 mt-2 bg-gray-100 text-black shadow-md border px-2 py-1 rounded sobut">
               <button
                 onClick={handleLogout}
                 className="block text-left hover:bg-red-400 rounded hover:text-white"

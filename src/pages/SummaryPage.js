@@ -197,7 +197,7 @@ const SummaryPage = ({ onClose }) => {
             {loading ? (
                 <CustomLoader />
             ) : (
-                <div className='bg-white dt border-t-2 border-blue-400 rounded'>
+                <div className='bg-white p-4 border-t-2 border-blue-400 rounded'>
                     <div className="table-scrollable">
                         <DataTable
                             data={quoteSummary}

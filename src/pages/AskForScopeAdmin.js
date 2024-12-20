@@ -378,7 +378,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p><strong>Comments:</strong><span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            <p className='flex '><strong>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
                                                             <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
                                                                 <div>
@@ -556,34 +556,36 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                     <input type="hidden" name="ref_id" value={quote.assign_id} />
                                                                                     <input type="hidden" name="quote_id" value={quote.quoteid} />
                                                                                     <div className="box-body">
+                                                                                        <div className='row'>
                                                                                         {quote.plan &&
                                                                                             quote.plan.split(',').map((plan, index) => (
-                                                                                                <div className="form-group" key={index}>
-                                                                                                    <label
-                                                                                                        htmlFor={`amount_${plan.trim()}`}
-                                                                                                        className="col-sm-3 control-label"
-                                                                                                    >
-                                                                                                        Amount for <strong>{plan.trim()} ({quote.currency}) </strong>
-                                                                                                    </label>
-                                                                                                    <div className="col-sm-12">
-                                                                                                        <input
-                                                                                                            type="text"
-                                                                                                            name={`amount_${plan.trim()}`}
-                                                                                                            id={`amount_${plan.trim()}`}
-                                                                                                            className="form-control"
-                                                                                                            value={amounts[plan.trim()] || ''}
-                                                                                                            required
-                                                                                                            onChange={(e) =>
-                                                                                                                setAmounts({
-                                                                                                                    ...amounts,
-                                                                                                                    [plan.trim()]: e.target.value,
-                                                                                                                })
-                                                                                                            }
-                                                                                                        />
-                                                                                                        <div className="error" id={`amountError_${plan.trim()}`}></div>
+                                                                                                    <div className="form-group col-md-6" key={index}>
+                                                                                                        <label
+                                                                                                            htmlFor={`amount_${plan.trim()}`}
+                                                                                                            className="col-sm-12 control-label"
+                                                                                                        >
+                                                                                                            Amount for <strong>{plan.trim()} ({quote.currency}) </strong>
+                                                                                                        </label>
+                                                                                                        <div className="col-sm-12">
+                                                                                                            <input
+                                                                                                                type="text"
+                                                                                                                name={`amount_${plan.trim()}`}
+                                                                                                                id={`amount_${plan.trim()}`}
+                                                                                                                className="form-control"
+                                                                                                                value={amounts[plan.trim()] || ''}
+                                                                                                                required
+                                                                                                                onChange={(e) =>
+                                                                                                                    setAmounts({
+                                                                                                                        ...amounts,
+                                                                                                                        [plan.trim()]: e.target.value,
+                                                                                                                    })
+                                                                                                                }
+                                                                                                            />
+                                                                                                            <div className="error" id={`amountError_${plan.trim()}`}></div>
+                                                                                                        </div>
                                                                                                     </div>
-                                                                                                </div>
                                                                                             ))}
+                                                                                            </div>
                                                                                         <div className="form-group">
                                                                                             <label htmlFor="comment" className="col-sm-3 control-label">Comments</label>
                                                                                             <div className="col-sm-12">

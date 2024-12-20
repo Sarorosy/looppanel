@@ -177,33 +177,35 @@ const AllFeasPage = ({ onClose }) => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
         >
-            <div className='flex items-center justify-between bg-blue-400 text-white pnav py-2'>
-                <h2 className="text-xl font-semibold mllt">Feasability Check</h2>
+            <div className='flex items-center justify-between bg-blue-400 text-white  py-3'>
+                <div className='container flex items-center justify-between p-0'>
+                    <h2 className="text-xl font-semibold">Feasability Check</h2>
 
 
-                <button
-                    onClick={onClose}
-                    className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
-                >
-                    {/* <CircleX size={32} /> */}
-                    <X size={15} />
-                </button>
+                    <button
+                        onClick={onClose}
+                        className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
+                    >
+                        {/* <CircleX size={32} /> */}
+                        <X size={15} />
+                    </button>
+                </div>
             </div>
-            <div className="flex justify-end mr-5 my-3">
+            <div className="flex justify-end py-3 px-0 container">
             
                 
                 <button
                     onClick={fetchQuoteSummary}
-                    className="flex items-center bg-blue-400 text-white hover:text-blue-600 hover:bg-blue-500 transition-colors px-4 py-2 rounded shadow"
+                    className="flex items-center bg-blue-400 text-white  hover:text-blue-600 hover:bg-blue-500 transition-colors px-2 py-1 f-12 rounded shadow"
                 >
-                    Refresh <RefreshCcw size={20} className="ml-2" />
+                    Refresh <RefreshCcw size={15} className="ml-2" />
                 </button>
             </div>
 
             {loading ? (
                 <CustomLoader />
             ) : (
-                <div className='bg-white dt border-t-2 border-blue-400 rounded'>
+                <div className='bg-white p-4 border-t-2 border-blue-400 rounded container '>
                     <div className="table-scrollable">
                         <DataTable
                             data={quoteSummary}

@@ -169,7 +169,7 @@ const ManageQuery = () => {
         {
             title: 'Ref Id',
             data: 'ref_id',
-           
+            width:"110px",
             orderable: true,
             render: function (data, type, row) {
                 if (row.ptp === "Yes") {
@@ -177,7 +177,7 @@ const ManageQuery = () => {
                         ${data}
                         <span 
                             style="
-                                margin-left: 8px; 
+                               
                                 padding: 2px 4px; 
                                 background-color: #2B9758FF;
                                 color: #ffffff; 
@@ -197,7 +197,7 @@ const ManageQuery = () => {
         {
             title: 'Ask For Scope ID',
             data: 'id',
-            width:"50x",
+            width:"20x",
             orderable: true,
             className: 'text-center',
         },
@@ -283,7 +283,7 @@ const ManageQuery = () => {
             data: null,
             orderable: false,
             render: (data, type, row) => `
-        <button class="view-btn vd mx-1 p-1  text-white" style="font-size:10px;border-radius:3px;" data-id="${row.ref_id}">
+        <button class="view-btn vd mx-1 p-1  text-white" style="font-size:10px;border-radius:3px;     white-space: nowrap;" data-id="${row.ref_id}">
             View Details
         </button>
       `,
@@ -303,96 +303,99 @@ const ManageQuery = () => {
 
     return (
         <div className="container bg-gray-100 w-full">
-            <h1 className='text-xl font-bold'>All Quote List</h1>
+           
 
             {/* Filter Section */}
-            <div className="flex items-center space-x-2 my-3 bg-white px-4 py-2 rounded aql">
-                <div className="w-1/2">
-                <input
-                        type="text"
-                        className="form-control"
-                        placeholder='Ref ID'
-                        value={refID}
-                        onChange={(e) => setRefId(e.target.value)}
-                    />
-                </div>
-                <div className="w-1/2">
-                    <select
-                        id="user_id"
-                        className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
+            <div className=" mb-3 bg-white px-3 py-3 rounded "> 
+                <h1 className='text-xl font-bold mb-3'>All Quote List</h1>
+                <div className='flex items-center space-x-2 aql'>
+                    <div className="w-1/2">
+                    <input
+                            type="text"
+                            className="form-control"
+                            placeholder='Ref ID'
+                            value={refID}
+                            onChange={(e) => setRefId(e.target.value)}
+                        />
+                    </div>
+                    <div className="w-1/2">
+                        <select
+                            id="user_id"
+                            className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control slt-x-isu "
 
-                        value={selectedUser}
-                        ref={selectUserRef}
-                    >
-                        <option value="">Select User</option>
-                        {users.map(user => (
-                            <option key={user.id} value={user.id}>
-                                {user.fld_first_name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="w-1/2">
-                    <select
-                        id="service_name"
-                        className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
+                            value={selectedUser}
+                            ref={selectUserRef}
+                        >
+                            <option value="">Select User</option>
+                            {users.map(user => (
+                                <option key={user.id} value={user.id}>
+                                    {user.fld_first_name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="w-1/2">
+                        <select
+                            id="service_name"
+                            className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
 
-                        value={selectedService}
-                        ref={selectServiceRef}
-                    >
-                        <option value="">Select Service</option>
-                        {services.map(service => (
-                            <option key={service.id} value={service.id}>
-                                {service.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="w-1/2 ss">
-                    
-                    <select
-                        className="form-control"
-                        value={ptp}
-                        onChange={(e) => setPtp(e.target.value)}
-                    >
-                        <option value="">Select PTP</option>
-                        <option value="Yes">Yes</option>
-                    </select>
-                </div>
-                <div className="w-1/2 ss">
-                    
-                    <select
-                        className="form-control"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                    >
-                        <option value="">Select Status</option>
-                        <option value="Pending">Pending</option>
-                        <option value="1">Submitted</option>
-                        <option value="2">Discount Requested</option>
-                    </select>
-                </div>
-                <div className="w-1/2 flex justify-content-end space-x-2 mt-1">
-                    <label>&nbsp;</label>
-                    <button className="gree text-white mr-2 flex items-center" onClick={fetchQuotes}>
-                    <Filter size={12}/> &nbsp;
-                        Apply
-                    </button>
-                    <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic" onClick={resetFilters}>
-                        <RefreshCcw size={12}/>
-                    </button>
-                    <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic flex items-center" onClick={toggleAllFeasPage}>
-                        <FileQuestion size={15}/>
-                        Feasability
-                    </button>
+                            value={selectedService}
+                            ref={selectServiceRef}
+                        >
+                            <option value="">Select Service</option>
+                            {services.map(service => (
+                                <option key={service.id} value={service.id}>
+                                    {service.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="w-1/2 ss">
+                        
+                        <select
+                            className="form-control"
+                            value={ptp}
+                            onChange={(e) => setPtp(e.target.value)}
+                        >
+                            <option value="">Select PTP</option>
+                            <option value="Yes">Yes</option>
+                        </select>
+                    </div>
+                    <div className="w-1/2 ss">
+                        
+                        <select
+                            className="form-control"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <option value="">Select Status</option>
+                            <option value="Pending">Pending</option>
+                            <option value="1">Submitted</option>
+                            <option value="2">Discount Requested</option>
+                        </select>
+                    </div>
+                    <div className="w-1/2 flex justify-content-end space-x-2 items-center">
+                        <label>&nbsp;</label>
+                        <button className="gree text-white mr-2 flex items-center" onClick={fetchQuotes}>
+                        <Filter size={12}/> &nbsp;
+                            Apply
+                        </button>
+                        <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic" onClick={resetFilters}>
+                            <RefreshCcw size={12}/>
+                        </button>
+                        <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic flex items-center" onClick={toggleAllFeasPage}>
+                            <FileQuestion size={15}/>
+                            Feasability
+                        </button>
 
+                    </div>
                 </div>
             </div>
 
             {loading ? (
                 <CustomLoader />
             ) : (
-                <div className='bg-white dt border-t-2 border-blue-400 rounded'>
+                <div className='bg-white p-4 border-t-2 border-blue-400 rounded'>
                     <div className="table-scrollable">
                 <DataTable
                     data={quotes}

@@ -305,10 +305,10 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                         <span
                                             className={
                                                 quote.quote_status == 0
-                                                    ? "text-red-600 text-md"
+                                                    ? "badge-danger p-1"
                                                     : quote.quote_status == 1
-                                                        ? "text-green-600 text-md"
-                                                        : "text-yellow-600 text-md"
+                                                        ? "badge-success p-1"
+                                                        : "badge-warning p-1"
                                             }
                                         >
                                             {quote.quote_status == 0
@@ -321,18 +321,18 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                     {assignQuoteInfo && assignQuoteInfo !== false && (
                                         <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                     )}
-                                    <p className={quote.feasability_status == 'Pending' ? "text-red-600" : "text-green-700"}>
+                                    <p className={quote.feasability_status == 'Pending' ? "badge-danger p-1" : "badge-success p-1"}>
                                         Feasibility status is <strong>{quote.feasability_status}</strong>.
                                     </p>
+                                    <p>
+                                        <strong>Feasibility Comments:</strong>
                                     {quote.feasability_status == 'Completed' && (
-                                        <p>
-                                            Feasibility Comments:
                                             <span
                                                 className='mt-2'
                                                 dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
                                             />
+                                        )}
                                         </p>
-                                    )}
                                     {quote.feasability_status == "Pending" && (
                                         <div className="space-y-4">
 

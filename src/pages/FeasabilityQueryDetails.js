@@ -106,7 +106,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
         >
-            <div className='flex items-center justify-between bg-blue-400 text-white pnav py-2'>
+            <div className='flex items-center justify-between bg-blue-400 text-white pnav py-3'>
                 <h2 className="text-xl font-semibold mllt">Query Details </h2>
 
                 {tatScore && tatScore.total_rows > 0 ? (
@@ -149,9 +149,10 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                                 {queryInfo.assign_id && (
                                     <p
 
-                                        className="cursor-pointer flex"
+                                        className="flex"
                                     >
-                                        <strong>Ref. No.:</strong> {queryInfo.assign_id} <HistoryIcon className='ml-2 bg-blue-300 p-1 rounded' onClick={fetchActivityHistory} />
+                                        <strong>Ref. No.:</strong> {queryInfo.assign_id} 
+                                        {/* <HistoryIcon className='ml-2 bg-blue-300 p-1 rounded' onClick={fetchActivityHistory} /> */}
                                     </p>
                                 )}
 
@@ -223,7 +224,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                                         {queryInfo.tags.map((tag, index) => (
                                             <span
                                                 key={index}
-                                                className="bg-yellow-500 p-1 rounded text-white mr-1"
+                                                className="bg-yellow-500 px-1 rounded text-white mr-1"
                                             >
                                                 {tag}
                                             </span>
