@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import CustomLoader from '../CustomLoader'; // Assuming you have this loader component
 import DataTable from 'datatables.net-react';
 import DT from 'datatables.net-dt';
 import $ from 'jquery';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCcw, X } from 'lucide-react';
+import { RefreshCcw, X, Filter } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import FeasabilityQueryDetails from './FeasabilityQueryDetails';
 import AdminFeasViewDetails from './AdminFeasViewDetails';
@@ -20,6 +20,13 @@ const AllFeasPage = ({ onClose }) => {
     const [selectedQuery, setSelectedQuery] = useState('');
     const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState('');
+    const [selectedAssignUser, setSelectedAssignUser] = useState('');
+    const [users, setUsers] = useState([]);
+    const [status, setStatus] = useState('');
+    const selectUserRef = useRef(null);
+
+    const selectAssignRef = useRef(null);
 
     const userData = sessionStorage.getItem('loopuser');
 
@@ -38,7 +45,7 @@ const AllFeasPage = ({ onClose }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify(),
+                    body: JSON.stringify({user_id:selectedUser, assign_user:selectedAssignUser, feas_status:status}),
                 }
             );
 
@@ -66,10 +73,10 @@ const AllFeasPage = ({ onClose }) => {
         setSelectedQuery(query.ref_id);
         setSelectedQuote(query.id);
         setIsDetailsOpen(true);
-        
+
     };
 
-    const finalFunction = () =>{
+    const finalFunction = () => {
         setIsDetailsOpen(false);
         fetchQuoteSummary();
     }
@@ -77,9 +84,80 @@ const AllFeasPage = ({ onClose }) => {
     // Use DataTable library
     DataTable.use(DT);
 
+    const fetchUsers = async () => {
+        
+        try {
+            const response = await fetch(
+                'https://apacvault.com/Webapi/getAllUsersForAdmin',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify(), // Pass the POST data as JSON
+                }
+            );
+    
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+                setUsers(data.data); 
+            } else {
+                console.error('Failed to fetch Services:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching Services:', error);
+        } 
+    };
+
     useEffect(() => {
         fetchQuoteSummary();
+        fetchUsers();
     }, []);
+
+    const refresh = () => {
+        setSelectedUser('');
+        setSelectedAssignUser('');
+        $(selectUserRef.current).val('').trigger('change');
+        $(selectAssignRef.current).val('').trigger('change');
+        setStatus('');
+        fetchQuoteSummary();
+    }
+
+    useEffect(() => {
+        // Initialize select2 for Select Team
+        $(selectUserRef.current).select2({
+            placeholder: "Select Created User",
+            allowClear: true,
+        }).on('change', (e) => {
+            setSelectedUser($(e.target).val());
+        });
+
+
+        return () => {
+            // Destroy select2 when the component unmounts
+            if (selectUserRef.current) {
+                $(selectUserRef.current).select2('destroy');
+            }
+        };
+    }, [users]);
+
+    useEffect(() => {
+        // Initialize select2 for Select Team
+        $(selectAssignRef.current).select2({
+            placeholder: "Select Assign User",
+            allowClear: true,
+        }).on('change', (e) => {
+            setSelectedAssignUser($(e.target).val());
+        });
+
+
+        return () => {
+            // Destroy select2 when the component unmounts
+            if (selectAssignRef.current) {
+                $(selectAssignRef.current).select2('destroy');
+            }
+        };
+    }, [users]);
 
     const columns = [
         {
@@ -99,7 +177,7 @@ const AllFeasPage = ({ onClose }) => {
             orderable: false,
             className: 'text-center',
             render: function (data, type, row) {
-               
+
                 return `<span class="text-gray-600">${row.created_by_first_name + " " + row.created_by_last_name}</span>`;
             },
         },
@@ -109,7 +187,7 @@ const AllFeasPage = ({ onClose }) => {
             orderable: false,
             className: 'text-center',
             render: function (data, type, row) {
-               
+
                 return `<span class="text-gray-600">${row.assigned_to_first_name + " " + row.assigned_to_last_name}</span>`;
             },
         },
@@ -122,11 +200,11 @@ const AllFeasPage = ({ onClose }) => {
                     return '<span class="text-red-600 font-bold">Feasability Pending</span>';
                 } else if (data == 'Completed') {
                     return '<span class="text-green-600 font-bold">Feasability Completed</span>';
-                } 
+                }
                 return '<span class="text-gray-600">Unknown</span>';
             },
         },
-        
+
         {
             title: 'Service',
             data: 'service_name', // Replace with actual field name
@@ -191,15 +269,68 @@ const AllFeasPage = ({ onClose }) => {
                     </button>
                 </div>
             </div>
-            <div className="flex justify-end py-3 px-0 container">
-            
-                
-                <button
-                    onClick={fetchQuoteSummary}
-                    className="flex items-center bg-blue-400 text-white  hover:text-blue-600 hover:bg-blue-500 transition-colors px-2 py-1 f-12 rounded shadow"
-                >
-                    Refresh <RefreshCcw size={15} className="ml-2" />
-                </button>
+            <div className=" mb-3 bg-white px-3 py-3 rounded "> 
+            <h1 className='text-xl font-bold mb-3'>All Feasability List</h1>
+            <div className='flex items-center space-x-2 aql'>
+
+                <div className="w-1/2">
+                    <select
+                        id="user_id"
+                        className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control slt-x-isu "
+
+                        value={selectedUser}
+                        ref={selectUserRef}
+                    >
+                        <option value="">Select User</option>
+                        {users.map(user => (
+                            <option key={user.id} value={user.id}>
+                                {user.fld_first_name + " " + user.fld_last_name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="w-1/2">
+                    <select
+                        id="assignuser_id"
+                        className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control slt-x-isu "
+
+                        value={selectedAssignUser}
+                        ref={selectAssignRef}
+                    >
+                        <option value="">Select User</option>
+                        {users.map(user => (
+                            <option key={user.id} value={user.id}>
+                                {user.fld_first_name + " " + user.fld_last_name}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="w-1/2 ss">
+
+                    <select
+                        className="form-control"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                    >
+                        <option value="">Select Status</option>
+                        <option value="Pending">Feasability Pending</option>
+                        <option value="Completed">Feasability Completed</option>
+                    </select>
+                </div>
+                <div className="w-1/2 flex justify-content-end space-x-2 items-center">
+                    <button className="gree text-white mr-2 flex items-center" onClick={fetchQuoteSummary}>
+                        <Filter size={12} /> &nbsp;
+                        Apply
+                    </button>
+
+                    <button
+                        onClick={refresh}
+                        className="flex items-center bg-blue-400 text-white  hover:text-blue-600 hover:bg-blue-500 transition-colors px-2 py-1 f-12 rounded shadow"
+                    >
+                        Refresh <RefreshCcw size={15} className="ml-2" />
+                    </button>
+                </div>
+            </div>
             </div>
 
             {loading ? (

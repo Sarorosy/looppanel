@@ -18,7 +18,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const [selectedService, setSelectedService] = useState('');
     const [selectedPlans, setSelectedPlans] = useState([]);
     const [comments, setComments] = useState('');
-    const [file, setFile] = useState(null);
+    const [files, setFiles] = useState([{ id: Date.now(), file: null }]);
     const [submitting, setSubmitting] = useState(false);
     const [isfeasability, setIsFeasability] = useState(0);
     const [users, setUsers] = useState([]);
@@ -125,9 +125,21 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         }
     };
 
-    const handleFileChange = (event) => {
-        setFile(event.target.files[0]); // Get the selected file
+    const handleFileChange = (id, event) => {
+        const updatedFiles = files.map((item) =>
+            item.id === id ? { ...item, file: event.target.files[0] } : item
+        );
+        setFiles(updatedFiles);
     };
+
+    const handleAddFileInput = () => {
+        setFiles([...files, { id: Date.now(), file: null }]);
+    };
+
+    const handleRemoveFileInput = (id) => {
+        setFiles(files.filter((item) => item.id !== id));
+    };
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -144,7 +156,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             setSubmitting(false);
             return;
         }
-        if(isfeasability == 1 && !selectedUser){
+        if (isfeasability == 1 && !selectedUser) {
             toast.error('Please select user to assign!');
             setSubmitting(false);
             return;
@@ -162,7 +174,11 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         formData.append('user_id', loopUserObject.id);
         formData.append('user_name', loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name);
         formData.append('category', userObject.category);
-        formData.append('quote_upload_file[]', file);
+        files.forEach((item, index) => {
+            if (item.file) {
+                formData.append(`quote_upload_file[${index}]`, item.file);
+            }
+        });
 
         try {
             const response = await fetch('https://apacvault.com/Webapi/submitRequestQuoteApiAction/', {
@@ -202,9 +218,9 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             console.log(selectedUser);
         });
 
-        
+
         $(userRef.current).val(selectedUser).trigger('change');
-        
+
 
         return () => {
             // Clean up select2 on component unmount
@@ -225,39 +241,37 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             style={{ top: "-20px" }}
         >
             <div className="bg-white p-6 shadow rounded-md space-y-4 w-xl">
-            <div className="flex items-center justify-between bg-gradient-to-r from-blue-500 to-blue-700 text-white px-3 py-2 rounded-lg shadow-lg">
-    {/* Tabs */}
-    <div className="flex items-center space-x-4">
-        <h2
-            className={`text-lg font-medium cursor-pointer px-2 py-1 rounded-lg transition-colors ${
-                isfeasability == 0
-                    ? "bg-white text-blue-700 shadow-md"
-                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
-            }`}
-            onClick={() => setIsFeasability(0)}
-        >
-            Ask For Scope
-        </h2>
-        <h2
-            className={`text-lg font-medium cursor-pointer px-2 py-1 rounded-lg transition-colors ${
-                isfeasability == 1
-                    ? "bg-white text-blue-700 shadow-md"
-                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
-            }`}
-            onClick={() => setIsFeasability(1)}
-        >
-            Ask For Feasibility Check
-        </h2>
-    </div>
+                <div className="flex items-center justify-between bg-gradient-to-r from-blue-500 to-blue-700 text-white px-3 py-2 rounded-lg shadow-lg">
+                    {/* Tabs */}
+                    <div className="flex items-center space-x-4">
+                        <h2
+                            className={`text-lg font-medium cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 0
+                                    ? "bg-white text-blue-700 shadow-md"
+                                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
+                                }`}
+                            onClick={() => setIsFeasability(0)}
+                        >
+                            Ask For Scope
+                        </h2>
+                        <h2
+                            className={`text-lg font-medium cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 1
+                                    ? "bg-white text-blue-700 shadow-md"
+                                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
+                                }`}
+                            onClick={() => setIsFeasability(1)}
+                        >
+                            Ask For Feasibility Check
+                        </h2>
+                    </div>
 
-    {/* Close Button */}
-    <button
-        onClick={onClose}
-        className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
-    >
-        <X size={18} />
-    </button>
-</div>
+                    {/* Close Button */}
+                    <button
+                        onClick={onClose}
+                        className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
+                    >
+                        <X size={18} />
+                    </button>
+                </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <input type="hidden" name="ref_id" value={refId} />
@@ -344,24 +358,24 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
 
                     </div>
                     <div className={`w-full ${isfeasability == 0 ? "hidden" : "block"}`}>
-                                {/* Tags */}
-                                <label>Select User to Assign</label>
-                                <select
-                                    name="user"
-                                    id="user"
-                                    className="form-select select2 w-72 py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                    
-                                    value={selectedUser}
-                                    ref={userRef}
-                                >
-                                    <option value="">Select User</option>
-                                    {users.map((user) => (
-                                        <option key={user.id} value={user.id}>
-                                            {user.fld_first_name + " " + user.fld_last_name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                        {/* Tags */}
+                        <label>Select User to Assign</label>
+                        <select
+                            name="user"
+                            id="user"
+                            className="form-select select2 w-72 py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+
+                            value={selectedUser}
+                            ref={userRef}
+                        >
+                            <option value="">Select User</option>
+                            {users.map((user) => (
+                                <option key={user.id} value={user.id}>
+                                    {user.fld_first_name + " " + user.fld_last_name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                     <div className='flex items-start justify-between space-x-1 mt-4'>
                         {/* Comments */}
                         <div className="w-full">
@@ -377,20 +391,36 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
 
                             />
                         </div>
-                        
+
 
                         {/* File Upload */}
-                        <div className='w-full '>
-                            <label htmlFor="quote_upload_file" className="ml-4 block text-sm font-medium text-gray-700">
-                                Upload File
-                            </label>
-                            <input
-                                type="file"
-                                id="quote_upload_file"
-                                name="quote_upload_file[]"
-                                onChange={handleFileChange}
-                                className=" ml-4 mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                            />
+                        <div className="w-full">
+                            <label className="ml-4 block text-sm font-medium text-gray-700">Upload Files</label>
+                            {files.map((item, index) => (
+                                <div key={item.id} className="flex items-center ml-4 mt-1 space-x-2">
+                                    <input
+                                        type="file"
+                                        onChange={(e) => handleFileChange(item.id, e)}
+                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                    />
+                                    {index > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveFileInput(item.id)}
+                                            className="px-2 py-1 bg-red-500 text-white rounded"
+                                        >
+                                            -
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={handleAddFileInput}
+                                className="ml-4 mt-2 px-4 py-2 bg-green-500 text-white rounded"
+                            >
+                                +
+                            </button>
                         </div>
                     </div>
 
