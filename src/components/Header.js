@@ -221,7 +221,7 @@ const Header = () => {
                 <div className=' overflow-y-scroll' style={{ height: "200px" }}>
                   <ul className='p-1 text-sm'>
                     {notifications.map((notification, index) => (
-                      <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id, notification.quote_id, notification.isfeasability, notification.viewer)}>
+                      <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id, notification.quote_id, notification.isfeasability,notification.viewer)}>
                         <p className='flex items-center'>
                           {/* Display icon based on notification type */}
                           {notification.icon == 'quote' && (

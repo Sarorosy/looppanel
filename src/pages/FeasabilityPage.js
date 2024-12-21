@@ -155,7 +155,7 @@ const FeasabilityPage = ({ onClose }) => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
         >
-            <div className='bg-blue-400 text-white py-3'>
+            <div className='bg-blue-400 text-white py-3 mb-3'>
                 <div className='container flex items-center justify-between p-0'>
                 <h2 className="text-xl font-semibold mllt">All Feasability Request</h2>
 
@@ -169,7 +169,7 @@ const FeasabilityPage = ({ onClose }) => {
                 </button>
                 </div>
             </div>
-            <div className="flex justify-end py-3 px-0 container">
+            <div className="flex justify-end mb-3 bg-white container py-3 rounded ">
             
                 <div className="flex items-center bg-red-400 text-white px-2 py-1 rounded shadow">
                     <span className="f-12">Pending:</span>

@@ -240,12 +240,12 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             className="fixed right-0 h-full w-1/2 bg-gray-100 shadow-lg z-50 overflow-y-auto "
             style={{ top: "-20px" }}
         >
-            <div className="bg-white p-6 shadow rounded-md space-y-4 w-xl">
-                <div className="flex items-center justify-between bg-gradient-to-r from-blue-500 to-blue-700 text-white px-3 py-2 rounded-lg shadow-lg">
+            <div className="bg-white p-6 m-3 space-y-4 w-xl">
+                <div className="flex items-center justify-between bg-gradient-to-r from-blue-500 to-blue-700 text-white p-2 rounded-lg shadow-lg">
                     {/* Tabs */}
                     <div className="flex items-center space-x-4">
                         <h2
-                            className={`text-lg font-medium cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 0
+                            className={`tab-btn-n-set cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 0
                                     ? "bg-white text-blue-700 shadow-md"
                                     : "bg-blue-600 hover:bg-blue-500 text-gray-200"
                                 }`}
@@ -254,7 +254,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                             Ask For Scope
                         </h2>
                         <h2
-                            className={`text-lg font-medium cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 1
+                            className={`tab-btn-n-set cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 1
                                     ? "bg-white text-blue-700 shadow-md"
                                     : "bg-blue-600 hover:bg-blue-500 text-gray-200"
                                 }`}
@@ -273,168 +273,172 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <input type="hidden" name="ref_id" value={refId} />
+                <div className='p-3 m-0'>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <input type="hidden" name="ref_id" value={refId} />
 
-                    <div className='w-full grid grid-cols-3 gap-4 space-x-1'>
-                        {/* Currency Dropdown */}
-                        <div className='w-full'>
-                            <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
-                                Currency
-                            </label>
+                        <div className='w-full grid grid-cols-3 gap-4 space-x-1'>
+                            {/* Currency Dropdown */}
+                            <div className='w-full'>
+                                <label htmlFor="currency" className="block text-sm font-medium text-gray-700">
+                                    Currency
+                                </label>
+                                <select
+                                    id="currency"
+                                    value={selectedCurrency}
+                                    onChange={(e) => setSelectedCurrency(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="">Select Currency</option>
+                                    {currencies.map((currency) => (
+                                        <option key={currency.id} value={currency.name}>
+                                            {currency.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                            {selectedCurrency == 'Other' && (
+                                <div className="w-full">
+                                    <label htmlFor="otherCurrency" className="block text-sm font-medium text-gray-700">
+                                        Other Currency Name
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="otherCurrency"
+                                        value={otherCurrency}
+                                        onChange={(e) => setOtherCurrency(e.target.value)}
+                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                        placeholder="Currency name"
+                                    />
+                                </div>
+                            )}
+
+                            {/* Service Name Dropdown */}
+                            <div className='w-full'>
+                                <label htmlFor="service_name" className="block text-sm font-medium text-gray-700">
+                                    Service Name
+                                </label>
+                                <select
+                                    id="service_name"
+                                    value={selectedService}
+                                    onChange={(e) => setSelectedService(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="">Select Service</option>
+                                    {services.map((service) => (
+                                        <option key={service.id} value={service.id}>
+                                            {service.name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+                           
+
+
+                        </div>
+                         {/* Plan Dropdown */}
+                         <div className="w-full mt-4">
+                                <label htmlFor="plan" className="block text-sm font-medium text-gray-700">
+                                    Plan
+                                </label>
+                                <div className="mt-1 flex">
+                                    {plans.map((plan, index) => (
+                                        <div key={index} className="flex items-center mb-2 mr-5">
+                                            <input
+                                                type="checkbox"
+                                                id={`plan-${index}`}
+                                                value={plan}
+                                                checked={selectedPlans.includes(plan)}
+                                                onChange={() => handleCheckboxChange(plan)}
+                                                className={`form-checkbox h-4 w-4 border-gray-300 rounded ${planColors[plan]}`}
+                                            />
+                                            <label htmlFor={`plan-${index}`} className={`ml-2 mb-0 text-sm font-medium ${planColors[plan]}`}>
+                                                {plan}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        <div className={`w-full ${isfeasability == 0 ? "hidden" : "block"}`}>
+                            {/* Tags */}
+                            <label className="block text-sm font-medium text-gray-700">Select User to Assign</label>
                             <select
-                                id="currency"
-                                value={selectedCurrency}
-                                onChange={(e) => setSelectedCurrency(e.target.value)}
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control"
+                                name="user"
+                                id="user"
+                                className="form-select select2 w-72 py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 form-control"
+
+                                value={selectedUser}
+                                ref={userRef}
                             >
-                                <option value="">Select Currency</option>
-                                {currencies.map((currency) => (
-                                    <option key={currency.id} value={currency.name}>
-                                        {currency.name}
+                                <option value="">Select User</option>
+                                {users.map((user) => (
+                                    <option key={user.id} value={user.id}>
+                                        {user.fld_first_name + " " + user.fld_last_name}
                                     </option>
                                 ))}
                             </select>
                         </div>
-                        {selectedCurrency == 'Other' && (
+                        <div className='flex items-start justify-between space-x-1 mt-4'>
+                            {/* Comments */}
                             <div className="w-full">
-                                <label htmlFor="otherCurrency" className="block text-sm font-medium text-gray-700">
-                                    Other Currency Name
+                                <label htmlFor="comments" className="block text-sm font-medium text-gray-700">
+                                    Comments
                                 </label>
-                                <input
-                                    type="text"
-                                    id="otherCurrency"
-                                    value={otherCurrency}
-                                    onChange={(e) => setOtherCurrency(e.target.value)}
-                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control"
-                                    placeholder="Currency name"
+                                <ReactQuill
+                                    value={comments}
+                                    onChange={setComments}
+                                    className="mt-1"
+                                    theme="snow"
+                                    placeholder="Add your comments here"
+
                                 />
                             </div>
-                        )}
 
-                        {/* Service Name Dropdown */}
-                        <div className='w-full'>
-                            <label htmlFor="service_name" className="block text-sm font-medium text-gray-700">
-                                Service Name
-                            </label>
-                            <select
-                                id="service_name"
-                                value={selectedService}
-                                onChange={(e) => setSelectedService(e.target.value)}
-                                className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control"
-                            >
-                                <option value="">Select Service</option>
-                                {services.map((service) => (
-                                    <option key={service.id} value={service.id}>
-                                        {service.name}
-                                    </option>
-                                ))}
-                            </select>
+
+                            
                         </div>
-                        {/* Plan Dropdown */}
-                        <div className="w-full ">
-                            <label htmlFor="plan" className="block text-sm font-medium text-gray-700">
-                                Plan
-                            </label>
-                            <div className="mt-1">
-                                {plans.map((plan, index) => (
-                                    <div key={index} className="flex items-center mb-2">
-                                        <input
-                                            type="checkbox"
-                                            id={`plan-${index}`}
-                                            value={plan}
-                                            checked={selectedPlans.includes(plan)}
-                                            onChange={() => handleCheckboxChange(plan)}
-                                            className={`form-checkbox h-4 w-4 border-gray-300 rounded ${planColors[plan]}`}
-                                        />
-                                        <label htmlFor={`plan-${index}`} className={`ml-2 text-sm font-medium ${planColors[plan]}`}>
-                                            {plan}
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-
-                    </div>
-                    <div className={`w-full ${isfeasability == 0 ? "hidden" : "block"}`}>
-                        {/* Tags */}
-                        <label>Select User to Assign</label>
-                        <select
-                            name="user"
-                            id="user"
-                            className="form-select select2 w-72 py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-
-                            value={selectedUser}
-                            ref={userRef}
-                        >
-                            <option value="">Select User</option>
-                            {users.map((user) => (
-                                <option key={user.id} value={user.id}>
-                                    {user.fld_first_name + " " + user.fld_last_name}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className='flex items-start justify-between space-x-1 mt-4'>
-                        {/* Comments */}
-                        <div className="w-full">
-                            <label htmlFor="comments" className="block text-sm font-medium text-gray-700">
-                                Comments
-                            </label>
-                            <ReactQuill
-                                value={comments}
-                                onChange={setComments}
-                                className="mt-1"
-                                theme="snow"
-                                placeholder="Add your comments here"
-
-                            />
-                        </div>
-
-
                         {/* File Upload */}
                         <div className="w-full">
-                            <label className="ml-4 block text-sm font-medium text-gray-700">Upload Files</label>
-                            {files.map((item, index) => (
-                                <div key={item.id} className="flex items-center ml-4 mt-1 space-x-2">
-                                    <input
-                                        type="file"
-                                        onChange={(e) => handleFileChange(item.id, e)}
-                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                    />
-                                    {index > 0 && (
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemoveFileInput(item.id)}
-                                            className="px-2 py-1 bg-red-500 text-white rounded"
-                                        >
-                                            -
-                                        </button>
-                                    )}
-                                </div>
-                            ))}
+                                <label className="block text-sm font-medium text-gray-700">Upload Files</label>
+                                {files.map((item, index) => (
+                                    <div key={item.id} className="flex items-center mt-1 space-x-2">
+                                        <input
+                                            type="file"
+                                            onChange={(e) => handleFileChange(item.id, e)}
+                                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                        />
+                                        {index > 0 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveFileInput(item.id)}
+                                                className="px-2 py-1 bg-red-500 text-white rounded white-space-nowrap"
+                                            >
+                                                - Remove
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={handleAddFileInput}
+                                    className="mt-2 px-2 py-1 bg-green-500 text-white rounded f-14"
+                                >
+                                    + Add
+                                </button>
+                            </div>
+
+                        {/* Submit Button */}
+                        <div className='text-right'>
                             <button
-                                type="button"
-                                onClick={handleAddFileInput}
-                                className="ml-4 mt-2 px-4 py-2 bg-green-500 text-white rounded"
+                                type="submit"
+                                disabled={submitting}
+                                className=" bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
                             >
-                                +
+                                {submitting ? "Submitting..." : "Submit"}
                             </button>
                         </div>
-                    </div>
-
-                    {/* Submit Button */}
-                    <div>
-                        <button
-                            type="submit"
-                            disabled={submitting}
-                            className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-                        >
-                            {submitting ? "Submitting..." : "Submit"}
-                        </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
                 <ToastContainer />
             </div>
         </motion.div>

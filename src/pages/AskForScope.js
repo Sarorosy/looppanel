@@ -199,8 +199,8 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
                 <div className='flex items-center justify-between'>
-                    <button onClick={toggleAddNewForm} className='flex items-center mr-3 border rounded px-2 py-1'>
-                        <PlusCircle className='mr-3' /> Add New
+                    <button onClick={toggleAddNewForm} className='flex items-center mr-3 bg-white text-gray-600 rounded px-2 py-1'>
+                        <PlusCircle size={15} className='mr-2' /> <div>Add New</div>
                     </button>
                     <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
                 </div>
@@ -218,13 +218,13 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                             <table className="w-full border-collapse border border-gray-200">
                                 <thead>
                                     <tr className="bg-gray-100">
-                                        <th className="border px-4 py-2 text-left">Ref No.</th>
-                                        <th className="border px-4 py-2 text-left">Quote Id.</th>
-                                        <th className="border px-4 py-2 text-left">Currency</th>
-                                        <th className="border px-4 py-2 text-left">Plan</th>
-                                        <th className="border px-4 py-2 text-left">Service Name</th>
-                                        <th className="border px-4 py-2 text-left">Quote Status</th>
-                                        <th className="border px-4 py-2 text-left">Action</th>
+                                        <th className="border px-2 py-2 text-left">Ref No.</th>
+                                        <th className="border px-2 py-2 text-left">Quote Id.</th>
+                                        <th className="border px-2 py-2 text-left">Currency</th>
+                                        <th className="border px-2 py-2 text-left">Plan</th>
+                                        <th className="border px-2 py-2 text-left">Service Name</th>
+                                        <th className="border px-2 py-2 text-left">Quote Status</th>
+                                        <th className="border px-2 py-2 text-left">Action</th>
                                     </tr>
                                 </thead>
                                 {/* Table Body */}
@@ -235,12 +235,12 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                             <tr
                                                 className="cursor-pointer hover:bg-gray-50"
                                             >
-                                                <td className="border px-4 py-2 ">
+                                                <td className="border px-2 py-2 ">
                                                     <p className='flex items-center'>
                                                         {quote.assign_id}
                                                         {quote.ptp == "Yes" && (
                                                             <span
-                                                                className="inline-block p-1 ml-1" // Increased padding for more space
+                                                                className="inline-block pl-3 pr-2 py-1 f-10 ml-1" // Increased padding for more space
                                                                 style={{
                                                                     backgroundColor: '#2B9758FF', // Green color for PTP
                                                                     clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
@@ -256,11 +256,11 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                     </p>
                                                 </td>
-                                                <td className="border px-4 py-2">{quote.quoteid}</td>
-                                                <td className="border px-4 py-2">{quote.currency}</td>
-                                                <td className="border px-4 py-2">{quote.plan}</td>
-                                                <td className="border px-4 py-2">{quote.service_name || 'N/A'}</td>
-                                                <td className="border px-4 py-2">
+                                                <td className="border px-2 py-2">{quote.quoteid}</td>
+                                                <td className="border px-2 py-2">{quote.currency}</td>
+                                                <td className="border px-2 py-2">{quote.plan}</td>
+                                                <td className="border px-2 py-2">{quote.service_name || 'N/A'}</td>
+                                                <td className="border px-2 py-2">
                                                     {quote.isfeasability == 1 ? (
                                                         quote.submittedtoadmin == "false" ? (
                                                             quote.feasability_status == "Pending" ? <span className='text-red-600'>Feasabilty Submitted</span> : <span className='text-green-600'>Feasabilty Completed</span>
@@ -291,7 +291,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                     )}
                                                 </td>
 
-                                                <td className="border px-4 py-2 flex items-center">
+                                                <td className="border px-2 py-2 flex items-center">
                                                     {/* Up/Down Arrow Button */}
                                                     <button
                                                         onClick={() => toggleRow(index)}
@@ -428,10 +428,10 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                     <strong>Quote Status:</strong>
                                                                     <span
                                                                         className={quote.quote_status == 0
-                                                                            ? "badge-danger p-1" // Red for Pending
+                                                                            ? "badge-danger p-1 f-10" // Red for Pending
                                                                             : quote.quote_status == 1
-                                                                                ? "badge-success p-1" // Green for Submitted
-                                                                                : "badge-warning p-1"} // Yellow for Discount Requested
+                                                                                ? "badge-success p-1 f-10" // Green for Submitted
+                                                                                : "badge-warning p-1 f-10"} // Yellow for Discount Requested
                                                                     >
                                                                         {quote.quote_status == 0
                                                                             ? "Pending"
@@ -485,44 +485,44 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                                     {quote.feasability_status == "Completed" && (
 
-                                                                        <p>
-                                                                            Feasibility Comments:
-                                                                            <span
-                                                                                className='mt-2'
-                                                                                dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
-                                                                            />
-                                                                        </p>
-                                                                    )}
-                                                                    {historyLoading && <CustomLoader />}
-                                                                    {historyData.length > 0 && (
-                                                                        <div className="mt-4 space-y-4">
-                                                                            <strong className="">Feasibility Check History:</strong>
-                                                                            <div className="border-l-2 border-gray-300 pl-4">
-                                                                                {historyData.map((historyItem, index) => (
-                                                                                    <div key={historyItem.id} className="mb-4">
-                                                                                        <div className="flex items-start space-x-3">
-                                                                                            {/* Timeline Icon */}
-                                                                                            <div className="w-h-2 bg-blue-500 rounded-full mt-1"></div>
-                                                                                            <div className="flex flex-col">
-                                                                                                {/* User Details */}
-                                                                                                <p className=" font-semibold text-gray-700">
-                                                                                                    {historyItem.from_first_name} {historyItem.from_last_name}
-                                                                                                    {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs"> to </span>)}
-
-                                                                                                    {historyItem.to_first_name} {historyItem.to_last_name}
-                                                                                                </p>
-                                                                                                <p className=" text-gray-500">{historyItem.created_at}</p>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        {/* Message */}
-                                                                                        <p className="ml-7  text-gray-600">{historyItem.message}</p>
-                                                                                    </div>
-                                                                                ))}
-                                                                            </div>
-                                                                        </div>
-                                                                    )}
-                                                                </>
+                                                                    <p>
+                                                                        Feasibility Comments:
+                                                                        <span
+                                                                            className='mt-2'
+                                                                            dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
+                                                                        />
+                                                                    </p>
                                                                 )}
+                                                                {historyLoading && <CustomLoader />}
+                                                                {historyData.length > 0 && (
+                                                                    <div className="mt-4 space-y-4">
+                                                                        <strong className="">Feasibility Check History:</strong>
+                                                                        <div className="border-l-2 border-gray-300 pl-4">
+                                                                            {historyData.map((historyItem, index) => (
+                                                                                <div key={historyItem.id} className="mb-4">
+                                                                                    <div className="flex items-start space-x-3">
+                                                                                        {/* Timeline Icon */}
+                                                                                        <div className="w-h-2 bg-blue-500 rounded-full mt-1"></div>
+                                                                                        <div className="flex flex-col">
+                                                                                            {/* User Details */}
+                                                                                            <p className=" font-semibold text-gray-700">
+                                                                                                {historyItem.from_first_name} {historyItem.from_last_name}
+                                                                                                {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs">to</span>)}
+
+                                                                                                {historyItem.to_first_name} {historyItem.to_last_name}
+                                                                                            </p>
+                                                                                            <p className=" text-gray-500">{historyItem.created_at}</p>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    {/* Message */}
+                                                                                    <p className="ml-7  text-gray-600">{historyItem.message}</p>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                                </>)}
+
                                                             </div>
                                                             <Chat quoteId={quote.quoteid} refId={quote.assign_id} />
                                                         </td>
