@@ -257,7 +257,7 @@ const AllFeasPage = ({ onClose }) => {
         >
             <div className='flex items-center justify-between bg-blue-400 text-white  py-3'>
                 <div className='container flex items-center justify-between p-0'>
-                    <h2 className="text-xl font-semibold">Feasability Check</h2>
+                    <h2 className="text-xl font-semibold">All Feasability Request</h2>
 
 
                     <button

@@ -309,7 +309,7 @@ const ManageQuery = () => {
             <div className=" mb-3 bg-white px-3 py-3 rounded "> 
                 <h1 className='text-xl font-bold mb-3'>All Quote List</h1>
                 <div className='flex items-center space-x-2 aql'>
-                    <div className="w-1/2">
+                    <div className="w-1/3">
                     <input
                             type="text"
                             className="form-control"
@@ -318,7 +318,7 @@ const ManageQuery = () => {
                             onChange={(e) => setRefId(e.target.value)}
                         />
                     </div>
-                    <div className="w-1/2">
+                    <div className="w-1/3">
                         <select
                             id="user_id"
                             className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control slt-x-isu "
@@ -329,7 +329,7 @@ const ManageQuery = () => {
                             <option value="">Select User</option>
                             {users.map(user => (
                                 <option key={user.id} value={user.id}>
-                                    {user.fld_first_name}
+                                    {user.fld_first_name + " " + user.fld_last_name}
                                 </option>
                             ))}
                         </select>
@@ -350,7 +350,7 @@ const ManageQuery = () => {
                             ))}
                         </select>
                     </div>
-                    <div className="w-1/2 ss">
+                    <div className="w-1/3 ss">
                         
                         <select
                             className="form-control"
@@ -385,7 +385,7 @@ const ManageQuery = () => {
                         </button>
                         <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic flex items-center" onClick={toggleAllFeasPage}>
                             <FileQuestion size={15}/>
-                            Feasability
+                            Feasability Request
                         </button>
 
                     </div>

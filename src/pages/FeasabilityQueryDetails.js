@@ -322,7 +322,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
 
                         </div>
                     </div>
-                    <FeasabilityUpdate queryId={queryInfo.assign_id} quotationId={quotationId} userType={userObject.fld_admin_type} finalFunction={finalFunction}/>
+                    <FeasabilityUpdate queryId={queryInfo.assign_id} quotationId={quotationId} userType={userObject.fld_admin_type} finalFunction={finalFunction} />
 
                 </div>
             )}

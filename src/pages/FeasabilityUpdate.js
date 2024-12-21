@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, ArrowLeftRight } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, ArrowLeftRight, BotOff } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -68,7 +68,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
             );
 
             const data = await response.json(); // Parse the response as JSON
-            console.log(data);
+            
 
             if (data.status) {
                 if (data.quoteInfo != null && Array.isArray(data.quoteInfo)) {
@@ -81,6 +81,8 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                     }));
 
                     setScopeDetails(parsedQuoteInfo); // Set the array of quotes
+                    
+                    
                     setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
                 } else {
                     setScopeDetails(null); // If no quoteInfo, set scopeDetails to null
@@ -95,10 +97,17 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
         }
     };
 
+    const checkAccessType = () =>{
+        // if(scopeDetails.isfeasability == 1 && scopeDetails[0].feasability_user != thisUserId){
+        //     toast.error("You dont have access for this");
+        // }
+        console.log("scopedetails is" + scopeDetails);
+    }
 
     useEffect(() => {
         if (queryId) {
             fetchScopeDetails(); // Fetch the scope details when the component mounts
+            
         }
     }, [queryId]);
 
@@ -172,6 +181,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                     key={index}
                                     className="p-4 border border-gray-300 rounded-md shadow-md bg-white space-y-4"
                                 >
+                                    {quote.isfeasability == 1 && quote.feasability_user == thisUserId ? (<>
                                     <div className='flex items-start justify-between'>
                                         <p>
                                             <strong>Ref No.:</strong> {quote.assign_id}
@@ -389,6 +399,11 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                                     </button>
                                                 </div>
                                             </form>
+                                        </div>
+                                    )}
+                                    </>) : (
+                                        <div className='flex items-center p-1 rounded bg-red-100 text-red-700'>
+                                            Umm..Looks like you dont have access for this request.<BotOff className='ml-3'/>
                                         </div>
                                     )}
                                 </div>
