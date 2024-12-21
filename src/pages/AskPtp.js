@@ -84,7 +84,7 @@ function AskPtp({ scopeDetails, quoteId, after }) {
                                         onChange={(e) => setPtp(e.target.checked ? 'Yes' : 'No')}
                                         className="form-checkbox h-5 w-5 text-blue-600"
                                     />
-                                    <label htmlFor="ptp" className="text-sm font-semibold">PTP Client</label>
+                                    <label htmlFor="ptp" className="text-sm font-semibold mb-0">PTP Client</label>
                                 </div>
                             </div>
                             <div className="mb-4">

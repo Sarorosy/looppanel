@@ -164,13 +164,14 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             <div className="bg-white p-6 shadow rounded-md space-y-4">
                 <div className="flex items-center justify-between bg-blue-400 text-white p-2">
                     <h2 className="text-xl font-semibold flex items-center">Edit Request Form {loading && (<CustomLoader />)}</h2>
-                    <button onClick={onClose} className="text-white hover:text-red-600 transition-colors">
+                    <button onClick={onClose} className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500">
                         <X size={15} />
                     </button>
                 </div>
                 
+                <div className='p-3 mt-0'>
                     <form onSubmit={handleSubmit} className={`form-wrapper ${loading ? 'loading' : ''}`} >
-                        <div className="w-full grid grid-cols-3 gap-2 space-x-1">
+                        <div className="w-full grid grid-cols-2 gap-2 space-x-1">
                             {/* Currency Dropdown */}
                             <div className='w-full mb-3'>
                                 <label>Currency</label>
@@ -226,7 +227,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                             <label className="">Plan</label>
                             <div className='flex'>
                                 {plans.map((plan) => (
-                                    <div key={plan} className="flex items-center space-x-2 mr-4">
+                                    <div key={plan} className="flex items-center space-x-2 mr-5">
                                         <input
                                             type="checkbox"
                                             checked={formData.plan.includes(plan)}
@@ -244,16 +245,17 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                             <ReactQuill value={formData.comments} onChange={(value) => setFormData({ ...formData, comments: value })} />
                         </div>
 
-                        <div className='mt-2'>
+                        <div className='mt-2 text-right'>
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                                className="bg-blue-500 text-white px-2 py-1 rounded"
                             >
                                 {submitting ? 'Submitting...' : 'Update Request'}
                             </button>
                         </div>
                     </form>
+                </div>
                 
             </div>
         </motion.div>

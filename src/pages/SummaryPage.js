@@ -160,44 +160,46 @@ const SummaryPage = ({ onClose }) => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
         >
-            <div className='flex items-center justify-between bg-blue-400 text-white pnav py-2'>
-                <h2 className="text-xl font-semibold mllt">All Quote Summary </h2>
+            <div className='bg-blue-400 text-white py-3 mb-3'>
+                <div className='container flex items-center justify-between p-0'>
+                    <h2 className="text-xl font-semibold mllt">All Quote Summary </h2>
 
 
-                <button
-                    onClick={onClose}
-                    className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
-                >
-                    {/* <CircleX size={32} /> */}
-                    <X size={15} />
-                </button>
+                    <button
+                        onClick={onClose}
+                        className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
+                    >
+                        {/* <CircleX size={32} /> */}
+                        <X size={15} />
+                    </button>
+                </div>
             </div>
-            <div className="flex justify-end mr-5 my-3">
+            <div className="flex justify-end mb-3 bg-white container py-3 rounded ">
             
-                <div className="flex items-center bg-red-400 text-white px-4 py-2 rounded shadow">
-                    <span className="text-sm font-medium">Pending:</span>
-                    <span className="ml-2 font-bold">{pendingCount}</span>
+                <div className="flex items-center bg-red-400 text-white px-2 py-1 rounded shadow">
+                    <span className="f-12">Pending:</span>
+                    <span className="ml-2 font-bold f-12">{pendingCount}</span>
                 </div>
-                <div className="flex items-center bg-yellow-400 text-white px-4 py-2 rounded shadow mx-3">
-                    <span className="text-sm font-medium">Discount Requested:</span>
-                    <span className="ml-2 font-bold">{discountCount}</span>
+                <div className="flex items-center bg-yellow-400 text-white px-2 py-1 rounded shadow mx-3">
+                    <span className="f-12">Discount Requested:</span>
+                    <span className="ml-2 font-bold f-12">{discountCount}</span>
                 </div>
-                <div className="flex items-center bg-green-200 text-green-800 px-4 py-2 rounded shadow ">
-                    <span className="text-sm font-medium">Submitted:</span>
-                    <span className="ml-2 font-bold">{approvedCount}</span> {/* Replace 5 with dynamic count */}
+                <div className="flex items-center bg-green-200 text-green-800 px-2 py-1 rounded shadow mx-2">
+                    <span className="f-12">Submitted:</span>
+                    <span className="ml-2 font-bold f-12">{approvedCount}</span> {/* Replace 5 with dynamic count */}
                 </div>
                 <button
                     onClick={fetchQuoteSummary}
-                    className="flex items-center bg-blue-400 text-white hover:text-blue-600 hover:bg-blue-500 transition-colors px-4 py-2 rounded shadow"
+                    className="flex items-center bg-blue-400 text-white hover:text-blue-600 hover:bg-blue-500 transition-colors px-2 py-1 f-12 rounded shadow"
                 >
-                    Refresh <RefreshCcw size={20} className="ml-2" />
+                    Refresh <RefreshCcw size={15} className="ml-2" />
                 </button>
             </div>
 
             {loading ? (
                 <CustomLoader />
             ) : (
-                <div className='bg-white p-4 border-t-2 border-blue-400 rounded'>
+                <div className='bg-white p-4 border-t-2 border-blue-400 rounded container'>
                     <div className="table-scrollable">
                         <DataTable
                             data={quoteSummary}

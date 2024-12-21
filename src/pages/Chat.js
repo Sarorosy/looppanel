@@ -106,7 +106,7 @@ export const Chat = ({ quoteId, refId }) => {
                 <p><CustomLoader /></p>
             ) : (
                 <div
-                className="mt-4 space-y-2 max-h-56 overflow-y-auto chats"
+                className="mt-4 space-y-2 max-h-56 overflow-y-auto chats pr-3 pl-3 pt-3 pb-0"
                 id="chatContainer"
                 ref={chatContainerRef} 
                 dangerouslySetInnerHTML={{ __html: messages }}

@@ -344,7 +344,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 {quote.assign_id}
                                                                 {quote.ptp == "Yes" && (
                                                                     <span
-                                                                        className="inline-block ml-2 py-3 px-4" // Increased padding for more space
+                                                                        className="inline-block pl-3 pr-2 py-1 f-10 ml-1" // Increased padding for more space
                                                                         style={{
                                                                             backgroundColor: '#2B9758FF', // Green color for PTP
                                                                             clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
