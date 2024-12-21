@@ -171,7 +171,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                             {scopeDetails.map((quote, index) => (
                                 <div
                                     key={index}
-                                    className="p-4 border border-gray-300 rounded-md shadow-md bg-white space-y-4"
+                                    className="p-4 pb-0 border border-gray-300 rounded-md shadow-md bg-white space-y-4"
                                 >
                                     <div className='flex items-start justify-between'>
                                         <p>
@@ -302,10 +302,10 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                         <span
                                             className={
                                                 quote.quote_status == 0
-                                                    ? "badge-danger p-1"
+                                                    ? "badge-danger p-1 f-10"
                                                     : quote.quote_status == 1
-                                                        ? "badge-success p-1"
-                                                        : "text-warning p-1"
+                                                        ? "badge-success p-1 f-10"
+                                                        : "text-warning p-1 f-10"
                                             }
                                         >
                                             {quote.quote_status == 0
@@ -320,7 +320,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                     )}
                                     <p className=''>
                                         <strong className='mr-1'>Feasibility status is : </strong>
-                                    <span className={quote.feasability_status == 'Pending' ? "text-red-600" : "badge-success p-1"}>{quote.feasability_status}</span>
+                                    <span className={quote.feasability_status == 'Pending' ? "badge-danger p-1 f-10" : "badge-success p-1 f-10"}>{quote.feasability_status}</span>
                                     </p>
                                         <p>
                                             <strong>Feasibility Comments:</strong>
@@ -336,7 +336,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                     {historyData.length > 0 && (
                                         <div className="mt-4 space-y-4">
                                             <strong className=" f-12">Feasibility Check History:</strong>
-                                            <div className="border-l-2 border-gray-300 pl-4">
+                                            <div className="">
                                                 {historyData.map((historyItem, index) => (
                                                     <div key={historyItem.id} className="mb-4">
                                                         <div className="flex items-start space-x-3">
@@ -351,10 +351,10 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                                                     {historyItem.to_first_name} {historyItem.to_last_name}
                                                                 </p>
                                                                 <p className="text-gray-500">{historyItem.created_at}</p>
+                                                        <p className="text-gray-600">{historyItem.message}</p>
                                                             </div>
                                                         </div>
                                                         {/* Message */}
-                                                        <p className="ml-7  text-gray-600">{historyItem.message}</p>
                                                     </div>
                                                 ))}
                                             </div>

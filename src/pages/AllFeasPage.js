@@ -255,7 +255,7 @@ const AllFeasPage = ({ onClose }) => {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
         >
-            <div className='flex items-center justify-between bg-blue-400 text-white  py-3'>
+            <div className='flex items-center justify-between bg-blue-400 text-white mb-3 py-3'>
                 <div className='container flex items-center justify-between p-0'>
                     <h2 className="text-xl font-semibold">Feasability Check</h2>
 
@@ -269,7 +269,7 @@ const AllFeasPage = ({ onClose }) => {
                     </button>
                 </div>
             </div>
-            <div className=" mb-3 bg-white px-3 py-3 rounded "> 
+            <div className=" mb-3 bg-white container py-3 rounded "> 
             <h1 className='text-xl font-bold mb-3'>All Feasability List</h1>
             <div className='flex items-center space-x-2 aql'>
 
@@ -318,7 +318,7 @@ const AllFeasPage = ({ onClose }) => {
                     </select>
                 </div>
                 <div className="w-1/2 flex justify-content-end space-x-2 items-center">
-                    <button className="gree text-white mr-2 flex items-center" onClick={fetchQuoteSummary}>
+                    <button className="gree text-white flex items-center" onClick={fetchQuoteSummary}>
                         <Filter size={12} /> &nbsp;
                         Apply
                     </button>

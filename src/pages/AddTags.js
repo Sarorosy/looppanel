@@ -155,7 +155,7 @@ const AddTags = ({ refId, quoteId, after, onClose }) => {
             className="fixed right-0 h-full w-1/2 bg-gray-100 shadow-lg z-50 overflow-y-auto "
             style={{ top: "-20px" }}
         >
-            <div className="bg-white p-6 shadow rounded-md space-y-4">
+            <div className="bg-white p-6 shadow rounded-md space-y-4 h-100">
                 <div className="flex items-center justify-between bg-blue-400 text-white p-2">
                     <h2 className="text-xl font-semibold flex items-center">Add Tags {loading && (<CustomLoader />)}</h2>
                     <button onClick={onClose} className="text-white hover:text-red-600 transition-colors">

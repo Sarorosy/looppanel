@@ -219,7 +219,7 @@ const Header = () => {
                   <ul className='p-1 text-sm'>
                     {notifications.map((notification, index) => (
                       <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id, notification.quote_id, notification.isfeasability)}>
-                        <p className='flex items-center'>
+                        <p className='flex items-start'>
                           {/* Display icon based on notification type */}
                           {notification.icon == 'quote' && (
                             <span className="mr-2">

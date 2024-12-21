@@ -403,10 +403,10 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 <strong>Status:</strong>
                                                                 <span
                                                                     className={quote.quote_status == 0
-                                                                        ? "text-red-600 text-md" // Red for Pending
+                                                                        ? "badge-danger p-1 f-10" // Red for Pending
                                                                         : quote.quote_status == 1
-                                                                            ? "text-green-600 text-md" // Green for Submitted
-                                                                            : "text-yellow-600 text-md"} // Yellow for Discount Requested
+                                                                            ? "badge-success p-1 f-10" // Green for Submitted
+                                                                            : "badge-warning p-1 f-10"} // Yellow for Discount Requested
                                                                 >
                                                                     {quote.quote_status == 0
                                                                         ? "Pending"
