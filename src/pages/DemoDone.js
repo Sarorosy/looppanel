@@ -20,6 +20,7 @@ function DemoDone({ scopeDetails, quoteId , after}) {
             demoId,
             ref_id: scopeDetails.assign_id,
             quote_id: quoteId,
+            user_id:scopeDetails.user_id
         };
 
         try {

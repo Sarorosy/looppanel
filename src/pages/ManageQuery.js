@@ -421,6 +421,7 @@ const ManageQuery = () => {
                             onClose={toggleDetailsPage}
                             quotationId={selectedQuote}
                             queryId={selectedQuery.ref_id}
+                            after={fetchQuotes}
                         />
                     
                 )}

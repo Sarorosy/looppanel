@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell, Quote, MessageSquareMore, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight } from 'lucide-react';
+import { LogOut, Bell, Quote, MessageSquareMore, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight, Hash } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import LogoNew from '../logo-new.png';
 import { AnimatePresence } from 'framer-motion';
@@ -239,6 +239,11 @@ const Header = () => {
                               <MessageSquareText size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800'/> 
                             </span>
                           )}
+                          {notification.icon == 'tag' && (
+                            <span className="mr-2">
+                              <Hash size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800'/>
+                            </span>
+                          )}
                           {notification.icon == 'completed' && (
                             <span className="mr-2">
                               <CircleCheck size={24} className='bg-green-100 text-green-800 rounded-full'/> {/* Completed icon */}
@@ -303,11 +308,13 @@ const Header = () => {
             <QueryDetailsAdmin
               onClose={toggleDetailsPage}
               queryId={selectedQuery}
+              quotationId={selectedQuote}
             />
           ) : (
             <QueryDetails
               onClose={toggleDetailsPage}
               queryId={selectedQuery}
+              quotationId={selectedQuote}
             />
           )
         )}

@@ -297,6 +297,7 @@ const ManageContactMadeQueries = () => {
                         onClose={toggleDetailsPage}
 
                         queryId={selectedQuery.assign_id}
+                        after={fetchQuotes}
                     />
 
                 )}
@@ -304,12 +305,12 @@ const ManageContactMadeQueries = () => {
 
                     <SummaryPage
                         onClose={toggleSummaryPage}
-
+                        after={fetchQuotes}
                     />
 
                 )}
                 {feasPageOpen && (
-                    <FeasabilityPage onClose={toggleFeasPage} />
+                    <FeasabilityPage onClose={toggleFeasPage} after={fetchQuotes} />
                 )}
             </AnimatePresence>
 

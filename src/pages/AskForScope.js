@@ -12,7 +12,7 @@ import EditRequestForm from './EditRequestForm';
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss'
 
-const AskForScope = ({ queryId, userType }) => {
+const AskForScope = ({ queryId, userType, quotationId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ const AskForScope = ({ queryId, userType }) => {
     const [adminComments, setAdminComments] = useState('');
     const userData = sessionStorage.getItem('user');
     const loopuserData = sessionStorage.getItem('loopuser');
-    const [expandedRowIndex, setExpandedRowIndex] = useState(null);
+    const [expandedRowIndex, setExpandedRowIndex] = useState(0);
     const [addNewFormOpen, setAddNewFormOpen] = useState(false);
     const [editFormOpen, setEditFormOpen] = useState(false);
     const [selectedQuoteId, setSelectedQuoteId] = useState('');
@@ -38,7 +38,7 @@ const AskForScope = ({ queryId, userType }) => {
     const [historyLoading, setHistoryLoading] = useState(false);
 
     const toggleRow = (index) => {
-        setExpandedRowIndex(expandedRowIndex === index ? null : index);
+        setExpandedRowIndex(expandedRowIndex == index ? null : index);
     };
 
     const userObject = JSON.parse(userData);
@@ -58,7 +58,7 @@ const AskForScope = ({ queryId, userType }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ ref_id: queryId, user_type: userType }), // Send the ref_id
+                    body: JSON.stringify({ ref_id: queryId, quote_id:quotationId, user_type: userType }), // Send the ref_id
                 }
             );
 
@@ -90,6 +90,8 @@ const AskForScope = ({ queryId, userType }) => {
         }
     };
 
+    
+    
 
     useEffect(() => {
         if (queryId) {
@@ -147,7 +149,7 @@ const AskForScope = ({ queryId, userType }) => {
         }
     };
 
-    const confirmSubmit = (assign_id, quote_id) => {
+    const confirmSubmit = (assign_id, quote_id,user_id) => {
         Swal.fire({
             title: "Are you sure?",
             text: "Once submitted, this action cannot be undone!",
@@ -156,17 +158,18 @@ const AskForScope = ({ queryId, userType }) => {
             dangerMode: true,
         }).then((result) => {
             if (result.isConfirmed) {
-                submitToAdmin(assign_id, quote_id);
+                submitToAdmin(assign_id, quote_id,user_id);
             } else {
                 Swal.fire("Submission canceled!");
             }
         });
     };
 
-    const submitToAdmin = async (assign_id, quote_id) => {
+    const submitToAdmin = async (assign_id, quote_id,user_id) => {
         const payload = {
             ref_id: assign_id,
             quote_id: quote_id,
+            user_id:user_id
         };
 
         try {
@@ -294,7 +297,7 @@ const AskForScope = ({ queryId, userType }) => {
                                                         onClick={() => toggleRow(index)}
                                                         className="flex items-center justify-center p-2"
                                                     >
-                                                        {expandedRowIndex === index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
+                                                        {expandedRowIndex == index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
 
                                                     {quote.quote_status == 0 && quote.isfeasability == 0 && quote.user_id == thisUserId && (
@@ -307,7 +310,7 @@ const AskForScope = ({ queryId, userType }) => {
                                             </tr>
                                             {/* Accordion */}
                                             {expandedRowIndex == index && (
-                                                quote.submittedtoadmin == "true" ? (
+                                                
                                                     <tr>
                                                         <td colSpan={7} className="border px-4 py-4 bg-gray-50">
                                                             <div className="space-y-4 text-sm">
@@ -420,6 +423,7 @@ const AskForScope = ({ queryId, userType }) => {
                                                                         )}
                                                                     </>
                                                                 )}
+                                                                {quote.submittedtoadmin == "true" && (
                                                                 <p>
                                                                     <strong>Quote Status:</strong>
                                                                     <span
@@ -436,19 +440,22 @@ const AskForScope = ({ queryId, userType }) => {
                                                                                 : "Discount Requested"}
                                                                     </span>
                                                                 </p>
+                                                                )}
 
                                                                 {assignQuoteInfo && assignQuoteInfo != false && (
                                                                     <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                                                 )}
+                                                                
                                                                 <div className='flex items-start space-x-1'>
-                                                                    {quote.quote_status == 1 && quote.user_id == thisUserId && quote.ptp == null && (
+                                                                    {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId && quote.ptp == null && (
                                                                         <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
                                                                     )}
-                                                                    {quote.user_id == thisUserId && quote.demodone != 1 && (
+                                                                    {quote.user_id == thisUserId && quote.submittedtoadmin == "true" && quote.demodone != 1 && (
                                                                         <DemoDone scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
                                                                     )}
                                                                 </div>
-                                                                {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
+                                                                
+                                                                {quote.isfeasability == 1  && (
                                                                 <>
                                                                     <div className='flex items-center'>
                                                                         <>
@@ -461,6 +468,17 @@ const AskForScope = ({ queryId, userType }) => {
                                                                             >
                                                                                 <History size={18} />
                                                                             </button>
+                                                                            {quote.feasability_status == "Completed" && quote.submittedtoadmin == "false" (
+                                                                                <button
+                                                                                    onClick={() => {
+                                                                                        confirmSubmit(quote.assign_id, quote.quoteid, quote.user_id);
+                                                                                    }}
+                                                                                    className="bg-green-100 text-green-700 p-1 rounded border border-green-900 ml-5 hover:bg-green-200"
+                                                                                    title='Submit request to admin for Ask For Scope'
+                                                                                >
+                                                                                    Submit To Admin
+                                                                                </button>
+                                                                            )}
                                                                         </>
                                                                         
                                                                     </div>
@@ -510,88 +528,7 @@ const AskForScope = ({ queryId, userType }) => {
                                                         </td>
 
                                                     </tr>
-                                                ) : (
-                                                    <tr>
-                                                        <td colSpan={7} className="border px-4 py-4 bg-gray-50">
-                                                            <div className="space-y-4 text-sm">
-                                                                <p
-                                                                    className={`${quote.feasability_status === "Pending"
-                                                                        ? "bg-orange-100 text-center py-2 px-4 rounded-full text-orange-800 font-semibold"
-                                                                        : "text-gray-500"
-                                                                        }`}
-                                                                >
-                                                                    Submitted for feasibility check
-                                                                </p>
-                                                                <div className='flex items-center'>
-                                                                    <>
-                                                                        <p><strong>Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "text-red-600" : "text-green-600"}`}>{quote.feasability_status}</span></p>
-
-                                                                        {/* Button to View History */}
-                                                                        <button
-                                                                            onClick={() => fetchFeasibilityHistory(quote.assign_id, quote.quoteid)}
-                                                                            className="bg-blue-400 text-white p-1 rounded hover:bg-blue-600 ml-3"
-                                                                        >
-                                                                            <History size={18} />
-                                                                        </button>
-                                                                    </>
-                                                                    {quote.feasability_status == "Completed" && quote.submittedtoadmin == "false" (
-                                                                        <button
-                                                                            onClick={() => {
-                                                                                confirmSubmit(quote.assign_id, quote.quoteid);
-                                                                            }}
-                                                                            className="bg-green-100 text-green-700 p-1 rounded border border-green-900 ml-5 hover:bg-green-200"
-                                                                            title='Submit request to admin for Ask For Scope'
-                                                                        >
-                                                                            Submit To Admin
-                                                                        </button>
-                                                                    )}
-                                                                </div>
-
-                                                                {quote.feasability_status == "Completed" && (
-
-                                                                    <p>
-                                                                        Feasibility Comments:
-                                                                        <span
-                                                                            className='mt-2'
-                                                                            dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
-                                                                        />
-                                                                    </p>
-                                                                )}
-                                                                {historyLoading && <CustomLoader />}
-                                                                {historyData.length > 0 && (
-                                                                    <div className="mt-4 space-y-4">
-                                                                        <strong className="">Feasibility Check History:</strong>
-                                                                        <div className="border-l-2 border-gray-300 pl-4">
-                                                                            {historyData.map((historyItem, index) => (
-                                                                                <div key={historyItem.id} className="mb-4">
-                                                                                    <div className="flex items-start space-x-3">
-                                                                                        {/* Timeline Icon */}
-                                                                                        <div className="w-h-2 bg-blue-500 rounded-full mt-1"></div>
-                                                                                        <div className="flex flex-col">
-                                                                                            {/* User Details */}
-                                                                                            <p className=" font-semibold text-gray-700">
-                                                                                                {historyItem.from_first_name} {historyItem.from_last_name}
-                                                                                                {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs"> to </span>)}
-
-                                                                                                {historyItem.to_first_name} {historyItem.to_last_name}
-                                                                                            </p>
-                                                                                            <p className=" text-gray-500">{historyItem.created_at}</p>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    {/* Message */}
-                                                                                    <p className="ml-7  text-gray-600">{historyItem.message}</p>
-                                                                                </div>
-                                                                            ))}
-                                                                        </div>
-                                                                    </div>
-                                                                )}
-
-                                                            </div>
-                                                        </td>
-
-                                                    </tr>
-
-                                                )
+                                                 
                                             )}
                                         </React.Fragment>
                                     ))}

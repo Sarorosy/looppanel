@@ -9,13 +9,14 @@ import { RefreshCcw, X } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 
 
-const SummaryPage = ({ onClose }) => {
+const SummaryPage = ({ onClose, after }) => {
     const [quoteSummary, setQuoteSummary] = useState([]);
     const [loading, setLoading] = useState(false);
     const [pendingCount, setPendingCount] = useState(0);
     const [approvedCount, setApprovedCount] = useState(0);
     const [discountCount, setDiscountCount] = useState(0);
     const [selectedQuery, setSelectedQuery] = useState('');
+    const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     const userData = sessionStorage.getItem('loopuser');
@@ -62,6 +63,7 @@ const SummaryPage = ({ onClose }) => {
 
     const handleViewBtnClick = (query) => {
         setSelectedQuery(query.ref_id);
+        setSelectedQuote(query.id);
         console.log(selectedQuery)
         setIsDetailsOpen(true);
         
@@ -73,6 +75,11 @@ const SummaryPage = ({ onClose }) => {
     useEffect(() => {
         fetchQuoteSummary();
     }, []);
+
+    const close = () =>{
+        onClose();
+        if(after){after()}
+    }
 
     const columns = [
         {
@@ -165,7 +172,7 @@ const SummaryPage = ({ onClose }) => {
 
 
                 <button
-                    onClick={onClose}
+                    onClick={close}
                     className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
                 >
                     {/* <CircleX size={32} /> */}
@@ -220,8 +227,9 @@ const SummaryPage = ({ onClose }) => {
 
                     <QueryDetails
                         onClose={toggleDetailsPage}
-
+                        quotationId={selectedQuote}
                         queryId={selectedQuery}
+                        after={fetchQuoteSummary}
                     />
 
                 )}

@@ -10,7 +10,7 @@ import CustomLoader from '../CustomLoader';
 import AskForScopeAdmin from './AskForScopeAdmin';
 
 
-const QueryDetailsAdmin = ({ onClose, queryId, quotationId }) => {
+const QueryDetailsAdmin = ({ onClose, queryId, quotationId , after}) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -93,7 +93,10 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId }) => {
         return `${hours}h ${minutes}m`;
       }
       
-
+      const close = () =>{
+        onClose();
+        if(after){after()}
+    }
 
     return (
         <motion.div
@@ -127,7 +130,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId }) => {
                 <p className="text-gray-500"></p>
             )} */}
              <button
-                onClick={onClose}
+                onClick={close}
                 className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
             >
                 {/* <CircleX size={32} /> */}
@@ -319,7 +322,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId }) => {
 
                 </div>
                 </div>
-                <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId}/>
+                <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId} />
                 </div>
             )}
 

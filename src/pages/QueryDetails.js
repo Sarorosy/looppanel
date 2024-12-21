@@ -11,7 +11,7 @@ import AskForScope from './AskForScope';
 import SubmitRequestQuote from './SubmitRequestQuote';
 
 
-const QueryDetails = ({ onClose, queryId }) => {
+const QueryDetails = ({ onClose, queryId, quotationId, after}) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -95,7 +95,12 @@ const QueryDetails = ({ onClose, queryId }) => {
         return `${hours}h ${minutes}m`;
     }
 
-
+    const close = () =>{
+        onClose();
+        if(after){
+        after();
+        }
+    }
 
     return (
         <motion.div
@@ -129,7 +134,7 @@ const QueryDetails = ({ onClose, queryId }) => {
                     <p className="text-gray-500"></p>
                 )} */}
                 <button
-                    onClick={onClose}
+                    onClick={close}
                     className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
                 >
                     {/* <CircleX size={32} /> */}
@@ -321,7 +326,7 @@ const QueryDetails = ({ onClose, queryId }) => {
 
                         </div>
                     </div>
-                    <AskForScope queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} />
+                    <AskForScope queryId={queryInfo.assign_id} quotationId={quotationId} userType={userObject.fld_admin_type} />
 
                 </div>
             )}
