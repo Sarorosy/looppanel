@@ -11,6 +11,7 @@ import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss'
+import HistorySideBar from './HistorySideBar';
 
 const AskForScope = ({ queryId, userType, quotationId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
@@ -36,13 +37,21 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
     const [selectedRefId, setSelectedRefId] = useState('');
     const [historyData, setHistoryData] = useState([]);
     const [historyLoading, setHistoryLoading] = useState(false);
-    const [quotehistoryData, setQuoteHistoryData] = useState([]);
+    
     const [error, setError] = useState(null);
     
+    const [historyPanelOpen,SetHistoryPanelOpen]  = useState(false);
+    const [quoteIdForHistory, setQuoteIdForHistory] = useState('');
+
+    const toggleHistoryDiv = ($id) =>{
+        setQuoteIdForHistory($id);
+        SetHistoryPanelOpen(true);
+    }
 
     const toggleRow = (index) => {
         setExpandedRowIndex(expandedRowIndex == index ? null : index);
     };
+
 
     const userObject = JSON.parse(userData);
     const loopUserObject = JSON.parse(loopuserData);
@@ -152,27 +161,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
         }
     };
 
-    const fetchQuoteHistory = async (ref_id, quote_id) => {
-        try {
-            const response = await fetch('https://apacvault.com/Webapi/getquotehistory', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ ref_id, quote_id }),
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                setQuoteHistoryData(data.historyData);
-
-            } else {
-                console.error('Failed to fetch history:', response.statusText);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    };
+    
 
 
     const confirmSubmit = (assign_id, quote_id, user_id) => {
@@ -357,12 +346,12 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                         PTP
                                                                     </span>
                                                                 )}
-                                                                {/* <button
-                                                                    onClick={() => fetchQuoteHistory(quote.assign_id, quote.quoteid)}
+                                                                <button
+                                                                    onClick={() => toggleHistoryDiv(quote.quoteid)}
                                                                     className="ml-4 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
                                                                 >
                                                                     <History size={22} />
-                                                                </button> */}
+                                                                </button>
                                                             </p>
                                                             
 
@@ -583,6 +572,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                         )}
                         {editFormOpen && (
                             <EditRequestForm quoteId={selectedQuoteId} refId={queryId} onClose={() => { setEditFormOpen(!editFormOpen) }} after={fetchScopeDetails} />
+                        )}
+                        {historyPanelOpen && (
+                            <HistorySideBar quoteId={quoteIdForHistory} refId={queryId} onClose={() => { SetHistoryPanelOpen(!historyPanelOpen) }} />
                         )}
                     </AnimatePresence>
 

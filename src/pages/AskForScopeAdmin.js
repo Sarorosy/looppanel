@@ -3,9 +3,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp,History, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
+import HistorySideBar from './HistorySideBar';
 const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -29,6 +30,14 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [historyLoading, setHistoryLoading] = useState(false);
     const [userIdForTag, setUserIdForTag] = useState('');
 
+    const [historyPanelOpen, SetHistoryPanelOpen] = useState(false);
+    const [quoteIdForHistory, setQuoteIdForHistory] = useState('');
+
+    const toggleHistoryDiv = ($id) => {
+        setQuoteIdForHistory($id);
+        SetHistoryPanelOpen(true);
+    }
+
     const toggleRow = (index) => {
         setExpandedRowIndex(expandedRowIndex === index ? null : index);
     };
@@ -43,7 +52,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ ref_id: queryId, user_type:userType, quote_id:quotationId }),
+                    body: JSON.stringify({ ref_id: queryId, user_type: userType, quote_id: quotationId }),
                 }
             );
 
@@ -146,24 +155,24 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
         let isAmountEmpty = false;
         Object.keys(amounts).forEach((key) => {
             const amount = amounts[key].trim();
-    
+
             if (!amount || !/^\d+(\.\d{1,2})?$/.test(amount)) {
                 isAmountEmpty = true;  // If it's empty or not a valid number, flag it
             }
         });
 
-    // Check if the comment field is empty
-    if (isAmountEmpty) {
-        toast.error('Please check all fields');
-        return; // Prevent form submission if validation fails
-    }
-    const form = document.getElementById('submitQuoteForm');
+        // Check if the comment field is empty
+        if (isAmountEmpty) {
+            toast.error('Please check all fields');
+            return; // Prevent form submission if validation fails
+        }
+        const form = document.getElementById('submitQuoteForm');
 
-    // Trigger native form validation
-    if (!form.checkValidity()) {
-        toast.error('Please fill in all the required fields');
-        return; // Prevent form submission if validation fails
-    }
+        // Trigger native form validation
+        if (!form.checkValidity()) {
+            toast.error('Please fill in all the required fields');
+            return; // Prevent form submission if validation fails
+        }
 
         try {
             // Show loading spinner
@@ -321,7 +330,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 PTP
                                                             </span>
                                                         )}
-                                                        
+
                                                     </p>
                                                 </td>
                                                 <td className="border px-4 py-2">{quote.quoteid}</td>
@@ -349,7 +358,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     : 'Unknown'}
                                                     </span>
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
-                                                        <><br/><span className='text-green-700 text-sm'>Feasability Completed</span></>
+                                                        <><br /><span className='text-green-700 text-sm'>Feasability Completed</span></>
                                                     )}
                                                 </td>
                                                 <td className="border px-4 py-2 flex items-center">
@@ -360,12 +369,12 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                     >
                                                         {expandedRowIndex === index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
-                                                   
-                                                        <button onClick={() => { toggleEditForm(quote.quoteid, quote.user_id) }}
-                                                            className='flex items-center rounded-full border-2 border-blue-500'>
-                                                            <Hash className='p-1' /> 
-                                                        </button>
-                                                    
+
+                                                    <button onClick={() => { toggleEditForm(quote.quoteid, quote.user_id) }}
+                                                        className='flex items-center rounded-full border-2 border-blue-500'>
+                                                        <Hash className='p-1' />
+                                                    </button>
+
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
@@ -390,6 +399,12 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                         PTP
                                                                     </span>
                                                                 )}
+                                                                <button
+                                                                    onClick={() => toggleHistoryDiv(quote.quoteid)}
+                                                                    className="ml-4 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+                                                                >
+                                                                    <History size={15} />
+                                                                </button>
                                                             </p>
                                                             {quote.tag_names && (
                                                                 <p>
@@ -476,23 +491,23 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                         })()}
                                                                     </p>
                                                                     {quote.discount_price && (
-                                                                    <p>
-                                                                        <strong>Discounted Price:</strong>{' '}
-                                                                        {(() => {
-                                                                            const prices = quote.discount_price.split(','); // Split quote_price into an array
-                                                                            const plans = quote.plan.split(','); // Split plan into an array
-                                                                            return plans.map((plan, index) => (
-                                                                                <span key={index} className='bg-[#FFD700] px-1 py-2 rounded'>
-                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
-                                                                                    {index < plans.length - 1 && ', '}
-                                                                                </span>
-                                                                            ));
-                                                                        })()}
-                                                                    </p>
+                                                                        <p>
+                                                                            <strong>Discounted Price:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.discount_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className='bg-[#FFD700] px-1 py-2 rounded'>
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
                                                                     )}
                                                                     {quote.user_comments && (
-                                                                    <p><strong>Comments:</strong> {quote.user_comments}</p>
-                                                                )}
+                                                                        <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                    )}
                                                                 </>
                                                             )}
                                                             {assignQuoteInfo && assignQuoteInfo != false && (
@@ -572,7 +587,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     )}
                                                                 </>
                                                             )}
-                                                            {quote.quote_status !=1 && (
+                                                            {quote.quote_status != 1 && (
                                                                 <>
                                                                     <div className="nav-tabs-custom tabb">
                                                                         <ul className="nav nav-tabs">
@@ -590,8 +605,8 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                     <input type="hidden" name="quote_id" value={quote.quoteid} />
                                                                                     <div className="box-body">
                                                                                         <div className='row'>
-                                                                                        {quote.plan &&
-                                                                                            quote.plan.split(',').map((plan, index) => (
+                                                                                            {quote.plan &&
+                                                                                                quote.plan.split(',').map((plan, index) => (
                                                                                                     <div className="form-group col-md-6" key={index}>
                                                                                                         <label
                                                                                                             htmlFor={`amount_${plan.trim()}`}
@@ -617,8 +632,8 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                                             <div className="error" id={`amountError_${plan.trim()}`}></div>
                                                                                                         </div>
                                                                                                     </div>
-                                                                                            ))}
-                                                                                            </div>
+                                                                                                ))}
+                                                                                        </div>
                                                                                         <div className="form-group">
                                                                                             <label htmlFor="comment" className="col-sm-3 control-label">Comments</label>
                                                                                             <div className="col-sm-12">
@@ -657,7 +672,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                 <History size={18} />
                                                                             </button>
                                                                         </>
-                                                                        
+
                                                                     </div>
 
                                                                     {quote.feasability_status == "Completed" && (
@@ -699,7 +714,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                         </div>
                                                                     )}
                                                                 </>
-                                                                )}
+                                                            )}
 
                                                         </div>
                                                         <Chat quoteId={quote.quoteid} refId={quote.assign_id} />
@@ -710,18 +725,21 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                     ))}
                                 </tbody>
                             </table>
-                            
+
                         </div>
                     )}
                 </div>
             )}
             <ToastContainer />
             <AnimatePresence>
-                       
-                        {editFormOpen && (
-                            <AddTags quoteId={selectedQuoteId} refId={queryId} userId={userIdForTag} onClose={()=>{setEditFormOpen(!editFormOpen)}} after={fetchScopeDetails} />
+
+                {editFormOpen && (
+                    <AddTags quoteId={selectedQuoteId} refId={queryId} userId={userIdForTag} onClose={() => { setEditFormOpen(!editFormOpen) }} after={fetchScopeDetails} />
+                )}
+                {historyPanelOpen && (
+                            <HistorySideBar quoteId={quoteIdForHistory} refId={queryId} onClose={() => { SetHistoryPanelOpen(!historyPanelOpen) }} />
                         )}
-                    </AnimatePresence>
+            </AnimatePresence>
         </div>
     );
 };
