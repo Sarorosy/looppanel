@@ -531,15 +531,15 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                                                 {/* User Details */}
                                                                                                 <p className=" font-semibold text-gray-700">
                                                                                                     {historyItem.from_first_name} {historyItem.from_last_name}
-                                                                                                    {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs">to</span>)}
+                                                                                                    {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs"> to </span>)}
 
                                                                                                     {historyItem.to_first_name} {historyItem.to_last_name}
                                                                                                 </p>
                                                                                                 <p className=" text-gray-500">{historyItem.created_at}</p>
+                                                                                        {/* Message */}
+                                                                                        <p className="text-gray-600">{historyItem.message}</p>
                                                                                             </div>
                                                                                         </div>
-                                                                                        {/* Message */}
-                                                                                        <p className="ml-7  text-gray-600">{historyItem.message}</p>
                                                                                     </div>
                                                                                 ))}
                                                                             </div>

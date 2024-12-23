@@ -607,7 +607,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                         <div className='row'>
                                                                                             {quote.plan &&
                                                                                                 quote.plan.split(',').map((plan, index) => (
-                                                                                                    <div className="form-group col-md-6" key={index}>
+                                                                                                    <div className="form-group col-md-12" key={index}>
                                                                                                         <label
                                                                                                             htmlFor={`amount_${plan.trim()}`}
                                                                                                             className="col-sm-12 control-label"
@@ -704,10 +704,10 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                                     {historyItem.to_first_name} {historyItem.to_last_name}
                                                                                                 </p>
                                                                                                 <p className=" text-gray-500">{historyItem.created_at}</p>
+                                                                                        {/* Message */}
+                                                                                        <p className="text-gray-600">{historyItem.message}</p>
                                                                                             </div>
                                                                                         </div>
-                                                                                        {/* Message */}
-                                                                                        <p className="ml-7  text-gray-600">{historyItem.message}</p>
                                                                                     </div>
                                                                                 ))}
                                                                             </div>
