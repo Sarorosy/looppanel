@@ -12,6 +12,7 @@ import EditRequestForm from './EditRequestForm';
 import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss'
 import HistorySideBar from './HistorySideBar';
+import FeasHistorySideBar from './FeasHistorySideBar';
 
 const AskForScope = ({ queryId, userType, quotationId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
@@ -42,6 +43,10 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
     
     const [historyPanelOpen,SetHistoryPanelOpen]  = useState(false);
     const [quoteIdForHistory, setQuoteIdForHistory] = useState('');
+
+    const [feasHistoryPanelOpen,SetFeasHistoryPanelOpen]  = useState(false);
+    const [quoteIdForFeasHistory, setQuoteIdForFeasHistory] = useState('');
+    const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
 
     const toggleHistoryDiv = ($id) =>{
         setQuoteIdForHistory($id);
@@ -134,32 +139,14 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
         setEditFormOpen((prev) => !prev)
     };
 
-    const fetchFeasibilityHistory = async (assign_id, quote_id) => {
-        const payload = {
-            ref_id: assign_id,
-            quote_id: quote_id,
-        };
+    const toggleFeasHistoyDiv = (assign_id, quote_id) =>{
+        setQuoteIdForFeasHistory(quote_id);
+        setRefIdForFeasHistory(assign_id);
+        SetFeasHistoryPanelOpen((prev) => !prev);
 
-        try {
-            setHistoryLoading(true);
-            const response = await fetch('https://apacvault.com/Webapi/getFeasabilityHistory', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
+    }
 
-            const data = await response.json();
-            if (data.status) {
-                setHistoryData(data.historyData)
-            }
-        } catch (error) {
-            console.error("Error fetching feasibility history:", error);
-        } finally {
-            setHistoryLoading(false);
-        }
-    };
+    
 
     
 
@@ -487,7 +474,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                                             {/* Button to View History */}
                                                                             <button
-                                                                                onClick={() => fetchFeasibilityHistory(quote.assign_id, quote.quoteid)}
+                                                                                onClick={() => toggleFeasHistoyDiv(quote.assign_id, quote.quoteid)}
                                                                                 className="bg-blue-400 text-white p-1 rounded hover:bg-blue-600 ml-3"
                                                                             >
                                                                                 <History size={18} />
@@ -575,6 +562,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                         )}
                         {historyPanelOpen && (
                             <HistorySideBar quoteId={quoteIdForHistory} refId={queryId} onClose={() => { SetHistoryPanelOpen(!historyPanelOpen) }} />
+                        )}
+                        {feasHistoryPanelOpen && (
+                            <FeasHistorySideBar quoteId={quoteIdForFeasHistory} refId={refIdForFeasHistory} onClose={() => { SetFeasHistoryPanelOpen(!feasHistoryPanelOpen) }} />
                         )}
                     </AnimatePresence>
 

@@ -7,6 +7,7 @@ import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Hash, RefreshCc
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
 import HistorySideBar from './HistorySideBar';
+import FeasHistorySideBar from './FeasHistorySideBar';
 const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -33,9 +34,20 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [historyPanelOpen, SetHistoryPanelOpen] = useState(false);
     const [quoteIdForHistory, setQuoteIdForHistory] = useState('');
 
+    const [feasHistoryPanelOpen, SetFeasHistoryPanelOpen] = useState(false);
+    const [quoteIdForFeasHistory, setQuoteIdForFeasHistory] = useState('');
+    const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
+
     const toggleHistoryDiv = ($id) => {
         setQuoteIdForHistory($id);
         SetHistoryPanelOpen(true);
+    }
+
+    const toggleFeasHistoyDiv = (assign_id, quote_id) => {
+        setQuoteIdForFeasHistory(quote_id);
+        setRefIdForFeasHistory(assign_id);
+        SetFeasHistoryPanelOpen((prev) => !prev);
+
     }
 
     const toggleRow = (index) => {
@@ -666,7 +678,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
                                                                             {/* Button to View History */}
                                                                             <button
-                                                                                onClick={() => fetchFeasibilityHistory(quote.assign_id, quote.quoteid)}
+                                                                                onClick={() => toggleFeasHistoyDiv(quote.assign_id, quote.quoteid)}
                                                                                 className="bg-blue-400 text-white p-1 rounded hover:bg-blue-600 ml-3"
                                                                             >
                                                                                 <History size={18} />
@@ -737,8 +749,12 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                     <AddTags quoteId={selectedQuoteId} refId={queryId} userId={userIdForTag} onClose={() => { setEditFormOpen(!editFormOpen) }} after={fetchScopeDetails} />
                 )}
                 {historyPanelOpen && (
-                            <HistorySideBar quoteId={quoteIdForHistory} refId={queryId} onClose={() => { SetHistoryPanelOpen(!historyPanelOpen) }} />
-                        )}
+                    <HistorySideBar quoteId={quoteIdForHistory} refId={queryId} onClose={() => { SetHistoryPanelOpen(!historyPanelOpen) }} />
+                )}
+
+                {feasHistoryPanelOpen && (
+                    <FeasHistorySideBar quoteId={quoteIdForFeasHistory} refId={refIdForFeasHistory} onClose={() => { SetFeasHistoryPanelOpen(!feasHistoryPanelOpen) }} />
+                )}
             </AnimatePresence>
         </div>
     );
