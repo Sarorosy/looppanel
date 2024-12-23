@@ -109,7 +109,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
             <div className='flex items-center justify-between bg-blue-400 text-white pnav py-3'>
                 <h2 className="text-xl font-semibold mllt">Query Details </h2>
 
-                {tatScore && tatScore.total_rows > 0 ? (
+                {/* {tatScore && tatScore.total_rows > 0 ? (
                     <div className="flex items-center justify-between space-x-2 mr-16">
                         <p>
                             <span className="font-bold">Average TAT:</span>{" "}
@@ -128,7 +128,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                     </div>
                 ) : (
                     <p className="text-gray-500"></p>
-                )}
+                )} */}
                 <button
                     onClick={onClose}
                     className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
