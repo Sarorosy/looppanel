@@ -411,7 +411,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                                             <button
                                                 type="button"
                                                 onClick={() => handleRemoveFileInput(item.id)}
-                                                className="px-2 py-1 bg-red-500 text-white rounded white-space-nowrap"
+                                                className="px-2 py-1 bg-red-500 text-white rounded white-space-nowrap f-14"
                                             >
                                                 - Remove
                                             </button>
