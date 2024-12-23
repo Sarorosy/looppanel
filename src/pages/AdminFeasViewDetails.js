@@ -54,7 +54,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
 
     const fetchScopeDetails = async () => {
         setLoading(true); // Show loading spinner
-
+        let hasResponse = false;
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/adminScopeDetails',
@@ -88,10 +88,13 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
+            hasResponse = true;
         } catch (error) {
             console.error('Error fetching details:', error);
         } finally {
-            setLoading(false); // Hide loading spinner
+            if (hasResponse) {
+                setLoading(false); // Hide the loader
+            }
         }
     };
 
