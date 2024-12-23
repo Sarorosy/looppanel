@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -13,6 +13,7 @@ import Swal from 'sweetalert2';
 import 'sweetalert2/src/sweetalert2.scss'
 import HistorySideBar from './HistorySideBar';
 import FeasHistorySideBar from './FeasHistorySideBar';
+import AddTags from './AddTags';
 
 const AskForScope = ({ queryId, userType, quotationId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
@@ -34,21 +35,23 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
     const [expandedRowIndex, setExpandedRowIndex] = useState(0);
     const [addNewFormOpen, setAddNewFormOpen] = useState(false);
     const [editFormOpen, setEditFormOpen] = useState(false);
+    const [hashEditFormOpen, setHashEditFormOpen] = useState(false);
     const [selectedQuoteId, setSelectedQuoteId] = useState('');
     const [selectedRefId, setSelectedRefId] = useState('');
     const [historyData, setHistoryData] = useState([]);
     const [historyLoading, setHistoryLoading] = useState(false);
-    
+
     const [error, setError] = useState(null);
-    
-    const [historyPanelOpen,SetHistoryPanelOpen]  = useState(false);
+
+    const [historyPanelOpen, SetHistoryPanelOpen] = useState(false);
     const [quoteIdForHistory, setQuoteIdForHistory] = useState('');
 
-    const [feasHistoryPanelOpen,SetFeasHistoryPanelOpen]  = useState(false);
+    const [feasHistoryPanelOpen, SetFeasHistoryPanelOpen] = useState(false);
     const [quoteIdForFeasHistory, setQuoteIdForFeasHistory] = useState('');
     const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
+    const [userIdForTag, setUserIdForTag] = useState('');
 
-    const toggleHistoryDiv = ($id) =>{
+    const toggleHistoryDiv = ($id) => {
         setQuoteIdForHistory($id);
         SetHistoryPanelOpen(true);
     }
@@ -66,7 +69,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
     const fetchScopeDetails = async () => {
         setLoading(true); // Show loading spinner
-
+        let hasResponse = false;
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/adminScopeDetails',
@@ -100,10 +103,13 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
+            hasResponse = true;
         } catch (error) {
             console.error('Error fetching details:', error);
         } finally {
-            setLoading(false); // Hide loading spinner
+            if (hasResponse) {
+                setLoading(false); // Hide the loader
+            }
         }
     };
 
@@ -139,16 +145,16 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
         setEditFormOpen((prev) => !prev)
     };
 
-    const toggleFeasHistoyDiv = (assign_id, quote_id) =>{
+    const toggleFeasHistoyDiv = (assign_id, quote_id) => {
         setQuoteIdForFeasHistory(quote_id);
         setRefIdForFeasHistory(assign_id);
         SetFeasHistoryPanelOpen((prev) => !prev);
 
     }
 
-    
 
-    
+
+
 
 
     const confirmSubmit = (assign_id, quote_id, user_id) => {
@@ -156,24 +162,42 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
             title: "Are you sure?",
             text: "Once submitted, this action cannot be undone!",
             icon: "question",
-            buttons: true,
-            dangerMode: true,
+            showCancelButton: true, // Show cancel button
+            confirmButtonText: 'Submit',
+            cancelButtonText: 'Cancel',
+            preConfirm: () => {
+                // Get the value of the final_comments input
+                const finalComments = Swal.getPopup().querySelector('#final_comments').value;
+                if (!finalComments) {
+                    Swal.showValidationMessage("Please enter your comments.");
+                }
+                return finalComments; // Return the comments to be used in the submitToAdmin function
+            },
+            html: `
+                <div style="text-align: left; width: 100%;">
+                    <label for="final_comments" style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px;">Enter Comments:</label>
+                    <textarea id="final_comments" class="swal2-input" placeholder="Enter your comments..." style="width: 100%; height: 100px; padding: 10px; font-size: 14px; border-radius: 5px; border: 1px solid #ccc; resize: none;"></textarea>
+                </div>
+            `,
+            focusConfirm: false, // Focus on the textarea (not the confirm button)
         }).then((result) => {
             if (result.isConfirmed) {
-                submitToAdmin(assign_id, quote_id, user_id);
+                const finalComments = result.value; // Get the entered comments
+                submitToAdmin(assign_id, quote_id, user_id, finalComments);
             } else {
                 Swal.fire("Submission canceled!");
             }
         });
     };
-
-    const submitToAdmin = async (assign_id, quote_id, user_id) => {
+    
+    const submitToAdmin = async (assign_id, quote_id, user_id, finalComments) => {
         const payload = {
             ref_id: assign_id,
             quote_id: quote_id,
-            user_id: user_id
+            user_id: user_id,
+            final_comments: finalComments // Include the comments in the payload
         };
-
+    
         try {
             const response = await fetch('https://apacvault.com/Webapi/submitFeasRequestToAdmin', {
                 method: 'POST',
@@ -182,19 +206,30 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                 },
                 body: JSON.stringify(payload),
             });
-
+    
             const data = await response.json();
             if (data.status) {
-                toast.success("The quote has been successfully submitted to the admin.")
+                toast.success("The quote has been successfully submitted to the admin.");
+                setTimeout(()=>{
+                    fetchScopeDetails();
+                },1000);
+                
             } else {
-                toast.error(data.message || "Something went wrong.")
+                toast.error(data.message || "Something went wrong.");
             }
         } catch (error) {
             console.error("Error submitting to admin:", error);
             toast.error("An unexpected error occurred. Please try again.");
         }
     };
+    
+    
 
+    const toggleHashEditForm = (id, user_id) => {
+        setSelectedQuoteId(id);
+        setUserIdForTag(user_id);
+        setHashEditFormOpen((prev) => !prev)
+    };
 
     return (
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
@@ -308,6 +343,10 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             <Settings2 className='p-1' />
                                                         </button>
                                                     )}
+                                                    <button onClick={() => { toggleHashEditForm(quote.quoteid, quote.user_id) }}
+                                                        className='flex items-center rounded-full border-2 border-blue-500'>
+                                                        <Hash className='p-1' />
+                                                    </button>
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
@@ -340,7 +379,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                     <History size={15} />
                                                                 </button>
                                                             </p>
-                                                            
+
 
 
 
@@ -368,6 +407,12 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 </>
                                                             )}
                                                             <p><strong>Comments:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            {quote.final_comments != null && (
+                                                                <>
+                                                                    <p><strong>Final Comments:</strong> {quote.final_comments}</p>
+                                                                    
+                                                                </>
+                                                            )}
                                                             <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
                                                                 <div>
@@ -523,8 +568,8 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                                                     {historyItem.to_first_name} {historyItem.to_last_name}
                                                                                                 </p>
                                                                                                 <p className=" text-gray-500">{historyItem.created_at}</p>
-                                                                                        {/* Message */}
-                                                                                        <p className="text-gray-600">{historyItem.message}</p>
+                                                                                                {/* Message */}
+                                                                                                <p className="text-gray-600">{historyItem.message}</p>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
@@ -565,6 +610,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                         )}
                         {feasHistoryPanelOpen && (
                             <FeasHistorySideBar quoteId={quoteIdForFeasHistory} refId={refIdForFeasHistory} onClose={() => { SetFeasHistoryPanelOpen(!feasHistoryPanelOpen) }} />
+                        )}
+                        {hashEditFormOpen && (
+                            <AddTags quoteId={selectedQuoteId} refId={queryId} userId={userIdForTag} onClose={() => { setHashEditFormOpen(!hashEditFormOpen) }} after={fetchScopeDetails} notification="no" />
                         )}
                     </AnimatePresence>
 

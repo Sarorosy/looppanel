@@ -26,7 +26,7 @@ const FeasabilityPage = ({ onClose }) => {
     // Fetch data from the API
     const fetchQuoteSummary = async () => {
         setLoading(true); // Show loading spinner
-
+        let hasResponse = false;
 
         try {
             const response = await fetch(
@@ -49,10 +49,13 @@ const FeasabilityPage = ({ onClose }) => {
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
+            hasResponse = true;
         } catch (error) {
             console.error('Error fetching details:', error);
         } finally {
-            setLoading(false); // Hide loading spinner
+            if (hasResponse) {
+                setLoading(false); // Hide the loader
+            }
         }
     };
 

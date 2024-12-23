@@ -27,25 +27,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId , after}) => {
 
     const userObject = JSON.parse(userData);
 
-    const fetchActivityHistory = async () => {
-        try {
-            setIsVisible(true);
-            setActivityLoading(true);
-            const response = await fetch('https://instacrm.rapidcollaborate.com/api/viewqueryhistory', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ assign_id: queryInfo.assign_id }),
-            });
-            const data = await response.json();
-            setActivityData(data.activity);
-        } catch (error) {
-            console.error('Error fetching activity history:', error);
-        } finally {
-            setActivityLoading(false);
-        }
-    };
+    
 
     // Hide the activity div when clicked elsewhere
     const hideActivityDiv = () => {
@@ -54,7 +36,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId , after}) => {
 
     const fetchQueryDetails = async () => {
         setLoading(true); // Show loading spinner
-
+        let hasResponse = false;
 
         try {
             const response = await fetch(
@@ -77,10 +59,13 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId , after}) => {
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
+            hasResponse = true;
         } catch (error) {
             console.error('Error fetching details:', error);
         } finally {
-            setLoading(false); // Hide loading spinner
+            if (hasResponse) {
+                setLoading(false); // Hide the loader
+            }
         }
     };
     useEffect(() => {

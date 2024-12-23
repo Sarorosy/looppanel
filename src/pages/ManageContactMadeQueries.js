@@ -118,7 +118,7 @@ const ManageContactMadeQueries = () => {
     const fetchQuotes = async () => {
         setLoading(true);
 
-
+        let hasResponse = false;
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/loadcontactmadequeries',
@@ -137,10 +137,13 @@ const ManageContactMadeQueries = () => {
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
+            hasResponse = true;
         } catch (error) {
             console.error('Error fetching quotes:', error);
         } finally {
-            setLoading(false); // Hide loading spinner
+            if (hasResponse) {
+                setLoading(false); // Hide the loader
+            }
         }
     };
 

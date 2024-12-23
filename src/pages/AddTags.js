@@ -10,7 +10,7 @@ import 'select2/dist/css/select2.min.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
 
-const AddTags = ({ refId, quoteId, after, onClose , userId}) => {
+const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
     const [formData, setFormData] = useState({
         tags: [],
     });
@@ -22,6 +22,9 @@ const AddTags = ({ refId, quoteId, after, onClose , userId}) => {
     const [file, setFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(false);
+    const userData = sessionStorage.getItem('loopuser');
+
+    const userObject = JSON.parse(userData);
 
     const plans = ['Basic', 'Standard', 'Advanced'];
     const fetchInitialData = async () => {
@@ -88,6 +91,8 @@ const AddTags = ({ refId, quoteId, after, onClose , userId}) => {
             payload.append('quote_id', quoteId);
             payload.append('tags', formData.tags);
             payload.append('user_id', userId);
+            payload.append('notification', notification);
+            payload.append('admin_id', userObject.id)
 
             const response = await fetch('https://apacvault.com/Webapi/updateTags', {
                 method: 'POST',

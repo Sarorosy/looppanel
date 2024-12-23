@@ -58,7 +58,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
     const fetchQueryDetails = async () => {
         setLoading(true); // Show loading spinner
 
-        console.log("cominggg is " + queryId)
+        let hasResponse = false;
         try {
             const response = await fetch(
                 'https://instacrm.rapidcollaborate.com/api/viewquerydetails',
@@ -80,10 +80,13 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
+            hasResponse = true;
         } catch (error) {
             console.error('Error fetching details:', error);
         } finally {
-            setLoading(false); // Hide loading spinner
+            if (hasResponse) {
+                setLoading(false); // Hide the loader
+            }
         }
     };
     useEffect(() => {

@@ -55,7 +55,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     };
     const fetchScopeDetails = async () => {
         setLoading(true); // Show loading spinner
-
+        let hasResponse = false;
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/adminScopeDetails',
@@ -88,10 +88,13 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
+            hasResponse = true;
         } catch (error) {
             console.error('Error fetching details:', error);
         } finally {
-            setLoading(false); // Hide loading spinner
+            if (hasResponse) {
+                setLoading(false); // Hide the loader
+            }
         }
     };
     const fetchFeasibilityHistory = async (assign_id, quote_id) => {
@@ -439,6 +442,12 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 </>
                                                             )}
                                                             <p className=''><strong>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            {quote.final_comments != null && (
+                                                                <>
+                                                                    <p><strong>Final Comments:</strong> {quote.final_comments}</p>
+                                                                    
+                                                                </>
+                                                            )}
                                                             <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
                                                                 <div>
@@ -747,7 +756,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             <AnimatePresence>
 
                 {editFormOpen && (
-                    <AddTags quoteId={selectedQuoteId} refId={queryId} userId={userIdForTag} onClose={() => { setEditFormOpen(!editFormOpen) }} after={fetchScopeDetails} />
+                    <AddTags quoteId={selectedQuoteId} refId={queryId} userId={userIdForTag} onClose={() => { setEditFormOpen(!editFormOpen) }} after={fetchScopeDetails} notification="yes" />
                 )}
                 {historyPanelOpen && (
                     <HistorySideBar quoteId={quoteIdForHistory} refId={queryId} onClose={() => { SetHistoryPanelOpen(!historyPanelOpen) }} />

@@ -27,7 +27,7 @@ const SummaryPage = ({ onClose, after }) => {
     const fetchQuoteSummary = async () => {
         setLoading(true); // Show loading spinner
 
-
+        let hasResponse = false;
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/getQuoteSummary',
@@ -50,10 +50,13 @@ const SummaryPage = ({ onClose, after }) => {
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
+            hasResponse = true;
         } catch (error) {
             console.error('Error fetching details:', error);
         } finally {
-            setLoading(false); // Hide loading spinner
+            if (hasResponse) {
+                setLoading(false); // Hide the loader
+            }
         }
     };
 
