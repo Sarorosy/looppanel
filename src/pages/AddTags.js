@@ -152,7 +152,7 @@ const AddTags = ({ refId, quoteId, after, onClose , userId}) => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="fixed right-0 h-full w-1/2 bg-gray-100 shadow-lg z-50 overflow-y-auto "
+            className="fixed right-0 h-full w-1/3 bg-gray-100 shadow-lg z-50 overflow-y-auto "
             style={{ top: "0px" }}
         >
             <div className="bg-white p-6 shadow rounded-md space-y-4 h-100">

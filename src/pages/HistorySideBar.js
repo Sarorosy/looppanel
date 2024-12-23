@@ -44,7 +44,7 @@ const HistorySideBar = ({ refId, quoteId, onClose }) => {
             animate={{ x: '0' }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="fixed right-0 top-0 h-full w-1/3 bg-gray-100 shadow-lg z-50 overflow-y-auto"
+            className="fixed right-0 top-0 h-full w-1/3 bg-gray-100 shadow-lg z-50 overflow-y-auto mt-0"
         >
             <div className='flex items-center justify-between bg-blue-400 text-white p-3'>
                             <h2 className="text-xl font-semibold mllt">Quote History </h2>
@@ -66,7 +66,7 @@ const HistorySideBar = ({ refId, quoteId, onClose }) => {
                     quoteHistoryData.map((item) => (
                         <div
                             key={item.id}
-                            className="bg-white p-4 rounded shadow-sm hover:shadow-md transition"
+                            className="bg-white p-2 rounded shadow-sm hover:shadow-md transition"
                         >
                             <p className="text-sm text-gray-600">
                                 <strong> {item.fld_first_name} {item.fld_last_name}</strong> {item.message}

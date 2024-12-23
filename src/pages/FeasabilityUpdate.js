@@ -332,7 +332,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                         <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                     )}
                                     <p >
-                                        Feasibility status is <strong className={quote.feasability_status == 'Pending' ? "badge-danger p-1 f-10 rounded" : "badge-success p-1 f-10 rounded"}>{quote.feasability_status}</strong>
+                                        <strong>Feasibility status is : </strong> <strong className={quote.feasability_status == 'Pending' ? "badge-danger p-1 f-10 rounded" : "badge-success p-1 f-10 rounded"}>{quote.feasability_status}</strong>
                                     </p>
                                     <p>
                                         <strong>Feasibility Comments:</strong>

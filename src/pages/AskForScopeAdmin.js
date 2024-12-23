@@ -438,7 +438,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p className='flex '><strong>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            <p className=''><strong>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
                                                             <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
                                                                 <div>
@@ -615,18 +615,18 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                 <form method="post" name="submitQuoteForm" id="submitQuoteForm" className="form-horizontal">
                                                                                     <input type="hidden" name="ref_id" value={quote.assign_id} />
                                                                                     <input type="hidden" name="quote_id" value={quote.quoteid} />
-                                                                                    <div className="box-body">
+                                                                                    <div className="box-body p-2">
                                                                                         <div className='row'>
                                                                                             {quote.plan &&
                                                                                                 quote.plan.split(',').map((plan, index) => (
-                                                                                                    <div className="form-group col-md-12" key={index}>
+                                                                                                    <div className="form-group col-6" key={index}>
                                                                                                         <label
                                                                                                             htmlFor={`amount_${plan.trim()}`}
-                                                                                                            className="col-sm-12 control-label"
+                                                                                                            className="control-label"
                                                                                                         >
                                                                                                             Amount for <strong>{plan.trim()} ({quote.currency}) </strong>
                                                                                                         </label>
-                                                                                                        <div className="col-sm-12">
+                                                                                                        <div className="">
                                                                                                             <input
                                                                                                                 type="text"
                                                                                                                 name={`amount_${plan.trim()}`}
@@ -645,20 +645,21 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 ))}
-                                                                                        </div>
-                                                                                        <div className="form-group">
+                                                                                        
+                                                                                        <div className="form-group col-sm-12">
                                                                                             <label htmlFor="comment" className="col-sm-3 control-label">Comments</label>
-                                                                                            <div className="col-sm-12">
+                                                                                            <div className="">
                                                                                                 <textarea name="comment" id="comment" placeholder="Comments" className="form-control" value={comment} onChange={(e) => setComment(e.target.value)}></textarea>
                                                                                                 <div className="error" id="commentError"></div>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    <div className="box-footer greens">
+                                                                                    </div>
+                                                                                    <div className="box-footer p-2">
                                                                                         <input
                                                                                             type="button"
                                                                                             name="priceSubmitted"
-                                                                                            className="btn pull-right"
+                                                                                            className="btn pull-right btn-success"
                                                                                             value="Submit"
                                                                                             onClick={() => PriceSubmitValidate(quote.assign_id, quote.quoteid)}
                                                                                             disabled={priceLoading}
@@ -674,7 +675,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 <>
                                                                     <div className='flex items-center'>
                                                                         <>
-                                                                            <p><strong>Feasability Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "text-red-600" : "text-green-600"}`}>{quote.feasability_status}</span></p>
+                                                                            <p><strong>Feasability Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "badge-danger p-1 f-10 rounded" : "badge-success p-1 f-10 rounded"}`}>{quote.feasability_status}</span></p>
 
                                                                             {/* Button to View History */}
                                                                             <button

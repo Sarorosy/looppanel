@@ -76,7 +76,7 @@ const FeasHistorySideBar = ({ refId, quoteId, onClose }) => {
                                             {/* User Details */}
                                             <p className=" font-semibold text-gray-700">
                                                 {historyItem.from_first_name} {historyItem.from_last_name}
-                                                {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs">to</span>)}
+                                                {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs"> to </span>)}
 
                                                 {historyItem.to_first_name} {historyItem.to_last_name}
                                             </p>

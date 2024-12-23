@@ -49,8 +49,8 @@ function DemoDone({ scopeDetails, quoteId , after}) {
 
     return (
         <div className='flex items-start'>
-            <button onClick={() => setShowForm(!showForm)} className="bg-green-100 hover:bg-green-200 text-green-900 px-4 py-2 rounded-3xl flex items-start ">
-                Mark As RC Demo Done <CheckCircle size={20} className='ml-3'/>
+            <button onClick={() => setShowForm(!showForm)} className="btn btn-success flex items-center f-14 px-2 py-1">
+                Mark As RC Demo Done <CheckCircle size={15} className='ml-1'/>
             </button>
 
             
