@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell, Quote, MessageSquareMore, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight } from 'lucide-react';
+import { LogOut, Bell, Quote, MessageSquareMore, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight, Hash } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import LogoNew from '../logo-new.png';
 import { AnimatePresence } from 'framer-motion';
@@ -104,15 +104,18 @@ const Header = () => {
     }
   };
 
-  const handleNotificationClick = async (notificationId, refId, quoteId, isfeasability) => {
+  const handleNotificationClick = async (notificationId, refId, quoteId, isfeasability, viewer) => {
 
     setSelectedQuery(refId);
     setSelectedQuote(quoteId)
     if(isfeasability == 0){
-
-    setIsDetailsOpen(true);
+      setIsDetailsOpen(true);
     }else{
-      setIsDetailsOpen(false);
+      if(viewer != null && viewer == 'owner'){
+        setIsDetailsOpen(true);
+      }else if(viewer!= null && viewer == 'viewer'){
+        setIsFeasDetailsOpen(true);
+      }
     }
 
     try {
@@ -218,8 +221,8 @@ const Header = () => {
                 <div className=' overflow-y-scroll' style={{ height: "200px" }}>
                   <ul className='p-1 text-sm'>
                     {notifications.map((notification, index) => (
-                      <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id, notification.quote_id, notification.isfeasability)}>
-                        <p className='flex items-start'>
+                      <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id, notification.quote_id, notification.isfeasability,notification.viewer)}>
+                        <p className='flex items-center'>
                           {/* Display icon based on notification type */}
                           {notification.icon == 'quote' && (
                             <span className="mr-2">
@@ -234,6 +237,11 @@ const Header = () => {
                           {notification.icon == 'chat' && (
                             <span className="mr-2">
                               <MessageSquareText size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800'/> 
+                            </span>
+                          )}
+                          {notification.icon == 'tag' && (
+                            <span className="mr-2">
+                              <Hash size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800'/>
                             </span>
                           )}
                           {notification.icon == 'completed' && (
@@ -300,11 +308,13 @@ const Header = () => {
             <QueryDetailsAdmin
               onClose={toggleDetailsPage}
               queryId={selectedQuery}
+              quotationId={selectedQuote}
             />
           ) : (
             <QueryDetails
               onClose={toggleDetailsPage}
               queryId={selectedQuery}
+              quotationId={selectedQuote}
             />
           )
         )}

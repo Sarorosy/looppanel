@@ -370,15 +370,6 @@ table.dataTable>thead>tr>th {
   overflow-y: scroll;
 }
 
-.space-x-1 {
-  font-size: 12px;
-  display: inline-flex;
-}
-
-.space-x-1 span{
-  /* padding: 0px 7px !important; */
-  font-size: 12px;
-}
 
 .qss span {
   padding: 4px 7px !important;
@@ -584,4 +575,8 @@ img.nav-logo {
 }
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.ad-tab-inp .select2-selection__clear {
+  position: absolute !important;
+  right: 7px !important;
 }

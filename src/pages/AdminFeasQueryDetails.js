@@ -225,7 +225,7 @@ const AdminFeasQueryDetails = ({ onClose, queryId, quotationId, finalFunction })
                                         {queryInfo.tags.map((tag, index) => (
                                             <span
                                                 key={index}
-                                                className="bg-yellow-500 px-1 d-inline-block rounded text-white mr-1"
+                                                className="bg-yellow-500 px-1 d-inline-block rounded text-white mr-1 mb-1"
                                             >
                                                 {tag}
                                             </span>
@@ -298,25 +298,25 @@ const AdminFeasQueryDetails = ({ onClose, queryId, quotationId, finalFunction })
                                 </p>
                             )}
                             {queryInfo.sourceoflead && (
-                                <div>
-                                    <strong>Source of Lead:</strong>{" "}
+                                <div className='flex items-center'>
+                                    <strong className='mr-1'>Source of Lead:</strong>{" "}
                                     {queryInfo.sourceoflead === 100 && (
-                                        <span className="label label-info p-1 rounded">100 -- Google</span>
+                                        <span className="label label-info px-1 py-0 rounded f-12">100 -- Google</span>
                                     )}
                                     {queryInfo.sourceoflead === 200 && (
-                                        <span className="label label-primary p-1 rounded">200 -- FB</span>
+                                        <span className="label label-primary px-1 py-0 rounded f-12">200 -- FB</span>
                                     )}
                                     {queryInfo.sourceoflead === 300 && (
-                                        <span className="label label-warning p-1 rounded">300 -- Mailer Campaign</span>
+                                        <span className="label label-warning px-1 py-0 rounded f-12">300 -- Mailer Campaign</span>
                                     )}
                                     {queryInfo.sourceoflead === 400 && (
-                                        <span className="label label-default p-1 rounded">400 -- Interakt Campaign</span>
+                                        <span className="label label-default px-1 py-0 rounded f-12">400 -- Interakt Campaign</span>
                                     )}
                                     {queryInfo.sourceoflead === 500 && (
-                                        <span className="label label-success p-1 rounded">500 -- Through call</span>
+                                        <span className="label label-success px-1 py-0 rounded f-12">500 -- Through call</span>
                                     )}
                                     {queryInfo.sourceoflead === 600 && (
-                                        <span className="label label-danger p-1 rounded">600 -- Through Whatsapp</span>
+                                        <span className="label label-danger px-1 py-0 rounded f-12">600 -- Through Whatsapp</span>
                                     )}
                                 </div>
                             )}

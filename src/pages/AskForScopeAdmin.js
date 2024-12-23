@@ -3,9 +3,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
+import HistorySideBar from './HistorySideBar';
 const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -25,6 +26,17 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [expandedRowIndex, setExpandedRowIndex] = useState(0);
     const [editFormOpen, setEditFormOpen] = useState(false);
     const [selectedQuoteId, setSelectedQuoteId] = useState('');
+    const [historyData, setHistoryData] = useState([]);
+    const [historyLoading, setHistoryLoading] = useState(false);
+    const [userIdForTag, setUserIdForTag] = useState('');
+
+    const [historyPanelOpen, SetHistoryPanelOpen] = useState(false);
+    const [quoteIdForHistory, setQuoteIdForHistory] = useState('');
+
+    const toggleHistoryDiv = ($id) => {
+        setQuoteIdForHistory($id);
+        SetHistoryPanelOpen(true);
+    }
 
     const toggleRow = (index) => {
         setExpandedRowIndex(expandedRowIndex === index ? null : index);
@@ -40,7 +52,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ ref_id: queryId, user_type:userType, quote_id:quotationId }),
+                    body: JSON.stringify({ ref_id: queryId, user_type: userType, quote_id: quotationId }),
                 }
             );
 
@@ -68,6 +80,32 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             console.error('Error fetching details:', error);
         } finally {
             setLoading(false); // Hide loading spinner
+        }
+    };
+    const fetchFeasibilityHistory = async (assign_id, quote_id) => {
+        const payload = {
+            ref_id: assign_id,
+            quote_id: quote_id,
+        };
+
+        try {
+            setHistoryLoading(true);
+            const response = await fetch('https://apacvault.com/Webapi/getFeasabilityHistory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const data = await response.json();
+            if (data.status) {
+                setHistoryData(data.historyData)
+            }
+        } catch (error) {
+            console.error("Error fetching feasibility history:", error);
+        } finally {
+            setHistoryLoading(false);
         }
     };
 
@@ -107,8 +145,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
         }
     };
 
-    const toggleEditForm = (id) => {
+    const toggleEditForm = (id, user_id) => {
         setSelectedQuoteId(id);
+        setUserIdForTag(user_id);
         setEditFormOpen((prev) => !prev)
     };
 
@@ -116,24 +155,24 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
         let isAmountEmpty = false;
         Object.keys(amounts).forEach((key) => {
             const amount = amounts[key].trim();
-    
+
             if (!amount || !/^\d+(\.\d{1,2})?$/.test(amount)) {
                 isAmountEmpty = true;  // If it's empty or not a valid number, flag it
             }
         });
 
-    // Check if the comment field is empty
-    if (isAmountEmpty) {
-        toast.error('Please check all fields');
-        return; // Prevent form submission if validation fails
-    }
-    const form = document.getElementById('submitQuoteForm');
+        // Check if the comment field is empty
+        if (isAmountEmpty) {
+            toast.error('Please check all fields');
+            return; // Prevent form submission if validation fails
+        }
+        const form = document.getElementById('submitQuoteForm');
 
-    // Trigger native form validation
-    if (!form.checkValidity()) {
-        toast.error('Please fill in all the required fields');
-        return; // Prevent form submission if validation fails
-    }
+        // Trigger native form validation
+        if (!form.checkValidity()) {
+            toast.error('Please fill in all the required fields');
+            return; // Prevent form submission if validation fails
+        }
 
         try {
             // Show loading spinner
@@ -253,7 +292,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                     {scopeDetails && scopeDetails.length > 0 && (
                         <div>
                             {/* Table Header */}
-                            <table className="w-full border-collapse border border-gray-200">
+                            <table className="w-full border-collapse border border-gray-200 f-14">
                                 <thead>
                                     <tr className="bg-gray-100">
                                         <th className="border px-4 py-2 text-left">Ref No.</th>
@@ -278,7 +317,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                         {quote.assign_id}
                                                         {quote.ptp == "Yes" && (
                                                             <span
-                                                                className="inline-block p-1 ml-1" // Increased padding for more space
+                                                                className="inline-block pl-3 pr-2 py-1 f-10 ml-1" // Increased padding for more space
                                                                 style={{
                                                                     backgroundColor: '#2B9758FF', // Green color for PTP
                                                                     clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
@@ -291,7 +330,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 PTP
                                                             </span>
                                                         )}
-                                                        
+
                                                     </p>
                                                 </td>
                                                 <td className="border px-4 py-2">{quote.quoteid}</td>
@@ -318,6 +357,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     ? 'Discount Requested'
                                                                     : 'Unknown'}
                                                     </span>
+                                                    {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
+                                                        <><br /><span className='text-green-700 text-sm'>Feasability Completed</span></>
+                                                    )}
                                                 </td>
                                                 <td className="border px-4 py-2 flex items-center">
                                                     {/* Up/Down Arrow Button */}
@@ -327,12 +369,12 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                     >
                                                         {expandedRowIndex === index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
-                                                   
-                                                        <button onClick={() => { toggleEditForm(quote.quoteid) }}
-                                                            className='flex items-center rounded-full border-2 border-blue-500'>
-                                                            <Hash className='p-1' />
-                                                        </button>
-                                                    
+
+                                                    <button onClick={() => { toggleEditForm(quote.quoteid, quote.user_id) }}
+                                                        className='flex items-center rounded-full border-2 border-blue-500'>
+                                                        <Hash className='p-1' />
+                                                    </button>
+
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
@@ -340,7 +382,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                 <tr>
                                                     <td colSpan={7} className="border px-4 py-4 bg-gray-50">
                                                         <div className="space-y-4 text-sm">
-                                                            <p><strong>Ref No.:</strong>
+                                                            <p className='d-flex align-items-center'><strong>Ref No.:</strong>
                                                                 {quote.assign_id}
                                                                 {quote.ptp == "Yes" && (
                                                                     <span
@@ -357,6 +399,12 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                         PTP
                                                                     </span>
                                                                 )}
+                                                                <button
+                                                                    onClick={() => toggleHistoryDiv(quote.quoteid)}
+                                                                    className="ml-4 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+                                                                >
+                                                                    <History size={15} />
+                                                                </button>
                                                             </p>
                                                             {quote.tag_names && (
                                                                 <p>
@@ -399,21 +447,21 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     </div>
                                                                 </div>
                                                             )}
-                                                            <p>
-                                                                <strong>Status:</strong>
-                                                                <span
+                                                            <p className='flex items-center'>
+                                                                <strong className='mr-2'>Status:</strong>
+                                                                <strong
                                                                     className={quote.quote_status == 0
-                                                                        ? "badge-danger p-1 f-10" // Red for Pending
+                                                                        ? "badge-danger py-0 px-1 f-12 font-semibold text-white" // Red for Pending
                                                                         : quote.quote_status == 1
-                                                                            ? "badge-success p-1 f-10" // Green for Submitted
-                                                                            : "badge-warning p-1 f-10"} // Yellow for Discount Requested
+                                                                            ? "badge-success  py-0 px-1 f-12 font-semibold text-white" // Green for Submitted
+                                                                            : "badge-warning  py-0 px-1 f-12 font-semibold text-white"} // Yellow for Discount Requested
                                                                 >
                                                                     {quote.quote_status == 0
                                                                         ? "Pending"
                                                                         : quote.quote_status == 1
                                                                             ? "Submitted"
                                                                             : "Discount Requested"}
-                                                                </span>
+                                                                </strong>
                                                             </p>
 
                                                             {quote.ptp != null && (
@@ -424,7 +472,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                             )}
                                                             {quote.demodone != 0 && (
                                                                 <>
-                                                                    <p className='flex items-center '><span className='bg-green-100 px-2 py-1 rounded-full text-green-900 font-semibold flex items-center'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> <p className='ml-3'> <strong>Demo Id : </strong> {quote.demo_id}</p></p>
+                                                                    <p className='flex items-center '>  <p className=''> <strong>Demo Id : </strong> {quote.demo_id}</p> <span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={12} className='ml-1' /> </span></p>
                                                                 </>
                                                             )}
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
@@ -435,7 +483,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                             const prices = quote.quote_price.split(','); // Split quote_price into an array
                                                                             const plans = quote.plan.split(','); // Split plan into an array
                                                                             return plans.map((plan, index) => (
-                                                                                <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded" : ""}`}>
+                                                                                <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1" : ""}`}>
                                                                                     <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
                                                                                     {index < plans.length - 1 && ', '}
                                                                                 </span>
@@ -443,23 +491,23 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                         })()}
                                                                     </p>
                                                                     {quote.discount_price && (
-                                                                    <p>
-                                                                        <strong>Discounted Price:</strong>{' '}
-                                                                        {(() => {
-                                                                            const prices = quote.discount_price.split(','); // Split quote_price into an array
-                                                                            const plans = quote.plan.split(','); // Split plan into an array
-                                                                            return plans.map((plan, index) => (
-                                                                                <span key={index} className='bg-[#FFD700] px-1 py-2 rounded'>
-                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
-                                                                                    {index < plans.length - 1 && ', '}
-                                                                                </span>
-                                                                            ));
-                                                                        })()}
-                                                                    </p>
+                                                                        <p>
+                                                                            <strong>Discounted Price:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.discount_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className='bg-[#FFD700] px-1 py-2 rounded mr-1'>
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
                                                                     )}
                                                                     {quote.user_comments && (
-                                                                    <p><strong>Comments:</strong> {quote.user_comments}</p>
-                                                                )}
+                                                                        <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                    )}
                                                                 </>
                                                             )}
                                                             {assignQuoteInfo && assignQuoteInfo != false && (
@@ -539,7 +587,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     )}
                                                                 </>
                                                             )}
-                                                            {quote.quote_status !=1 && (
+                                                            {quote.quote_status != 1 && (
                                                                 <>
                                                                     <div className="nav-tabs-custom tabb">
                                                                         <ul className="nav nav-tabs">
@@ -557,8 +605,8 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                     <input type="hidden" name="quote_id" value={quote.quoteid} />
                                                                                     <div className="box-body">
                                                                                         <div className='row'>
-                                                                                        {quote.plan &&
-                                                                                            quote.plan.split(',').map((plan, index) => (
+                                                                                            {quote.plan &&
+                                                                                                quote.plan.split(',').map((plan, index) => (
                                                                                                     <div className="form-group col-md-6" key={index}>
                                                                                                         <label
                                                                                                             htmlFor={`amount_${plan.trim()}`}
@@ -584,8 +632,8 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                                             <div className="error" id={`amountError_${plan.trim()}`}></div>
                                                                                                         </div>
                                                                                                     </div>
-                                                                                            ))}
-                                                                                            </div>
+                                                                                                ))}
+                                                                                        </div>
                                                                                         <div className="form-group">
                                                                                             <label htmlFor="comment" className="col-sm-3 control-label">Comments</label>
                                                                                             <div className="col-sm-12">
@@ -610,6 +658,63 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     </div>
                                                                 </>
                                                             )}
+                                                            {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
+                                                                <>
+                                                                    <div className='flex items-center'>
+                                                                        <>
+                                                                            <p><strong>Feasability Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "text-red-600" : "text-green-600"}`}>{quote.feasability_status}</span></p>
+
+                                                                            {/* Button to View History */}
+                                                                            <button
+                                                                                onClick={() => fetchFeasibilityHistory(quote.assign_id, quote.quoteid)}
+                                                                                className="bg-blue-400 text-white p-1 rounded hover:bg-blue-600 ml-3"
+                                                                            >
+                                                                                <History size={18} />
+                                                                            </button>
+                                                                        </>
+
+                                                                    </div>
+
+                                                                    {quote.feasability_status == "Completed" && (
+
+                                                                        <p>
+                                                                            Feasibility Comments:
+                                                                            <span
+                                                                                className='mt-2'
+                                                                                dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
+                                                                            />
+                                                                        </p>
+                                                                    )}
+                                                                    {historyLoading && <CustomLoader />}
+                                                                    {historyData.length > 0 && (
+                                                                        <div className="mt-4 space-y-4">
+                                                                            <strong className="">Feasibility Check History:</strong>
+                                                                            <div className="border-l-2 border-gray-300 pl-4">
+                                                                                {historyData.map((historyItem, index) => (
+                                                                                    <div key={historyItem.id} className="mb-4">
+                                                                                        <div className="flex items-start space-x-3">
+                                                                                            {/* Timeline Icon */}
+                                                                                            <div className="w-h-2 bg-blue-500 rounded-full mt-1"></div>
+                                                                                            <div className="flex flex-col">
+                                                                                                {/* User Details */}
+                                                                                                <p className=" font-semibold text-gray-700">
+                                                                                                    {historyItem.from_first_name} {historyItem.from_last_name}
+                                                                                                    {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs"> to </span>)}
+
+                                                                                                    {historyItem.to_first_name} {historyItem.to_last_name}
+                                                                                                </p>
+                                                                                                <p className=" text-gray-500">{historyItem.created_at}</p>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        {/* Message */}
+                                                                                        <p className="ml-7  text-gray-600">{historyItem.message}</p>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                </>
+                                                            )}
 
                                                         </div>
                                                         <Chat quoteId={quote.quoteid} refId={quote.assign_id} />
@@ -620,18 +725,21 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                     ))}
                                 </tbody>
                             </table>
-                            
+
                         </div>
                     )}
                 </div>
             )}
             <ToastContainer />
             <AnimatePresence>
-                       
-                        {editFormOpen && (
-                            <AddTags quoteId={selectedQuoteId} refId={queryId} onClose={()=>{setEditFormOpen(!editFormOpen)}} after={fetchScopeDetails} />
+
+                {editFormOpen && (
+                    <AddTags quoteId={selectedQuoteId} refId={queryId} userId={userIdForTag} onClose={() => { setEditFormOpen(!editFormOpen) }} after={fetchScopeDetails} />
+                )}
+                {historyPanelOpen && (
+                            <HistorySideBar quoteId={quoteIdForHistory} refId={queryId} onClose={() => { SetHistoryPanelOpen(!historyPanelOpen) }} />
                         )}
-                    </AnimatePresence>
+            </AnimatePresence>
         </div>
     );
 };

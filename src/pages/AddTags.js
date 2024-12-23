@@ -10,7 +10,7 @@ import 'select2/dist/css/select2.min.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
 
-const AddTags = ({ refId, quoteId, after, onClose }) => {
+const AddTags = ({ refId, quoteId, after, onClose , userId}) => {
     const [formData, setFormData] = useState({
         tags: [],
     });
@@ -24,14 +24,13 @@ const AddTags = ({ refId, quoteId, after, onClose }) => {
     const [loading, setLoading] = useState(false);
 
     const plans = ['Basic', 'Standard', 'Advanced'];
-
     const fetchInitialData = async () => {
         try {
             setLoading(true);
             const response = await fetch('https://apacvault.com/Webapi/getRequestDetails', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ref_id: refId, quote_id: quoteId }),
+                body: JSON.stringify({ ref_id: refId, quote_id: quoteId,  }),
             });
 
             const data = await response.json();
@@ -88,6 +87,7 @@ const AddTags = ({ refId, quoteId, after, onClose }) => {
             payload.append('ref_id', refId);
             payload.append('quote_id', quoteId);
             payload.append('tags', formData.tags);
+            payload.append('user_id', userId);
 
             const response = await fetch('https://apacvault.com/Webapi/updateTags', {
                 method: 'POST',
@@ -164,15 +164,15 @@ const AddTags = ({ refId, quoteId, after, onClose }) => {
                 </div>
                 
                     <form onSubmit={handleSubmit} className={`form-wrapper ${loading ? 'loading' : ''}`} >
-                        <div className="w-full grid grid-cols-3 gap-4 space-x-1">
+                        <div className="w-full ">
                             
-                            <div className='w-full'>
+                            <div className='w-full ad-tab-inp'>
                                 {/* Tags */}
                                 <label>Tags</label>
                                 <select
                                     name="tags"
                                     id="tags"
-                                    className="form-select select2 w-auto py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control select2-hidden-accessible"
                                     multiple
                                     value={formData.tags}
                                     ref={tagsRef}
@@ -187,11 +187,11 @@ const AddTags = ({ refId, quoteId, after, onClose }) => {
                             </div>
                         </div>
 
-                        <div className='mt-2'>
+                        <div className='mt-3 text-right'>
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                                className="bg-blue-500 text-white px-2 py-1 rounded f-14"
                             >
                                 {submitting ? 'Submitting...' : 'Update Request'}
                             </button>

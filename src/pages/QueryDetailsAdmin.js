@@ -10,7 +10,7 @@ import CustomLoader from '../CustomLoader';
 import AskForScopeAdmin from './AskForScopeAdmin';
 
 
-const QueryDetailsAdmin = ({ onClose, queryId, quotationId }) => {
+const QueryDetailsAdmin = ({ onClose, queryId, quotationId , after}) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -93,7 +93,10 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId }) => {
         return `${hours}h ${minutes}m`;
       }
       
-
+      const close = () =>{
+        onClose();
+        if(after){after()}
+    }
 
     return (
         <motion.div
@@ -127,7 +130,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId }) => {
                 <p className="text-gray-500"></p>
             )} */}
              <button
-                onClick={onClose}
+                onClick={close}
                 className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
             >
                 {/* <CircleX size={32} /> */}
@@ -294,32 +297,32 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId }) => {
                         </p>
                     )}
                     {queryInfo.sourceoflead && queryInfo.sourceoflead != 0 && (
-                                <div>
-                                    <strong>Source of Lead:</strong>{" "}
+                                <div className='flex items-center'>
+                                    <strong className='mr-1'>Source of Lead:</strong>{" "}
                                     {queryInfo.sourceoflead === 100 && (
-                                        <span className="label label-info p-1 rounded">100 -- Google</span>
+                                        <span className="label label-info px-1 py-0 rounded f-12">100 -- Google</span>
                                     )}
                                     {queryInfo.sourceoflead === 200 && (
-                                        <span className="label label-primary p-1 rounded">200 -- FB</span>
+                                        <span className="label label-primary px-1 py-0 rounded f-12">200 -- FB</span>
                                     )}
                                     {queryInfo.sourceoflead === 300 && (
-                                        <span className="label label-warning p-1 rounded">300 -- Mailer Campaign</span>
+                                        <span className="label label-warning px-1 py-0 rounded f-12">300 -- Mailer Campaign</span>
                                     )}
                                     {queryInfo.sourceoflead === 400 && (
-                                        <span className="label label-default p-1 rounded">400 -- Interakt Campaign</span>
+                                        <span className="label label-default px-1 py-0 rounded f-12">400 -- Interakt Campaign</span>
                                     )}
                                     {queryInfo.sourceoflead === 500 && (
-                                        <span className="label label-success p-1 rounded">500 -- Through call</span>
+                                        <span className="label label-success px-1 py-0 rounded f-12">500 -- Through call</span>
                                     )}
                                     {queryInfo.sourceoflead === 600 && (
-                                        <span className="label label-danger p-1 rounded">600 -- Through Whatsapp</span>
+                                        <span className="label label-danger px-1 py-0 rounded f-12">600 -- Through Whatsapp</span>
                                     )}
                                 </div>
                             )}
 
                 </div>
                 </div>
-                <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId}/>
+                <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId} />
                 </div>
             )}
 

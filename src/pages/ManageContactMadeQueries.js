@@ -211,7 +211,7 @@ const ManageContactMadeQueries = () => {
             <div className="mb-3 bg-white px-3 py-3 rounded aql">
             <h1 className='text-xl font-bold mb-3'>Query History</h1>
                 <div className='flex items-center space-x-2 '>
-                    <div className="w-1/2">
+                    <div className="w-1/3">
                         <input
                             type="text"
                             className="form-control"
@@ -229,7 +229,7 @@ const ManageContactMadeQueries = () => {
                             onChange={(e) => setKeyword(e.target.value)}
                         />
                     </div>
-                    <div className="w-1/2">
+                    <div className="w-1/3">
                         <select
                             id="user_id"
                             className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
@@ -261,7 +261,7 @@ const ManageContactMadeQueries = () => {
                         </button>
                         <button className="bg-gray-200 flex items-center" onClick={handleFeasButtonClick} title='Feasability Check'>
                             <FileQuestion size={12} />
-                            Feasability
+                            Feasability Request
                         </button>
                     </div>
                 </div>
@@ -297,6 +297,7 @@ const ManageContactMadeQueries = () => {
                         onClose={toggleDetailsPage}
 
                         queryId={selectedQuery.assign_id}
+                        after={fetchQuotes}
                     />
 
                 )}
@@ -304,12 +305,12 @@ const ManageContactMadeQueries = () => {
 
                     <SummaryPage
                         onClose={toggleSummaryPage}
-
+                        after={fetchQuotes}
                     />
 
                 )}
                 {feasPageOpen && (
-                    <FeasabilityPage onClose={toggleFeasPage} />
+                    <FeasabilityPage onClose={toggleFeasPage} after={fetchQuotes} />
                 )}
             </AnimatePresence>
 

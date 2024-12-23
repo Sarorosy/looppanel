@@ -163,7 +163,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
             {loading ? (
                 <CustomLoader /> // A loader component when data is being fetched
             ) : (
-                <div className="p-2">
+                <div className="p-2 f-14">
                     {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
                     {scopeDetails && scopeDetails.length > 0 ? (
@@ -223,7 +223,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                         <strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString("en-GB")}
                                     </p>
                                     {quote.relevant_file && quote.relevant_file.length > 0 && (
-                                        <div  className='flex '>
+                                        <div  className=''>
                                             <strong>Relevant Files:</strong>
                                             <div className="space-y-2">
                                                 {quote.relevant_file.map((file, fileIndex) => (
@@ -250,10 +250,10 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                     )}
                                     {quote.demodone != 0 && (
                                         <p className="flex items-center">
-                                            <span className="bg-green-100 px-2 py-1 rounded-full text-green-900 font-semibold flex items-center">
-                                                Demo Completed <CheckCircle2 size={15} className="ml-2" />
+                                            <span className=""><strong>Demo Id:</strong> {quote.demo_id}</span>
+                                            <span className="badge-success px-2 py-1 f-10 ml-3 rounded-sm text-white-900 font-semibold flex items-center">
+                                                Demo Completed <CheckCircle2 size={12} className="ml-2" />
                                             </span>
-                                            <span className="ml-3"><strong>Demo Id:</strong> {quote.demo_id}</span>
                                         </p>
                                     )}
                                     {quote.quote_status != 0 && quote.quote_price && quote.plan && (
@@ -266,7 +266,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                                     return plans.map((plan, index) => (
                                                         <span
                                                             key={index}
-                                                            className={quote.discount_price != null ? "line-through bg-red-200 p-1 rounded" : ""}
+                                                            className={quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1" : ""}
                                                         >
                                                             <strong>{plan}</strong>: {quote.currency === "Other" ? quote.other_currency : quote.currency} {prices[index]}
                                                             {index < plans.length - 1 && ", "}
@@ -283,7 +283,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                                         return plans.map((plan, index) => (
                                                             <span
                                                                 key={index}
-                                                                className="bg-[#FFD700] px-1 py-2 rounded"
+                                                                className="bg-[#FFD700] px-1 py-2 rounded mr-1"
                                                             >
                                                                 <strong>{plan}</strong>: {quote.currency === "Other" ? quote.other_currency : quote.currency} {prices[index]}
                                                                 {index < plans.length - 1 && ", "}
@@ -297,15 +297,15 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                             )}
                                         </>
                                     )}
-                                    <p>
+                                    <p className='flex items-center'>
                                         <strong>Quote Status:</strong>{" "}
                                         <span
                                             className={
                                                 quote.quote_status == 0
-                                                    ? "badge-danger p-1 f-10"
+                                                    ? "badge-danger p-1 f-10 rounded-sm px-2 font-semibold ml-2"
                                                     : quote.quote_status == 1
-                                                        ? "badge-success p-1 f-10"
-                                                        : "text-warning p-1 f-10"
+                                                        ? "badge-success p-1 f-10 rounded-sm px-2 font-semibold ml-2"
+                                                        : "text-warning p-1 f-10 rounded-sm px-2 font-semibold ml-2"
                                             }
                                         >
                                             {quote.quote_status == 0
@@ -318,9 +318,9 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                     {assignQuoteInfo && assignQuoteInfo !== false && (
                                         <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                     )}
-                                    <p className=''>
+                                    <p className='flex items-center'>
                                         <strong className='mr-1'>Feasibility status is : </strong>
-                                    <span className={quote.feasability_status == 'Pending' ? "badge-danger p-1 f-10" : "badge-success p-1 f-10"}>{quote.feasability_status}</span>
+                                    <span className={quote.feasability_status == 'Pending' ? "badge-danger p-1 f-10 rounded-sm px-2 font-semibold" : "badge-success p-1 f-10 rounded-sm px-2 font-semibold"}>{quote.feasability_status}</span>
                                     </p>
                                         <p>
                                             <strong>Feasibility Comments:</strong>
@@ -335,7 +335,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
 
                                     {historyData.length > 0 && (
                                         <div className="mt-4 space-y-4">
-                                            <strong className=" f-12">Feasibility Check History:</strong>
+                                            <strong className="">Feasibility Check History:</strong>
                                             <div className="">
                                                 {historyData.map((historyItem, index) => (
                                                     <div key={historyItem.id} className="mb-4">
