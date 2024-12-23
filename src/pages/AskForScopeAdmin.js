@@ -401,7 +401,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 )}
                                                                 <button
                                                                     onClick={() => toggleHistoryDiv(quote.quoteid)}
-                                                                    className="ml-4 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+                                                                    className="ml-2 bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
                                                                 >
                                                                     <History size={15} />
                                                                 </button>
@@ -412,7 +412,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     {quote.tag_names.split(',').map((tag, index) => (
                                                                         <span
                                                                             key={index}
-                                                                            className="text-blue-500 hover:bg-blue-100 hover:text-blue-600  p-1 rounded-full text-sm font-medium inline-block ml-1"
+                                                                            className="text-blue-500 p-1 rounded-full text-sm font-medium inline-block ml-1"
                                                                         >
                                                                             #{tag.trim()}
                                                                         </span>
@@ -689,7 +689,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     {historyData.length > 0 && (
                                                                         <div className="mt-4 space-y-4">
                                                                             <strong className="">Feasibility Check History:</strong>
-                                                                            <div className="border-l-2 border-gray-300 pl-4">
+                                                                            <div className="">
                                                                                 {historyData.map((historyItem, index) => (
                                                                                     <div key={historyItem.id} className="mb-4">
                                                                                         <div className="flex items-start space-x-3">

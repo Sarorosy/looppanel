@@ -213,9 +213,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
-                <div className='flex items-center justify-between'>
-                    <button onClick={toggleAddNewForm} className='flex items-center mr-3 bg-white text-gray-600 rounded px-2 py-1'>
-                        <PlusCircle size={15} className='mr-2' /> <div>Add New</div>
+                <div className='flex items-center'>
+                    <button onClick={toggleAddNewForm} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
+                        <PlusCircle size={15} className='mr-1' /> <div>Add New</div>
                     </button>
                     <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
                 </div>
@@ -287,12 +287,12 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                         <span
                                                             className={
                                                                 quote.quote_status == 0
-                                                                    ? 'text-red-600' // Pending - Red
+                                                                    ? 'badge-danger p-1 f-10 rounded-sm px-2 font-semibold' // Pending - Red
                                                                     : quote.quote_status == 1
-                                                                        ? 'text-green-600' // Submitted - Green
+                                                                        ? 'badge-success p-1 f-10 rounded-sm px-2 font-semibold' // Submitted - Green
                                                                         : quote.quote_status == 2
-                                                                            ? 'text-yellow-600' // Discount Requested - Yellow
-                                                                            : 'text-gray-600' // Default - Gray for Unknown
+                                                                            ? 'badge-warning p-1 f-10 rounded-sm px-2 font-semibold' // Discount Requested - Yellow
+                                                                            : 'badge-secondary p-1 f-10 rounded-sm px-2 font-semibold' // Default - Gray for Unknown
                                                             }
                                                         >
                                                             {quote.quote_status == 0
@@ -329,11 +329,11 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                 <tr>
                                                     <td colSpan={7} className="border px-4 py-4 bg-gray-50">
                                                         <div className="space-y-4 text-sm">
-                                                            <p>
+                                                            <p className='d-flex align-items-center'>
                                                                 <strong>Ref No.:</strong> {quote.assign_id}
                                                                 {quote.ptp === "Yes" && (
                                                                     <span
-                                                                        className="inline-block ml-2 py-3 px-4" // Increased padding for more space
+                                                                        className="inline-block pl-3 pr-2 py-1 f-10 ml-1" // Increased padding for more space
                                                                         style={{
                                                                             backgroundColor: '#2B9758FF', // Green color for PTP
                                                                             clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
@@ -348,9 +348,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 )}
                                                                 <button
                                                                     onClick={() => toggleHistoryDiv(quote.quoteid)}
-                                                                    className="ml-4 bg-blue-500 text-white py-1 px-3 rounded hover:bg-blue-600"
+                                                                    className="ml-2 bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
                                                                 >
-                                                                    <History size={22} />
+                                                                    <History size={15} />
                                                                 </button>
                                                             </p>
                                                             
@@ -364,7 +364,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                     {quote.tag_names.split(',').map((tag, index) => (
                                                                         <span
                                                                             key={index}
-                                                                            className="text-blue-500 hover:bg-blue-100 hover:text-blue-600  p-1 rounded-full text-sm font-medium inline-block ml-1"
+                                                                            className="text-blue-500 p-1 rounded-full text-sm font-medium inline-block ml-1"
                                                                         >
                                                                             #{tag.trim()}
                                                                         </span>
@@ -409,7 +409,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             )}
                                                             {quote.demodone != 0 && (
                                                                 <>
-                                                                    <p className='flex items-center '><span className='bg-green-100 px-2 py-1 rounded-full text-green-900 font-semibold flex items-center'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> <p className='ml-3'> <strong>Demo Id : </strong> {quote.demo_id}</p></p>
+                                                                    <p className='flex items-center '><p className='mr-3'> <strong>Demo Id : </strong> {quote.demo_id}</p><span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> </p>
                                                                 </>
                                                             )}
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
@@ -483,7 +483,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 <>
                                                                     <div className='flex items-center'>
                                                                         <>
-                                                                            <p><strong>Feasability Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "text-red-600" : "text-green-600"}`}>{quote.feasability_status}</span></p>
+                                                                            <p><strong>Feasability Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "badge-danger p-1 f-10 rounded-sm px-2 font-semibold ml-2" : "badge-success p-1 f-10 rounded-sm px-2 font-semibold ml-2"}`}>{quote.feasability_status}</span></p>
 
                                                                             {/* Button to View History */}
                                                                             <button
@@ -521,7 +521,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                     {historyData.length > 0 && (
                                                                         <div className="mt-4 space-y-4">
                                                                             <strong className="">Feasibility Check History:</strong>
-                                                                            <div className="border-l-2 border-gray-300 pl-4">
+                                                                            <div className="">
                                                                                 {historyData.map((historyItem, index) => (
                                                                                     <div key={historyItem.id} className="mb-4">
                                                                                         <div className="flex items-start space-x-3">
