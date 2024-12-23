@@ -263,10 +263,10 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                     )}
                                     {quote.demodone != 0 && (
                                         <p className="flex items-center">
-                                            <span className="bg-green-100 px-2 py-1 rounded-full text-green-900 font-semibold flex items-center">
+                                            <span className=""><strong>Demo Id:</strong> {quote.demo_id}</span>
+                                            <span className="badge-success px-2 py-1 f-10 ml-3 rounded-sm text-white-900 font-semibold flex items-center">
                                                 Demo Completed <CheckCircle2 size={15} className="ml-2" />
                                             </span>
-                                            <span className="ml-3"><strong>Demo Id:</strong> {quote.demo_id}</span>
                                         </p>
                                     )}
                                     {quote.quote_status != 0 && quote.quote_price && quote.plan && (

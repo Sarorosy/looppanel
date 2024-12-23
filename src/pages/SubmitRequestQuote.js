@@ -432,7 +432,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className=" bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
+                                className=" bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600 f-14"
                             >
                                 {submitting ? "Submitting..." : "Submit"}
                             </button>

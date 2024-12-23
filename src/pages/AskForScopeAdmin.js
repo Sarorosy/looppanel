@@ -681,7 +681,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                 onClick={() => toggleFeasHistoyDiv(quote.assign_id, quote.quoteid)}
                                                                                 className="bg-blue-400 text-white p-1 rounded hover:bg-blue-600 ml-3"
                                                                             >
-                                                                                <History size={18} />
+                                                                                <History size={15} />
                                                                             </button>
                                                                         </>
 
