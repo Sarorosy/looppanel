@@ -225,7 +225,7 @@ const AdminFeasQueryDetails = ({ onClose, queryId, quotationId, finalFunction })
                                         {queryInfo.tags.map((tag, index) => (
                                             <span
                                                 key={index}
-                                                className="bg-yellow-500 px-1 d-inline-block rounded text-white mr-1 mb-1"
+                                                className="bg-yellow-500 px-1 d-inline-block rounded text-white mr-1 mb-1 d-inline-block"
                                             >
                                                 {tag}
                                             </span>

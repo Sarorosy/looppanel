@@ -224,11 +224,11 @@ const QueryDetails = ({ onClose, queryId, quotationId, after}) => {
                             <p>
                                 <strong>Tag: </strong>
                                 {queryInfo.tags && queryInfo.tags.length > 0 ? (
-                                    <span className="d-flex px-0">
+                                    <span className="">
                                         {queryInfo.tags.map((tag, index) => (
                                             <div
                                                 key={index}
-                                                className="bg-yellow-500 px-1 rounded text-white mr-1 d-inline-block"
+                                                className="bg-yellow-500 px-1 rounded text-white mr-1 mb-1 d-inline-block"
                                             >
                                                 {tag}
                                             </div>

@@ -131,27 +131,27 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="fixed right-0 h-full w-1/2 bg-gray-100 shadow-lg z-50 overflow-y-auto "
+            className="fixed right-0 h-100 w-1/2 bg-gray-100 shadow-lg z-50 overflow-y-auto "
             style={{ top: "-20px" }}
         >
-            <div className="bg-white p-6 shadow rounded-md space-y-4">
+            <div className="bg-white p-6 shadow rounded-md space-y-4 h-100">
                 <div className="flex items-center justify-between bg-blue-400 text-white p-2">
                     <h2 className="text-xl font-semibold flex items-center">Transfer User {loading && (<CustomLoader />)}</h2>
-                    <button onClick={onClose} className="text-white hover:text-red-600 transition-colors">
+                    <button onClick={onClose} className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500">
                         <X size={15} />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className={`form-wrapper ${loading ? 'loading' : ''}`} >
-                    <div className="w-full grid grid-cols-3 gap-4 space-x-1">
+                    <div className="w-full p-2">
 
-                        <div className='w-full'>
+                        <div className='w-full ur-slet-tab-inp'>
                             {/* Tags */}
                             <label>Select User</label>
                             <select
                                 name="tags"
                                 id="tags"
-                                className="form-select select2 w-auto py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
                                 value={selectedUser}
                                 ref={userRef}
                             >
@@ -165,11 +165,11 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
                         </div>
                     </div>
 
-                    <div className='mt-2'>
+                    <div className='mt-3 text-right'>
                         <button
                             type="submit"
                             disabled={submitting}
-                            className="bg-blue-500 text-white px-4 py-2 rounded"
+                            className="bg-blue-500 text-white px-2 py-1 rounded f-14"
                         >
                             {submitting ? 'Submitting...' : 'Update Request'}
                         </button>

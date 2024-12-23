@@ -171,7 +171,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
             {loading ? (
                 <CustomLoader /> // A loader component when data is being fetched
             ) : (
-                <div className="bg-white p-6 m-2 shadow rounded-md space-y-4">
+                <div className="bg-white p-6 m-2 shadow rounded-md space-y-4 f-14">
                     {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
                     {scopeDetails && scopeDetails.length > 0 ? (
@@ -202,8 +202,8 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                             )}
                                         </p>
                                         {quote.feasability_status == 'Pending' && (
-                                        <button onClick={toggleTransferForm}  className='flex items-center mr-3 border px-2 py-1 bg-green-100 rounded'>
-                                            <ArrowLeftRight className='mr-3' /> Transfer
+                                        <button onClick={toggleTransferForm}  className='flex items-center mr-3  px-2 py-1 btn btn-outline-success f-14'>
+                                            <ArrowLeftRight size={15} className='mr-1' /> Transfer
                                         </button>
                                         )}
                                     </div>
@@ -315,10 +315,10 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                         <span
                                             className={
                                                 quote.quote_status == 0
-                                                    ? "badge-danger p-1 f-10"
+                                                    ? "badge-danger p-1 f-10 rounded font-semibold"
                                                     : quote.quote_status == 1
-                                                        ? "badge-success p-1 f-10"
-                                                        : "badge-warning p-1 f-10"
+                                                        ? "badge-success p-1 f-10 rounded font-semibold"
+                                                        : "badge-warning p-1 f-10 rounded font-semibold"
                                             }
                                         >
                                             {quote.quote_status == 0
@@ -332,7 +332,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                         <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                     )}
                                     <p >
-                                        Feasibility status is <strong className={quote.feasability_status == 'Pending' ? "text-danger p-1 f-10" : "badge-success p-1 f-10"}>{quote.feasability_status}</strong>.
+                                        Feasibility status is <strong className={quote.feasability_status == 'Pending' ? "badge-danger p-1 f-10 rounded" : "badge-success p-1 f-10 rounded"}>{quote.feasability_status}</strong>
                                     </p>
                                     <p>
                                         <strong>Feasibility Comments:</strong>
@@ -390,10 +390,10 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                                     placeholder="Add your comments here"
 
                                                 />
-                                                <div className='fkex items-center justify-end'>
+                                                <div className='flex items-center justify-end'>
                                                     <button
                                                         type="submit"
-                                                        className="bg-green-500 mt-2 text-white px-2 py-1 rounded-md hover:bg-green-600 focus:outline-none "
+                                                        className="bg-green-500 mt-2 text-white px-2 py-1 rounded-md hover:bg-green-600 focus:outline-none f-14"
                                                     >
                                                         Mark as Complete
                                                     </button>

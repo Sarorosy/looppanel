@@ -173,11 +173,11 @@ const FeasabilityPage = ({ onClose }) => {
             
                 <div className="flex items-center bg-red-400 text-white px-2 py-1 rounded shadow">
                     <span className="f-12">Pending:</span>
-                    <span className="ml-2 font-bold">{pendingCount}</span>
+                    <span className="ml-2 font-bold f-12">{pendingCount}</span>
                 </div>
-                <div className="flex items-center bg-green-200 text-green-800 px-2 py-1 rounded shadow mx-2">
+                <div className="flex items-center bg-green text-white px-2 py-1 rounded shadow mx-2">
                     <span className="f-12">Completed:</span>
-                    <span className="ml-2 font-bold">{approvedCount}</span> {/* Replace 5 with dynamic count */}
+                    <span className="ml-2 font-bold f-12">{approvedCount}</span> {/* Replace 5 with dynamic count */}
                 </div>
                 <button
                     onClick={fetchQuoteSummary}

@@ -64,7 +64,7 @@ const FeasHistorySideBar = ({ refId, quoteId, onClose }) => {
             <div className="p-6 space-y-4">
                 {loading && <CustomLoader />}
                 {quoteHistoryData.length > 0 && (
-                    <div className="mt-4 space-y-4">
+                    <div className="space-y-4">
                         <strong className="">Feasibility Check History:</strong>
                         <div className="">
                             {quoteHistoryData.map((historyItem, index) => (
@@ -81,10 +81,10 @@ const FeasHistorySideBar = ({ refId, quoteId, onClose }) => {
                                                 {historyItem.to_first_name} {historyItem.to_last_name}
                                             </p>
                                             <p className=" text-gray-500">{historyItem.created_at}</p>
+                                            {/* Message */}
+                                            <p className="text-gray-600">{historyItem.message}</p>
                                         </div>
                                     </div>
-                                    {/* Message */}
-                                    <p className="ml-7  text-gray-600">{historyItem.message}</p>
                                 </div>
                             ))}
                         </div>
