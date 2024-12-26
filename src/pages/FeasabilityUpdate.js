@@ -369,7 +369,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId , finalFunction}) =>
                                                         const result = await response.json();
                                                         if (result.status) {
                                                             toast.success("Feasibility completed successfully!");
-                                                            fetchScopeDetails();
+                                                            finalFunction();
                                                         } else {
                                                             toast.error(result.message || "Failed to complete feasibility.");
                                                         }

@@ -14,7 +14,6 @@ const FeasabilityPage = ({ onClose }) => {
     const [quoteSummary, setQuoteSummary] = useState([]);
     const [loading, setLoading] = useState(false);
     const [pendingCount, setPendingCount] = useState(0);
-    const [approvedCount, setApprovedCount] = useState(0);
     const [selectedQuery, setSelectedQuery] = useState('');
     const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -44,8 +43,7 @@ const FeasabilityPage = ({ onClose }) => {
             console.log(data)
             if (data.status) {
                 setQuoteSummary(data.data); // Update the quotes state
-                setPendingCount(data.pending_count);
-                setApprovedCount(data.approved_count);
+                setPendingCount(data.pending_count ? data.pending_count : 0);
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
@@ -177,10 +175,6 @@ const FeasabilityPage = ({ onClose }) => {
                 <div className="flex items-center bg-red-400 text-white px-2 py-1 rounded shadow">
                     <span className="f-12">Pending:</span>
                     <span className="ml-2 font-bold f-12">{pendingCount}</span>
-                </div>
-                <div className="flex items-center bg-green text-white px-2 py-1 rounded shadow mx-2">
-                    <span className="f-12">Completed:</span>
-                    <span className="ml-2 font-bold f-12">{approvedCount}</span> {/* Replace 5 with dynamic count */}
                 </div>
                 <button
                     onClick={fetchQuoteSummary}

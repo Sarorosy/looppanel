@@ -293,11 +293,11 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                     </p>
                                                 </td>
-                                                <td className="border px-2 py-2">{quote.quoteid}</td>
-                                                <td className="border px-2 py-2">{quote.currency}</td>
-                                                <td className="border px-2 py-2">{quote.plan}</td>
-                                                <td className="border px-2 py-2">{quote.service_name || 'N/A'}</td>
-                                                <td className="border px-2 py-2">
+                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>{quote.quoteid}</td>
+                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>{quote.currency}</td>
+                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>{quote.plan}</td>
+                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>{quote.service_name || 'N/A'}</td>
+                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>
                                                     {quote.isfeasability == 1 ? (
                                                         quote.submittedtoadmin == "false" ? (
                                                             quote.feasability_status == "Pending" ? <span className='text-red-600'>Feasabilty Submitted</span> : <span className='text-green-600'>Feasabilty Completed</span>
@@ -328,7 +328,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                     )}
                                                 </td>
 
-                                                <td className="border px-2 py-2 flex items-center">
+                                                <td className=" px-2 py-2 flex items-center" style={{fontSize:"11px"}}>
                                                     {/* Up/Down Arrow Button */}
                                                     <button
                                                         onClick={() => toggleRow(index)}
@@ -406,7 +406,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p><strong>Comments:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            <p><strong style={{textDecoration:"underline"}}>Comments:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
                                                             {quote.final_comments != null && (
                                                                 <>
                                                                     <p><strong>Final Comments:</strong> {quote.final_comments}</p>
@@ -436,7 +436,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             {quote.ptp != null && (
                                                                 <>
                                                                     <p><strong>PTP:</strong> {quote.ptp}</p>
-                                                                    <p><strong>PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                                    <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
                                                                 </>
                                                             )}
                                                             {quote.demodone != 0 && (
@@ -453,7 +453,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                             const plans = quote.plan.split(','); // Split plan into an array
                                                                             return plans.map((plan, index) => (
                                                                                 <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1" : ""}`}>
-                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                                     {index < plans.length - 1 && ', '}
                                                                                 </span>
                                                                             ));
@@ -475,7 +475,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                         </p>
                                                                     )}
                                                                     {quote.user_comments && (
-                                                                        <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                        <p><strong style={{textDecoration:"underline"}}>Comments:</strong> {quote.user_comments}</p>
                                                                     )}
                                                                 </>
                                                             )}
@@ -503,7 +503,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             )}
 
                                                             <div className='flex items-start space-x-1'>
-                                                                {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId && quote.ptp == null && (
+                                                                {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId  && (
                                                                     <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
                                                                 )}
                                                                 {quote.user_id == thisUserId && quote.submittedtoadmin == "true" && quote.demodone != 1 && (
@@ -541,7 +541,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                                     {quote.feasability_status == "Completed" && (
 
-                                                                        <p>
+                                                                        <p style={{textDecoration:"underline"}}>
                                                                             Feasibility Comments:
                                                                             <span
                                                                                 className='mt-2'

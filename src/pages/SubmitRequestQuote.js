@@ -25,6 +25,8 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const [selectedUser, setSelectedUser] = useState('');
     const userRef = useRef(null);
     const plans = ['Basic', 'Standard', 'Advanced']; // Hardcoded plans
+    const [demodone, setDemodone] = useState('no');
+    const [demoId, setDemoId] = useState('');
 
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prev) =>
@@ -161,6 +163,11 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             setSubmitting(false);
             return;
         }
+        if(demodone == "yes" && !demoId){
+            toast.error('Please Enter Demo ID!');
+            setSubmitting(false);
+            return;
+        }
 
         const formData = new FormData();
         formData.append('ref_id', refId);
@@ -174,6 +181,8 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         formData.append('user_id', loopUserObject.id);
         formData.append('user_name', loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name);
         formData.append('category', userObject.category);
+        formData.append('demo_done',demodone);
+        formData.append('demo_id',demoId);
         files.forEach((item, index) => {
             if (item.file) {
                 formData.append(`quote_upload_file[${index}]`, item.file);
@@ -246,8 +255,8 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                     <div className="flex items-center space-x-4">
                         <h2
                             className={`tab-btn-n-set cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 0
-                                    ? "bg-white text-blue-700 shadow-md"
-                                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
+                                ? "bg-white text-blue-700 shadow-md"
+                                : "bg-blue-600 hover:bg-blue-500 text-gray-200"
                                 }`}
                             onClick={() => setIsFeasability(0)}
                         >
@@ -255,8 +264,8 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                         </h2>
                         <h2
                             className={`tab-btn-n-set cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 1
-                                    ? "bg-white text-blue-700 shadow-md"
-                                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
+                                ? "bg-white text-blue-700 shadow-md"
+                                : "bg-blue-600 hover:bg-blue-500 text-gray-200"
                                 }`}
                             onClick={() => setIsFeasability(1)}
                         >
@@ -332,33 +341,33 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                                     ))}
                                 </select>
                             </div>
-                           
+
 
 
                         </div>
-                         {/* Plan Dropdown */}
-                         <div className="w-full mt-4">
-                                <label htmlFor="plan" className="block text-sm font-medium text-gray-700">
-                                    Plan
-                                </label>
-                                <div className="mt-1 flex">
-                                    {plans.map((plan, index) => (
-                                        <div key={index} className="flex items-center mb-2 mr-5">
-                                            <input
-                                                type="checkbox"
-                                                id={`plan-${index}`}
-                                                value={plan}
-                                                checked={selectedPlans.includes(plan)}
-                                                onChange={() => handleCheckboxChange(plan)}
-                                                className={`form-checkbox h-4 w-4 border-gray-300 rounded ${planColors[plan]}`}
-                                            />
-                                            <label htmlFor={`plan-${index}`} className={`ml-2 mb-0 text-sm font-medium ${planColors[plan]}`}>
-                                                {plan}
-                                            </label>
-                                        </div>
-                                    ))}
-                                </div>
+                        {/* Plan Dropdown */}
+                        <div className="w-full mt-4">
+                            <label htmlFor="plan" className="block text-sm font-medium text-gray-700">
+                                Plan
+                            </label>
+                            <div className="mt-1 flex">
+                                {plans.map((plan, index) => (
+                                    <div key={index} className="flex items-center mb-2 mr-5">
+                                        <input
+                                            type="checkbox"
+                                            id={`plan-${index}`}
+                                            value={plan}
+                                            checked={selectedPlans.includes(plan)}
+                                            onChange={() => handleCheckboxChange(plan)}
+                                            className={`form-checkbox h-4 w-4 border-gray-300 rounded ${planColors[plan]}`}
+                                        />
+                                        <label htmlFor={`plan-${index}`} className={`ml-2 mb-0 text-sm font-medium ${planColors[plan]}`}>
+                                            {plan}
+                                        </label>
+                                    </div>
+                                ))}
                             </div>
+                        </div>
                         <div className={`w-full ${isfeasability == 0 ? "hidden" : "block"}`}>
                             {/* Tags */}
                             <label className="block text-sm font-medium text-gray-700">Select User to Assign</label>
@@ -378,6 +387,32 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                                 ))}
                             </select>
                         </div>
+
+                        <div className=" flex w-full mt-4">
+                            <div className="flex items-center">
+                                <input
+                                    type="checkbox"
+                                    id="demodone"
+                                    checked={demodone === "yes"}
+                                    onChange={(e) => setDemodone(e.target.checked ? "yes" : "no")}
+                                    className="h-4 w-4 border-gray-300 rounded"
+                                />
+                                <label htmlFor="demodone" className="ml-2 text-sm font-medium text-gray-700">
+                                    Demo Done
+                                </label>
+                            </div>
+                            <div className="ml-5" style={{display:(demodone == "yes") ? "block" : "none"}}>
+                                
+                                <input
+                                    type="text"
+                                    id="demo_id"
+                                    value={demoId}
+                                    onChange={(e) => setDemoId(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                    placeholder="Enter Demo ID"
+                                />
+                            </div>
+                        </div>
                         <div className='flex items-start justify-between space-x-1 mt-4'>
                             {/* Comments */}
                             <div className="w-full">
@@ -395,37 +430,37 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                             </div>
 
 
-                            
+
                         </div>
                         {/* File Upload */}
                         <div className="w-full">
-                                <label className="block text-sm font-medium text-gray-700">Upload Files</label>
-                                {files.map((item, index) => (
-                                    <div key={item.id} className="flex items-center mt-1 space-x-2">
-                                        <input
-                                            type="file"
-                                            onChange={(e) => handleFileChange(item.id, e)}
-                                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                        />
-                                        {index > 0 && (
-                                            <button
-                                                type="button"
-                                                onClick={() => handleRemoveFileInput(item.id)}
-                                                className="px-2 py-1 bg-red-500 text-white rounded white-space-nowrap f-14"
-                                            >
-                                                - Remove
-                                            </button>
-                                        )}
-                                    </div>
-                                ))}
-                                <button
-                                    type="button"
-                                    onClick={handleAddFileInput}
-                                    className="mt-2 px-2 py-1 bg-green-500 text-white rounded f-14"
-                                >
-                                    + Add
-                                </button>
-                            </div>
+                            <label className="block text-sm font-medium text-gray-700">Upload Files</label>
+                            {files.map((item, index) => (
+                                <div key={item.id} className="flex items-center mt-1 space-x-2">
+                                    <input
+                                        type="file"
+                                        onChange={(e) => handleFileChange(item.id, e)}
+                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                    />
+                                    {index > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => handleRemoveFileInput(item.id)}
+                                            className="px-2 py-1 bg-red-500 text-white rounded white-space-nowrap f-14"
+                                        >
+                                            - Remove
+                                        </button>
+                                    )}
+                                </div>
+                            ))}
+                            <button
+                                type="button"
+                                onClick={handleAddFileInput}
+                                className="mt-2 px-2 py-1 bg-green-500 text-white rounded f-14"
+                            >
+                                + Add
+                            </button>
+                        </div>
 
                         {/* Submit Button */}
                         <div className='text-right'>

@@ -183,11 +183,6 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
         }
         const form = document.getElementById('submitQuoteForm');
 
-        // Trigger native form validation
-        if (!form.checkValidity()) {
-            toast.error('Please fill in all the required fields');
-            return; // Prevent form submission if validation fails
-        }
 
         try {
             // Show loading spinner
@@ -348,11 +343,11 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
                                                     </p>
                                                 </td>
-                                                <td className="border px-4 py-2">{quote.quoteid}</td>
-                                                <td className="border px-4 py-2">{quote.currency}</td>
-                                                <td className="border px-4 py-2">{quote.plan}</td>
-                                                <td className="border px-4 py-2">{quote.service_name || 'N/A'}</td>
-                                                <td className="border px-4 py-2">
+                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>{quote.quoteid}</td>
+                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>{quote.currency}</td>
+                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>{quote.plan}</td>
+                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>{quote.service_name || 'N/A'}</td>
+                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>
                                                     <span
                                                         className={
                                                             quote.quote_status == 0
@@ -373,10 +368,13 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     : 'Unknown'}
                                                     </span>
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
-                                                        <><br /><span className='text-green-700 text-sm'>Feasability Completed</span></>
+                                                        <><br /><span className='text-green-700 text-sm' style={{fontSize:"11px"}}>Feasability Completed</span></>
+                                                    )}
+                                                    {quote.isfeasability == 1 && quote.feasability_status == "Pending" && (
+                                                        <><br /><span className='text-red-700 text-sm font-bold' style={{fontSize:"11px"}}>Feasability Pending</span></>
                                                     )}
                                                 </td>
-                                                <td className="border px-4 py-2 flex items-center">
+                                                <td className=" px-4 py-2 flex items-center">
                                                     {/* Up/Down Arrow Button */}
                                                     <button
                                                         onClick={() => toggleRow(index)}
@@ -441,10 +439,10 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p className=''><strong>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            <p className=''><strong style={{textDecoration:"underline"}}>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
                                                             {quote.final_comments != null && (
                                                                 <>
-                                                                    <p><strong>Final Comments:</strong> {quote.final_comments}</p>
+                                                                    <p><strong style={{textDecoration:"underline"}}>Final Comments:</strong> {quote.final_comments}</p>
                                                                     
                                                                 </>
                                                             )}
@@ -488,7 +486,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                             {quote.ptp != null && (
                                                                 <>
                                                                     <p><strong>PTP:</strong> {quote.ptp}</p>
-                                                                    <p><strong>PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                                    <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
                                                                 </>
                                                             )}
                                                             {quote.demodone != 0 && (
@@ -505,7 +503,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                             const plans = quote.plan.split(','); // Split plan into an array
                                                                             return plans.map((plan, index) => (
                                                                                 <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1" : ""}`}>
-                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                                     {index < plans.length - 1 && ', '}
                                                                                 </span>
                                                                             ));
@@ -527,7 +525,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                         </p>
                                                                     )}
                                                                     {quote.user_comments && (
-                                                                        <p><strong>Comments:</strong> {quote.user_comments}</p>
+                                                                        <p><strong style={{textDecoration:"underline"}}>Comments:</strong> {quote.user_comments}</p>
                                                                     )}
                                                                 </>
                                                             )}
@@ -608,7 +606,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     )}
                                                                 </>
                                                             )}
-                                                            {quote.quote_status != 1 && (
+                                                            {quote.quote_status != 1 && quote.submittedtoadmin == "true" && (
                                                                 <>
                                                                     <div className="nav-tabs-custom tabb">
                                                                         <ul className="nav nav-tabs">
@@ -680,7 +678,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     </div>
                                                                 </>
                                                             )}
-                                                            {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
+                                                            {quote.isfeasability == 1 &&  (
                                                                 <>
                                                                     <div className='flex items-center'>
                                                                         <>
@@ -700,7 +698,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     {quote.feasability_status == "Completed" && (
 
                                                                         <p>
-                                                                            Feasibility Comments:
+                                                                           <strong style={{textDecoration:"underline"}}> Feasibility Comments:</strong>
                                                                             <span
                                                                                 className='mt-2'
                                                                                 dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
