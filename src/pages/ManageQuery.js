@@ -298,7 +298,7 @@ const ManageQuery = () => {
             data: 'status', // Replace with actual field name
             orderable: false,
             render: function (data, type, row) {
-                if (row.isfeasability == 1 && row.feasability_status == "Pending") {
+                if (row.isfeasability == 1 && row.submittedtoadmin == "false") {
                     return '<span class="text-red-600 font-bold">Pending at User</span>';
                 } else {
                     if (data == 0) {
