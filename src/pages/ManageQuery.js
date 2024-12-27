@@ -406,22 +406,34 @@ const ManageQuery = () => {
 
             {/* Filter Section */}
             <div className=" mb-3 bg-white px-3 py-3 rounded ">
-                <h1 className='text-xl font-bold mb-3'>All Quote List</h1>
-                <div className='flex items-end space-x-2 aql'>
-                    <div className="grid grid-cols-4 gap-4 w-full">
-                        <div className="w-full">
+               <div className='flex justify-between  mb-4'>
+                <h1 className='text-xl font-bold'>All Quote List</h1>
+                    <div className='flex'>
+                        
+                        <button className="bg-gray-200 text-gray-500 hover:bg-gray-300  f-12 btn px-2 py-1 flex items-center relative" onClick={toggleAllFeasPage}>
+                            <FileQuestion size={15} className="mr-1"/>
+                            Feasibility Request
+                            <span style={{ top: "-15px", right: "-10px" }} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
+                                {pendingFeasRequestCount}
+                            </span>
+                        </button>
+                    </div>
+               </div>
+                <div className='flex items-end space-x-2'>
+                    <div className="row">
+                        <div className="col-2 mb-3">
                             <input
                                 type="text"
-                                className="form-control"
+                                className="form-control form-control-sm"
                                 placeholder='Ref ID'
                                 value={refID}
                                 onChange={(e) => setRefId(e.target.value)}
                             />
                         </div>
-                        <div className="w-full">
+                        <div className="col-2 mb-3">
                             <select
                                 id="user_id"
-                                className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control slt-x-isu "
+                                className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control form-control-sm slt-x-isu "
 
                                 value={selectedUser}
                                 ref={selectUserRef}
@@ -434,10 +446,10 @@ const ManageQuery = () => {
                                 ))}
                             </select>
                         </div>
-                        <div className="w-full">
+                        <div className="col-2 mb-3">
                             <select
                                 id="service_name"
-                                className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
+                                className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control form-control-sm"
 
                                 value={selectedService}
                                 ref={selectServiceRef}
@@ -450,10 +462,10 @@ const ManageQuery = () => {
                                 ))}
                             </select>
                         </div>
-                        <div className="w-full ss">
+                        <div className="col-2 mb-3">
 
                             <select
-                                className="form-control"
+                                className="form-control form-control-sm"
                                 value={ptp}
                                 onChange={(e) => setPtp(e.target.value)}
                             >
@@ -461,10 +473,10 @@ const ManageQuery = () => {
                                 <option value="Yes">Yes</option>
                             </select>
                         </div>
-                        <div className="w-full ss">
+                        <div className="col-2 mb-3">
 
                             <select
-                                className="form-control"
+                                className="form-control form-control-sm"
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                             >
@@ -475,10 +487,10 @@ const ManageQuery = () => {
                                 <option value="2">Discount Requested</option>
                             </select>
                         </div>
-                        <div className="w-full ss">
+                        <div className="col-2 mb-3">
 
                             <select
-                                className="form-control"
+                                className="form-control form-control-sm"
                                 value={feasStatus}
                                 onChange={(e) => setFeasStatus(e.target.value)}
                             >
@@ -487,9 +499,9 @@ const ManageQuery = () => {
                                 <option value="Completed">Completed</option>
                             </select>
                         </div>
-                        <div className="w-full ss">
+                        <div className="col-2">
                             <DatePicker
-                                className="form-control"
+                                className="form-control form-control-sm"
                                 selected={startDate}
                                 onChange={(dates) => {
                                     const [start, end] = dates;
@@ -504,11 +516,11 @@ const ManageQuery = () => {
                                 maxDate={new Date()} // Optional: Restrict to past dates
                             />
                         </div>
-                        <div className='w-full ss'>
+                        <div className='col-2'>
                             <select
                                 name="tags"
                                 id="tags"
-                                className="px-0 py-0 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control select2-hidden-accessible"
+                                className="form-control form-control-sm select2-hidden-accessible slt-tag-inp"
                                 multiple
                                 value={selectedTags}
                                 ref={tagsRef}
@@ -521,27 +533,24 @@ const ManageQuery = () => {
                                 ))}
                             </select>
                         </div>
+                        <div className="col flex items-center justify-end">
+                            {/* <label>&nbsp;</label> */}
+                            <div className='flex'>
+                                <button className="bg-gray-200 text-gray-500  hover:bg-gray-300  f-12 btn px-2 py-1 mr-2" onClick={resetFilters}>
+                                    <RefreshCcw size={14} />
+                                </button>
+                                <button className="gree text-white mr-1 flex items-center f-12 btn px-2 py-1" onClick={() => { fetchQuotes(false) }}>
+                                    <Filter size={12} /> &nbsp;
+                                    Apply
+                                </button>
+                                
+                            </div>
+
+
+                        </div>
                     </div>
 
-                    <div className="w-1/3 flex justify-content-end space-x-1 items-center">
-                        <label>&nbsp;</label>
-                        <button className="gree text-white mr-1 flex items-center" onClick={() => { fetchQuotes(false) }}>
-                            <Filter size={12} /> &nbsp;
-                            Apply
-                        </button>
-                        <button className="bg-gray-200 text-gray-500  hover:bg-gray-300 ic" onClick={resetFilters}>
-                            <RefreshCcw size={12} />
-                        </button>
-                        <button className="bg-gray-200 text-gray-500 hover:bg-gray-300 ic flex items-center relative" onClick={toggleAllFeasPage}>
-                            <FileQuestion size={15} />
-                            Feasibility Request
-                            <span style={{ top: "-15px", right: "-10px" }} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
-                                {pendingFeasRequestCount}
-                            </span>
-                        </button>
-
-
-                    </div>
+                    
                 </div>
             </div>
 

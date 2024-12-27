@@ -113,7 +113,7 @@ const QueryDetails = ({ onClose, queryId, quotationId, after }) => {
             className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
         >
             <div className='flex items-center justify-between bg-blue-400 text-white pnav py-3'>
-                <h2 className="text-xl font-semibold mllt">Query Details </h2>
+                <h2 className="text-xl font-semibold">Query Details </h2>
 
                 {/* {tatScore && tatScore.total_rows > 0 ? (
                     <div className="flex items-center justify-between space-x-2 mr-16">
@@ -203,7 +203,7 @@ const QueryDetails = ({ onClose, queryId, quotationId, after }) => {
                                 <p><strong>Alternate Contact No.:</strong> {queryInfo.alt_contact_no || 'N/A'}</p>
                             )}
                             {queryInfo.latest_requirement && (
-                                <div className="bg-green-100 p-4 rounded">
+                                <div className="bg-green-100 p-2 rounded">
                                     <p><strong>Latest Requirement:</strong></p>
                                     <div
                                         dangerouslySetInnerHTML={{ __html: queryInfo.latest_requirement }}

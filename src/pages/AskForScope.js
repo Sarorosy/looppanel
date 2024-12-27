@@ -452,7 +452,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                             const prices = quote.quote_price.split(','); // Split quote_price into an array
                                                                             const plans = quote.plan.split(','); // Split plan into an array
                                                                             return plans.map((plan, index) => (
-                                                                                <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1" : ""}`}>
+                                                                                <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
                                                                                     <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                                     {index < plans.length - 1 && ', '}
                                                                                 </span>
@@ -466,7 +466,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                                 const prices = quote.discount_price.split(','); // Split quote_price into an array
                                                                                 const plans = quote.plan.split(','); // Split plan into an array
                                                                                 return plans.map((plan, index) => (
-                                                                                    <span key={index} className='bg-[#FFD700] px-1 py-2 rounded mr-1'>
+                                                                                    <span key={index} className='bg-[#FFD700] px-1 py-1 f-12 rounded mr-1'>
                                                                                         <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
                                                                                         {index < plans.length - 1 && ', '}
                                                                                     </span>

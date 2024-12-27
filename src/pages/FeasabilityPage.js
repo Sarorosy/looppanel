@@ -165,7 +165,7 @@ const FeasabilityPage = ({ onClose, after }) => {
         >
             <div className='bg-blue-400 text-white py-3 mb-3'>
                 <div className='container flex items-center justify-between p-0'>
-                <h2 className="text-xl font-semibold mllt">All Feasability Request</h2>
+                <h2 className="text-xl font-semibold">All Feasability Request</h2>
 
 
                 <button
@@ -179,7 +179,7 @@ const FeasabilityPage = ({ onClose, after }) => {
             </div>
             <div className="flex justify-end mb-3 bg-white container py-3 rounded ">
             
-                <div className="flex items-center bg-red-400 text-white px-2 py-1 rounded shadow">
+                <div className="flex items-center bg-red-400 text-white px-2 py-1 rounded shadow mr-2">
                     <span className="f-12">Pending:</span>
                     <span className="ml-2 font-bold f-12">{pendingCount}</span>
                 </div>

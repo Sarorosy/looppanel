@@ -49,7 +49,7 @@ const FeasHistorySideBar = ({ refId, quoteId, onClose }) => {
             className="fixed right-0 top-0 h-full w-1/3 bg-gray-100 shadow-lg z-50 overflow-y-auto"
         >
             <div className='flex items-center justify-between bg-blue-400 text-white p-3'>
-                <h2 className="text-xl font-semibold mllt">Feasability History </h2>
+                <h2 className="text-xl font-semibold">Feasability History </h2>
 
                 <button
                     onClick={onClose}
@@ -61,7 +61,7 @@ const FeasHistorySideBar = ({ refId, quoteId, onClose }) => {
             </div>
 
             {/* History Content */}
-            <div className="p-6 space-y-4">
+            <div className="p-3 space-y-4">
                 {loading && <CustomLoader />}
                 {quoteHistoryData.length > 0 && (
                     <div className="space-y-4">

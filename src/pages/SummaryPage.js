@@ -172,7 +172,7 @@ const SummaryPage = ({ onClose, after }) => {
         >
             <div className='bg-blue-400 text-white py-3 mb-3'>
                 <div className='container flex items-center justify-between p-0'>
-                    <h2 className="text-xl font-semibold mllt">All Quote Summary </h2>
+                    <h2 className="text-xl font-semibold">All Quote Summary </h2>
 
 
                     <button
