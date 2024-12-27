@@ -41,6 +41,13 @@ const ManageContactMadeQueries = () => {
     // Access the 'id' field
     const userId = userObject.id;
 
+    const loopuserData = sessionStorage.getItem('loopuser');
+
+    const loopuserObject = JSON.parse(loopuserData);
+
+    // Access the 'id' field
+    const loopuserId = loopuserObject.id;
+
     DataTable.use(DT);
 
 
@@ -120,11 +127,11 @@ const ManageContactMadeQueries = () => {
         setLoading(true);
 
         let hasResponse = false;
-        let payload = { user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite }
+        let payload = { loop_user_id: loopuserId ,user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite }
 
         if (nopayload) {
             // If nopayload is true, send an empty payload
-            payload = { user_id: userId, };
+            payload = {loop_user_id: loopuserId , user_id: userId, };
         }
 
         try {

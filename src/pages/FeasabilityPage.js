@@ -10,7 +10,7 @@ import QueryDetails from './QueryDetails';
 import FeasabilityQueryDetails from './FeasabilityQueryDetails';
 
 
-const FeasabilityPage = ({ onClose }) => {
+const FeasabilityPage = ({ onClose, after }) => {
     const [quoteSummary, setQuoteSummary] = useState([]);
     const [loading, setLoading] = useState(false);
     const [pendingCount, setPendingCount] = useState(0);
@@ -73,6 +73,13 @@ const FeasabilityPage = ({ onClose }) => {
         fetchQuoteSummary();
     }
 
+    const close = () =>{
+        onClose();
+        if(after){
+            after();
+        }
+        
+    }
     // Use DataTable library
     DataTable.use(DT);
 
@@ -162,7 +169,7 @@ const FeasabilityPage = ({ onClose }) => {
 
 
                 <button
-                    onClick={onClose}
+                    onClick={close}
                     className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
                 >
                     {/* <CircleX size={32} /> */}

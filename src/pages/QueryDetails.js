@@ -11,7 +11,7 @@ import AskForScope from './AskForScope';
 import SubmitRequestQuote from './SubmitRequestQuote';
 
 
-const QueryDetails = ({ onClose, queryId, quotationId, after}) => {
+const QueryDetails = ({ onClose, queryId, quotationId, after }) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -27,7 +27,7 @@ const QueryDetails = ({ onClose, queryId, quotationId, after}) => {
     const userData = sessionStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
-    
+
     const fetchActivityHistory = async () => {
 
         try {
@@ -97,10 +97,10 @@ const QueryDetails = ({ onClose, queryId, quotationId, after}) => {
         return `${hours}h ${minutes}m`;
     }
 
-    const close = () =>{
+    const close = () => {
         onClose();
-        if(after){
-        after();
+        if (after) {
+            after();
         }
     }
 
@@ -157,7 +157,7 @@ const QueryDetails = ({ onClose, queryId, quotationId, after}) => {
 
                                         className="flex"
                                     >
-                                        <strong>Ref. No.:</strong> {queryInfo.assign_id} 
+                                        <strong>Ref. No.:</strong> {queryInfo.assign_id}
                                         {/* <HistoryIcon className='ml-2 bg-blue-300 p-1 rounded' onClick={fetchActivityHistory} /> */}
                                     </p>
                                 )}
@@ -204,9 +204,13 @@ const QueryDetails = ({ onClose, queryId, quotationId, after}) => {
                             )}
                             {queryInfo.latest_requirement && (
                                 <div className="bg-green-100 p-4 rounded">
-                                    <p><strong>Latest Requirement:</strong> {queryInfo.latest_requirement}</p>
+                                    <p><strong>Latest Requirement:</strong></p>
+                                    <div
+                                        dangerouslySetInnerHTML={{ __html: queryInfo.latest_requirement }}
+                                    />
                                 </div>
                             )}
+
                             {queryInfo.line_format && <p><strong>Requirement:</strong><span dangerouslySetInnerHTML={{ __html: queryInfo.line_format }}></span></p>}
                             {queryInfo.paragraph_format && <p><strong>Requirement:</strong> {queryInfo.paragraph_format}</p>}
                             {queryInfo.area_of_study && <p><strong>Topic/Area of Study:</strong> {queryInfo.area_of_study}</p>}

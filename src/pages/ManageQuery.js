@@ -40,7 +40,9 @@ const ManageQuery = () => {
     const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [isAllFeasOpen, setIsAllFeasOpen] = useState(false);
-    const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0)
+    const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const navigate = useNavigate();
 
     DataTable.use(DT);
@@ -123,11 +125,12 @@ const ManageQuery = () => {
         const service_name = selectedService;
         const tags = selectedTags;
         const feasability_status = feasStatus;
-        const selected_date = selectedDate;
+        const start_date = startDate;
+        const end_date = endDate;
 
         // Define the payload conditionally
         let payload = {
-            userid, ref_id, search_keywords, status, service_name, ptp, tags, feasability_status, selected_date
+            userid, ref_id, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date
         };
 
         if (nopayload) {
@@ -291,16 +294,20 @@ const ManageQuery = () => {
             render: (data) => `<div style="text-align: left;">${data || 'N/A'}</div>`,
         },
         {
-            title: 'Status',
+            title: 'Quote Status',
             data: 'status', // Replace with actual field name
             orderable: false,
             render: function (data, type, row) {
-                if (data == 0) {
-                    return '<span class="text-red-600 font-bold">Pending</span>';
-                } else if (data == 1) {
-                    return '<span class="text-green-600 font-bold">Submitted</span>';
-                } else if (data == 2) {
-                    return '<span class="text-yellow-600 font-bold">Discount Requested</span>';
+                if (row.isfeasability == 1 && row.feasability_status == "Pending") {
+                    return '<span class="text-red-600 font-bold">Pending at User</span>';
+                } else {
+                    if (data == 0) {
+                        return '<span class="text-red-600 font-bold">Pending at Admin</span>';
+                    } else if (data == 1) {
+                        return '<span class="text-green-600 font-bold">Submitted</span>';
+                    } else if (data == 2) {
+                        return '<span class="text-yellow-600 font-bold">Discount Requested</span>';
+                    }
                 }
                 return '<span class="text-gray-600">Unknown</span>';
             },
@@ -371,7 +378,8 @@ const ManageQuery = () => {
         setKeyword('');
         setStatus('');
         setFeasStatus('');
-        setSelectedDate('');
+        setStartDate('');
+        setEndDate('');
         setSelectedUser('');  // Reset selected user
         setSelectedService('');  // Reset selected service
         setSelectedTags([]);  // Reset selected tags
@@ -460,7 +468,7 @@ const ManageQuery = () => {
                                 value={status}
                                 onChange={(e) => setStatus(e.target.value)}
                             >
-                                <option value="">Select Status</option>
+                                <option value="">Select Quote Status</option>
                                 <option value="Pending">Pending</option>
                                 <option value="1">Submitted</option>
                                 <option value="2">Discount Requested</option>
@@ -481,10 +489,17 @@ const ManageQuery = () => {
                         <div className="w-full ss">
                             <DatePicker
                                 className="form-control"
-                                selected={selectedDate}
-                                onChange={(date) => setSelectedDate(date)}
-                                placeholderText="Select Date"
+                                selected={startDate}
+                                onChange={(dates) => {
+                                    const [start, end] = dates;
+                                    setStartDate(start);
+                                    setEndDate(end);
+                                }}
+                                placeholderText="Select Date Range"
                                 dateFormat="yyyy/MM/dd"
+                                selectsRange
+                                startDate={startDate}
+                                endDate={endDate}
                                 maxDate={new Date()} // Optional: Restrict to past dates
                             />
                         </div>
@@ -519,7 +534,7 @@ const ManageQuery = () => {
                         <button className="bg-gray-200 text-gray-500 hover:bg-gray-300 ic flex items-center relative" onClick={toggleAllFeasPage}>
                             <FileQuestion size={15} />
                             Feasibility Request
-                            <span style={{top:"-15px", right:"-10px"}} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
+                            <span style={{ top: "-15px", right: "-10px" }} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
                                 {pendingFeasRequestCount}
                             </span>
                         </button>

@@ -166,22 +166,30 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
         setEditFormOpen((prev) => !prev)
     };
 
-    const PriceSubmitValidate = async (refId, quoteId) => {
-        let isAmountEmpty = false;
-        Object.keys(amounts).forEach((key) => {
-            const amount = amounts[key].trim();
-
-            if (!amount || !/^\d+(\.\d{1,2})?$/.test(amount)) {
-                isAmountEmpty = true;  // If it's empty or not a valid number, flag it
-            }
+    const handleAmountChange = (e, plan) => {
+        const value = e.target.value;
+    
+        setAmounts((prevAmounts) => {
+            return {
+                ...prevAmounts,
+                [plan]: value, // Update the amount for the specific plan
+            };
         });
+    };
+    
+    // Set default values for all plans (if not already set) when submitting the form
 
-        // Check if the comment field is empty
-        if (isAmountEmpty) {
-            toast.error('Please check all fields');
-            return; // Prevent form submission if validation fails
-        }
-        const form = document.getElementById('submitQuoteForm');
+    
+
+    const PriceSubmitValidate = async (refId, quoteId) => {
+
+        const basicAmount = document.getElementById('amount_Basic')?.value.trim() || "0";
+        const standardAmount = document.getElementById('amount_Standard')?.value.trim() || "0";
+        const advancedAmount = document.getElementById('amount_Advanced')?.value.trim() || "0";
+
+        // Prepare the quote_amount as a comma-separated string
+        const quoteAmount = [basicAmount, standardAmount, advancedAmount].join(',');
+
 
 
         try {
@@ -196,7 +204,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                 body: JSON.stringify({
                     ref_id: refId,
                     quote_id: quoteId,
-                    quote_amount: Object.values(amounts).join(','),
+                    quote_amount: quoteAmount,
                     comment: comment,
                 }), // Send the data as JSON
             });
@@ -343,11 +351,11 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
                                                     </p>
                                                 </td>
-                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>{quote.quoteid}</td>
-                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>{quote.currency}</td>
-                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>{quote.plan}</td>
-                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>{quote.service_name || 'N/A'}</td>
-                                                <td className="border px-4 py-2" style={{fontSize:"11px"}}>
+                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>{quote.quoteid}</td>
+                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>{quote.currency}</td>
+                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>{quote.plan}</td>
+                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>{quote.service_name || 'N/A'}</td>
+                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>
                                                     <span
                                                         className={
                                                             quote.quote_status == 0
@@ -368,10 +376,10 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     : 'Unknown'}
                                                     </span>
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
-                                                        <><br /><span className='text-green-700 text-sm' style={{fontSize:"11px"}}>Feasability Completed</span></>
+                                                        <><br /><span className='text-green-700 text-sm' style={{ fontSize: "11px" }}>Feasability Completed</span></>
                                                     )}
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Pending" && (
-                                                        <><br /><span className='text-red-700 text-sm font-bold' style={{fontSize:"11px"}}>Feasability Pending</span></>
+                                                        <><br /><span className='text-red-700 text-sm font-bold' style={{ fontSize: "11px" }}>Feasability Pending</span></>
                                                     )}
                                                 </td>
                                                 <td className=" px-4 py-2 flex items-center">
@@ -439,12 +447,11 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p className=''><strong style={{textDecoration:"underline"}}>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            <p className=''><strong style={{ textDecoration: "underline" }}>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
                                                             {quote.final_comments != null && (
-                                                                <>
-                                                                    <p><strong style={{textDecoration:"underline"}}>Final Comments:</strong> {quote.final_comments}</p>
-                                                                    
-                                                                </>
+                                                                <div style={{ width: "400px", maxWidth: "450px", wordWrap: "break-word" }}>
+                                                                    <p><strong>Final Comments:</strong> {quote.final_comments}</p>
+                                                                </div>
                                                             )}
                                                             <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
@@ -467,7 +474,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 </div>
                                                             )}
                                                             <p className='flex items-center'>
-                                                                <strong className='mr-2'>Status:</strong>
+                                                                <strong className='mr-2'>Quote Status:</strong>
                                                                 <strong
                                                                     className={quote.quote_status == 0
                                                                         ? "badge-danger py-0 px-1 f-12 font-semibold text-white" // Red for Pending
@@ -524,8 +531,23 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                             })()}
                                                                         </p>
                                                                     )}
+                                                                    {quote.final_price && (
+                                                                        <p >
+                                                                            <strong>Final Price:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.final_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className=' px-1 py-2 rounded mr-1 gold'>
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
+                                                                    )}
                                                                     {quote.user_comments && (
-                                                                        <p><strong style={{textDecoration:"underline"}}>Comments:</strong> {quote.user_comments}</p>
+                                                                        <p><strong style={{ textDecoration: "underline" }}>Comments:</strong> {quote.user_comments}</p>
                                                                     )}
                                                                 </>
                                                             )}
@@ -639,28 +661,23 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                                                 name={`amount_${plan.trim()}`}
                                                                                                                 id={`amount_${plan.trim()}`}
                                                                                                                 className="form-control"
-                                                                                                                value={amounts[plan.trim()] || ''}
+                                                                                                                value={amounts[plan.trim()]} // Default to 0 if no amount is set
                                                                                                                 required
-                                                                                                                onChange={(e) =>
-                                                                                                                    setAmounts({
-                                                                                                                        ...amounts,
-                                                                                                                        [plan.trim()]: e.target.value,
-                                                                                                                    })
-                                                                                                                }
+                                                                                                                onChange={(e) => handleAmountChange(e, plan.trim())}
                                                                                                             />
                                                                                                             <div className="error" id={`amountError_${plan.trim()}`}></div>
                                                                                                         </div>
                                                                                                     </div>
                                                                                                 ))}
-                                                                                        
-                                                                                        <div className="form-group col-sm-12">
-                                                                                            <label htmlFor="comment" className="col-sm-3 control-label">Comments</label>
-                                                                                            <div className="">
-                                                                                                <textarea name="comment" id="comment" placeholder="Comments" className="form-control" value={comment} onChange={(e) => setComment(e.target.value)}></textarea>
-                                                                                                <div className="error" id="commentError"></div>
+
+                                                                                            <div className="form-group col-sm-12">
+                                                                                                <label htmlFor="comment" className="col-sm-3 control-label">Comments</label>
+                                                                                                <div className="">
+                                                                                                    <textarea name="comment" id="comment" placeholder="Comments" className="form-control" value={comment} onChange={(e) => setComment(e.target.value)}></textarea>
+                                                                                                    <div className="error" id="commentError"></div>
+                                                                                                </div>
                                                                                             </div>
                                                                                         </div>
-                                                                                    </div>
                                                                                     </div>
                                                                                     <div className="box-footer p-2">
                                                                                         <input
@@ -678,7 +695,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     </div>
                                                                 </>
                                                             )}
-                                                            {quote.isfeasability == 1 &&  (
+                                                            {quote.isfeasability == 1 && (
                                                                 <>
                                                                     <div className='flex items-center'>
                                                                         <>
@@ -698,7 +715,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     {quote.feasability_status == "Completed" && (
 
                                                                         <p>
-                                                                           <strong style={{textDecoration:"underline"}}> Feasibility Comments:</strong>
+                                                                            <strong style={{ textDecoration: "underline" }}> Feasibility Comments:</strong>
                                                                             <span
                                                                                 className='mt-2'
                                                                                 dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
@@ -724,8 +741,8 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                                     {historyItem.to_first_name} {historyItem.to_last_name}
                                                                                                 </p>
                                                                                                 <p className=" text-gray-500">{historyItem.created_at}</p>
-                                                                                        {/* Message */}
-                                                                                        <p className="text-gray-600">{historyItem.message}</p>
+                                                                                                {/* Message */}
+                                                                                                <p className="text-gray-600">{historyItem.message}</p>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>

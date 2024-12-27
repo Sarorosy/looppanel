@@ -189,7 +189,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
             }
         });
     };
-    
+
     const submitToAdmin = async (assign_id, quote_id, user_id, finalComments) => {
         const payload = {
             ref_id: assign_id,
@@ -197,7 +197,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
             user_id: user_id,
             final_comments: finalComments // Include the comments in the payload
         };
-    
+
         try {
             const response = await fetch('https://apacvault.com/Webapi/submitFeasRequestToAdmin', {
                 method: 'POST',
@@ -206,14 +206,14 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                 },
                 body: JSON.stringify(payload),
             });
-    
+
             const data = await response.json();
             if (data.status) {
                 toast.success("The quote has been successfully submitted to the admin.");
-                setTimeout(()=>{
+                setTimeout(() => {
                     fetchScopeDetails();
-                },1000);
-                
+                }, 1000);
+
             } else {
                 toast.error(data.message || "Something went wrong.");
             }
@@ -222,8 +222,8 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
             toast.error("An unexpected error occurred. Please try again.");
         }
     };
-    
-    
+
+
 
     const toggleHashEditForm = (id, user_id) => {
         setSelectedQuoteId(id);
@@ -293,11 +293,11 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                     </p>
                                                 </td>
-                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>{quote.quoteid}</td>
-                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>{quote.currency}</td>
-                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>{quote.plan}</td>
-                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>{quote.service_name || 'N/A'}</td>
-                                                <td className="border px-2 py-2" style={{fontSize:"11px"}}>
+                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.quoteid}</td>
+                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.currency}</td>
+                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.plan}</td>
+                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.service_name || 'N/A'}</td>
+                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>
                                                     {quote.isfeasability == 1 ? (
                                                         quote.submittedtoadmin == "false" ? (
                                                             quote.feasability_status == "Pending" ? <span className='text-red-600'>Feasabilty Submitted</span> : <span className='text-green-600'>Feasabilty Completed</span>
@@ -328,7 +328,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                     )}
                                                 </td>
 
-                                                <td className=" px-2 py-2 flex items-center" style={{fontSize:"11px"}}>
+                                                <td className=" px-2 py-2 flex items-center" style={{ fontSize: "11px" }}>
                                                     {/* Up/Down Arrow Button */}
                                                     <button
                                                         onClick={() => toggleRow(index)}
@@ -406,13 +406,13 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p><strong style={{textDecoration:"underline"}}>Comments:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            <p><strong style={{ textDecoration: "underline" }}>Comments:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
                                                             {quote.final_comments != null && (
-                                                                <>
+                                                                <div style={{ width: "400px", maxWidth: "450px", wordWrap: "break-word" }}>
                                                                     <p><strong>Final Comments:</strong> {quote.final_comments}</p>
-                                                                    
-                                                                </>
+                                                                </div>
                                                             )}
+
                                                             <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
                                                                 <div>
@@ -474,8 +474,23 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                             })()}
                                                                         </p>
                                                                     )}
+                                                                    {quote.final_price && (
+                                                                        <p >
+                                                                            <strong>Final Price:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.final_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className=' px-1 py-2 rounded mr-1 gold'>
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
+                                                                    )}
                                                                     {quote.user_comments && (
-                                                                        <p><strong style={{textDecoration:"underline"}}>Comments:</strong> {quote.user_comments}</p>
+                                                                        <p><strong style={{ textDecoration: "underline" }}>Comments:</strong> {quote.user_comments}</p>
                                                                     )}
                                                                 </>
                                                             )}
@@ -503,7 +518,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             )}
 
                                                             <div className='flex items-start space-x-1'>
-                                                                {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId  && (
+                                                                {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId && (
                                                                     <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
                                                                 )}
                                                                 {quote.user_id == thisUserId && quote.submittedtoadmin == "true" && quote.demodone != 1 && (
@@ -541,7 +556,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                                     {quote.feasability_status == "Completed" && (
 
-                                                                        <p style={{textDecoration:"underline"}}>
+                                                                        <p style={{ textDecoration: "underline" }}>
                                                                             Feasibility Comments:
                                                                             <span
                                                                                 className='mt-2'
