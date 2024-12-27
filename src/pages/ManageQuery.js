@@ -469,7 +469,8 @@ const ManageQuery = () => {
                                 onChange={(e) => setStatus(e.target.value)}
                             >
                                 <option value="">Select Quote Status</option>
-                                <option value="Pending">Pending</option>
+                                <option value="PendingAtUser">Pending at User</option>
+                                <option value="PendingAtAdmin">Pending at Admin</option>
                                 <option value="1">Submitted</option>
                                 <option value="2">Discount Requested</option>
                             </select>
