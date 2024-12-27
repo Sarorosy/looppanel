@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ScaleLoader from 'react-spinners/ScaleLoader';
-
+import loader from './loader.gif';
+import { InfinitySpin } from 'react-loader-spinner';
 const CustomLoader = () => {
   const [loading, setLoading] = useState(true);
 
@@ -13,10 +14,17 @@ const CustomLoader = () => {
   return (
     <div className="flex items-center justify-center">
       {loading && (
-        <ScaleLoader
-          color="#3498db" // Customize color
-          size={25}       // Customize size
-          speedMultiplier={2} // Customize speed
+        // <ScaleLoader
+        //   color="#3498db" // Customize color
+        //   size={25}       // Customize size
+        //   speedMultiplier={2} // Customize speed
+        // />
+        // <img src={loader} />
+        <InfinitySpin
+        visible={true}
+        width="200"
+        color="#f36730"
+        ariaLabel="infinity-spin-loading"
         />
       )}
     </div>
