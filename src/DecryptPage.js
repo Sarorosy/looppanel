@@ -138,7 +138,7 @@ function DecryptPage() {
                 className={`w-80 p-4 ${successStep1 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} rounded-lg shadow-lg`}
             >
                 {loadingStep1 ? (
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col justify-between items-center">
                         <CustomLoader />
                         <div className="ml-4">
                             <h4 className="">1. Verifying...</h4>
@@ -156,7 +156,7 @@ function DecryptPage() {
                 className={`w-80 p-4 ${successStep2 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'} rounded-lg shadow-lg`}
             >
                 {loadingStep2 ? (
-                    <div className="flex justify-between items-center ">
+                    <div className="flex flex-col justify-between items-center ">
                         <CustomLoader />
                         <div className="ml-4">
                             <h4 className="">2. Authenticating...</h4>

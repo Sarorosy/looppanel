@@ -25,6 +25,7 @@ const CustomLoader = () => {
         width="200"
         color="#f36730"
         ariaLabel="infinity-spin-loading"
+        
         />
       )}
     </div>
