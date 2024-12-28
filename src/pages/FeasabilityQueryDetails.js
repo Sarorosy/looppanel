@@ -201,7 +201,10 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                             )}
                             {queryInfo.latest_requirement && (
                                 <div className="bg-green-100 p-2 rounded">
-                                    <p><strong>Latest Requirement:</strong> {queryInfo.latest_requirement}</p>
+                                    <p><strong>Latest Requirement:</strong></p>
+                                    <div
+                                        dangerouslySetInnerHTML={{ __html: queryInfo.latest_requirement }}
+                                    />
                                 </div>
                             )}
                             {queryInfo.line_format && <p><strong>Requirement:</strong><span dangerouslySetInnerHTML={{ __html: queryInfo.line_format }}></span></p>}

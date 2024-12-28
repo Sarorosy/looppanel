@@ -3,11 +3,24 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AnimatePresence, motion } from 'framer-motion';
 
-function AskPtp({ scopeDetails, quoteId, after }) {
+function AskPtp({ scopeDetails, quoteId, after, plans }) {
     const [showForm, setShowForm] = useState(false);
     const [ptp, setPtp] = useState('No'); // Default value is "No"
+    const [ptpAmount, setPtpAmount] = useState('');
     const [ptpComments, setPtpComments] = useState('');
+    const [ptpCurrency, setPtpCurrency] = useState('');
     const [ptploading, setPtpLoading] = useState(false);
+    const [selectedPlans, setSelectedPlans] = useState(plans ? plans.split(",") : []);
+
+    const handleCheckboxChange = (plan) => {
+        setSelectedPlans((prevSelectedPlans) => {
+            if (prevSelectedPlans.includes(plan)) {
+                return prevSelectedPlans.filter((p) => p !== plan); // Uncheck
+            } else {
+                return [...prevSelectedPlans, plan]; // Check
+            }
+        });
+    };
 
     const userData = sessionStorage.getItem('loopuser');
 
@@ -22,15 +35,19 @@ function AskPtp({ scopeDetails, quoteId, after }) {
             setPtpLoading(false);
             return;
         }
+        const sortedPlans = selectedPlans.sort();
 
         // Prepare the data for posting
         const postData = {
             ptp,
             ptp_comments: ptpComments,
+            ptp_currency:ptpCurrency,
+            ptp_amount: ptpAmount,
+            selected_plans: sortedPlans.join(","),
             ref_id: scopeDetails.assign_id,
             quote_id: quoteId,
-            user_name : userObject.fld_first_name + " " + userObject.fld_last_name,
-            user_id : userObject.id
+            user_name: userObject.fld_first_name + " " + userObject.fld_last_name,
+            user_id: userObject.id
         };
 
         try {
@@ -45,9 +62,7 @@ function AskPtp({ scopeDetails, quoteId, after }) {
             if (result.status === "success") {
                 toast.success('Request submitted successfully');
                 setShowForm(false);
-                setTimeout(() => {
-                    after();
-                }, 1000);
+
             } else {
                 toast.error('Failed to submit the request');
             }
@@ -87,6 +102,54 @@ function AskPtp({ scopeDetails, quoteId, after }) {
                                     <label htmlFor="ptp" className="text-sm font-semibold mb-0">PTP Client</label>
                                 </div>
                             </div>
+                            <div className='w-full flex  items-start space-x-2'>
+                                <div className="mb-4">
+                                    <label htmlFor="ptp_currency" className="block text-sm font-semibold">Currency</label>
+                                    <select
+                                        id="ptp_currency"
+                                        value={ptpCurrency}
+                                        onChange={(e) => setPtpCurrency(e.target.value)}
+                                        className="w-full p-2 border border-gray-300 rounded form-control"
+                                    >
+                                        <option value="INR">INR</option>
+                                        <option value="USD">USD</option>
+                                        <option value="GBP">GBP</option>
+                                        <option value="AUD">AUD</option>
+                                        <option value="EURO">EURO</option>
+                                        <option value="MYR">MYR</option>
+                                        <option value="SGD">SGD</option>
+                                        <option value="ZAR">ZAR</option>
+                                    </select>
+                                </div>
+                                <div className="mb-4">
+                                    <label htmlFor="ptpamount" className="block text-sm font-semibold">PTP Amount</label>
+                                    <input
+                                        id="ptpamount"
+                                        type="number"
+                                        value={ptpAmount}
+                                        onChange={(e) => setPtpAmount(e.target.value)}
+                                        className="w-full p-2 border border-gray-300 rounded no-arrows form-control"
+                                    />
+                                </div>
+                            </div>
+                            <div className="mb-4">
+                                <label className="block text-sm font-medium text-gray-700">Plans</label>
+                                <div className="mt-2 flex flex-wrap">
+                                    {['Basic', 'Standard', 'Advanced'].map((plan, index) => (
+                                        <div key={index} className="flex items-center mb-2 mr-5">
+                                            <input
+                                                type="checkbox"
+                                                id={`plan-${plan}`}
+                                                value={plan}
+                                                checked={selectedPlans.includes(plan)}
+                                                onChange={() => handleCheckboxChange(plan)}
+                                                className="form-checkbox h-4 w-4 border-gray-300 rounded"
+                                            />
+                                            <label htmlFor={`plan-${plan}`} className="ml-2 text-sm font-medium">{plan}</label>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                             <div className="mb-4">
                                 <label htmlFor="ptp_comments" className="block text-sm font-semibold">Comments</label>
                                 <textarea
@@ -94,6 +157,7 @@ function AskPtp({ scopeDetails, quoteId, after }) {
                                     name="ptp_comments"
                                     value={ptpComments}
                                     onChange={(e) => setPtpComments(e.target.value)}
+                                    style={{ resize: 'none' }}
                                     className="w-full p-2 border border-gray-300 rounded form-control"
                                 />
                             </div>

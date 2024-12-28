@@ -27,6 +27,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const plans = ['Basic', 'Standard', 'Advanced']; // Hardcoded plans
     const [demodone, setDemodone] = useState('no');
     const [demoId, setDemoId] = useState('');
+    const [demoStatus , setDemoStatus] = useState(false);
 
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prev) =>
@@ -49,6 +50,27 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const userObject = JSON.parse(userData);
 
     const loopUserObject = JSON.parse(LoopUserData);
+
+    const checkDemoStatus = async () => {
+        try {
+            const response = await fetch('https://apacvault.com/Webapi/checkDemoDoneStatus', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ ref_id:refId }), // Send category in the request body
+            });
+            const data = await response.json();
+            if (data.status) {
+                setDemoStatus(data.data || []); // Set fetched currencies
+            } else {
+                toast.error('Failed to check status');
+            }
+        } catch (error) {
+            console.error('Error checking status:', error);
+            toast.error('Error checking status');
+        }
+    };
 
     const fetchCurrencies = async () => {
         try {
@@ -212,6 +234,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     };
 
     useEffect(() => {
+        checkDemoStatus();
         fetchCurrencies();
         fetchServices();
         fetchUsers();
@@ -388,12 +411,12 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                             </select>
                         </div>
 
-                        <div className=" flex w-full mt-4">
+                        <div className=" flex w-full mt-4" style={{display:`${demoStatus ? 'none' : 'block'}`}}>
                             <div className="flex items-center">
                                 <input
                                     type="checkbox"
                                     id="demodone"
-                                    checked={demodone === "yes"}
+                                    checked={demoStatus}
                                     onChange={(e) => setDemodone(e.target.checked ? "yes" : "no")}
                                     className="h-4 w-4 border-gray-300 rounded"
                                 />
@@ -453,13 +476,13 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                                     )}
                                 </div>
                             ))}
-                            <button
+                            {/* <button
                                 type="button"
                                 onClick={handleAddFileInput}
                                 className="mt-2 px-2 py-1 bg-green-500 text-white rounded f-14"
                             >
                                 + Add
-                            </button>
+                            </button> */}
                         </div>
 
                         {/* Submit Button */}

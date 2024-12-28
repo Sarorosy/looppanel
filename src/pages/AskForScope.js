@@ -159,9 +159,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
     const confirmSubmit = (assign_id, quote_id, user_id) => {
         Swal.fire({
-            title: "Are you sure?",
+            title: "Add Latest comments",
             text: "Once submitted, this action cannot be undone!",
-            icon: "question",
+            
             showCancelButton: true, // Show cancel button
             confirmButtonText: 'Submit',
             cancelButtonText: 'Cancel',
@@ -436,6 +436,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             {quote.ptp != null && (
                                                                 <>
                                                                     <p><strong>PTP:</strong> {quote.ptp}</p>
+                                                                    {quote.ptp_amount && quote.ptp_amount != 0 && (
+                                                                        <p><strong>PTP Amount:</strong> <strong>{(quote.ptp_currency ? quote.ptp_currency : "") }</strong>{quote.ptp_amount}</p>
+                                                                    )}
                                                                     <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
                                                                 </>
                                                             )}
@@ -519,7 +522,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                             <div className='flex items-start space-x-1'>
                                                                 {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId && (
-                                                                    <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
+                                                                    <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} plans={quote.plan}/>
                                                                 )}
                                                                 {quote.user_id == thisUserId && quote.submittedtoadmin == "true" && quote.demodone != 1 && (
                                                                     <DemoDone scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
@@ -547,7 +550,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                                     className="bg-green-100 text-green-700 p-1 rounded border border-green-900 ml-5 hover:bg-green-200"
                                                                                     title='Submit request to admin for Ask For Scope'
                                                                                 >
-                                                                                    Submit To Admin
+                                                                                    Request Quote
                                                                                 </button>
                                                                             )}
                                                                         </>

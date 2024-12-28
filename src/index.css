@@ -531,6 +531,16 @@ th{
  
 }
 
+.silver {
+  font-size: 15px;
+  text-transform: uppercase;
+  line-height: 1;
+  text-align: center;
+  background: linear-gradient(90deg, rgba(192,192,192,1) 0%, rgba(211,211,211,1) 20%, rgba(192,192,192,1) 39%, rgba(245,245,245,1) 50%, rgba(192,192,192,1) 60%, rgba(211,211,211,1) 80%, rgba(192,192,192,1) 100%);
+  animation: shine 3s infinite;
+  background-size: 200%;
+  background-position: left;
+}
 
 
 
@@ -549,6 +559,23 @@ th{
 
 
 
+/* For webkit-based browsers (Chrome, Safari, Opera) */
+input[type="number"].no-arrows::-webkit-outer-spin-button,
+input[type="number"].no-arrows::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* For Firefox */
+input[type="number"].no-arrows {
+    -moz-appearance: textfield;
+}
+
+/* For Edge */
+input[type="number"].no-arrows {
+    appearance: none;
+    -ms-appearance: none;
+}
 
 
 

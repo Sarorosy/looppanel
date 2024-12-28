@@ -219,7 +219,6 @@ const QueryDetails = ({ onClose, queryId, quotationId, after }) => {
                             {queryInfo.city && <p><strong>City:</strong> {queryInfo.city}</p>}
                             {queryInfo.complete_address && <p><strong>Complete Address:</strong> {queryInfo.complete_address}</p>}
                             {queryInfo.designation && <p><strong>Designation:</strong> {queryInfo.designation}</p>}
-                            {queryInfo.company_name && <p><strong>Company Name:</strong> {queryInfo.company_name}</p>}
                             {queryInfo.website_name && (
                                 <p>
                                     <strong>Website:</strong> {queryInfo.website_name === 'others' ? queryInfo.other_website : queryInfo.website_name}

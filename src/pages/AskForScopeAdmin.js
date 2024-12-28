@@ -97,32 +97,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             }
         }
     };
-    const fetchFeasibilityHistory = async (assign_id, quote_id) => {
-        const payload = {
-            ref_id: assign_id,
-            quote_id: quote_id,
-        };
-
-        try {
-            setHistoryLoading(true);
-            const response = await fetch('https://apacvault.com/Webapi/getFeasabilityHistory', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload),
-            });
-
-            const data = await response.json();
-            if (data.status) {
-                setHistoryData(data.historyData)
-            }
-        } catch (error) {
-            console.error("Error fetching feasibility history:", error);
-        } finally {
-            setHistoryLoading(false);
-        }
-    };
+    
 
     const updatePriceQuote = async () => {
         const data = {
@@ -213,7 +188,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
             if (response.ok) {
                 toast.success('Quote price updated successfully');
-                fetchScopeDetails();
+                
             } else {
                 toast.error('Failed to update quote price');
             }
@@ -493,6 +468,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                             {quote.ptp != null && (
                                                                 <>
                                                                     <p><strong>PTP:</strong> {quote.ptp}</p>
+                                                                    {quote.ptp_amount && quote.ptp_amount != 0 && (
+                                                                        <p><strong>PTP Amount:</strong> <strong>{(quote.ptp_currency ? quote.ptp_currency : "") }</strong>{quote.ptp_amount}</p>
+                                                                    )}
                                                                     <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
                                                                 </>
                                                             )}
@@ -523,7 +501,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                 const prices = quote.discount_price.split(','); // Split quote_price into an array
                                                                                 const plans = quote.plan.split(','); // Split plan into an array
                                                                                 return plans.map((plan, index) => (
-                                                                                    <span key={index} className='bg-[#FFD700] px-1 py-1 f-12 rounded mr-1'>
+                                                                                    <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
                                                                                         <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
                                                                                         {index < plans.length - 1 && ', '}
                                                                                     </span>

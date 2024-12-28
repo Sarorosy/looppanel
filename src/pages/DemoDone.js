@@ -35,9 +35,7 @@ function DemoDone({ scopeDetails, quoteId , after}) {
             if (result.status == "success") {
                 toast.success('Success');
                 setShowForm(false); // Close form upon successful submission
-                setTimeout(()=>{
-                    after();
-                }, 1000)
+               
             } else {
                 toast.error('Failed to submit the request');
             }
