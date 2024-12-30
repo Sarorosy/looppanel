@@ -11,7 +11,7 @@ import './index.css';
 
 function App() {
   return (
-    <Router > 
+    <Router> 
       <Routes>
         {/* Public route */}
         <Route path="/:email/:token" element={<DecryptPage />} />

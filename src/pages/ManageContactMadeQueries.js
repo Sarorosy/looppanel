@@ -9,11 +9,13 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, ListIcon, FileQuestion } from 'lucide-react';
+import { RefreshCcw, Filter, ListIcon, FileQuestion, UserCircle } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import { AnimatePresence, motion } from 'framer-motion';
 import SummaryPage from './SummaryPage';
 import FeasabilityPage from './FeasabilityPage';
+import QueryDetailsTl from './QueryDetailsTl';
+import ManageTlQuery from './ManageTlQuery';
 
 
 
@@ -32,6 +34,7 @@ const ManageContactMadeQueries = () => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [summaryOpen, setSummaryOpen] = useState(false);
     const [feasPageOpen, setFeasPageOpen] = useState(false);
+    const [tlPageOpen, setTlPageOpen] = useState(false);
     const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0)
 
     const userData = sessionStorage.getItem('user');
@@ -67,6 +70,9 @@ const ManageContactMadeQueries = () => {
 
     const handleFeasButtonClick = (query) => {
         setFeasPageOpen(true);
+    };
+    const handleTlButtonClick = (query) => {
+        setTlPageOpen(true);
     };
 
     const toggleFeasPage = () => {
@@ -127,11 +133,11 @@ const ManageContactMadeQueries = () => {
         setLoading(true);
 
         let hasResponse = false;
-        let payload = { loop_user_id: loopuserId ,user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite }
+        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite }
 
         if (nopayload) {
             // If nopayload is true, send an empty payload
-            payload = {loop_user_id: loopuserId , user_id: userId, };
+            payload = { loop_user_id: loopuserId, user_id: userId, };
         }
 
         try {
@@ -230,7 +236,7 @@ const ManageContactMadeQueries = () => {
             <div className="mb-3 bg-white px-3 py-3 rounded aql">
                 <h1 className='text-xl font-bold mb-3'>Query History</h1>
                 <div className='flex items-center space-x-2 '>
-                    <div className="w-1/3">
+                    <div className="w-1/4">
                         <input
                             type="text"
                             className="form-control"
@@ -239,7 +245,7 @@ const ManageContactMadeQueries = () => {
                             onChange={(e) => setRefId(e.target.value)}
                         />
                     </div>
-                    <div className="w-1/2">
+                    <div className="w-1/3">
                         <input
                             type="text"
                             className="form-control"
@@ -248,7 +254,7 @@ const ManageContactMadeQueries = () => {
                             onChange={(e) => setKeyword(e.target.value)}
                         />
                     </div>
-                    <div className="w-1/3">
+                    <div className="w-1/4">
                         <select
                             id="user_id"
                             className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
@@ -278,13 +284,20 @@ const ManageContactMadeQueries = () => {
                             <ListIcon size={12} />
                             Summary
                         </button>
+                        {loopuserObject.tl == 1 && (
+                            <button className="bg-gray-200 flex items-center relative" onClick={handleTlButtonClick} title='All Users Request'>
+                                <UserCircle size={15} />
+                                User Requests
+                            </button>
+                        )}
                         <button className="bg-gray-200 flex items-center relative" onClick={handleFeasButtonClick} title='Feasability Check'>
                             <FileQuestion size={12} />
                             Feasability Request
-                            <span style={{top:"-15px", right:"-10px"}} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
+                            <span style={{ top: "-15px", right: "-10px" }} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
                                 {pendingFeasRequestCount}
                             </span>
                         </button>
+
                     </div>
                 </div>
             </div>
@@ -333,6 +346,9 @@ const ManageContactMadeQueries = () => {
                 )}
                 {feasPageOpen && (
                     <FeasabilityPage onClose={toggleFeasPage} after={() => { fetchQuotes(false) }} />
+                )}
+                {tlPageOpen && (
+                    <ManageTlQuery onClose={()=>{setTlPageOpen(!tlPageOpen)}}/>
                 )}
             </AnimatePresence>
 
