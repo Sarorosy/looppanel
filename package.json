@@ -1,6 +1,7 @@
 {
   "name": "looppanel",
   "version": "0.1.0",
+  "homepage": "https://apacvault.com/askforscope/",
   "private": true,
   "dependencies": {
     "axios": "^1.7.7",

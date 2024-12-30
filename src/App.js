@@ -8,7 +8,7 @@ import './output.css';
 import './index.css';
 function App() {
   return (
-    <Router >
+    <Router basename="/askforscope">
       <Routes>
         {/* Public route */}
         <Route path="/:email/:token" element={<DecryptPage />} />
