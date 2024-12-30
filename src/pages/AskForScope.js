@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -161,7 +161,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
         Swal.fire({
             title: "Add Latest comments",
             text: "Once submitted, this action cannot be undone!",
-            
+
             showCancelButton: true, // Show cancel button
             confirmButtonText: 'Submit',
             cancelButtonText: 'Cancel',
@@ -437,9 +437,14 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 <>
                                                                     <p><strong>PTP:</strong> {quote.ptp}</p>
                                                                     {quote.ptp_amount && quote.ptp_amount != 0 && (
-                                                                        <p><strong>PTP Amount:</strong> <strong>{(quote.ptp_currency ? quote.ptp_currency : "") }</strong>{quote.ptp_amount}</p>
+                                                                        <p><strong>PTP Amount:</strong> {quote.ptp_amount}</p>
                                                                     )}
-                                                                    <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                                    {quote.ptp == "Yes" && (
+                                                                        <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                                    )}
+                                                                    {quote.ptp_file != null && (
+                                                                        <p><strong>Attached File : </strong><a className='text-blue-500 font-semibold flex items-center' href={`https://apacvault.com/public/ptpfiles/${quote.ptp_file}`} download={quote.ptpfile} target='_blank'>{quote.ptp_file} <FileDownIcon size={20} /></a></p>
+                                                                    )}
                                                                 </>
                                                             )}
                                                             {quote.demodone != 0 && (
@@ -449,6 +454,22 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             )}
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                 <>
+                                                                    {quote.old_plan && (quote.old_plan != quote.plan && (
+                                                                        <p className='text-gray-600'>
+                                                                            <strong>Quote Price For Old Plan:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.old_plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
+
+                                                                    ))}
                                                                     <p>
                                                                         <strong>Quote Price:</strong>{' '}
                                                                         {(() => {
@@ -462,6 +483,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                             ));
                                                                         })()}
                                                                     </p>
+
                                                                     {quote.discount_price && (
                                                                         <p>
                                                                             <strong>Discounted Price:</strong>{' '}
@@ -493,7 +515,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                         </p>
                                                                     )}
                                                                     {quote.user_comments && (
-                                                                        <p><strong style={{ textDecoration: "underline" }}>Comments:</strong> {quote.user_comments}</p>
+                                                                        <p><strong style={{ textDecoration: "underline" }}>Admin Comments:</strong> {quote.user_comments}</p>
                                                                     )}
                                                                 </>
                                                             )}
@@ -522,7 +544,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                             <div className='flex items-start space-x-1'>
                                                                 {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId && (
-                                                                    <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} plans={quote.plan}/>
+                                                                    <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} plans={quote.plan} />
                                                                 )}
                                                                 {quote.user_id == thisUserId && quote.submittedtoadmin == "true" && quote.demodone != 1 && (
                                                                     <DemoDone scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />

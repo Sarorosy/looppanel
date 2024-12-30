@@ -465,13 +465,18 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 </strong>
                                                             </p>
 
-                                                            {quote.ptp != null && (
+                                                            {quote.ptp != null &&   (
                                                                 <>
                                                                     <p><strong>PTP:</strong> {quote.ptp}</p>
                                                                     {quote.ptp_amount && quote.ptp_amount != 0 && (
-                                                                        <p><strong>PTP Amount:</strong> <strong>{(quote.ptp_currency ? quote.ptp_currency : "") }</strong>{quote.ptp_amount}</p>
+                                                                        <p><strong>PTP Amount:</strong> {quote.ptp_amount}</p>
                                                                     )}
-                                                                    <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                                    {quote.ptp == "Yes" && (
+                                                                        <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                                    )}
+                                                                    {quote.ptp_file != null && (
+                                                                        <p><strong>Attached File : </strong><a className='text-blue-500 font-semibold' href={`https://apacvault.com/public/${quote.ptp_file}`} download={quote.ptpfile} target='_blank'>{quote.ptp_file}</a></p>
+                                                                    )}
                                                                 </>
                                                             )}
                                                             {quote.demodone != 0 && (
@@ -481,6 +486,22 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                             )}
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                 <>
+                                                                    {quote.old_plan && (quote.old_plan != quote.plan && (
+                                                                            <p className='text-gray-600'>
+                                                                                <strong>Quote Price For Old Plan:</strong>{' '}
+                                                                                {(() => {
+                                                                                    const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                    const plans = quote.old_plan.split(','); // Split plan into an array
+                                                                                    return plans.map((plan, index) => (
+                                                                                        <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
+                                                                                            <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                            {index < plans.length - 1 && ', '}
+                                                                                        </span>
+                                                                                    ));
+                                                                                })()}
+                                                                            </p>
+
+                                                                        ))}
                                                                     <p>
                                                                         <strong>Quote Price:</strong>{' '}
                                                                         {(() => {
@@ -525,7 +546,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                         </p>
                                                                     )}
                                                                     {quote.user_comments && (
-                                                                        <p><strong style={{ textDecoration: "underline" }}>Comments:</strong> {quote.user_comments}</p>
+                                                                        <p><strong style={{ textDecoration: "underline" }}>Admin Comments:</strong> {quote.user_comments}</p>
                                                                     )}
                                                                 </>
                                                             )}

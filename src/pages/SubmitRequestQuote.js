@@ -476,13 +476,13 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                                     )}
                                 </div>
                             ))}
-                            {/* <button
+                            <button
                                 type="button"
                                 onClick={handleAddFileInput}
                                 className="mt-2 px-2 py-1 bg-green-500 text-white rounded f-14"
                             >
                                 + Add
-                            </button> */}
+                            </button>
                         </div>
 
                         {/* Submit Button */}

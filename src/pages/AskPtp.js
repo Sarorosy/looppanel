@@ -8,9 +8,9 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
     const [ptp, setPtp] = useState('No'); // Default value is "No"
     const [ptpAmount, setPtpAmount] = useState('');
     const [ptpComments, setPtpComments] = useState('');
-    const [ptpCurrency, setPtpCurrency] = useState('');
     const [ptploading, setPtpLoading] = useState(false);
     const [selectedPlans, setSelectedPlans] = useState(plans ? plans.split(",") : []);
+    const [ptpFile, setPtpFile] = useState(null);
 
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prevSelectedPlans) => {
@@ -20,6 +20,10 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                 return [...prevSelectedPlans, plan]; // Check
             }
         });
+    };
+
+    const handleFileChange = (e) => {
+        setPtpFile(e.target.files[0]); // Store the selected file
     };
 
     const userData = sessionStorage.getItem('loopuser');
@@ -37,32 +41,35 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
         }
         const sortedPlans = selectedPlans.sort();
 
-        // Prepare the data for posting
-        const postData = {
-            ptp,
-            ptp_comments: ptpComments,
-            ptp_currency:ptpCurrency,
-            ptp_amount: ptpAmount,
-            selected_plans: sortedPlans.join(","),
-            ref_id: scopeDetails.assign_id,
-            quote_id: quoteId,
-            user_name: userObject.fld_first_name + " " + userObject.fld_last_name,
-            user_id: userObject.id
-        };
+        
+        const formData = new FormData();
+            formData.append('ptp', ptp);
+            formData.append('ptp_comments', ptpComments);
+            formData.append('ptp_amount', ptpAmount);
+            formData.append('old_plans', plans);
+            formData.append('selected_plans', sortedPlans.join(","));
+            formData.append('ref_id', scopeDetails.assign_id);
+            formData.append('quote_id', quoteId);
+            formData.append('user_name', userObject.fld_first_name + " " + userObject.fld_last_name);
+            formData.append('user_id', userObject.id);
+
+            // Append the selected file if there is one
+            if (ptpFile) {
+                formData.append('ptp_file', ptpFile);
+            }
 
         try {
             const response = await fetch('https://apacvault.com/Webapi/askptp', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(postData),
+                body: formData,
             });
             const result = await response.json();
             if (result.status === "success") {
                 toast.success('Request submitted successfully');
                 setShowForm(false);
-
+                setTimeout(()=>{
+                    after();
+                },1000)
             } else {
                 toast.error('Failed to submit the request');
             }
@@ -103,24 +110,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                                 </div>
                             </div>
                             <div className='w-full flex  items-start space-x-2'>
-                                <div className="mb-4">
-                                    <label htmlFor="ptp_currency" className="block text-sm font-semibold">Currency</label>
-                                    <select
-                                        id="ptp_currency"
-                                        value={ptpCurrency}
-                                        onChange={(e) => setPtpCurrency(e.target.value)}
-                                        className="w-full p-2 border border-gray-300 rounded form-control"
-                                    >
-                                        <option value="INR">INR</option>
-                                        <option value="USD">USD</option>
-                                        <option value="GBP">GBP</option>
-                                        <option value="AUD">AUD</option>
-                                        <option value="EURO">EURO</option>
-                                        <option value="MYR">MYR</option>
-                                        <option value="SGD">SGD</option>
-                                        <option value="ZAR">ZAR</option>
-                                    </select>
-                                </div>
+                                
                                 <div className="mb-4">
                                     <label htmlFor="ptpamount" className="block text-sm font-semibold">PTP Amount</label>
                                     <input
@@ -159,6 +149,15 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                                     onChange={(e) => setPtpComments(e.target.value)}
                                     style={{ resize: 'none' }}
                                     className="w-full p-2 border border-gray-300 rounded form-control"
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label htmlFor="ptp_file" className="block text-sm font-semibold">Upload File</label>
+                                <input
+                                    type="file"
+                                    id="ptp_file"
+                                    onChange={handleFileChange}
+                                    className="w-full p-2 border border-gray-300 rounded"
                                 />
                             </div>
                             <button type="submit" disabled={ptploading} className="bg-blue-500 text-white px-4 py-2 rounded">

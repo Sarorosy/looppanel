@@ -6,9 +6,12 @@ import ManageContactMadeQueries from "./pages/ManageContactMadeQueries";
 import ManageQuery from './pages/ManageQuery';
 import './output.css';
 import './index.css';
+
+// basename="/askforscope"
+
 function App() {
   return (
-    <Router basename="/askforscope">
+    <Router > 
       <Routes>
         {/* Public route */}
         <Route path="/:email/:token" element={<DecryptPage />} />
