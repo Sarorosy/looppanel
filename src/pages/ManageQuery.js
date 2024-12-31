@@ -230,28 +230,44 @@ const ManageQuery = () => {
             width: "110px",
             orderable: true,
             render: function (data, type, row) {
+                let html = `${data}`;
+                
                 if (row.ptp === "Yes") {
-                    return `
-                        ${data}
+                    html += `
                         <span 
                             style="
-                               
                                 padding: 2px 4px; 
-                                background-color: #2B9758FF;
+                                background-color: #2B9758FF; 
                                 color: #ffffff; 
                                 font-size: 11px; 
                                 font-weight: bold; 
                                 line-height: 1.2;
-                                z-index:1 !important;
+                                z-index: 1 !important;
                             ">
                             PTP
                         </span>
                     `;
-                } else {
-                    return data; // Default case
                 }
+        
+                if (row.edited == 1) {
+                    html += `
+                        <span 
+                            style="
+                                padding: 1px 6px; 
+                                background-color: #D1D5DB; 
+                                color: #4B5563; 
+                                font-size: 11px; 
+                                border-radius: 9999px; 
+                                margin-left: 8px;
+                            ">
+                            Edited
+                        </span>
+                    `;
+                }
+        
+                return html; // Return the complete HTML with conditions applied
             },
-        },
+        },        
         {
             title: 'Ask For Scope ID',
             data: 'id',

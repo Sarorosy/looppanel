@@ -8,6 +8,7 @@ import ReactQuill from 'react-quill';
 import $ from 'jquery';
 import 'select2/dist/css/select2.min.css'; // Import Select2 CSS
 import 'select2';
+import CustomLoader from '../CustomLoader';
 
 
 const SubmitRequestQuote = ({ refId, after, onClose }) => {
@@ -61,7 +62,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                 body: JSON.stringify({ ref_id:refId }), // Send category in the request body
             });
             const data = await response.json();
-            if (data.status) {
+            if (response.ok) {
                 setDemoStatus(data.data || []); // Set fetched currencies
             } else {
                 toast.error('Failed to check status');
@@ -305,7 +306,12 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                     </button>
                 </div>
 
-                <div className='p-3 m-0'>
+                <div className='p-3 m-0 relative'>
+                {submitting && (
+                <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+                    <CustomLoader />
+                </div>
+            )}
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <input type="hidden" name="ref_id" value={refId} />
 

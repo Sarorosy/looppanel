@@ -290,6 +290,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 PTP
                                                             </span>
                                                         )}
+                                                        {quote.edited == 1 && (
+                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{fontSize:"11px", padding:"1px 6px"}}>Edited</span>
+                                                                )}
 
                                                     </p>
                                                 </td>
@@ -337,7 +340,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                         {expandedRowIndex == index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
 
-                                                    {quote.quote_status == 0 && quote.isfeasability == 0 && quote.user_id == thisUserId && (
+                                                    {(quote.quote_status == 0 || quote.quote_status == 1 ) && quote.isfeasability == 0 && quote.user_id == thisUserId && (
                                                         <button onClick={() => { toggleEditForm(quote.quoteid) }}
                                                             className='flex items-center rounded-full border-2 border-blue-500'>
                                                             <Settings2 className='p-1' />
@@ -378,6 +381,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 >
                                                                     <History size={15} />
                                                                 </button>
+                                                                {quote.edited == 1 && (
+                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{fontSize:"11px", padding:"1px 6px"}}>Edited</span>
+                                                                )}
                                                             </p>
 
 

@@ -24,6 +24,9 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const [file, setFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(false);
+    const userData = sessionStorage.getItem('loopuser');
+
+    const userObject = JSON.parse(userData);
 
     const plans = ['Basic', 'Standard', 'Advanced'];
 
@@ -115,6 +118,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             payload.append('service_name', formData.service_name);
             payload.append('plan', formData.plan);
             payload.append('comments', formData.comments);
+            payload.append('user_id',userObject.id )
 
             const response = await fetch('https://apacvault.com/Webapi/updateRequestQuoteApiAction', {
                 method: 'POST',

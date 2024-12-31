@@ -345,6 +345,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 PTP
                                                             </span>
                                                         )}
+                                                        {quote.edited == 1 && (
+                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{fontSize:"11px", padding:"1px 6px"}}>Edited</span>
+                                                                )}
 
                                                     </p>
                                                 </td>
@@ -423,6 +426,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 >
                                                                     <History size={15} />
                                                                 </button>
+                                                                {quote.edited == 1 && (
+                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{fontSize:"11px", padding:"1px 6px"}}>Edited</span>
+                                                                )}
                                                             </p>
                                                             {quote.tag_names && (
                                                                 <p>
