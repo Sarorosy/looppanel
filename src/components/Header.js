@@ -166,6 +166,33 @@ const Header = () => {
     }
   };
 
+  const MarkAllAsRead = async () => {
+    setLoading(true); // Show loading spinner
+    try {
+      const response = await fetch('https://apacvault.com/Webapi/readAllNotifications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: userObject.id }),
+      });
+
+      const data = await response.json(); // Parse the response as JSON
+
+
+      if (data.status) {
+        setNotifications(data.notifications); // Update notifications state
+        fetchNotificationsCount();
+      } else {
+        console.error('Failed to fetch notifications:', data.message);
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    } finally {
+      setLoading(false); // Hide loading spinner
+    }
+  };
+
   useEffect(() => {
     fetchNotificationsCount();
     const interval = setInterval(() => {
@@ -212,7 +239,10 @@ const Header = () => {
           {/* Notifications Dropdown */}
           {notificationsVisible && (
             <div className="absolute top-12 right-0 bg-white text-black shadow-lg w-72 border-t-2 border-blue-400 py-3 px-1 rounded">
+              <div className='flex items-center justify-between'>
               <h3 className="font-bold mb-2 ml-2">Notifications</h3>
+              <button onClick={MarkAllAsRead} className='mr-2 rounded px-1 border-2 hover:border-blue-400 duration-200'>Read All</button>
+              </div>
               {loading ? (
                 <CustomLoader />
               ) : notifications.length === 0 ? (
