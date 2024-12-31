@@ -97,7 +97,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
             }
         }
     };
-    
+
 
     const updatePriceQuote = async () => {
         const data = {
@@ -143,7 +143,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
 
     const handleAmountChange = (e, plan) => {
         const value = e.target.value;
-    
+
         setAmounts((prevAmounts) => {
             return {
                 ...prevAmounts,
@@ -151,10 +151,10 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
             };
         });
     };
-    
+
     // Set default values for all plans (if not already set) when submitting the form
 
-    
+
 
     const PriceSubmitValidate = async (refId, quoteId) => {
 
@@ -188,7 +188,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
 
             if (response.ok) {
                 toast.success('Quote price updated successfully');
-                
+
             } else {
                 toast.error('Failed to update quote price');
             }
@@ -461,7 +461,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                 </strong>
                                                             </p>
 
-                                                            {quote.ptp != null &&   (
+                                                            {quote.ptp != null && (
                                                                 <>
                                                                     <p><strong>PTP:</strong> {quote.ptp}</p>
                                                                     {quote.ptp_amount && quote.ptp_amount != 0 && (
@@ -483,34 +483,36 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                 <>
                                                                     {quote.old_plan && (quote.old_plan != quote.plan && (
-                                                                            <p className='text-gray-600'>
-                                                                                <strong>Quote Price For Old Plan:</strong>{' '}
-                                                                                {(() => {
-                                                                                    const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                                    const plans = quote.old_plan.split(','); // Split plan into an array
-                                                                                    return plans.map((plan, index) => (
-                                                                                        <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
-                                                                                            <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                            {index < plans.length - 1 && ', '}
-                                                                                        </span>
-                                                                                    ));
-                                                                                })()}
-                                                                            </p>
+                                                                        <p className='text-gray-600'>
+                                                                            <strong>Quote Price For Old Plan:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.old_plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
 
-                                                                        ))}
-                                                                    <p>
-                                                                        <strong>Quote Price:</strong>{' '}
-                                                                        {(() => {
-                                                                            const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                            const plans = quote.plan.split(','); // Split plan into an array
-                                                                            return plans.map((plan, index) => (
-                                                                                <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
-                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                    {index < plans.length - 1 && ', '}
-                                                                                </span>
-                                                                            ));
-                                                                        })()}
-                                                                    </p>
+                                                                    ))}
+                                                                    {quote.status != 2 && (
+                                                                        <p>
+                                                                            <strong>Quote Price:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
+                                                                    )}
                                                                     {quote.discount_price && (
                                                                         <p>
                                                                             <strong>Discounted Price:</strong>{' '}
@@ -519,7 +521,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                                 const plans = quote.plan.split(','); // Split plan into an array
                                                                                 return plans.map((plan, index) => (
                                                                                     <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
                                                                                         {index < plans.length - 1 && ', '}
                                                                                     </span>
                                                                                 ));
@@ -623,7 +625,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                     )}
                                                                 </>
                                                             )}
-                                                            
+
                                                             {quote.isfeasability == 1 && (
                                                                 <>
                                                                     <div className='flex items-center'>

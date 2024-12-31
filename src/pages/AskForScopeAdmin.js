@@ -97,7 +97,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             }
         }
     };
-    
+
 
     const updatePriceQuote = async () => {
         const data = {
@@ -123,6 +123,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
             if (response.ok) {
                 toast.success('Quote price updated successfully');
+                setTimeout(() => {
+                    fetchScopeDetails();
+                }, 800)
             } else {
                 toast.error('Failed to update quote price');
             }
@@ -143,7 +146,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
     const handleAmountChange = (e, plan) => {
         const value = e.target.value;
-    
+
         setAmounts((prevAmounts) => {
             return {
                 ...prevAmounts,
@@ -151,30 +154,40 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             };
         });
     };
-    
+
     // Set default values for all plans (if not already set) when submitting the form
 
+
+
+    const PriceSubmitValidate = async (refId, quoteId, plans) => {
+        const form = document.getElementById('submitQuoteForm');
     
-
-    const PriceSubmitValidate = async (refId, quoteId) => {
-
+        // Define the amount variables
         const basicAmount = document.getElementById('amount_Basic')?.value.trim() || "0";
         const standardAmount = document.getElementById('amount_Standard')?.value.trim() || "0";
         const advancedAmount = document.getElementById('amount_Advanced')?.value.trim() || "0";
-
-        // Prepare the quote_amount as a comma-separated string
-        const quoteAmount = [basicAmount, standardAmount, advancedAmount].join(',');
-
-
-
+    
+        // Create a map for plan amounts
+        const planAmountMap = {
+            Basic: basicAmount,
+            Standard: standardAmount,
+            Advanced: advancedAmount,
+        };
+    
+        // Filter the selected plans and join the corresponding amounts
+        const quoteAmount = plans
+            .split(',') // Split the comma-separated plans
+            .map(plan => planAmountMap[plan] || "0") // Get corresponding amounts, defaulting to "0"
+            .join(',');
+    
         try {
             // Show loading spinner
             setQuoteLoading(true);
-
+    
             const response = await fetch('https://apacvault.com/Webapi/submittedtoadminquote', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     ref_id: refId,
@@ -183,11 +196,19 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                     comment: comment,
                 }), // Send the data as JSON
             });
-
+    
             const responseData = await response.json(); // Parse the response as JSON
-
+    
             if (response.ok) {
                 toast.success('Quote price updated successfully');
+                setTimeout(() => {
+                    fetchScopeDetails();
+                }, 800);
+                form.reset();
+                document.getElementById('amount_Basic').value = '0';
+                document.getElementById('amount_Standard').value = '0';
+                document.getElementById('amount_Advanced').value = '0';
+                setComment('');
                 
             } else {
                 toast.error('Failed to update quote price');
@@ -200,6 +221,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             setQuoteLoading(false);
         }
     };
+    
 
     const ValidateAssignTask = async () => {
         if (!selectedUser || !adminComments) {
@@ -419,6 +441,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                             {quote.service_name && quote.plan && (
                                                                 <>
                                                                     <p><strong>Service Required:</strong> {quote.service_name}</p>
+                                                                    {quote.old_plan && (
+                                                                        <p className='text-gray-500'><strong>Old Plan:</strong> {quote.old_plan}</p>
+                                                                    )}
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
@@ -465,7 +490,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                 </strong>
                                                             </p>
 
-                                                            {quote.ptp != null &&   (
+                                                            {quote.ptp != null && (
                                                                 <>
                                                                     <p><strong>PTP:</strong> {quote.ptp}</p>
                                                                     {quote.ptp_amount && quote.ptp_amount != 0 && (
@@ -487,34 +512,36 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                 <>
                                                                     {quote.old_plan && (quote.old_plan != quote.plan && (
-                                                                            <p className='text-gray-600'>
-                                                                                <strong>Quote Price For Old Plan:</strong>{' '}
-                                                                                {(() => {
-                                                                                    const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                                    const plans = quote.old_plan.split(','); // Split plan into an array
-                                                                                    return plans.map((plan, index) => (
-                                                                                        <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
-                                                                                            <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                            {index < plans.length - 1 && ', '}
-                                                                                        </span>
-                                                                                    ));
-                                                                                })()}
-                                                                            </p>
+                                                                        <p className='text-gray-600'>
+                                                                            <strong>Quote Price For Old Plan:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.old_plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
 
-                                                                        ))}
-                                                                    <p>
-                                                                        <strong>Quote Price:</strong>{' '}
-                                                                        {(() => {
-                                                                            const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                            const plans = quote.plan.split(','); // Split plan into an array
-                                                                            return plans.map((plan, index) => (
-                                                                                <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
-                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                    {index < plans.length - 1 && ', '}
-                                                                                </span>
-                                                                            ));
-                                                                        })()}
-                                                                    </p>
+                                                                    ))}
+                                                                    {quote.status != 2 && (
+                                                                        <p>
+                                                                            <strong>Quote Price:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
+                                                                    )}
                                                                     {quote.discount_price && (
                                                                         <p>
                                                                             <strong>Discounted Price:</strong>{' '}
@@ -523,7 +550,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                 const plans = quote.plan.split(','); // Split plan into an array
                                                                                 return plans.map((plan, index) => (
                                                                                     <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
                                                                                         {index < plans.length - 1 && ', '}
                                                                                     </span>
                                                                                 ));
@@ -684,7 +711,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                             name="priceSubmitted"
                                                                                             className="btn pull-right btn-success"
                                                                                             value="Submit"
-                                                                                            onClick={() => PriceSubmitValidate(quote.assign_id, quote.quoteid)}
+                                                                                            onClick={() => PriceSubmitValidate(quote.assign_id, quote.quoteid, quote.plan)}
                                                                                             disabled={priceLoading}
                                                                                         />
                                                                                     </div>

@@ -403,6 +403,9 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             {quote.service_name && quote.plan && (
                                                                 <>
                                                                     <p><strong>Service Required:</strong> {quote.service_name}</p>
+                                                                    {quote.old_plan && (
+                                                                        <p className='text-gray-500'><strong>Old Plan:</strong> {quote.old_plan}</p>
+                                                                    )}
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
@@ -470,6 +473,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                         </p>
 
                                                                     ))}
+                                                                    {quote.status !=2 && (
                                                                     <p>
                                                                         <strong>Quote Price:</strong>{' '}
                                                                         {(() => {
@@ -483,6 +487,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                             ));
                                                                         })()}
                                                                     </p>
+                                                                    )}
 
                                                                     {quote.discount_price && (
                                                                         <p>
@@ -492,7 +497,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                                 const plans = quote.plan.split(','); // Split plan into an array
                                                                                 return plans.map((plan, index) => (
                                                                                     <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
                                                                                         {index < plans.length - 1 && ', '}
                                                                                     </span>
                                                                                 ));

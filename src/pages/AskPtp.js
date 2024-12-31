@@ -5,8 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 function AskPtp({ scopeDetails, quoteId, after, plans }) {
     const [showForm, setShowForm] = useState(false);
-    const [ptp, setPtp] = useState('No'); // Default value is "No"
-    const [ptpAmount, setPtpAmount] = useState('');
+    const [ptp, setPtp] = useState(scopeDetails.ptp); // Default value is "No"
+    const [ptpAmount, setPtpAmount] = useState(scopeDetails.ptp_amount);
     const [ptpComments, setPtpComments] = useState('');
     const [ptploading, setPtpLoading] = useState(false);
     const [selectedPlans, setSelectedPlans] = useState(plans ? plans.split(",") : []);
@@ -34,29 +34,39 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
         setPtpLoading(true);
         e.preventDefault();
 
+        if (ptp == 'Yes' && !ptpAmount){
+            toast.error("Please Enter amount");
+            setPtpLoading(false);
+            return;
+        }
         if (!ptpComments) {
             toast.error("Please fill all fields");
             setPtpLoading(false);
             return;
         }
-        const sortedPlans = selectedPlans.sort();
+        const planOrder = ['Basic', 'Standard', 'Advanced'];
 
-        
+        // Sort the selected plans based on the custom order
+        const sortedPlans = selectedPlans.sort((a, b) => {
+            return planOrder.indexOf(a) - planOrder.indexOf(b);
+        });
+
+
         const formData = new FormData();
-            formData.append('ptp', ptp);
-            formData.append('ptp_comments', ptpComments);
-            formData.append('ptp_amount', ptpAmount);
-            formData.append('old_plans', plans);
-            formData.append('selected_plans', sortedPlans.join(","));
-            formData.append('ref_id', scopeDetails.assign_id);
-            formData.append('quote_id', quoteId);
-            formData.append('user_name', userObject.fld_first_name + " " + userObject.fld_last_name);
-            formData.append('user_id', userObject.id);
+        formData.append('ptp', ptp);
+        formData.append('ptp_comments', ptpComments);
+        formData.append('ptp_amount', ptpAmount);
+        formData.append('old_plans', plans);
+        formData.append('selected_plans', sortedPlans.join(","));
+        formData.append('ref_id', scopeDetails.assign_id);
+        formData.append('quote_id', quoteId);
+        formData.append('user_name', userObject.fld_first_name + " " + userObject.fld_last_name);
+        formData.append('user_id', userObject.id);
 
-            // Append the selected file if there is one
-            if (ptpFile) {
-                formData.append('ptp_file', ptpFile);
-            }
+        // Append the selected file if there is one
+        if (ptpFile) {
+            formData.append('ptp_file', ptpFile);
+        }
 
         try {
             const response = await fetch('https://apacvault.com/Webapi/askptp', {
@@ -67,9 +77,9 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
             if (result.status === "success") {
                 toast.success('Request submitted successfully');
                 setShowForm(false);
-                setTimeout(()=>{
+                setTimeout(() => {
                     after();
-                },1000)
+                }, 1000)
             } else {
                 toast.error('Failed to submit the request');
             }
@@ -109,19 +119,22 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                                     <label htmlFor="ptp" className="text-sm font-semibold mb-0">PTP Client</label>
                                 </div>
                             </div>
-                            <div className='w-full flex  items-start space-x-2'>
-                                
-                                <div className="mb-4">
+                            <div className='w-full flex items-start space-x-2'>
+                                <div className="mb-4 relative">
                                     <label htmlFor="ptpamount" className="block text-sm font-semibold">PTP Amount</label>
-                                    <input
-                                        id="ptpamount"
-                                        type="number"
-                                        value={ptpAmount}
-                                        onChange={(e) => setPtpAmount(e.target.value)}
-                                        className="w-full p-2 border border-gray-300 rounded no-arrows form-control"
-                                    />
+                                    <div className="flex items-center">
+                                        <span className="absolute left-2 text-gray-500">{scopeDetails.currency}</span>
+                                        <input
+                                            id="ptpamount"
+                                            type="number"
+                                            value={ptpAmount}
+                                            onChange={(e) => setPtpAmount(e.target.value)}
+                                            className="w-full pl-10  border border-gray-300 rounded no-arrows form-control"
+                                        />
+                                    </div>
                                 </div>
                             </div>
+
                             <div className="mb-4">
                                 <label className="block text-sm font-medium text-gray-700">Plans</label>
                                 <div className="mt-2 flex flex-wrap">
