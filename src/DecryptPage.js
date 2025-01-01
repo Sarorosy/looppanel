@@ -103,7 +103,7 @@ function DecryptPage() {
                     sessionStorage.setItem('authenticated', true);
                     const userType = data.data.user_type; // Retrieve user type from response
                     setTimeout(() => {
-                        if (userType == "admin") {
+                        if (userType == "admin" || decryptedEmail == "clientsupport@chanakyaresearch.net") {
                             navigate("/query"); // Navigate to '/query' for admin users
                         } else {
                             navigate("/assignquery"); // Navigate to '/assignquery' for other users

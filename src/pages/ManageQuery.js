@@ -51,10 +51,11 @@ const ManageQuery = () => {
 
     const userObject = JSON.parse(userData);
     useEffect(() => {
-        if (!userObject || userObject.user_type !== "admin") {
+        if ((!userObject || userObject.user_type !== "admin") && (userObject.email_id !== "clientsupport@chanakyaresearch.net")) {
             navigate('/assignquery');
         }
     }, [userObject, navigate]);
+    
 
 
     const toggleDetailsPage = () => {

@@ -29,6 +29,10 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
 
     const userObject = JSON.parse(userData);
     
+    const close = () =>{
+        onClose();
+        finalFunction();
+    }
     const fetchActivityHistory = async () => {
 
         try {
@@ -133,7 +137,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                     <p className="text-gray-500"></p>
                 )} */}
                 <button
-                    onClick={onClose}
+                    onClick={close}
                     className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
                 >
                     {/* <CircleX size={32} /> */}
@@ -190,15 +194,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                                 )}
                             </div>
                             {queryInfo.profile_name && <p><strong>Profile:</strong> {queryInfo.profile_name}</p>}
-                            {queryInfo.name && <p><strong>Client Name:</strong> {queryInfo.name}</p>}
-                            {queryInfo.email_id && <p><strong>Email:</strong> {queryInfo.email_id}</p>}
-                            {queryInfo.alt_email_id && (
-                                <p><strong>Alternate Email ID:</strong> {queryInfo.alt_email_id || 'N/A'}</p>
-                            )}
-                            {queryInfo.phone && <p><strong>Contact No.:</strong> {queryInfo.phone}</p>}
-                            {queryInfo.alt_contact_no && (
-                                <p><strong>Alternate Contact No.:</strong> {queryInfo.alt_contact_no || 'N/A'}</p>
-                            )}
+                            
                             {queryInfo.latest_requirement && (
                                 <div className="bg-green-100 p-2 rounded">
                                     <p><strong>Latest Requirement:</strong></p>
@@ -215,12 +211,6 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                             {queryInfo.city && <p><strong>City:</strong> {queryInfo.city}</p>}
                             {queryInfo.complete_address && <p><strong>Complete Address:</strong> {queryInfo.complete_address}</p>}
                             {queryInfo.designation && <p><strong>Designation:</strong> {queryInfo.designation}</p>}
-                            {queryInfo.company_name && <p><strong>Company Name:</strong> {queryInfo.company_name}</p>}
-                            {queryInfo.website_name && (
-                                <p>
-                                    <strong>Website:</strong> {queryInfo.website_name === 'others' ? queryInfo.other_website : queryInfo.website_name}
-                                </p>
-                            )}
                             {queryInfo.priority && <p><strong>Priority:</strong> {queryInfo.priority}</p>}
                             {queryInfo.academic_level && <p><strong>Academic Level:</strong> {queryInfo.academic_level}</p>}
                             <p>
