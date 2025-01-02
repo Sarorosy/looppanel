@@ -285,29 +285,7 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after }) => {
                                     </span>
                                 </p>
                             )}
-                            {queryInfo.sourceoflead && queryInfo.sourceoflead != 0 && (
-                                <div className='flex items-center'>
-                                    <strong className='mr-1'>Source of Lead:</strong>{" "}
-                                    {queryInfo.sourceoflead === 100 && (
-                                        <span className="label label-info px-1 py-0 rounded f-12">100 -- Google</span>
-                                    )}
-                                    {queryInfo.sourceoflead === 200 && (
-                                        <span className="label label-primary px-1 py-0 rounded f-12">200 -- FB</span>
-                                    )}
-                                    {queryInfo.sourceoflead === 300 && (
-                                        <span className="label label-warning px-1 py-0 rounded f-12">300 -- Mailer Campaign</span>
-                                    )}
-                                    {queryInfo.sourceoflead === 400 && (
-                                        <span className="label label-default px-1 py-0 rounded f-12">400 -- Interakt Campaign</span>
-                                    )}
-                                    {queryInfo.sourceoflead === 500 && (
-                                        <span className="label label-success px-1 py-0 rounded f-12">500 -- Through call</span>
-                                    )}
-                                    {queryInfo.sourceoflead === 600 && (
-                                        <span className="label label-danger px-1 py-0 rounded f-12">600 -- Through Whatsapp</span>
-                                    )}
-                                </div>
-                            )}
+                           
 
                         </div>
                     </div>

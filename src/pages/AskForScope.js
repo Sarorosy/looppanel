@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -291,8 +291,8 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             </span>
                                                         )}
                                                         {quote.edited == 1 && (
-                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{fontSize:"11px", padding:"1px 6px"}}>Edited</span>
-                                                                )}
+                                                            <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
+                                                        )}
 
                                                     </p>
                                                 </td>
@@ -340,7 +340,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                         {expandedRowIndex == index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
 
-                                                    {(quote.quote_status == 0 || quote.quote_status == 1 ) && quote.isfeasability == 0 && quote.user_id == thisUserId && (
+                                                    {(quote.quote_status == 0 || quote.quote_status == 1) && quote.isfeasability == 0 && quote.user_id == thisUserId && (
                                                         <button onClick={() => { toggleEditForm(quote.quoteid) }}
                                                             className='flex items-center rounded-full border-2 border-blue-500'>
                                                             <Settings2 className='p-1' />
@@ -382,7 +382,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                     <History size={15} />
                                                                 </button>
                                                                 {quote.edited == 1 && (
-                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{fontSize:"11px", padding:"1px 6px"}}>Edited</span>
+                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
                                                                 )}
                                                             </p>
 
@@ -479,20 +479,20 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                         </p>
 
                                                                     ))}
-                                                                    {quote.status !=2 && (
-                                                                    <p>
-                                                                        <strong>Quote Price:</strong>{' '}
-                                                                        {(() => {
-                                                                            const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                            const plans = quote.plan.split(','); // Split plan into an array
-                                                                            return plans.map((plan, index) => (
-                                                                                <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
-                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                    {index < plans.length - 1 && ', '}
-                                                                                </span>
-                                                                            ));
-                                                                        })()}
-                                                                    </p>
+                                                                    {quote.quote_status != 2 && (
+                                                                        <p>
+                                                                            <strong>Quote Price:</strong>{' '}
+                                                                            {(() => {
+                                                                                const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                const plans = quote.plan.split(','); // Split plan into an array
+                                                                                return plans.map((plan, index) => (
+                                                                                    <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
+                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                        {index < plans.length - 1 && ', '}
+                                                                                    </span>
+                                                                                ));
+                                                                            })()}
+                                                                        </p>
                                                                     )}
 
                                                                     {quote.discount_price && (
@@ -591,14 +591,18 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                     </div>
 
                                                                     {quote.feasability_status == "Completed" && (
-
-                                                                        <p style={{ textDecoration: "underline" }}>
-                                                                            Feasibility Comments:
-                                                                            <span
-                                                                                className='mt-2'
-                                                                                dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
-                                                                            />
-                                                                        </p>
+                                                                        <>
+                                                                            <p style={{ textDecoration: "underline" }}>
+                                                                                Feasibility Comments:
+                                                                                <span
+                                                                                    className='mt-2'
+                                                                                    dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
+                                                                                />
+                                                                            </p>
+                                                                            {quote.feas_file_name && (
+                                                                                <p className='flex items-center'>Feasability Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
+                                                                        )}
+                                                                        </>
                                                                     )}
                                                                     {historyLoading && <CustomLoader />}
                                                                     {historyData.length > 0 && (
@@ -631,7 +635,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 </>)}
 
                                                         </div>
-                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} />
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails}/>
                                                     </td>
 
                                                 </tr>

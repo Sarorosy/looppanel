@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2,Paperclip, Hash, RefreshCcw } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
 import HistorySideBar from './HistorySideBar';
@@ -131,7 +131,6 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             }
         } catch (error) {
             console.error('Error updating price quote:', error);
-            toast.error('Error updating quote price');
         } finally {
             // Hide loading spinner
             setPriceLoading(false);
@@ -215,7 +214,6 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             }
         } catch (error) {
             console.error('Error updating price quote:', error);
-            toast.error('Error updating quote price');
         } finally {
             // Hide loading spinner
             setQuoteLoading(false);
@@ -533,7 +531,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                         </p>
 
                                                                     ))}
-                                                                    {quote.status != 2 && (
+                                                                    {quote.quote_status != 2 && (
                                                                         <p>
                                                                             <strong>Quote Price:</strong>{' '}
                                                                             {(() => {
@@ -548,6 +546,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                             })()}
                                                                         </p>
                                                                     )}
+                                                                    
                                                                     {quote.discount_price && (
                                                                         <p>
                                                                             <strong>Discounted Price:</strong>{' '}
@@ -685,7 +684,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                                             htmlFor={`amount_${plan.trim()}`}
                                                                                                             className="control-label"
                                                                                                         >
-                                                                                                            Amount for <strong>{plan.trim()} ({quote.currency}) </strong>
+                                                                                                            Amount for <strong>{plan.trim()} ({quote.currency == "Other" ? quote.other_currency : quote.currency}) </strong>
                                                                                                         </label>
                                                                                                         <div className="">
                                                                                                             <input
@@ -745,14 +744,18 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     </div>
 
                                                                     {quote.feasability_status == "Completed" && (
-
-                                                                        <p>
-                                                                            <strong style={{ textDecoration: "underline" }}> Feasibility Comments:</strong>
-                                                                            <span
-                                                                                className='mt-2'
-                                                                                dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
-                                                                            />
-                                                                        </p>
+                                                                        <>
+                                                                            <p style={{ textDecoration: "underline" }}>
+                                                                                Feasibility Comments:
+                                                                                <span
+                                                                                    className='mt-2'
+                                                                                    dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
+                                                                                />
+                                                                            </p>
+                                                                            {quote.feas_file_name && (
+                                                                                <p className='flex items-center'>Feasability Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
+                                                                        )}
+                                                                        </>
                                                                     )}
                                                                     {historyLoading && <CustomLoader />}
                                                                     {historyData.length > 0 && (
@@ -786,7 +789,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                             )}
 
                                                         </div>
-                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} />
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails}/>
                                                     </td>
                                                 </tr>
                                             )}

@@ -51,7 +51,8 @@ const ManageQuery = () => {
 
     const userObject = JSON.parse(userData);
     useEffect(() => {
-        if ((!userObject || userObject.user_type !== "admin") && (userObject.email_id !== "clientsupport@chanakyaresearch.net")) {
+        // Check if the user is not an admin or the email is not 'clientsupport@chanakyaresearch.net'
+        if (!(userObject && (userObject.email_id == "accounts@redmarkediting.com" || userObject.email_id == "clientsupport@chanakyaresearch.net"))) {
             navigate('/assignquery');
         }
     }, [userObject, navigate]);
@@ -317,6 +318,8 @@ const ManageQuery = () => {
             render: function (data, type, row) {
                 if (row.isfeasability == 1 && row.submittedtoadmin == "false") {
                     return '<span class="text-red-600 font-bold">Pending at User</span>';
+                }else if (row.changestatus == 1 && row.submittedtoadmin == "false") {
+                    return '<span class="text-red-600 font-bold">Pending at User</span>';
                 } else {
                     if (data == 0) {
                         return '<span class="text-red-600 font-bold">Pending at Admin</span>';
@@ -374,7 +377,14 @@ const ManageQuery = () => {
             data: 'created_date',
             orderable: false,
             render: (data) => {
-                return data ? new Date(data * 1000).toLocaleDateString() : 'N/A';
+                if (data) {
+                    const date = new Date(data * 1000);
+                    const day = date.getDate().toString().padStart(2, '0'); // Ensures two-digit day
+                    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensures two-digit month
+                    const year = date.getFullYear().toString(); // Gets last two digits of the year
+                    return `${day}/${month}/${year}`;
+                }
+                return 'N/A';
             },
         },
         {
