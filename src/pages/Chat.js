@@ -12,7 +12,7 @@ export const Chat = ({ quoteId, refId, status , submittedToAdmin, finalFunction}
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [file, setFile] = useState(null);
     const [fileName, setFileName] = useState("");
-    const [markStatus, setMarkStatus] = useState(false);
+    const [markStatus, setMarkStatus] = useState(true);
 
     const userData = sessionStorage.getItem('user');
 
@@ -143,6 +143,7 @@ export const Chat = ({ quoteId, refId, status , submittedToAdmin, finalFunction}
                     {((loopUserObject.fld_email == 'puneet@redmarkediting.com' ||
                         loopUserObject.fld_email == 'clientsupport@chankyaresearch.net') && status == 0 && submittedToAdmin == "true") ? (
                         <div className="flex items-center space-x-2 ">
+                            <label for="markStatus" style={{fontSize:"10px", maxWidth:"70px"}}>Mark as pending at user</label>
                             <input
                                 type="checkbox"
                                 id="markStatus"

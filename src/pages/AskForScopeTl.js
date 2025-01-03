@@ -342,13 +342,17 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                         : 'text-gray-600' // Default - Gray for Unknown
                                                         }
                                                     >
-                                                        {quote.quote_status == 0
-                                                            ? 'Pending'
-                                                            : quote.quote_status == 1
-                                                                ? 'Submitted'
-                                                                : quote.quote_status == 2
-                                                                    ? 'Discount Requested'
-                                                                    : 'Unknown'}
+                                                        {
+                                                            quote.quote_status == 0 && quote.submittedtoadmin == 'false'
+                                                                ? 'Pending at User'
+                                                                : quote.quote_status == 0 && quote.submittedtoadmin == 'true'
+                                                                    ? 'Pending at Admin'
+                                                                    : quote.quote_status == 1
+                                                                        ? 'Submitted'
+                                                                        : quote.quote_status == 2
+                                                                            ? 'Discount Requested'
+                                                                            : 'Unknown'
+                                                        }
                                                     </span>
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
                                                         <><br /><span className='text-green-700 text-sm' style={{ fontSize: "11px" }}>Feasability Completed</span></>

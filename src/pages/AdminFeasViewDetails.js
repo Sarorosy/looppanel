@@ -195,7 +195,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                                 </span>
                                             )}
                                         </p>
-                                        
+
                                     </div>
                                     {quote.tag_names && (
                                         <p>
@@ -220,13 +220,13 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                         </>
                                     )}
                                     <p className=''>
-                                        <strong className=''>Comments:</strong> 
+                                        <strong className=''>Comments:</strong>
                                     </p><span dangerouslySetInnerHTML={{ __html: quote.comments }} />
                                     <p className='flex '>
                                         <strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString("en-GB")}
                                     </p>
                                     {quote.relevant_file && quote.relevant_file.length > 0 && (
-                                        <div  className=''>
+                                        <div className=''>
                                             <strong>Relevant Files:</strong>
                                             <div className="space-y-2">
                                                 {quote.relevant_file.map((file, fileIndex) => (
@@ -311,11 +311,17 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                                         : "text-warning p-1 f-10 rounded-sm px-2 font-semibold ml-2"
                                             }
                                         >
-                                            {quote.quote_status == 0
-                                                ? "Pending"
-                                                : quote.quote_status == 1
-                                                    ? "Submitted"
-                                                    : "Discount Requested"}
+                                            {
+                                                            quote.quote_status == 0 && quote.submittedtoadmin == 'false'
+                                                                ? 'Pending at User'
+                                                                : quote.quote_status == 0 && quote.submittedtoadmin == 'true'
+                                                                    ? 'Pending at Admin'
+                                                                    : quote.quote_status == 1
+                                                                        ? 'Submitted'
+                                                                        : quote.quote_status == 2
+                                                                            ? 'Discount Requested'
+                                                                            : 'Unknown'
+                                                        }
                                         </span>
                                     </p>
                                     {assignQuoteInfo && assignQuoteInfo !== false && (
@@ -323,18 +329,18 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                     )}
                                     <p className='flex items-center'>
                                         <strong className='mr-1'>Feasibility status is : </strong>
-                                    <span className={quote.feasability_status == 'Pending' ? "badge-danger p-1 f-10 rounded-sm px-2 font-semibold" : "badge-success p-1 f-10 rounded-sm px-2 font-semibold"}>{quote.feasability_status}</span>
+                                        <span className={quote.feasability_status == 'Pending' ? "badge-danger p-1 f-10 rounded-sm px-2 font-semibold" : "badge-success p-1 f-10 rounded-sm px-2 font-semibold"}>{quote.feasability_status}</span>
                                     </p>
-                                        <p>
-                                            <strong>Feasibility Comments:</strong>
-                                    {quote.feasability_status == 'Completed' && (
+                                    <p>
+                                        <strong>Feasibility Comments:</strong>
+                                        {quote.feasability_status == 'Completed' && (
                                             <span
                                                 className='mt-2'
                                                 dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
                                             />
                                         )}
-                                        </p>
-                                    
+                                    </p>
+
 
                                     {historyData.length > 0 && (
                                         <div className="mt-4 space-y-4">
@@ -354,7 +360,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                                                     {historyItem.to_first_name} {historyItem.to_last_name}
                                                                 </p>
                                                                 <p className="text-gray-500">{historyItem.created_at}</p>
-                                                        <p className="text-gray-600">{historyItem.message}</p>
+                                                                <p className="text-gray-600">{historyItem.message}</p>
                                                             </div>
                                                         </div>
                                                         {/* Message */}

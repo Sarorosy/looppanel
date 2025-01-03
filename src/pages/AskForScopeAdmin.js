@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2,Paperclip, Hash, RefreshCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Paperclip, Hash, RefreshCcw } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
 import HistorySideBar from './HistorySideBar';
@@ -160,29 +160,29 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
     const PriceSubmitValidate = async (refId, quoteId, plans) => {
         const form = document.getElementById('submitQuoteForm');
-    
+
         // Define the amount variables
         const basicAmount = document.getElementById('amount_Basic')?.value.trim() || "0";
         const standardAmount = document.getElementById('amount_Standard')?.value.trim() || "0";
         const advancedAmount = document.getElementById('amount_Advanced')?.value.trim() || "0";
-    
+
         // Create a map for plan amounts
         const planAmountMap = {
             Basic: basicAmount,
             Standard: standardAmount,
             Advanced: advancedAmount,
         };
-    
+
         // Filter the selected plans and join the corresponding amounts
         const quoteAmount = plans
             .split(',') // Split the comma-separated plans
             .map(plan => planAmountMap[plan] || "0") // Get corresponding amounts, defaulting to "0"
             .join(',');
-    
+
         try {
             // Show loading spinner
             setQuoteLoading(true);
-    
+
             const response = await fetch('https://apacvault.com/Webapi/submittedtoadminquote', {
                 method: 'POST',
                 headers: {
@@ -195,9 +195,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                     comment: comment,
                 }), // Send the data as JSON
             });
-    
+
             const responseData = await response.json(); // Parse the response as JSON
-    
+
             if (response.ok) {
                 toast.success('Quote price updated successfully');
                 setTimeout(() => {
@@ -208,7 +208,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                 document.getElementById('amount_Standard').value = '0';
                 document.getElementById('amount_Advanced').value = '0';
                 setComment('');
-                
+
             } else {
                 toast.error('Failed to update quote price');
             }
@@ -219,7 +219,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             setQuoteLoading(false);
         }
     };
-    
+
 
     const ValidateAssignTask = async () => {
         if (!selectedUser || !adminComments) {
@@ -344,8 +344,8 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                             </span>
                                                         )}
                                                         {quote.edited == 1 && (
-                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{fontSize:"11px", padding:"1px 6px"}}>Edited</span>
-                                                                )}
+                                                            <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
+                                                        )}
 
                                                     </p>
                                                 </td>
@@ -365,13 +365,17 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                         : 'text-gray-600' // Default - Gray for Unknown
                                                         }
                                                     >
-                                                        {quote.quote_status == 0
-                                                            ? 'Pending'
-                                                            : quote.quote_status == 1
-                                                                ? 'Submitted'
-                                                                : quote.quote_status == 2
-                                                                    ? 'Discount Requested'
-                                                                    : 'Unknown'}
+                                                        {
+                                                            quote.quote_status == 0 && quote.submittedtoadmin == 'false'
+                                                                ? 'Pending at User'
+                                                                : quote.quote_status == 0 && quote.submittedtoadmin == 'true'
+                                                                    ? 'Pending at Admin'
+                                                                    : quote.quote_status == 1
+                                                                        ? 'Submitted'
+                                                                        : quote.quote_status == 2
+                                                                            ? 'Discount Requested'
+                                                                            : 'Unknown'
+                                                        }
                                                     </span>
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
                                                         <><br /><span className='text-green-700 text-sm' style={{ fontSize: "11px" }}>Feasability Completed</span></>
@@ -425,7 +429,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     <History size={15} />
                                                                 </button>
                                                                 {quote.edited == 1 && (
-                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{fontSize:"11px", padding:"1px 6px"}}>Edited</span>
+                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
                                                                 )}
                                                             </p>
                                                             {quote.tag_names && (
@@ -546,7 +550,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                             })()}
                                                                         </p>
                                                                     )}
-                                                                    
+
                                                                     {quote.discount_price && (
                                                                         <p>
                                                                             <strong>Discounted Price:</strong>{' '}
@@ -754,7 +758,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                             </p>
                                                                             {quote.feas_file_name && (
                                                                                 <p className='flex items-center'>Feasability Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
-                                                                        )}
+                                                                            )}
                                                                         </>
                                                                     )}
                                                                     {historyLoading && <CustomLoader />}
@@ -789,7 +793,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                             )}
 
                                                         </div>
-                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails}/>
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} />
                                                     </td>
                                                 </tr>
                                             )}

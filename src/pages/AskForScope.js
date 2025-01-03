@@ -320,13 +320,17 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                             : 'badge-secondary p-1 f-10 rounded-sm px-2 font-semibold' // Default - Gray for Unknown
                                                             }
                                                         >
-                                                            {quote.quote_status == 0
-                                                                ? 'Pending'
-                                                                : quote.quote_status == 1
-                                                                    ? 'Submitted'
-                                                                    : quote.quote_status == 2
-                                                                        ? 'Discount Requested'
-                                                                        : 'Unknown'}
+                                                            {
+                                                            quote.quote_status == 0 && quote.submittedtoadmin == 'false'
+                                                                ? 'Pending at User'
+                                                                : quote.quote_status == 0 && quote.submittedtoadmin == 'true'
+                                                                    ? 'Pending at Admin'
+                                                                    : quote.quote_status == 1
+                                                                        ? 'Submitted'
+                                                                        : quote.quote_status == 2
+                                                                            ? 'Discount Requested'
+                                                                            : 'Unknown'
+                                                        }
                                                         </span>
                                                     )}
                                                 </td>
@@ -340,7 +344,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                         {expandedRowIndex == index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
 
-                                                    {(quote.quote_status == 0 || quote.quote_status == 1) && quote.isfeasability == 0 && quote.user_id == thisUserId && (
+                                                    {(quote.quote_status == 0 || quote.quote_status == 1) && quote.feasability_status == 'Pending' && quote.user_id == thisUserId && (
                                                         <button onClick={() => { toggleEditForm(quote.quoteid) }}
                                                             className='flex items-center rounded-full border-2 border-blue-500'>
                                                             <Settings2 className='p-1' />
@@ -601,7 +605,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                             </p>
                                                                             {quote.feas_file_name && (
                                                                                 <p className='flex items-center'>Feasability Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
-                                                                        )}
+                                                                            )}
                                                                         </>
                                                                     )}
                                                                     {historyLoading && <CustomLoader />}
@@ -635,7 +639,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 </>)}
 
                                                         </div>
-                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails}/>
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} />
                                                     </td>
 
                                                 </tr>

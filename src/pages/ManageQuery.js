@@ -167,6 +167,19 @@ const ManageQuery = () => {
         }
     };
 
+    useEffect(() => {
+        // Call fetchQuotes initially
+        fetchQuotes();
+    
+        // Set an interval to fetch every 15 minutes (900000 ms)
+        const interval = setInterval(() => {
+            fetchQuotes();
+        }, 900000); // 15 minutes = 900000 ms
+    
+        // Clean up the interval on component unmount
+        return () => clearInterval(interval);
+    }, []); 
+
 
     const fetchServices = async () => {
 

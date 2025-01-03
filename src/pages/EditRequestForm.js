@@ -9,6 +9,7 @@ import $ from 'jquery';
 import 'select2/dist/css/select2.min.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
+import axios from 'axios';
 
 const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const [formData, setFormData] = useState({
@@ -17,52 +18,34 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         service_name: '',
         plan: [],
         comments: '',
+        isfeasability: 0,
+        selectedUser : ''
     });
+    const [currency, setCurrency] = useState('');
+    const [otherCurrency, setOtherCurrency] = useState('');
+    const [serviceName, setServiceName] = useState('');
+    const [plan, setPlan] = useState([]);
+    const [comments, setComments] = useState('');
+    const [isFeasability, setIsFeasability] = useState(0);
+    const [selectedUser, setSelectedUser] = useState('');
+
 
     const [currencies, setCurrencies] = useState([]);
+    const [users, setUsers] = useState([]);
+    const userRef = useRef(null);
     const [services, setServices] = useState([]);
     const [file, setFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(false);
     const userData = sessionStorage.getItem('loopuser');
+    const hasFetched = useRef(false);
 
     const userObject = JSON.parse(userData);
 
     const plans = ['Basic', 'Standard', 'Advanced'];
 
-    const fetchInitialData = async () => {
-        try {
-            setLoading(true);
-            const response = await fetch('https://apacvault.com/Webapi/getRequestDetails', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ref_id: refId, quote_id: quoteId }),
-            });
-
-            const data = await response.json();
-            if (data.status) {
-                const details = data.data;
-                // Convert tags from comma-separated string to an array
-                const planArray = details.plan ? details.plan.split(',') : [];
-
-                setFormData({
-                    currency: details.currency || '',
-                    otherCurrency: details.other_currency || '',
-                    service_name: details.service_name || '',
-                    plan: planArray,
-                    comments: details.comments || '',
-                });
-            } else {
-                toast.error('Failed to fetch request details.');
-            }
-        } catch (error) {
-            console.error('Error fetching request details:', error);
-            toast.error('Error fetching request details.');
-        } finally {
-            setLoading(false);
-        }
-    };
-
+    
+    
 
     const fetchCurrencies = async () => {
         try {
@@ -88,12 +71,72 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             toast.error('Failed to fetch services.');
         }
     };
+    const fetchUsers = async () => {
+        try {
+            const user = JSON.parse(sessionStorage.getItem('loopuser')); // Parse user object from sessionStorage
+            const user_id = user?.id; // Retrieve the category
+
+            if (!user_id) {
+                toast.error('User is not available in sessionStorage');
+                return;
+            }
+
+            const response = await fetch('https://apacvault.com/Webapi/getAllUsers', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ user_id }), // Send category in the request body
+            });
+
+            const data = await response.json();
+
+            if (data.status) {
+                setUsers(data.data || []); // Set fetched services
+            } else {
+                toast.error('Failed to fetch users');
+            }
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            toast.error('Error fetching users');
+        }
+    };
+
+
+    
+   
 
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+    
+        switch (name) {
+            case 'currency':
+                setCurrency(value);
+                break;
+            case 'otherCurrency':
+                setOtherCurrency(value);
+                break;
+            case 'service_name':
+                setServiceName(value);
+                break;
+            case 'comments':
+                setComments(value);
+                break;
+            case 'isfeasability':
+                setIsFeasability(value);
+                break;
+            case 'selectedUser':
+                setSelectedUser(value);
+                break;
+            case 'plan':
+                setPlan(value.split(',')); // Assuming plan is a comma-separated string
+                break;
+            default:
+                break;
+        }
     };
+    
 
     const handleCheckboxChange = (plan) => {
         setFormData((prev) => ({
@@ -113,12 +156,13 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             const payload = new FormData();
             payload.append('ref_id', refId);
             payload.append('quote_id', quoteId);
-            payload.append('currency', formData.currency);
-            payload.append('other_currency', formData.otherCurrency);
-            payload.append('service_name', formData.service_name);
-            payload.append('plan', formData.plan);
-            payload.append('comments', formData.comments);
-            payload.append('user_id',userObject.id )
+            payload.append('currency', currency);
+            payload.append('other_currency', otherCurrency);
+            payload.append('service_name', serviceName);
+            payload.append('plan', plan);
+            payload.append('comments', comments);
+            payload.append('user_id',userObject.id );
+            payload.append('feas_user', selectedUser);
 
             const response = await fetch('https://apacvault.com/Webapi/updateRequestQuoteApiAction', {
                 method: 'POST',
@@ -140,14 +184,160 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             setSubmitting(false);
         }
     };
+    const fetchData = async () => {
+        if (hasFetched.current) return;
+        hasFetched.current = true;
+    
+        try {
+            setLoading(true);
+    
+            const user = JSON.parse(sessionStorage.getItem('user'));
+            const loopUser = JSON.parse(sessionStorage.getItem('loopuser'));
+            const category = user?.category;
+            const user_id = loopUser?.id;
+    
+            if (!user_id) {
+                toast.error('User is not available in sessionStorage');
+                return;
+            }
+    
+            const [currenciesResponse, servicesResponse, usersResponse, requestDetailsResponse] = await axios.all([
+                axios.get('https://apacvault.com/Webapi/getCurrencies'),
+                axios.post('https://apacvault.com/Webapi/getServices', { category }),
+                axios.post('https://apacvault.com/Webapi/getAllUsers', { user_id }),
+                fetch('https://apacvault.com/Webapi/getRequestDetails', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref_id: refId, quote_id: quoteId }),
+                }).then((res) => res.json()),
+            ]);
+    
+            // Handle Currencies Response
+            if (currenciesResponse.data.status) {
+                setCurrencies(currenciesResponse.data.data || []);
+            } else {
+                toast.error('Failed to fetch currencies.');
+            }
+    
+            // Handle Services Response
+            if (servicesResponse.data.status) {
+                setServices(servicesResponse.data.data || []);
+            } else {
+                toast.error('Failed to fetch services.');
+            }
+    
+            // Handle Users Response
+            if (usersResponse.data.status) {
+                setUsers(usersResponse.data.data || []);
+            } else {
+                toast.error('Failed to fetch users.');
+            }
+    
+            // Handle Request Details Response
+            if (requestDetailsResponse.status) {
+                const details = requestDetailsResponse.data;
+                console.log(details);
+    
+                // Convert tags from comma-separated string to an array
+                const planArray = details.plan ? details.plan.split(',') : [];
+    
+                await setFormData({
+                    currency: details.currency || '',
+                    otherCurrency: details.other_currency || '',
+                    service_name: details.service_name || '',
+                    plan: planArray,
+                    comments: details.comments || '',
+                    isfeasability: details.isfeasability || 0,
+                    selectedUser: details.feasability_user || '',
+                });
+                setCurrency(details.currency ?? '')
+                setOtherCurrency(details.otherCurrency ?? '')
+                setServiceName(details.service_name ?? '')
+                setPlan(planArray);
+                setComments(details.comments ?? '')
+                setIsFeasability(details.isfeasability ?? 0)
+                setSelectedUser(details.feasability_user ?? '')
+            } else {
+                toast.error('Failed to fetch request details.');
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            toast.error('Error fetching data.');
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    const fetchInitialData = async () => {
+
+       
+
+        try {
+            setLoading(true);
+            const response = await fetch('https://apacvault.com/Webapi/getRequestDetails', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ref_id: refId, quote_id: quoteId }),
+            });
+
+            const data = await response.json();
+            if (data.status) {
+                const details = data.data;
+                console.log(details)
+                // Convert tags from comma-separated string to an array
+                const planArray = details.plan ? details.plan.split(',') : [];
+
+                setFormData({
+                    currency: details.currency || '',
+                    otherCurrency: details.other_currency || '',
+                    service_name: details.service_name || '',
+                    plan: planArray,
+                    comments: details.comments || '',
+                    isfeasability:details.isfeasability || 0,
+                    selectedUser: details.feasability_user || '',
+                });
+                
+                
+
+                
+            } else {
+                toast.error('Failed to fetch request details.');
+            }
+        } catch (error) {
+            console.error('Error fetching request details:', error);
+            toast.error('Error fetching request details.');
+        } finally {
+            setLoading(false);
+        }
+    };
+    
+    
 
     useEffect(() => {
-        fetchCurrencies();
-        fetchServices();
-        fetchInitialData();
+        // const fetchData = async () => {
+        //     try {
+        //         // await fetchCurrencies();
+        //         // await fetchServices();
+        //         // await fetchUsers();
+        //         await fetchAllData();
+        //         //fetchInitialData();
+        //     } finally {
+        //         // This will always run, ensuring fetchInitialData runs last
+               
+        //     }
+        // };
+    
+        fetchData();
     }, []);
+    useEffect(() => {
+        //fetchInitialData();
+    }, []); // Empty dependency array ensures this runs only once
+    
+    
 
+    
 
+    
    
 
     const planColors = {
@@ -181,7 +371,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                 <label>Currency</label>
                                 <select
                                     name="currency"
-                                    value={formData.currency}
+                                    value={currency}
                                     onChange={handleInputChange}
                                     className="form-control form-control-sm"
                                 >
@@ -193,12 +383,12 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                     ))}
                                 </select>
 
-                                {formData.currency === 'Other' && (
+                                {currency == 'Other' && (
                                     <input
                                         type="text"
                                         name="otherCurrency"
                                         placeholder="Enter other currency"
-                                        value={formData.otherCurrency}
+                                        value={otherCurrency}
                                         onChange={handleInputChange}
                                         className="form-control form-control-sm"
                                     />
@@ -211,7 +401,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                 <label>Service</label>
                                 <select
                                     name="service_name"
-                                    value={formData.service_name}
+                                    value={serviceName}
                                     onChange={handleInputChange}
                                     className="form-control form-control-sm"
                                 >
@@ -234,7 +424,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                     <div key={plan} className="flex items-center space-x-2 mr-5">
                                         <input
                                             type="checkbox"
-                                            checked={formData.plan.includes(plan)}
+                                            checked={plan.includes(plan)}
                                             onChange={() => handleCheckboxChange(plan)}
                                             className={`form-checkbox h-4 w-4 f-12 border-gray-300 rounded ${planColors[plan] || ''}`} // Default to empty string if no color is found
                                         />
@@ -243,10 +433,29 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                 ))}
                             </div>
                         </div>
+                        <div className={`w-full ${isFeasability == 0 ? "hidden" : "block"}`}>
+                            {/* Tags */}
+                            <label className="block text-sm font-medium text-gray-700">Select User to Assign </label>
+                            <select
+                                name="user"
+                                id="user"
+                                className="form-select select2 w-72 py-2 px-4 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 form-control"
+
+                                value={selectedUser}
+                                onChange={(e) => setSelectedUser(e.target.value)} 
+                            >
+                                <option value="">Select User</option>
+                                {users.map((user) => (
+                                    <option key={user.id} value={user.id}>
+                                        {user.fld_first_name + " " + user.fld_last_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                         <div className='w-full mb-3'>
                             {/* Comments */}
                             <label>Comments</label>
-                            <ReactQuill value={formData.comments} onChange={(value) => setFormData({ ...formData, comments: value })} />
+                            <ReactQuill value={comments} onChange={(value) => setComments(value)} />
                         </div>
 
                         <div className='mt-2 text-right'>
