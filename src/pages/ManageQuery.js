@@ -2,6 +2,8 @@ import DataTable from 'datatables.net-react';
 import DT from 'datatables.net-dt';
 import $ from 'jquery';
 import React, { useState, useEffect, useRef } from 'react';
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import axios from 'axios';
 import 'daterangepicker/daterangepicker.css'; // Import daterangepicker CSS
 import 'daterangepicker'; // Import daterangepicker JS
@@ -17,9 +19,14 @@ import AllFeasPage from './AllFeasPage';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FeasabilityPage from './FeasabilityPage';
+// import { io } from "socket.io-client";
+// const socket = io("http://localhost:3001");
+
 
 const ManageQuery = () => {
     const [quotes, setQuotes] = useState([]);
+    const [userPendingQuotes, setUserPendingQuotes] = useState([]);
+    const [adminPendingQuotes, setAdminPendingQuotes] = useState([]);
     const [refID, setRefId] = useState('');
     const [keyword, setKeyword] = useState('');
     const [status, setStatus] = useState('');
@@ -43,6 +50,7 @@ const ManageQuery = () => {
     const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
+    const [activeTab, setActiveTab] = useState('all');
     const navigate = useNavigate();
 
     DataTable.use(DT);
@@ -56,7 +64,11 @@ const ManageQuery = () => {
             navigate('/assignquery');
         }
     }, [userObject, navigate]);
-    
+
+
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+    };
 
 
     const toggleDetailsPage = () => {
@@ -118,7 +130,10 @@ const ManageQuery = () => {
     }, []);
 
     const fetchQuotes = async (nopayload = false) => {
-        setLoading(true); // Show loading spinner
+
+        setLoading(true);
+
+
 
         // Only use the filters if `nopayload` is false
         const userid = selectedUser;
@@ -154,7 +169,35 @@ const ManageQuery = () => {
 
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
-                setQuotes(data.allQuoteData); // Update the quotes state
+                if (quotes.length != 0 && JSON.stringify(data.allQuoteData) !== JSON.stringify(quotes)) {
+                    setQuotes(data.allQuoteData);
+
+                    const userPending = data.allQuoteData.filter((quote) =>
+                        quote.submittedtoadmin === "false"  // Ensure correct check for "false" value
+                    );
+                    const adminPending = data.allQuoteData.filter((quote) =>
+                        quote.submittedtoadmin === "true" && quote.status == 0
+                    );
+
+                    // Set filtered data into states
+                    setUserPendingQuotes(userPending);
+
+                    setAdminPendingQuotes(adminPending);
+
+                } else if (quotes.length == 0) {
+                    setQuotes(data.allQuoteData);
+                    const userPending = data.allQuoteData.filter((quote) =>
+                        quote.submittedtoadmin === "false"  // Ensure correct check for "false" value
+                    );
+                    const adminPending = data.allQuoteData.filter((quote) =>
+                        quote.submittedtoadmin === "true" && quote.status == 0
+                    );
+
+                    // Set filtered data into states
+                    setUserPendingQuotes(userPending);
+
+                    setAdminPendingQuotes(adminPending);
+                }
                 setUsers(data.users);
                 setPendingFeasRequestCount(data.pendingFeasRequestCount);
             } else {
@@ -166,19 +209,118 @@ const ManageQuery = () => {
             setLoading(false); // Hide loading spinner
         }
     };
+    const fetchQuotesTwo = async (nopayload = false) => {
+
+
+
+        // Only use the filters if `nopayload` is false
+        const userid = selectedUser;
+        const ref_id = refID;
+        const search_keywords = keyword;
+        const service_name = selectedService;
+        const tags = selectedTags;
+        const feasability_status = feasStatus;
+        const start_date = startDate;
+        const end_date = endDate;
+
+        // Define the payload conditionally
+        let payload = {
+            userid, ref_id, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date
+        };
+
+        if (nopayload) {
+            // If nopayload is true, send an empty payload
+            payload = {};
+        }
+
+        try {
+            const response = await fetch(
+                'https://apacvault.com/Webapi/listaskforscope',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify(payload), // Send the payload conditionally
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+                if (quotes.length != 0 && JSON.stringify(data.allQuoteData) !== JSON.stringify(quotes)) {
+                    setQuotes(data.allQuoteData);
+
+                    const userPending = data.allQuoteData.filter((quote) =>
+                        quote.submittedtoadmin === "false"  // Ensure correct check for "false" value
+                    );
+                    const adminPending = data.allQuoteData.filter((quote) =>
+                        quote.submittedtoadmin === "true" && quote.status == 0
+                    );
+
+                    // Set filtered data into states
+                    setUserPendingQuotes(userPending);
+
+                    setAdminPendingQuotes(adminPending);
+
+                } else if (quotes.length == 0) {
+                    setQuotes(data.allQuoteData);
+                    const userPending = data.allQuoteData.filter((quote) =>
+                        quote.submittedtoadmin === "false"  // Ensure correct check for "false" value
+                    );
+                    const adminPending = data.allQuoteData.filter((quote) =>
+                        quote.submittedtoadmin === "true" && quote.status == 0
+                    );
+
+                    // Set filtered data into states
+                    setUserPendingQuotes(userPending);
+
+                    setAdminPendingQuotes(adminPending);
+                }
+                setUsers(data.users);
+                setPendingFeasRequestCount(data.pendingFeasRequestCount);
+            } else {
+                console.error('Failed to fetch quotes:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching quotes:', error);
+        }
+    };
+
 
     useEffect(() => {
-        // Call fetchQuotes initially
         fetchQuotes();
-    
-        // Set an interval to fetch every 15 minutes (900000 ms)
-        const interval = setInterval(() => {
-            fetchQuotes();
-        }, 900000); // 15 minutes = 900000 ms
-    
-        // Clean up the interval on component unmount
-        return () => clearInterval(interval);
-    }, []); 
+
+
+        // socket.on("updateTable", (data) => {
+        //     console.log("Received updateTable event with data:", data);
+        //     const formattedData = {
+        //         ref_id: data.ref_id,
+        //         id:data.id,
+        //         service_name: data.service_name,
+        //         currency :data.currency,
+        //         other_currency : data.other_currency ?? null,
+        //         user_name: `${data.fld_first_name} ${data.fld_last_name}`,
+        //         tags: data.tag_names,
+        //         status: data.status,
+        //         fld_first_name : data.fld_first_name,
+        //         created_date: data.created_date,
+        //         feasibility_status: data.feasability_status,
+        //         comments: data.comments, 
+        //     };
+
+
+        //     setQuotes((prevQuotes) => [...prevQuotes, formattedData]);
+        //     toast('New Quote '+data.id+' Request Submitted for refId ' + data.ref_id, {
+        //         icon: '💡',
+        //       });
+        // });
+
+        
+        // return () => {
+        //     socket.off("updateTable");
+        // };
+
+    }, []);
 
 
     const fetchServices = async () => {
@@ -243,10 +385,10 @@ const ManageQuery = () => {
             title: 'Ref Id',
             data: 'ref_id',
             width: "110px",
-            orderable: true,
+            orderable: false,
             render: function (data, type, row) {
                 let html = `${data}`;
-                
+
                 if (row.ptp === "Yes") {
                     html += `
                         <span 
@@ -263,7 +405,7 @@ const ManageQuery = () => {
                         </span>
                     `;
                 }
-        
+
                 if (row.edited == 1) {
                     html += `
                         <span 
@@ -279,15 +421,15 @@ const ManageQuery = () => {
                         </span>
                     `;
                 }
-        
+
                 return html; // Return the complete HTML with conditions applied
             },
-        },        
+        },
         {
             title: 'Ask For Scope ID',
             data: 'id',
             width: "20x",
-            orderable: true,
+            orderable: false,
             className: 'text-center',
         },
         {
@@ -331,7 +473,7 @@ const ManageQuery = () => {
             render: function (data, type, row) {
                 if (row.isfeasability == 1 && row.submittedtoadmin == "false") {
                     return '<span class="text-red-600 font-bold">Pending at User</span>';
-                }else if (row.changestatus == 1 && row.submittedtoadmin == "false") {
+                } else if (row.changestatus == 1 && row.submittedtoadmin == "false") {
                     return '<span class="text-red-600 font-bold">Pending at User</span>';
                 } else {
                     if (data == 0) {
@@ -388,18 +530,29 @@ const ManageQuery = () => {
         {
             title: 'Created Date',
             data: 'created_date',
-            orderable: false,
-            render: (data) => {
+            orderable: true,
+            render: (data, type, row) => {
                 if (data) {
                     const date = new Date(data * 1000);
                     const day = date.getDate().toString().padStart(2, '0'); // Ensures two-digit day
                     const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensures two-digit month
-                    const year = date.getFullYear().toString(); // Gets last two digits of the year
-                    return `${day}/${month}/${year}`;
+                    const year = date.getFullYear().toString(); // Gets year
+                    const hours = date.getHours().toString().padStart(2, '0'); // Ensures two-digit hours
+                    const minutes = date.getMinutes().toString().padStart(2, '0'); // Ensures two-digit minutes
+                    const seconds = date.getSeconds().toString().padStart(2, '0'); // Ensures two-digit seconds
+
+                    // Return the formatted date for display
+                    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
                 }
                 return 'N/A';
             },
+            // Sort based on the UNIX timestamp for correct ordering
+            createdCell: (cell, cellData, rowData, row, col, table) => {
+                // This is just in case you want to keep the original timestamp for sorting purposes
+                $(cell).attr('data-sort', cellData);
+            }
         },
+
         {
             title: 'Actions',
             data: null,
@@ -443,22 +596,21 @@ const ManageQuery = () => {
     return (
         <div className="container bg-gray-100 w-full">
 
-
             {/* Filter Section */}
             <div className=" mb-3 bg-white px-3 py-3 rounded ">
-               <div className='flex justify-between  mb-4'>
-                <h1 className='text-xl font-bold'>All Quote List</h1>
+                <div className='flex justify-between  mb-4'>
+                    <h1 className='text-xl font-bold'>All Quote List</h1>
                     <div className='flex'>
-                        
+
                         <button className="bg-gray-200 text-gray-500 hover:bg-gray-300  f-12 btn px-2 py-1 flex items-center relative" onClick={toggleAllFeasPage}>
-                            <FileQuestion size={15} className="mr-1"/>
+                            <FileQuestion size={15} className="mr-1" />
                             Feasibility Request
                             <span style={{ top: "-15px", right: "-10px" }} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
                                 {pendingFeasRequestCount}
                             </span>
                         </button>
                     </div>
-               </div>
+                </div>
                 <div className='flex items-end space-x-2'>
                     <div className="row">
                         <div className="col-2 mb-3">
@@ -583,34 +735,101 @@ const ManageQuery = () => {
                                     <Filter size={12} /> &nbsp;
                                     Apply
                                 </button>
-                                
+
                             </div>
 
 
                         </div>
                     </div>
 
-                    
+
                 </div>
             </div>
 
             {loading ? (
                 <CustomLoader />
             ) : (
-                <div className='bg-white p-4 border-t-2 border-blue-400 rounded'>
-                    <div className="table-scrollable">
-                        <DataTable
-                            data={quotes}
-                            columns={columns}
-                            options={{
-                                pageLength: 50,
-                                ordering: false,
-                                createdRow: (row, data) => {
-                                    $(row).find('.view-btn').on('click', () => handleViewButtonClick(data));
-                                },
-                            }}
-                        />
+                <div className="bg-white p-4 border-t-2 border-blue-400 rounded">
+                    {/* Tab Buttons */}
+                    <div className="mb-4">
+                        <div className="flex space-x-4">
+                            <button
+                                onClick={() => handleTabClick('all')}
+                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'all'
+                                    ? 'bg-blue-500 text-white border border-blue-600'
+                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-blue-50'
+                                    }`}
+                            >
+                                All Quotes
+                            </button>
+                            <button
+                                onClick={() => handleTabClick('pendingUser')}
+                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'pendingUser'
+                                    ? 'bg-blue-500 text-white border border-blue-600'
+                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-blue-50'
+                                    }`}
+                            >
+                                Pending at User
+                            </button>
+                            <button
+                                onClick={() => handleTabClick('pendingAdmin')}
+                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'pendingAdmin'
+                                    ? 'bg-blue-500 text-white border border-blue-600'
+                                    : 'bg-white text-gray-700 border border-gray-300 hover:bg-blue-50'
+                                    }`}
+                            >
+                                Pending at Admin
+                            </button>
+                        </div>
                     </div>
+
+
+                    {/* Tab Content */}
+                    {activeTab === 'all' && (
+                        <div className="table-scrollable">
+                            <DataTable
+                                data={quotes}
+                                columns={columns}
+                                options={{
+                                    pageLength: 50,
+                                    ordering: true,
+                                    createdRow: (row, data) => {
+                                        $(row).find('.view-btn').on('click', () => handleViewButtonClick(data));
+                                    },
+                                }}
+                            />
+                        </div>
+                    )}
+                    {activeTab === 'pendingUser' && (
+                        <div className="table-scrollable">
+                            <DataTable
+                                data={userPendingQuotes}
+                                columns={columns}
+                                options={{
+                                    pageLength: 50,
+                                    ordering: true,
+                                    createdRow: (row, data) => {
+                                        $(row).find('.view-btn').on('click', () => handleViewButtonClick(data));
+                                    },
+                                }}
+                            />
+                        </div>
+                    )}
+                    {activeTab === 'pendingAdmin' && (
+                        <div className="table-scrollable">
+                            <DataTable
+                                data={adminPendingQuotes}
+                                columns={columns}
+                                options={{
+                                    pageLength: 50,
+                                    ordering: true,
+                                    createdRow: (row, data) => {
+                                        $(row).find('.view-btn').on('click', () => handleViewButtonClick(data));
+                                    },
+                                }}
+                            />
+                        </div>
+                    )}
                 </div>
             )}
 
@@ -631,7 +850,7 @@ const ManageQuery = () => {
                     <FeasabilityPage onClose={toggleAllFeasPage} after={() => { fetchQuotes(false) }} />
                 )}
             </AnimatePresence>
-
+            <Toaster position="top-right" reverseOrder={false} />
         </div>
     );
 };

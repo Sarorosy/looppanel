@@ -321,16 +321,16 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                             }
                                                         >
                                                             {
-                                                            quote.quote_status == 0 && quote.submittedtoadmin == 'false'
-                                                                ? 'Pending at User'
-                                                                : quote.quote_status == 0 && quote.submittedtoadmin == 'true'
-                                                                    ? 'Pending at Admin'
-                                                                    : quote.quote_status == 1
-                                                                        ? 'Submitted'
-                                                                        : quote.quote_status == 2
-                                                                            ? 'Discount Requested'
-                                                                            : 'Unknown'
-                                                        }
+                                                                quote.quote_status == 0 && quote.submittedtoadmin == 'false'
+                                                                    ? 'Pending at User'
+                                                                    : quote.quote_status == 0 && quote.submittedtoadmin == 'true'
+                                                                        ? 'Pending at Admin'
+                                                                        : quote.quote_status == 1
+                                                                            ? 'Submitted'
+                                                                            : quote.quote_status == 2
+                                                                                ? 'Discount Requested'
+                                                                                : 'Unknown'
+                                                            }
                                                         </span>
                                                     )}
                                                 </td>
@@ -344,7 +344,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                         {expandedRowIndex == index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
 
-                                                    {(quote.quote_status == 0 || quote.quote_status == 1) && quote.feasability_status == 'Pending' && quote.user_id == thisUserId && (
+                                                    {(quote.quote_status == 0 || quote.quote_status == 1) && quote.user_id == thisUserId && (
                                                         <button onClick={() => { toggleEditForm(quote.quoteid) }}
                                                             className='flex items-center rounded-full border-2 border-blue-500'>
                                                             <Settings2 className='p-1' />
@@ -390,10 +390,6 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 )}
                                                             </p>
 
-
-
-
-
                                                             {quote.tag_names && (
                                                                 <p>
                                                                     <strong>Tags:</strong>
@@ -408,8 +404,6 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                 </p>
                                                             )}
 
-
-                                                            <p><strong>Currency:</strong> {quote.currency == "Other" ? quote.other_currency : quote.currency}</p>
                                                             {quote.service_name && quote.plan && (
                                                                 <>
                                                                     <p><strong>Service Required:</strong> {quote.service_name}</p>
@@ -419,9 +413,22 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p><strong style={{ textDecoration: "underline" }}>Comments:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+
+
+                                                            {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
+                                                                <div>
+                                                                    <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
+                                                                    {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
+                                                                        <p key={index}><strong>{plan}:</strong> <span dangerouslySetInnerHTML={{ __html: comment }} /></p>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+
+                                                            {quote.comments && quote.comments != "" && quote.comments != null && (
+                                                                <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            )}
                                                             {quote.final_comments != null && (
-                                                                <div style={{ width: "400px", maxWidth: "450px", wordWrap: "break-word" }}>
+                                                                <div>
                                                                     <p><strong>Final Comments:</strong> {quote.final_comments}</p>
                                                                 </div>
                                                             )}
@@ -596,7 +603,7 @@ const AskForScope = ({ queryId, userType, quotationId }) => {
 
                                                                     {quote.feasability_status == "Completed" && (
                                                                         <>
-                                                                            <p style={{ textDecoration: "underline" }}>
+                                                                            <p style={{ textDecoration: "italic" }} className='italic'>
                                                                                 Feasibility Comments:
                                                                                 <span
                                                                                     className='mt-2'

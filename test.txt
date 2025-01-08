@@ -1,0 +1,24 @@
+function get_all_fcmtoken_by_userid($user_id)
+    {
+        $CI = &get_instance(); 
+        $CI->load->database(); 
+
+        $CI->db->select('fcm_token');
+        $CI->db->from('fcm_tokens');
+        $CI->db->where('user_id', $user_id);
+
+        $query = $CI->db->get();
+
+        if ($query->num_rows() > 0) {
+            return array_column($query->result_array(), 'fcm_token');
+        }
+
+        return []; 
+    }
+
+            $notification_data = [
+            'title' => $wished_by_name . ' Wished You 🎉',
+            'body' => $message,
+            'image' => base_url("public/images/logo.png"),
+            'link' => base_url("dashboard")
+        ];

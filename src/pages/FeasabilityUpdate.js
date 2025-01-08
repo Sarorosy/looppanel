@@ -427,6 +427,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                         </button>
                                                     </div>
                                                 </form>
+                                                <Chat quoteId={quotationId} refId={queryId} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} />
                                             </div>
                                         )}
                                     </>) : (

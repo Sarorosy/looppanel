@@ -9,7 +9,7 @@ import $ from 'jquery';
 import 'select2/dist/css/select2.min.css'; // Import Select2 CSS
 import 'select2';
 import CustomLoader from '../CustomLoader';
-
+// import { io } from "socket.io-client";
 
 const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const [currencies, setCurrencies] = useState([]);
@@ -18,6 +18,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const [otherCurrency, setOtherCurrency] = useState('');
     const [selectedService, setSelectedService] = useState('');
     const [selectedPlans, setSelectedPlans] = useState([]);
+    const [planComments, setPlanComments] = useState({});
     const [comments, setComments] = useState('');
     const [files, setFiles] = useState([{ id: Date.now(), file: null }]);
     const [submitting, setSubmitting] = useState(false);
@@ -28,7 +29,8 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const plans = ['Basic', 'Standard', 'Advanced']; // Hardcoded plans
     const [demodone, setDemodone] = useState('no');
     const [demoId, setDemoId] = useState('');
-    const [demoStatus , setDemoStatus] = useState(false);
+    const [demoStatus, setDemoStatus] = useState(false);
+    // const socket = io("http://localhost:3001");
 
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prev) =>
@@ -36,6 +38,12 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                 ? prev.filter((p) => p !== plan) // Remove if already selected
                 : [...prev, plan] // Add if not selected
         );
+    };
+    const handleCommentChange = (plan, value) => {
+        setPlanComments((prev) => ({
+            ...prev,
+            [plan]: value,
+        }));
     };
 
     const planColors = {
@@ -59,7 +67,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ ref_id:refId }), // Send category in the request body
+                body: JSON.stringify({ ref_id: refId }), // Send category in the request body
             });
             const data = await response.json();
             if (response.ok) {
@@ -170,7 +178,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         e.preventDefault();
         setSubmitting(true);
 
-        if (!selectedCurrency || !selectedService || !selectedPlans || !comments) {
+        if (!selectedCurrency || !selectedService || !selectedPlans) {
             toast.error('Please fill in all fields');
             setSubmitting(false);
             return;
@@ -186,26 +194,54 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             setSubmitting(false);
             return;
         }
-        if(demodone == "yes" && !demoId){
+        if (demodone == "yes" && !demoId) {
             toast.error('Please Enter Demo ID!');
             setSubmitting(false);
             return;
         }
+        const planOrder = ['Basic', 'Standard', 'Advanced'];
+        const sortedPlans = selectedPlans.sort((a, b) => {
+            return planOrder.indexOf(a) - planOrder.indexOf(b);
+        });
 
         const formData = new FormData();
         formData.append('ref_id', refId);
         formData.append('currency', selectedCurrency);
         formData.append('other_currency', otherCurrency);
         formData.append('service_name', selectedService);
-        formData.append('plan', selectedPlans);
+        formData.append('plan', sortedPlans);
         formData.append('comments', comments);
+        let planCommentsJson = {};
+        let emptyCommentFound = false;
+
+        // Collect plan comments
+        selectedPlans.forEach((plan) => {
+            const comment = planComments[plan] || '';
+            if (comment.trim() === '') {
+                emptyCommentFound = true;
+                toast.error(`Please add a comment for the ${plan} plan!`);
+            }
+            // Add the plan and its comment to the planCommentsJson object
+            planCommentsJson[plan] = comment;
+            formData.append(`plan_comments_${plan}`, comment); // Optionally append individual plan comments to FormData
+        });
+
+        // If there's any empty comment, stop the form submission
+        if (emptyCommentFound) {
+            setSubmitting(false);
+            return;
+        }
+
+        // Append the entire plan_comments JSON as a string to FormData
+        formData.append('plan_comments_json', JSON.stringify(planCommentsJson));
+
         formData.append('isfeasability', isfeasability);
         formData.append('feasability_user', selectedUser);
         formData.append('user_id', loopUserObject.id);
         formData.append('user_name', loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name);
         formData.append('category', userObject.category);
-        formData.append('demo_done',demodone);
-        formData.append('demo_id',demoId);
+        formData.append('demo_done', demodone);
+        formData.append('demo_id', demoId);
         files.forEach((item, index) => {
             if (item.file) {
                 formData.append(`quote_upload_file[${index}]`, item.file);
@@ -213,7 +249,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         });
 
         try {
-            const response = await fetch('https://apacvault.com/Webapi/submitRequestQuoteApiAction/', {
+            const response = await fetch('https://apacvault.com/Webapi/submitRequestQuoteApiActionNew/', {
                 method: 'POST',
                 body: formData,
             });
@@ -221,6 +257,12 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             const data = await response.json();
             if (data.status) {
                 toast.success('Quote request submitted successfully');
+                // socket.emit("newRequest", {
+                //     ref_id: "12345", // Replace with actual request ID
+                //     service_name: "Sample Service", // Replace with actual data
+                //     timestamp: new Date(),
+                // });
+
                 after();
                 onClose();
             } else {
@@ -263,6 +305,9 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         };
     }, [users]);
 
+    // const testSocket = () => {
+    //     socket.emit("newRequest", { "id": "11544", "ref_id": "263864", "user_id": "208", "comments": "<p>NA - Test<\/p>", "deadline_date": null, "currency": "INR", "other_currency": "", "relevant_file": "", "service_name": "Topic Selection", "tags": "1,6", "plan": "Basic,Standard,Advanced", "plan_comments": null, "old_plan": null, "ptp": null, "ptp_currency": null, "ptp_amount": null, "ptp_comments": null, "ptp_file": null, "ptp_count": "0", "demodone": "0", "demo_id": "", "status": "0", "created_date": "1735709759", "isfeasability": "1", "feasability_user": "337", "feasability_status": "Pending", "feasability_comments": null, "feas_file_name": null, "submittedtoadmin": "false", "changestatus": "0", "final_comments": null, "edited": "0", "fld_first_name": "Gunjan", "fld_last_name": "Nagpal", "tag_names": "Topic&Proposal(Tech), ThesisWriting" });
+    // };
 
     return (
         <motion.div
@@ -307,11 +352,14 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                 </div>
 
                 <div className='p-3 m-0 relative'>
-                {submitting && (
-                <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-                    <CustomLoader />
-                </div>
-            )}
+                    {submitting && (
+                        <div className="absolute inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+                            <CustomLoader />
+                        </div>
+                    )}
+                    {/* <button onClick={testSocket}>
+                        test
+                    </button> */}
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <input type="hidden" name="ref_id" value={refId} />
 
@@ -393,10 +441,28 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                                         <label htmlFor={`plan-${index}`} className={`ml-2 mb-0 text-sm font-medium ${planColors[plan]}`}>
                                             {plan}
                                         </label>
+
                                     </div>
                                 ))}
                             </div>
                         </div>
+                        <div className="mt-4">
+                            {selectedPlans.map((plan) => (
+                                <div key={plan} className="mb-4">
+                                    <label htmlFor={`comment_${plan}`} className="block text-sm font-medium text-gray-700">
+                                        Add comment for {plan} plan
+                                    </label>
+                                    <ReactQuill
+                                        value={planComments[plan] || ''}
+                                        onChange={(value) => handleCommentChange(plan, value)} // Handle Quill's onChange
+                                        className="mt-1"
+                                        theme="snow"
+                                        placeholder={`Add comment for ${plan} plan`}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+
                         <div className={`w-full ${isfeasability == 0 ? "hidden" : "block"}`}>
                             {/* Tags */}
                             <label className="block text-sm font-medium text-gray-700">Select User to Assign</label>
@@ -417,7 +483,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                             </select>
                         </div>
 
-                        <div className=" flex w-full mt-4" style={{display:`${demoStatus ? 'none' : 'block'}`}}>
+                        <div className=" flex w-full mt-4" style={{ display: `${demoStatus ? 'none' : 'block'}` }}>
                             <div className="flex items-center">
                                 <input
                                     type="checkbox"
@@ -430,8 +496,8 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                                     Demo Done
                                 </label>
                             </div>
-                            <div className="ml-5" style={{display:(demodone == "yes") ? "block" : "none"}}>
-                                
+                            <div className="ml-5" style={{ display: (demodone == "yes") ? "block" : "none" }}>
+
                                 <input
                                     type="text"
                                     id="demo_id"
@@ -446,7 +512,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
                             {/* Comments */}
                             <div className="w-full">
                                 <label htmlFor="comments" className="block text-sm font-medium text-gray-700">
-                                    Comments
+                                    Additional Comments <span className='text-gray-400 text-sm ml-2'>(optional)</span>
                                 </label>
                                 <ReactQuill
                                     value={comments}

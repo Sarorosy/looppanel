@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { ScaleLoader } from 'react-spinners';
 import { File, Paperclip, RefreshCcw, X } from 'lucide-react';
 
-export const Chat = ({ quoteId, refId, status , submittedToAdmin, finalFunction}) => {
+export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction }) => {
     const [messages, setMessages] = useState('');
     const [newMessage, setNewMessage] = useState('');
     const [loadingMessages, setLoadingMessages] = useState(false);
@@ -24,6 +24,7 @@ export const Chat = ({ quoteId, refId, status , submittedToAdmin, finalFunction}
     const chatContainerRef = useRef(null);
 
     const loopUserObject = JSON.parse(loopUserData);
+    
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -77,7 +78,6 @@ export const Chat = ({ quoteId, refId, status , submittedToAdmin, finalFunction}
                 body: formData,
             });
             if (response.ok) {
-                toast.success('Message sent successfully');
                 setNewMessage('');
                 setFile('');
                 setFile(null); // Clear the file input after sending
@@ -97,6 +97,9 @@ export const Chat = ({ quoteId, refId, status , submittedToAdmin, finalFunction}
     useEffect(() => {
         if (quoteId) {
             fetchMessages();
+        }
+        if(loopUserObject.id == 1){
+            setMarkStatus(true);
         }
     }, [quoteId]);
 
@@ -128,12 +131,14 @@ export const Chat = ({ quoteId, refId, status , submittedToAdmin, finalFunction}
             {loadingMessages ? (
                 <p><CustomLoader /></p>
             ) : (
-                <div
-                    className="mt-4 space-y-2 max-h-56 overflow-y-auto chats pr-3 pl-3 pt-3 pb-0"
-                    id="chatContainer"
-                    ref={chatContainerRef}
-                    dangerouslySetInnerHTML={{ __html: messages }}
-                />
+                messages && messages !== "" && messages !== null && (
+                    <div
+                        className="mt-4 space-y-2 max-h-56 overflow-y-auto chats pr-3 pl-3 pb-0 "
+                        id="chatContainer"
+                        ref={chatContainerRef}
+                        dangerouslySetInnerHTML={{ __html: messages }}
+                    />
+                )
             )}
 
             <div className="mt-4">
@@ -143,7 +148,7 @@ export const Chat = ({ quoteId, refId, status , submittedToAdmin, finalFunction}
                     {((loopUserObject.fld_email == 'puneet@redmarkediting.com' ||
                         loopUserObject.fld_email == 'clientsupport@chankyaresearch.net') && status == 0 && submittedToAdmin == "true") ? (
                         <div className="flex items-center space-x-2 ">
-                            <label for="markStatus" style={{fontSize:"10px", maxWidth:"70px"}}>Mark as pending at user</label>
+                            <label for="markStatus" style={{ fontSize: "10px", maxWidth: "70px" }}>Mark as pending at user</label>
                             <input
                                 type="checkbox"
                                 id="markStatus"
@@ -152,16 +157,17 @@ export const Chat = ({ quoteId, refId, status , submittedToAdmin, finalFunction}
                                 className="form-checkbox h-4 w-4 text-blue-600"
                                 title="This will change status to Pending at user"
                             />
-                           
+
                         </div>
                     ) : null}
-                    <input
-                        type="text"
+                    <textarea
                         placeholder="Type your message"
-                        className="flex-1 border border-gray-300 rounded px-3 py-1 form-control"
+                        className="flex-1  text-gray-700 bg-white px-3 resize-none py-1 rounded focus:outline-none border"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
-                    />
+                        rows={4}
+                    ></textarea>
+
                     <div className="flex items-center justify-center ">
                         <label
                             htmlFor="fileInput"

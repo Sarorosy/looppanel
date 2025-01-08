@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell, Quote, MessageSquareMore, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight, Hash } from 'lucide-react';
+import { LogOut, Bell, Quote, MessageSquareMore,Megaphone, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight, Hash } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import LogoNew from '../logo-new.png';
 import { AnimatePresence } from 'framer-motion';
 import QueryDetails from '../pages/QueryDetails';
 import QueryDetailsAdmin from '../pages/QueryDetailsAdmin';
 import FeasabilityQueryDetails from '../pages/FeasabilityQueryDetails';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const Header = () => {
+const Header = ({ requestPermission }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0); // State for notification count
   const [notifications, setNotifications] = useState([]); // State for notifications
@@ -18,10 +20,25 @@ const Header = () => {
   const [selectedQuote, setSelectedQuote] = useState('');
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isFeasDetailsOpen, setIsFeasDetailsOpen] = useState(false);
+  const [notificationPermission, setNotificationPermission] = useState(null);
 
   
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkNotificationPermission = () => {
+      if (Notification.permission === 'granted') {
+        setNotificationPermission('granted');
+      } else if (Notification.permission === 'denied') {
+        setNotificationPermission('denied');
+      } else {
+        setNotificationPermission('default');
+      }
+    };
+
+    checkNotificationPermission(); // Check the notification permission status when component mounts
+  }, []);
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -208,6 +225,8 @@ const Header = () => {
       fetchNotifications(); // Fetch notifications when the dropdown is shown
     }
   };
+  
+
 
   return (
     <header className="bg-white text-dark">
@@ -235,6 +254,7 @@ const Header = () => {
               </span>
             )}
           </button>
+          
 
           {/* Notifications Dropdown */}
           {notificationsVisible && (
@@ -334,7 +354,7 @@ const Header = () => {
       </div>
       <AnimatePresence>
         {isDetailsOpen && (
-          userObject2.user_type == "admin" ? (
+          userObject2.email_id == "accounts@redmarkediting.com" ? (
             <QueryDetailsAdmin
               onClose={toggleDetailsPage}
               queryId={selectedQuery}

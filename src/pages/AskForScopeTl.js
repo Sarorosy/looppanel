@@ -415,16 +415,28 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                     ))}
                                                                 </p>
                                                             )}
-                                                            <p><strong>Currency:</strong> {quote.currency == "Other" ? quote.other_currency : quote.currency}</p>
+                                                            
                                                             {quote.service_name && quote.plan && (
                                                                 <>
                                                                     <p><strong>Service Required:</strong> {quote.service_name}</p>
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p className=''><strong style={{ textDecoration: "underline" }}>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                             {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
+                                                                <div>
+                                                                    <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
+                                                                    {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
+                                                                        <p key={index}><strong>{plan}:</strong> <span dangerouslySetInnerHTML={{ __html: comment }} /></p>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+
+                                                            {quote.comments && quote.comments != "" && quote.comments != null && (
+                                                                <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            )}
+
                                                             {quote.final_comments != null && (
-                                                                <div style={{ width: "400px", maxWidth: "450px", wordWrap: "break-word" }}>
+                                                                <div >
                                                                     <p><strong>Final Comments:</strong> {quote.final_comments}</p>
                                                                 </div>
                                                             )}
@@ -649,7 +661,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
 
                                                                     {quote.feasability_status == "Completed" && (
                                                                         <>
-                                                                            <p style={{ textDecoration: "underline" }}>
+                                                                            <p style={{ textDecoration: "italic" }} className='italic'>
                                                                                 Feasibility Comments:
                                                                                 <span
                                                                                     className='mt-2'
@@ -693,6 +705,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                             )}
 
                                                         </div>
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} />
                                                     </td>
                                                 </tr>
                                             )}

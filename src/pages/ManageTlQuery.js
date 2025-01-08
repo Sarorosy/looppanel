@@ -117,9 +117,10 @@ const ManageTlQuery = ({onClose}) => {
     const loopuserData = sessionStorage.getItem('loopuser');
 
     const loopuserObject = JSON.parse(loopuserData);
+    const currentTlEmail = loopuserObject.fld_email;
 
     const fetchQuotes = async (nopayload = false) => {
-        setLoading(true); // Show loading spinner
+        setLoading(true); 
 
         // Only use the filters if `nopayload` is false
         const userid = selectedUser;
@@ -131,15 +132,17 @@ const ManageTlQuery = ({onClose}) => {
         const start_date = startDate;
         const end_date = endDate;
         const assign_users = loopuserObject.tl_users;
+        const current_tl = currentTlEmail;
+        
 
         // Define the payload conditionally
         let payload = {
-            userid, ref_id, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, assign_users
+            userid, ref_id, current_tl, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, assign_users
         };
 
         if (nopayload) {
             // If nopayload is true, send an empty payload
-            payload = {assign_users};
+            payload = {assign_users, current_tl};
         }
 
         try {
@@ -526,7 +529,7 @@ const ManageTlQuery = ({onClose}) => {
                                 maxDate={new Date()} // Optional: Restrict to past dates
                             />
                         </div>
-                        <div className='col-2'>
+                        <div className='col-2' style={{display:currentTlEmail == "balakumar.v@dissertationindia.net" ? "none" : ""}}>
                             <select
                                 name="tags"
                                 id="tags"

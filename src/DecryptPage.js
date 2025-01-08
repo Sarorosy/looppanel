@@ -21,31 +21,30 @@ function DecryptPage() {
     const navigate = useNavigate();
     
 
-    useEffect(() => {
-        localStorage.openpages = Date.now();
-        var onLocalStorageEvent = function(e){
-          if(e.key == "openpages"){
-            // Emit that you're already available.
-            localStorage.page_available = Date.now();
-          }
-          if(e.key == "page_available"){
+    // useEffect(() => {
+    //     localStorage.openpages = Date.now();
+    //     var onLocalStorageEvent = function(e){
+    //       if(e.key == "openpages"){
+    //         localStorage.page_available = Date.now();
+    //       }
+    //       if(e.key == "page_available"){
             
-            Swal.fire({
-                title: "Page already opened in another tab",
-                text: "Please close the other tab and try again.",
-                icon: "warning",
-                confirmButtonText: "OK",
-                allowOutsideClick: false,
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  window.close(); // This will close the window after confirmation
-                }
-              });
+    //         Swal.fire({
+    //             title: "Page already opened in another tab",
+    //             text: "Please close the other tab and try again.",
+    //             icon: "warning",
+    //             confirmButtonText: "OK",
+    //             allowOutsideClick: false,
+    //           }).then((result) => {
+    //             if (result.isConfirmed) {
+    //               window.close(); 
+    //             }
+    //           });
               
-          }
-        };
-        window.addEventListener('storage', onLocalStorageEvent, false);
-      }, []);
+    //       }
+    //     };
+    //     window.addEventListener('storage', onLocalStorageEvent, false);
+    //   }, []);
       
     useEffect(() => {
         // First step: Validate credentials (verify email & token)

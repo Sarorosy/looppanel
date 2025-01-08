@@ -19,7 +19,7 @@ import ManageTlQuery from './ManageTlQuery';
 
 
 
-const ManageContactMadeQueries = () => {
+const ManageContactMadeQueries = ({notification}) => {
     const [quotes, setQuotes] = useState([]);
     const [websites, setWebsites] = useState([]);
     const [selectedWebsite, setSelectedWebsite] = useState('');
@@ -101,7 +101,7 @@ const ManageContactMadeQueries = () => {
     useEffect(() => {
         fetchQuotes(false);
         fetchWebsites();
-
+        notification();
     }, []);
 
     const fetchWebsites = async () => {

@@ -3,12 +3,13 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Paperclip, Hash, RefreshCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Paperclip, Hash, RefreshCcw, PlusCircle, Hourglass, CirclePause, CircleCheck } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
 import HistorySideBar from './HistorySideBar';
 import FeasHistorySideBar from './FeasHistorySideBar';
-const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
+import AllRequestSideBar from './AllRequestSideBar';
+const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -20,6 +21,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [userComments, setUserComments] = useState('');
     const [ConsultantUserData, setConsultantUserData] = useState([]);
     const [quoteAmount, setQuoteAmount] = useState('');
+    const [totalCount, setTotalCount] = useState('0');
     const [amounts, setAmounts] = useState({});
     const [comment, setComment] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
@@ -30,6 +32,11 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [historyData, setHistoryData] = useState([]);
     const [historyLoading, setHistoryLoading] = useState(false);
     const [userIdForTag, setUserIdForTag] = useState('');
+    const [isFeasabilityCompleted, setIsFeasabilityCompleted] = useState(null);
+
+    const [selectedAllReqRefId, setSelectedAllReqRefId] = useState('');
+    const [allRequestDivOpen, setAllRequestDivOpen] = useState(false);
+
 
     const [historyPanelOpen, SetHistoryPanelOpen] = useState(false);
     const [quoteIdForHistory, setQuoteIdForHistory] = useState('');
@@ -37,6 +44,11 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
     const [feasHistoryPanelOpen, SetFeasHistoryPanelOpen] = useState(false);
     const [quoteIdForFeasHistory, setQuoteIdForFeasHistory] = useState('');
     const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
+
+    const toggleAllRequestDiv = () => {
+        setSelectedAllReqRefId(queryId);
+        setAllRequestDivOpen((prev) => !prev)
+    };
 
     const toggleHistoryDiv = ($id) => {
         setQuoteIdForHistory($id);
@@ -82,6 +94,8 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
                     setScopeDetails(parsedQuoteInfo); // Set the array of quotes
                     setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
+                    setTotalCount(data.totalCounter ? data.totalCounter : '0');
+                    setIsFeasabilityCompleted(data.isFeasabilityCompleted ? data.isFeasabilityCompleted : null);
                 } else {
                     setScopeDetails(null); // If no quoteInfo, set scopeDetails to null
                 }
@@ -98,6 +112,52 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
         }
     };
 
+    const fetchAllScopeDetails = async () => {
+        setLoading(true); // Show loading spinner
+        let hasResponse = false;
+        try {
+            const response = await fetch(
+                'https://apacvault.com/Webapi/adminScopeDetails',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify({ ref_id: queryId, user_type: userType, }),
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            console.log(data)
+            if (data.status) {
+                if (data.quoteInfo != null && Array.isArray(data.quoteInfo)) {
+
+                    const parsedQuoteInfo = data.quoteInfo.map((quote) => ({
+                        ...quote,
+                        relevant_file: quote.relevant_file
+                            ? JSON.parse(quote.relevant_file)
+                            : [], // Parse the file data if present
+                    }));
+                    setTotalCount(data.totalCounter ? data.totalCounter : '0');
+
+                    setScopeDetails(parsedQuoteInfo); // Set the array of quotes
+                    setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
+
+                } else {
+                    setScopeDetails(null); // If no quoteInfo, set scopeDetails to null
+                }
+            } else {
+                console.error('Failed to fetch Details:', data.message);
+            }
+            hasResponse = true;
+        } catch (error) {
+            console.error('Error fetching details:', error);
+        } finally {
+            if (hasResponse) {
+                setLoading(false); // Hide the loader
+            }
+        }
+    };
 
     const updatePriceQuote = async () => {
         const data = {
@@ -199,7 +259,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
             const responseData = await response.json(); // Parse the response as JSON
 
             if (response.ok) {
-                toast.success('Quote price updated successfully');
+
                 setTimeout(() => {
                     fetchScopeDetails();
                 }, 800);
@@ -289,11 +349,26 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
         setSelectedUser(event.target.value); // Update the state with selected user ID
     };
 
+
+
     return (
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
-                <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
+                <div className='flex items-center'>
+                    {isFeasabilityCompleted && isFeasabilityCompleted != null && (
+                        <p className={`cursor-help flex items-center mx-2 px-2 py-1 rounded-full ${isFeasabilityCompleted.feasability_status === 'Pending'
+                                ? 'bg-orange-100 text-orange-500'
+                                : 'bg-green-100 text-green-600'
+                            }`} title={`${isFeasabilityCompleted.feasability_status === 'Pending' ? 'Feasability is Pending for his RefId' : 'Feasability has been completed for this RefId'}`}>Feasability {isFeasabilityCompleted.feasability_status == 'Pending' ? <CirclePause size={18} className='ml-2 text-orange-500' /> : <CircleCheck size={18} className='ml-2 text-green-700' />}</p>
+                    )}
+                    {viewAll && (
+                        <button onClick={fetchAllScopeDetails} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
+                            <Hourglass size={15} className='mr-1' /> <div>All <span className='px-2 py-1 rounded-full bg-blue-600 text-white ml-2'>{totalCount}</span></div>
+                        </button>
+                    )}
+                    <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
+                </div>
             </div>
 
             {loading ? (
@@ -445,7 +520,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     ))}
                                                                 </p>
                                                             )}
-                                                            <p><strong>Currency:</strong> {quote.currency == "Other" ? quote.other_currency : quote.currency}</p>
+
                                                             {quote.service_name && quote.plan && (
                                                                 <>
                                                                     <p><strong>Service Required:</strong> {quote.service_name}</p>
@@ -455,9 +530,20 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            <p className=''><strong style={{ textDecoration: "underline" }}>Comments: </strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
+                                                                <div>
+                                                                    <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
+                                                                    {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
+                                                                        <p key={index}><strong>{plan}:</strong> <span dangerouslySetInnerHTML={{ __html: comment }} /></p>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+
+                                                            {quote.comments && quote.comments != "" && quote.comments != null && (
+                                                                <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                            )}
                                                             {quote.final_comments != null && (
-                                                                <div style={{ width: "400px", maxWidth: "450px", wordWrap: "break-word" }}>
+                                                                <div >
                                                                     <p><strong>Final Comments:</strong> {quote.final_comments}</p>
                                                                 </div>
                                                             )}
@@ -681,29 +767,30 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
                                                                                     <input type="hidden" name="quote_id" value={quote.quoteid} />
                                                                                     <div className="box-body p-2">
                                                                                         <div className='row'>
-                                                                                            {quote.plan &&
-                                                                                                quote.plan.split(',').map((plan, index) => (
-                                                                                                    <div className="form-group col-6" key={index}>
-                                                                                                        <label
-                                                                                                            htmlFor={`amount_${plan.trim()}`}
-                                                                                                            className="control-label"
-                                                                                                        >
-                                                                                                            Amount for <strong>{plan.trim()} ({quote.currency == "Other" ? quote.other_currency : quote.currency}) </strong>
-                                                                                                        </label>
-                                                                                                        <div className="">
-                                                                                                            <input
-                                                                                                                type="text"
-                                                                                                                name={`amount_${plan.trim()}`}
-                                                                                                                id={`amount_${plan.trim()}`}
-                                                                                                                className="form-control"
-                                                                                                                value={amounts[plan.trim()]} // Default to 0 if no amount is set
-                                                                                                                required
-                                                                                                                onChange={(e) => handleAmountChange(e, plan.trim())}
-                                                                                                            />
-                                                                                                            <div className="error" id={`amountError_${plan.trim()}`}></div>
-                                                                                                        </div>
+                                                                                            {['Basic', 'Standard', 'Advanced'].map((plan, index) => (
+                                                                                                <div className="form-group col-4" key={index}>
+                                                                                                    <label
+                                                                                                        htmlFor={`amount_${plan}`}
+                                                                                                        className="control-label"
+                                                                                                    >
+                                                                                                        Amount for <strong>{plan} ({quote.currency === "Other" ? quote.other_currency : quote.currency})</strong>
+                                                                                                    </label>
+                                                                                                    <div className="">
+                                                                                                        <input
+                                                                                                            type="text"
+                                                                                                            name={`amount_${plan}`}
+                                                                                                            id={`amount_${plan}`}
+                                                                                                            className="form-control"
+                                                                                                            value={amounts[plan] || ''} // Default to empty if no amount is set
+                                                                                                            required={quote.plan && quote.plan.split(',').includes(plan)} // Required only if the plan is included in quote.plan
+                                                                                                            disabled={!quote.plan || !quote.plan.split(',').includes(plan)} // Disable if the plan is not in quote.plan
+                                                                                                            onChange={(e) => handleAmountChange(e, plan)}
+                                                                                                        />
+                                                                                                        <div className="error" id={`amountError_${plan}`}></div>
                                                                                                     </div>
-                                                                                                ))}
+                                                                                                </div>
+                                                                                            ))}
+
 
                                                                                             <div className="form-group col-sm-12">
                                                                                                 <label htmlFor="comment" className="col-sm-3 control-label">Comments</label>
@@ -749,7 +836,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
                                                                     {quote.feasability_status == "Completed" && (
                                                                         <>
-                                                                            <p style={{ textDecoration: "underline" }}>
+                                                                            <p style={{ textDecoration: "italic" }} className='italic'>
                                                                                 Feasibility Comments:
                                                                                 <span
                                                                                     className='mt-2'
@@ -818,6 +905,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId }) => {
 
                 {feasHistoryPanelOpen && (
                     <FeasHistorySideBar quoteId={quoteIdForFeasHistory} refId={refIdForFeasHistory} onClose={() => { SetFeasHistoryPanelOpen(!feasHistoryPanelOpen) }} />
+                )}
+                {allRequestDivOpen && (
+                    <AllRequestSideBar refId={queryId} onClose={() => { setAllRequestDivOpen(!allRequestDivOpen) }} />
                 )}
             </AnimatePresence>
         </div>

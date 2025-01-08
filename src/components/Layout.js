@@ -3,10 +3,10 @@ import { Outlet } from 'react-router-dom';
 import Header from './Header';
 
 
-const Layout = () => {
+const Layout = ({ requestPermission }) => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
-       <Header  />
+       <Header requestPermission={requestPermission} />
 
       {/* Main Content */}
       <main className="flex-1 container mx-auto px-0 py-4 ">
