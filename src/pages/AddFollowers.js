@@ -10,15 +10,16 @@ import 'select2/dist/css/select2.min.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
 
-const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
+
+const AddFollowers = ({ refId, quoteId, after, onClose , userId, notification}) => {
     const [formData, setFormData] = useState({
-        tags: [],
+        users: [],
     });
 
     const [currencies, setCurrencies] = useState([]);
     const [services, setServices] = useState([]);
-    const [tags, setTags] = useState([]);
-    const tagsRef = useRef(null);
+    const [users, setUsers] = useState([]);
+    const userRef = useRef(null);
     const [file, setFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -39,12 +40,12 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
             const data = await response.json();
             if (data.status) {
                 const details = data.data;
-                const tagsArray = details.tags ? details.tags.split(',') : [];
+                const usersArray = details.followers ? details.followers.split(',') : [];
 
                 setFormData({
-                    tags: tagsArray, // Set tags as an array
+                    users: usersArray, // Set tags as an array
                 });
-                $(tagsRef.current).val(tagsArray).trigger('change');
+                $(userRef.current).val(usersArray).trigger('change');
             } else {
                 toast.error('Failed to fetch request details.');
             }
@@ -56,11 +57,15 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
         }
     };
 
-    const fetchTags = async () => {
+    const fetchUsers = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const response = await fetch('https://apacvault.com/Webapi/getAllUsersForFollowers',{
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: userObject.id,   }),
+            });
             const data = await response.json();
-            if (data.status) setTags(data.data || []);
+            if (data.status) setUsers(data.data || []);
         } catch (error) {
             toast.error('Failed to fetch tags.');
         }
@@ -89,12 +94,12 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
             const payload = new FormData();
             payload.append('ref_id', refId);
             payload.append('quote_id', quoteId);
-            payload.append('tags', formData.tags);
-            payload.append('user_id', userId);
+            payload.append('followers', formData.users);
+            payload.append('user_id', userObject.id);
             payload.append('notification', notification);
             payload.append('admin_id', userObject.id)
 
-            const response = await fetch('https://apacvault.com/Webapi/updateTags', {
+            const response = await fetch('https://apacvault.com/Webapi/updateFollowers', {
                 method: 'POST',
                 body: payload,
             });
@@ -116,33 +121,33 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
     };
 
     useEffect(() => {
-        fetchTags();
+        fetchUsers();
         fetchInitialData();
     }, []);
 
 
     useEffect(() => {
         // Initialize select2 for Tags
-        $(tagsRef.current).select2({
-            placeholder: "Select Tags",
+        $(userRef.current).select2({
+            placeholder: "Select Users",
             allowClear: true,
             multiple: true,
         }).on('change', (e) => {
             const selectedValues = $(e.target).val();
-            setFormData((prev) => ({ ...prev, tags: selectedValues }));
+            setFormData((prev) => ({ ...prev, users: selectedValues }));
         });
 
         
-        $(tagsRef.current).val(formData.tags).trigger('change');
+        $(userRef.current).val(formData.users).trigger('change');
         
 
         return () => {
             // Clean up select2 on component unmount
-            if (tagsRef.current) {
-                $(tagsRef.current).select2('destroy');
+            if (userRef.current) {
+                $(userRef.current).select2('destroy');
             }
         };
-    }, [tags]);
+    }, [users]);
    
 
     const planColors = {
@@ -162,7 +167,7 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
         >
             <div className="bg-white p-6 shadow rounded-md space-y-4 h-100">
                 <div className="flex items-center justify-between bg-blue-400 text-white p-2">
-                    <h2 className="text-xl font-semibold flex items-center">Add Tags {loading && (<CustomLoader />)}</h2>
+                    <h2 className="text-xl font-semibold flex items-center">Add Followers {loading && (<CustomLoader />)}</h2>
                     <button onClick={onClose} className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500">
                         <X size={15} />
                     </button>
@@ -173,19 +178,19 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
                             
                             <div className='w-full ad-tab-inp'>
                                 {/* Tags */}
-                                <label>Tags</label>
+                                <label>Users</label>
                                 <select
-                                    name="tags"
-                                    id="tags"
+                                    name="users"
+                                    id="users"
                                     className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control select2-hidden-accessible"
                                     multiple
-                                    value={formData.tags}
-                                    ref={tagsRef}
+                                    value={formData.users}
+                                    ref={userRef}
                                 >
                                     <option value="">Select Tags</option>
-                                    {tags.map((tag) => (
-                                        <option key={tag.id} value={tag.id}>
-                                            {tag.tag_name}
+                                    {users.map((user) => (
+                                        <option key={user.id} value={user.id}>
+                                            {user.fld_first_name + " " + user.fld_last_name}
                                         </option>
                                     ))}
                                 </select>
@@ -208,4 +213,4 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
     );
 };
 
-export default AddTags;
+export default AddFollowers;

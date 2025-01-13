@@ -26,7 +26,7 @@ const AdminFeasQueryDetails = ({ onClose, queryId, quotationId, finalFunction })
     const [isVisible, setIsVisible] = useState(false);
     const [activityloading, setActivityLoading] = useState(false);
 
-    const userData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
     

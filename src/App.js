@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useParams } from 'react-router-dom';
 import DecryptPage from "./DecryptPage";
 import Layout from './components/Layout';
 import ManageContactMadeQueries from "./pages/ManageContactMadeQueries";
@@ -11,6 +11,7 @@ import { messaging } from './firebase-config';
 import { onMessage } from 'firebase/messaging';
 import { ToastContainer, toast , Slide} from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+
 // basename="/askforscope"
 
 
@@ -18,7 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function App() {
 
   const [permissionGranted, setPermissionGranted] = useState(false);
-  const userData = sessionStorage.getItem('loopuser');
+  const userData = localStorage.getItem('loopuser');
 
   const userObject = JSON.parse(userData);
 
@@ -103,8 +104,18 @@ function App() {
     });
   }, []);
 
+  const ViewDetails = () => {
+    const { ref_id, quote_id } = useParams();
+  
+    if (userObject && (userObject.id == 1 || userObject.id == 342)) {
+      return <ManageQuery sharelinkrefid={ref_id} sharelinkquoteid={quote_id}/>;
+    } else {
+      return <Navigate to="/query" replace />;
+    }
+  };
+
   return (
-    <Router >
+    <Router basename="/askforscope">
       <Routes>
         {/* Public route */}
         <Route path="/:email/:token" element={<DecryptPage />} />
@@ -116,6 +127,7 @@ function App() {
         >
           <Route path="/assignquery" element={<ManageContactMadeQueries notification={requestPermission}/>} />
           <Route path="/query" element={<ManageQuery />} />
+          <Route path="/viewdetails/:ref_id/:quote_id" element={<ViewDetails />} />
         </Route>
 
         {/* Fallback route */}

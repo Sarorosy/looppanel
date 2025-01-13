@@ -39,7 +39,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const [file, setFile] = useState(null);
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(false);
-    const userData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('loopuser');
     const hasFetched = useRef(false);
 
     const userObject = JSON.parse(userData);
@@ -69,7 +69,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
 
     const fetchServices = async () => {
         try {
-            const user = JSON.parse(sessionStorage.getItem('user'));
+            const user = JSON.parse(localStorage.getItem('user'));
             const response = await fetch('https://apacvault.com/Webapi/getServices', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -83,11 +83,11 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     };
     const fetchUsers = async () => {
         try {
-            const user = JSON.parse(sessionStorage.getItem('loopuser')); // Parse user object from sessionStorage
+            const user = JSON.parse(localStorage.getItem('loopuser')); // Parse user object from localStorage
             const user_id = user?.id; // Retrieve the category
 
             if (!user_id) {
-                toast.error('User is not available in sessionStorage');
+                toast.error('User is not available in localStorage');
                 return;
             }
 
@@ -215,13 +215,13 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         try {
             setLoading(true);
 
-            const user = JSON.parse(sessionStorage.getItem('user'));
-            const loopUser = JSON.parse(sessionStorage.getItem('loopuser'));
+            const user = JSON.parse(localStorage.getItem('user'));
+            const loopUser = JSON.parse(localStorage.getItem('loopuser'));
             const category = user?.category;
             const user_id = loopUser?.id;
 
             if (!user_id) {
-                toast.error('User is not available in sessionStorage');
+                toast.error('User is not available in localStorage');
                 return;
             }
 

@@ -9,10 +9,10 @@ import { CircleX, HistoryIcon, X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import AskForScope from './AskForScope';
 import SubmitRequestQuote from './SubmitRequestQuote';
-import FeasabilityUpdate from './FeasabilityUpdate';
+import AskForScopeFollower from './AskForScopeFollower';
 
 
-const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction }) => {
+const QueryDetailsFollowing = ({ onClose, queryId, quotationId, after }) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -28,11 +28,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
     const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
-    
-    const close = () =>{
-        onClose();
-        finalFunction();
-    }
+
     const fetchActivityHistory = async () => {
 
         try {
@@ -61,7 +57,6 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
 
     const fetchQueryDetails = async () => {
         setLoading(true); // Show loading spinner
-
         let hasResponse = false;
         try {
             const response = await fetch(
@@ -103,7 +98,12 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
         return `${hours}h ${minutes}m`;
     }
 
-
+    const close = () => {
+        onClose();
+        if (after) {
+            after();
+        }
+    }
 
     return (
         <motion.div
@@ -158,7 +158,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
 
                                         className="flex"
                                     >
-                                        <strong>Ref. No.:</strong> {queryInfo.assign_id} 
+                                        <strong>Ref. No.:</strong> {queryInfo.assign_id}
                                         {/* <HistoryIcon className='ml-2 bg-blue-300 p-1 rounded' onClick={fetchActivityHistory} /> */}
                                     </p>
                                 )}
@@ -194,7 +194,15 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                                 )}
                             </div>
                             {queryInfo.profile_name && <p><strong>Profile:</strong> {queryInfo.profile_name}</p>}
-                            
+                            {queryInfo.name && <p><strong>Client Name:</strong> {queryInfo.name}</p>}
+                            {queryInfo.email_id && <p><strong>Email:</strong> {queryInfo.email_id}</p>}
+                            {queryInfo.alt_email_id && (
+                                <p><strong>Alternate Email ID:</strong> {queryInfo.alt_email_id || 'N/A'}</p>
+                            )}
+                            {queryInfo.phone && <p><strong>Contact No.:</strong> {queryInfo.phone}</p>}
+                            {queryInfo.alt_contact_no && (
+                                <p><strong>Alternate Contact No.:</strong> {queryInfo.alt_contact_no || 'N/A'}</p>
+                            )}
                             {queryInfo.latest_requirement && (
                                 <div className="bg-green-100 p-2 rounded">
                                     <p><strong>Latest Requirement:</strong></p>
@@ -203,6 +211,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                                     />
                                 </div>
                             )}
+
                             {queryInfo.line_format && <p><strong>Requirement:</strong><span dangerouslySetInnerHTML={{ __html: queryInfo.line_format }}></span></p>}
                             {queryInfo.paragraph_format && <p><strong>Requirement:</strong> {queryInfo.paragraph_format}</p>}
                             {queryInfo.area_of_study && <p><strong>Topic/Area of Study:</strong> {queryInfo.area_of_study}</p>}
@@ -211,19 +220,24 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                             {queryInfo.city && <p><strong>City:</strong> {queryInfo.city}</p>}
                             {queryInfo.complete_address && <p><strong>Complete Address:</strong> {queryInfo.complete_address}</p>}
                             {queryInfo.designation && <p><strong>Designation:</strong> {queryInfo.designation}</p>}
+                            {queryInfo.website_name && (
+                                <p>
+                                    <strong>Website:</strong> {queryInfo.website_name === 'others' ? queryInfo.other_website : queryInfo.website_name}
+                                </p>
+                            )}
                             {queryInfo.priority && <p><strong>Priority:</strong> {queryInfo.priority}</p>}
                             {queryInfo.academic_level && <p><strong>Academic Level:</strong> {queryInfo.academic_level}</p>}
                             <p>
                                 <strong>Tag: </strong>
                                 {queryInfo.tags && queryInfo.tags.length > 0 ? (
-                                    <span className="space-x-1">
+                                    <span className="">
                                         {queryInfo.tags.map((tag, index) => (
-                                            <span
+                                            <div
                                                 key={index}
                                                 className="bg-yellow-500 px-1 rounded text-white mr-1 mb-1 d-inline-block"
                                             >
                                                 {tag}
-                                            </span>
+                                            </div>
                                         ))}
                                     </span>
                                 ) : (
@@ -296,7 +310,8 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
 
                         </div>
                     </div>
-                    <FeasabilityUpdate queryId={queryInfo.assign_id} quotationId={quotationId} userType={userObject.fld_admin_type} finalFunction={finalFunction} />
+                    
+                    <AskForScopeFollower queryId={queryInfo.assign_id} quotationId={quotationId} userType={userObject.fld_admin_type} />
 
                 </div>
             )}
@@ -307,4 +322,4 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
 
 };
 
-export default FeasabilityQueryDetails;
+export default QueryDetailsFollowing;

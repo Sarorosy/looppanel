@@ -9,6 +9,15 @@ import $ from 'jquery';
 import 'select2/dist/css/select2.min.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
+import { io } from "socket.io-client";
+const socket = io("https://looppanelsocket.onrender.com", {
+        reconnection: true,             
+        reconnectionAttempts: 50,         
+        reconnectionDelay: 1000,      
+        reconnectionDelayMax: 5000,    
+        timeout: 20000,                 
+        autoConnect: true                
+    });
 
 const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
     const [selectedUser, setSelectedUser] = useState('');
@@ -27,11 +36,11 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
 
     const fetchUsers = async () => {
         try {
-            const user = JSON.parse(sessionStorage.getItem('loopuser')); // Parse user object from sessionStorage
+            const user = JSON.parse(localStorage.getItem('loopuser')); // Parse user object from localStorage
             const user_id = user?.id; // Retrieve the category
 
             if (!user_id) {
-                toast.error('User is not available in sessionStorage');
+                toast.error('User is not available in localStorage');
                 return;
             }
 
@@ -56,7 +65,7 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
         }
     };
 
-    const userData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
 
@@ -82,6 +91,14 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
                 toast.success('Request updated successfully.');
                 onClose();
                 finalFunction();
+                socket.emit("feasabilityTransferred",{
+                    quote_id:quotationId,
+                    ref_id:refId,
+                    user_id:selectedUser,
+                    ref_user_id:userObject.id,
+                    user_name: userObject.fld_first_name + " " + userObject.fld_last_name
+                    
+                })
             } else {
                 toast.error('Failed to update request.');
             }

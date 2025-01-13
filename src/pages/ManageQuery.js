@@ -11,7 +11,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, FileQuestion } from 'lucide-react';
+import { RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft } from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -19,11 +19,18 @@ import AllFeasPage from './AllFeasPage';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FeasabilityPage from './FeasabilityPage';
-// import { io } from "socket.io-client";
-// const socket = io("http://localhost:3001");
+import * as XLSX from 'xlsx';
+import { io } from "socket.io-client";
+const socket = io("https://looppanelsocket.onrender.com", {
+    reconnection: true,
+    reconnectionAttempts: 50,
+    reconnectionDelay: 1000,
+    reconnectionDelayMax: 5000,
+    timeout: 20000,
+    autoConnect: true
+});
 
-
-const ManageQuery = () => {
+const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [quotes, setQuotes] = useState([]);
     const [userPendingQuotes, setUserPendingQuotes] = useState([]);
     const [adminPendingQuotes, setAdminPendingQuotes] = useState([]);
@@ -51,16 +58,23 @@ const ManageQuery = () => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [activeTab, setActiveTab] = useState('all');
+    const [selectedRows, setSelectedRows] = useState([]);
     const navigate = useNavigate();
+
 
     DataTable.use(DT);
 
-    const userData = sessionStorage.getItem('user');
+    const userData = localStorage.getItem('user');
 
     const userObject = JSON.parse(userData);
+
+    const loopUserData = localStorage.getItem('loopuser');
+
+    const loopUserObject = JSON.parse(loopUserData);
+
     useEffect(() => {
         // Check if the user is not an admin or the email is not 'clientsupport@chanakyaresearch.net'
-        if (!(userObject && (userObject.email_id == "accounts@redmarkediting.com" || userObject.email_id == "clientsupport@chanakyaresearch.net"))) {
+        if (!(userObject && (userObject.email_id == "accounts@redmarkediting.com" || userObject.email_id == "clientsupport@chanakyaresearch.net" || userObject.id == "366"))) {
             navigate('/assignquery');
         }
     }, [userObject, navigate]);
@@ -69,7 +83,57 @@ const ManageQuery = () => {
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
+    const handleSelectAll = (isChecked) => {
+        if (isChecked) {
+            // Select all rows across all pages
+            setSelectedRows(quotes.map((row) => row.id)); // Select all row IDs
+            $('.row-checkbox').prop('checked', true); // Check all row checkboxes
+        } else {
+            // Deselect all rows across all pages
+            setSelectedRows([]); // Deselect all rows
+            $('.row-checkbox').prop('checked', false); // Uncheck all row checkboxes
+        }
+    };
+    
 
+    const handleRowSelect = (rowId, isChecked) => {
+        setSelectedRows((prevSelected) =>
+            isChecked
+                ? [...prevSelected, rowId] // Add row ID if checked
+                : prevSelected.filter((id) => id != rowId) // Remove row ID if unchecked
+        );
+    };
+
+    const handleExport = () => {
+        // Define the custom headers and map the data
+        const headers = ['Ref ID', 'Ask For Scope Id' , 'Client Name', 'CRM Name','Currrency', 'Comments', 'Service', 'Quote Status', 'Feasability Status', 'Created On']; // Define your custom table headings
+        const filteredData = quotes
+            .filter((row) => selectedRows.includes(row.id))
+            .map((row) => ({
+                RefID: row.ref_id,
+                AskForScopeID: row.id, // Example field
+                ClientName: row.client_name,
+                CRMName: row.fld_first_name + " " + row.fld_last_name,
+                Currency: row.currency,
+                Comments: row.comments,
+                Service: row.service_name,
+                QuoteStatus: row.status == 0 ? "Pending" : "Submitted",
+                FeasibilityStatus: row.isfeasability == 1 ? row.feasability_status : "",
+                CreatedOn: new Date(row.created_date * 1000).toLocaleString(), // Adjust field names based on your data
+            }));
+    
+        // Add the headers as the first row
+        const worksheetData = [headers, ...filteredData.map(Object.values)];
+    
+        // Create worksheet and workbook
+        const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Quotes');
+    
+        // Export the file
+        XLSX.writeFile(workbook, 'Exported_Data.xlsx');
+    };
+    
 
     const toggleDetailsPage = () => {
         setIsDetailsOpen(!isDetailsOpen);
@@ -84,6 +148,14 @@ const ManageQuery = () => {
         setSelectedQuote(query.id)
         setIsDetailsOpen(true);
     };
+    useEffect(() => {
+        if (sharelinkrefid && sharelinkquoteid) {
+            setSelectedQuery({ ref_id: sharelinkrefid });
+            setSelectedQuote(sharelinkquoteid);
+            setIsDetailsOpen(true);
+        }
+    }, [sharelinkrefid, sharelinkquoteid]);
+
 
     useEffect(() => {
         // Initialize select2 for Select Team
@@ -123,7 +195,7 @@ const ManageQuery = () => {
 
     // Fetch all data on initial render
     useEffect(() => {
-        fetchQuotes(false);
+        //fetchQuotes(false);
         fetchServices();
         fetchTags();
 
@@ -135,7 +207,6 @@ const ManageQuery = () => {
 
 
 
-        // Only use the filters if `nopayload` is false
         const userid = selectedUser;
         const ref_id = refID;
         const search_keywords = keyword;
@@ -145,41 +216,40 @@ const ManageQuery = () => {
         const start_date = startDate;
         const end_date = endDate;
 
-        // Define the payload conditionally
         let payload = {
             userid, ref_id, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date
         };
 
         if (nopayload) {
-            // If nopayload is true, send an empty payload
             payload = {};
         }
 
         try {
+
             const response = await fetch(
                 'https://apacvault.com/Webapi/listaskforscope',
                 {
                     method: 'POST', // Use POST method
                     headers: {
-                        'Content-Type': 'application/json', // Set content type to JSON
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(payload), // Send the payload conditionally
+                    body: JSON.stringify(payload),
                 }
             );
 
-            const data = await response.json(); // Parse the response as JSON
+            const data = await response.json();
             if (data.status) {
                 if (quotes.length != 0 && JSON.stringify(data.allQuoteData) !== JSON.stringify(quotes)) {
                     setQuotes(data.allQuoteData);
 
                     const userPending = data.allQuoteData.filter((quote) =>
-                        quote.submittedtoadmin === "false"  // Ensure correct check for "false" value
+                        quote.submittedtoadmin === "false"
                     );
                     const adminPending = data.allQuoteData.filter((quote) =>
                         quote.submittedtoadmin === "true" && quote.status == 0
                     );
 
-                    // Set filtered data into states
+
                     setUserPendingQuotes(userPending);
 
                     setAdminPendingQuotes(adminPending);
@@ -187,13 +257,12 @@ const ManageQuery = () => {
                 } else if (quotes.length == 0) {
                     setQuotes(data.allQuoteData);
                     const userPending = data.allQuoteData.filter((quote) =>
-                        quote.submittedtoadmin === "false"  // Ensure correct check for "false" value
+                        quote.submittedtoadmin === "false"
                     );
                     const adminPending = data.allQuoteData.filter((quote) =>
                         quote.submittedtoadmin === "true" && quote.status == 0
                     );
 
-                    // Set filtered data into states
                     setUserPendingQuotes(userPending);
 
                     setAdminPendingQuotes(adminPending);
@@ -206,14 +275,11 @@ const ManageQuery = () => {
         } catch (error) {
             console.error('Error fetching quotes:', error);
         } finally {
-            setLoading(false); // Hide loading spinner
+            setLoading(false);
         }
     };
     const fetchQuotesTwo = async (nopayload = false) => {
 
-
-
-        // Only use the filters if `nopayload` is false
         const userid = selectedUser;
         const ref_id = refID;
         const search_keywords = keyword;
@@ -223,13 +289,11 @@ const ManageQuery = () => {
         const start_date = startDate;
         const end_date = endDate;
 
-        // Define the payload conditionally
         let payload = {
             userid, ref_id, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date
         };
 
         if (nopayload) {
-            // If nopayload is true, send an empty payload
             payload = {};
         }
 
@@ -237,27 +301,26 @@ const ManageQuery = () => {
             const response = await fetch(
                 'https://apacvault.com/Webapi/listaskforscope',
                 {
-                    method: 'POST', // Use POST method
+                    method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json', // Set content type to JSON
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(payload), // Send the payload conditionally
+                    body: JSON.stringify(payload),
                 }
             );
 
-            const data = await response.json(); // Parse the response as JSON
+            const data = await response.json();
             if (data.status) {
                 if (quotes.length != 0 && JSON.stringify(data.allQuoteData) !== JSON.stringify(quotes)) {
                     setQuotes(data.allQuoteData);
 
                     const userPending = data.allQuoteData.filter((quote) =>
-                        quote.submittedtoadmin === "false"  // Ensure correct check for "false" value
+                        quote.submittedtoadmin === "false"
                     );
                     const adminPending = data.allQuoteData.filter((quote) =>
                         quote.submittedtoadmin === "true" && quote.status == 0
                     );
 
-                    // Set filtered data into states
                     setUserPendingQuotes(userPending);
 
                     setAdminPendingQuotes(adminPending);
@@ -265,13 +328,12 @@ const ManageQuery = () => {
                 } else if (quotes.length == 0) {
                     setQuotes(data.allQuoteData);
                     const userPending = data.allQuoteData.filter((quote) =>
-                        quote.submittedtoadmin === "false"  // Ensure correct check for "false" value
+                        quote.submittedtoadmin === "false"
                     );
                     const adminPending = data.allQuoteData.filter((quote) =>
                         quote.submittedtoadmin === "true" && quote.status == 0
                     );
 
-                    // Set filtered data into states
                     setUserPendingQuotes(userPending);
 
                     setAdminPendingQuotes(adminPending);
@@ -291,35 +353,135 @@ const ManageQuery = () => {
         fetchQuotes();
 
 
-        // socket.on("updateTable", (data) => {
-        //     console.log("Received updateTable event with data:", data);
-        //     const formattedData = {
-        //         ref_id: data.ref_id,
-        //         id:data.id,
-        //         service_name: data.service_name,
-        //         currency :data.currency,
-        //         other_currency : data.other_currency ?? null,
-        //         user_name: `${data.fld_first_name} ${data.fld_last_name}`,
-        //         tags: data.tag_names,
-        //         status: data.status,
-        //         fld_first_name : data.fld_first_name,
-        //         created_date: data.created_date,
-        //         feasibility_status: data.feasability_status,
-        //         comments: data.comments, 
-        //     };
+        socket.on("updateTable", (data) => {
+            console.log("Received updateTable event with data:", data);
+            const formattedData = {
+                ref_id: data.ref_id,
+                id: data.id,
+                service_name: data.service_name,
+                currency: data.currency,
+                other_currency: data.other_currency ?? null,
+                user_name: `${data.fld_first_name} ${data.fld_last_name}`,
+                tags: data.tag_names,
+                status: data.status,
+                fld_first_name: data.fld_first_name,
+                created_date: data.created_date,
+                feasibility_status: data.feasability_status,
+                comments: data.comments,
+            };
 
 
-        //     setQuotes((prevQuotes) => [...prevQuotes, formattedData]);
-        //     toast('New Quote '+data.id+' Request Submitted for refId ' + data.ref_id, {
-        //         icon: '💡',
-        //       });
-        // });
+            setQuotes((prevQuotes) => [...prevQuotes, formattedData]);
+            if (data.submittedtoadmin == "true") {
+                setAdminPendingQuotes((prevQuotes) => [...prevQuotes, formattedData])
+            } else if (data.submittedtoadmin == "true") {
+                setUserPendingQuotes((prevQuotes) => [...prevQuotes, formattedData])
+            }
+            if (data.isfeasability == 0) {
+                toast(data.fld_first_name + ' Submitted a request Quote ' + data.id + ' for refId ' + data.ref_id, {
+                    icon: '💡',
+                });
+            } else if (data.isfeasability == 1) {
+                toast(data.fld_first_name + ' Created Feasability request Quote ' + data.id + ' for refId ' + data.ref_id, {
+                    icon: '❓❗',
+                });
+            }
+        });
 
-        
-        // return () => {
-        //     socket.off("updateTable");
-        // };
 
+        return () => {
+            socket.off("updateTable");
+        };
+
+    }, []);
+    useEffect(() => {
+        socket.on('chatresponse', (data) => {
+            if (data.user_id != loopUserObject.id) {
+                toast(data.user_name + " Sent a chat for Quote " + data.quote_id, {
+                    icon: "💬",
+                })
+            }
+
+        });
+
+        return () => {
+            socket.off('chatresponse');  // Clean up on component unmount
+        };
+    }, []);
+
+    useEffect(() => {
+        socket.on('updateQuery', (data) => {
+            toast(data.user_name + ' Submitted a request Quote ' + data.quote_id + ' for refId ' + data.ref_id, {
+                icon: '💡',
+            });
+            setQuotes((prev) => {
+                return prev.map((quote) =>
+                    quote.id == data.quote_id
+                        ? { ...quote, submittedtoadmin: "true" }
+                        : quote
+                );
+            });
+            setAdminPendingQuotes((prev) => {
+                return prev.map((quote) =>
+                    quote.id == data.quote_id
+                        ? { ...quote, submittedtoadmin: "true" }
+                        : quote
+                );
+            });
+            setUserPendingQuotes((prev) =>
+                prev.filter((quote) => quote.id != data.quote_id)
+            );
+
+
+        });
+
+        return () => {
+            socket.off('updateQuery');  // Clean up on component unmount
+        };
+    }, []);
+
+    useEffect(() => {
+        socket.on('quoteReceived', (data) => {
+
+            setQuotes((prev) => {
+                return prev.map((quote) =>
+                    quote.id == data.quote_id
+                        ? { ...quote, status: 1 }
+                        : quote
+                );
+            });
+            setAdminPendingQuotes((prev) => {
+                return prev.map((quote) =>
+                    quote.id == data.quote_id
+                        ? { ...quote, status: 1 }
+                        : quote
+                );
+            });
+
+        });
+
+        return () => {
+            socket.off('quoteReceived');  // Clean up on component unmount
+        };
+    }, []);
+
+    useEffect(() => {
+        socket.on('discountReceived', (data) => {
+
+            toast(data.user_name + " Requested discount for Quote " + data.quote_id, {
+                icon: "💯",
+            });
+            setQuotes((prev) =>
+                prev.map((quote) =>
+                    quote.id == data.quote_id ? { ...quote, status: 2 } : quote
+                )
+            );
+
+        });
+
+        return () => {
+            socket.off('discountReceived');  // Clean up on component unmount
+        };
     }, []);
 
 
@@ -382,6 +544,22 @@ const ManageQuery = () => {
 
     const columns = [
         {
+            title: `
+                <input 
+                    type="checkbox" 
+                    class="select-all-checkbox" 
+                />
+            `,
+            data: null,
+            orderable: false,
+            render: () => `
+                <input 
+                    type="checkbox" 
+                    class="row-checkbox" 
+                />
+            `,
+        },
+        {
             title: 'Ref Id',
             data: 'ref_id',
             width: "110px",
@@ -431,6 +609,15 @@ const ManageQuery = () => {
             width: "20x",
             orderable: false,
             className: 'text-center',
+        },
+        {
+            title: 'Client Name',
+            data: 'client_name',
+            orderable: false,
+            className: 'text-center',
+            render: function (data, type, row) {
+                return data ? data : 'null'; // Check if data exists; if not, return 'null'
+            },
         },
         {
             title: 'CRM Name',
@@ -601,6 +788,15 @@ const ManageQuery = () => {
                 <div className='flex justify-between  mb-4'>
                     <h1 className='text-xl font-bold'>All Quote List</h1>
                     <div className='flex'>
+                        {loopUserObject.id == "206" && (
+                            <button className="bg-gray-200 flex items-center relative mr-3 p-1 rounded" onClick={() => { navigate("/assignquery") }}>
+                                <MoveLeft size={20} className='mr-2' />
+                                Queries
+                            </button>
+                        )}
+                        <button onClick={handleExport} className="bg-blue-400 text-white text-sm mr-2  px-2 py-1 rounded">
+                            Export as XLS
+                        </button>
 
                         <button className="bg-gray-200 text-gray-500 hover:bg-gray-300  f-12 btn px-2 py-1 flex items-center relative" onClick={toggleAllFeasPage}>
                             <FileQuestion size={15} className="mr-1" />
@@ -794,7 +990,22 @@ const ManageQuery = () => {
                                     pageLength: 50,
                                     ordering: true,
                                     createdRow: (row, data) => {
+                                        // Attach event listener for the "View Details" button
                                         $(row).find('.view-btn').on('click', () => handleViewButtonClick(data));
+                            
+                                        // Handle row-specific checkbox events
+                                        $(row).find('.row-checkbox').on('change', (e) => {
+                                            const isChecked = e.target.checked;
+                                            handleRowSelect(data.id, isChecked);
+                                        });
+                                        
+                                    },
+                                    initComplete: () => {
+                                        // Attach event listener for "Select All" checkbox
+                                        $('.select-all-checkbox').on('change', (e) => {
+                                            const isChecked = e.target.checked;
+                                            handleSelectAll(isChecked);
+                                        });
                                     },
                                 }}
                             />
@@ -820,6 +1031,7 @@ const ManageQuery = () => {
                             <DataTable
                                 data={adminPendingQuotes}
                                 columns={columns}
+
                                 options={{
                                     pageLength: 50,
                                     ordering: true,
@@ -850,7 +1062,25 @@ const ManageQuery = () => {
                     <FeasabilityPage onClose={toggleAllFeasPage} after={() => { fetchQuotes(false) }} />
                 )}
             </AnimatePresence>
-            <Toaster position="top-right" reverseOrder={false} />
+            <Toaster position="top-center" reverseOrder={false} toastOptions={{
+                // Define default options
+                className: 'border',
+                duration: 3000,
+                removeDelay: 500,
+                style: {
+                    background: '#161616FF',
+                    color: '#fff',
+                },
+
+                // Default options for specific types
+                success: {
+                    duration: 3000,
+                    iconTheme: {
+                        primary: 'green',
+                        secondary: 'black',
+                    },
+                },
+            }} />
         </div>
     );
 };

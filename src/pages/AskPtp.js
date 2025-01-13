@@ -2,8 +2,18 @@ import { useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AnimatePresence, motion } from 'framer-motion';
+import { io } from "socket.io-client";
+
 
 function AskPtp({ scopeDetails, quoteId, after, plans }) {
+    const socket = io("https://looppanelsocket.onrender.com", {
+            reconnection: true,             
+            reconnectionAttempts: 50,         
+            reconnectionDelay: 1000,      
+            reconnectionDelayMax: 5000,    
+            timeout: 20000,                 
+            autoConnect: true                
+        });
     const [showForm, setShowForm] = useState(false);
     const [ptp, setPtp] = useState(scopeDetails.ptp); // Default value is "No"
     const [ptpAmount, setPtpAmount] = useState(scopeDetails.ptp_amount);
@@ -11,6 +21,8 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
     const [ptploading, setPtpLoading] = useState(false);
     const [selectedPlans, setSelectedPlans] = useState(plans ? plans.split(",") : []);
     const [ptpFile, setPtpFile] = useState(null);
+    const loopuserData = localStorage.getItem('loopuser');
+    const loopUserObject = JSON.parse(loopuserData);
 
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prevSelectedPlans) => {
@@ -26,7 +38,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
         setPtpFile(e.target.files[0]); // Store the selected file
     };
 
-    const userData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
 
@@ -77,6 +89,10 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
             if (result.status === "success") {
                 toast.success('Request submitted successfully');
                 setShowForm(false);
+                socket.emit("requestedDiscount",{
+                    "quote_id": quoteId,
+                    "user_name" : loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name 
+                })
                 setTimeout(() => {
                     after();
                 }, 1000)

@@ -28,7 +28,7 @@ const AllFeasPage = ({ onClose }) => {
 
     const selectAssignRef = useRef(null);
 
-    const userData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
 

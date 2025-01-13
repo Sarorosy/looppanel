@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2 } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -17,7 +17,7 @@ import AddTags from './AddTags';
 import AddFollowers from './AddFollowers';
 import { io } from "socket.io-client";
 
-const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName }) => {
+const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
     const socket = io("https://looppanelsocket.onrender.com", {
         reconnection: true,
         reconnectionAttempts: 50,
@@ -75,8 +75,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
     const userObject = JSON.parse(userData);
     const loopUserObject = JSON.parse(loopuserData);
 
-    const thisUserId = (userIdDefined && userIdDefined != null && userIdDefined != "") ? userIdDefined : loopUserObject.id
-    
+    const thisUserId = loopUserObject.id
+
 
     const fetchScopeDetails = async () => {
         setLoading(true); // Show loading spinner
@@ -123,8 +123,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
             }
         }
     };
-    const fetchScopeDetailsForScoket = async () => {
-        let hasResponse = false;
+    const fetchScopeDetailsForSocket = async () => {
+
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/adminScopeDetails',
@@ -138,6 +138,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
             );
 
             const data = await response.json(); // Parse the response as JSON
+            console.log(data);
+
             if (data.status) {
                 if (data.quoteInfo != null && Array.isArray(data.quoteInfo)) {
                     // If quoteInfo is an array, process each entry
@@ -156,13 +158,23 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
-            hasResponse = true;
+
         } catch (error) {
             console.error('Error fetching details:', error);
         }
     };
 
+    useEffect(() => {
+        socket.on('feasabilityDone', (data) => {
+            if (data.quote_id == quotationId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
 
+        return () => {
+            socket.off('feasabilityDone');  // Clean up on component unmount
+        };
+    }, []);
 
 
     useEffect(() => {
@@ -170,12 +182,11 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
             fetchScopeDetails(); // Fetch the scope details when the component mounts
         }
     }, [queryId]);
-
     useEffect(() => {
         socket.on('quoteReceived', (data) => {
             if (data.ref_id == queryId) {
 
-                fetchScopeDetailsForScoket();
+                fetchScopeDetailsForSocket();
             }
         });
 
@@ -185,15 +196,26 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
     }, []);
 
     useEffect(() => {
-        socket.on('feasabilityDone', (data) => {
-            if (data.ref_id == queryId) {
-
-                fetchScopeDetailsForScoket();
+        socket.on('discountReceived', (data) => {
+            if (data.quote_id == quotationId) {
+                fetchScopeDetailsForSocket();
             }
         });
 
         return () => {
-            socket.off('feasabilityDone');  // Clean up on component unmount
+            socket.off('discountReceived');  // Clean up on component unmount
+        };
+    }, []);
+
+    useEffect(() => {
+        socket.on('demoDone', (data) => {
+            if (data.ref_id == queryId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('demoDone');  // Clean up on component unmount
         };
     }, []);
 
@@ -265,12 +287,12 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
         });
     };
 
-    const submitToAdmin = async (assign_id, quote_id, user_id) => {
+    const submitToAdmin = async (assign_id, quote_id, user_id, finalComments) => {
         const payload = {
             ref_id: assign_id,
             quote_id: quote_id,
             user_id: user_id,
-           
+            final_comments: finalComments // Include the comments in the payload
         };
 
         try {
@@ -285,11 +307,6 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
             const data = await response.json();
             if (data.status) {
                 toast.success("The quote has been successfully submitted to the admin.");
-                socket.emit("updateRequest", {
-                    quote_id:quote_id,
-                    ref_id: assign_id,
-                    user_name : loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name
-                })
                 setTimeout(() => {
                     fetchScopeDetails();
                 }, 1000);
@@ -321,9 +338,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
                 <div className='flex items-center'>
-                    <button onClick={toggleAddNewForm} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
-                        <PlusCircle size={15} className='mr-1' /> <div>Add New</div>
-                    </button>
+
                     <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
                 </div>
             </div>
@@ -429,34 +444,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
                                                         {expandedRowIndex == index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
 
-                                                    {(quote.quote_status == 0 || quote.quote_status == 1) && (
-                                                        <button onClick={() => { toggleEditForm(quote.quoteid) }}
-                                                            className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
-                                                            <Settings2 className='p-1' />
-                                                        </button>
-                                                    )}
-                                                    <button onClick={() => { toggleHashEditForm(quote.quoteid, quote.user_id) }}
-                                                        className='flex items-center rounded-full border-2 border-blue-500'>
-                                                        <Hash className='p-1' />
-                                                    </button>
-                                                    <button onClick={() => { toggleFollowersForm(quote.quoteid, thisUserId) }} className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
-                                                        <UserRoundPlus className='p-1' />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            const url = `https://apacvault.com/askforscope/viewdetails/${quote.assign_id}/${quote.quoteid}`;
-                                                            navigator.clipboard.writeText(url)
-                                                                .then(() => {
-                                                                    toast.success("URL copied to clipboard!");
-                                                                })
-                                                                .catch((err) => {
-                                                                    console.error("Failed to copy URL:", err);
-                                                                });
-                                                        }}
-                                                        className="flex items-center rounded-full border-2 border-blue-500 mx-2"
-                                                    >
-                                                        <Share2 className="p-1" />
-                                                    </button>
+
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
@@ -667,14 +655,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
                                                                 <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                                             )}
 
-                                                            <div className='flex items-start space-x-1'>
-                                                                {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId && (
-                                                                    <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} plans={quote.plan} />
-                                                                )}
-                                                                {quote.user_id == thisUserId && quote.submittedtoadmin == "true" && quote.demodone != 1 && (
-                                                                    <DemoDone scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
-                                                                )}
-                                                            </div>
+
 
                                                             {quote.isfeasability == 1 && (
                                                                 <>
@@ -689,17 +670,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
                                                                             >
                                                                                 <History size={15} />
                                                                             </button>
-                                                                            {quote.feasability_status == "Completed" && quote.submittedtoadmin == "false" && (
-                                                                                <button
-                                                                                    onClick={() => {
-                                                                                        submitToAdmin(quote.assign_id, quote.quoteid, quote.user_id);
-                                                                                    }}
-                                                                                    className="bg-green-100 text-green-700 p-1 rounded border border-green-900 ml-5 hover:bg-green-200"
-                                                                                    title='Submit request to admin for Ask For Scope'
-                                                                                >
-                                                                                    Request Quote
-                                                                                </button>
-                                                                            )}
+
                                                                         </>
 
                                                                     </div>
@@ -749,7 +720,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
                                                                 </>)}
 
                                                         </div>
-                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} finalfunctionforsocket={fetchScopeDetailsForScoket} allDetails={quote} />
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} allDetails={quote} />
                                                     </td>
 
                                                 </tr>
@@ -769,7 +740,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
                     )}
                     <AnimatePresence>
                         {addNewFormOpen && (
-                            <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails} userIdDefined={userIdDefined} clientName={clientName}/>
+                            <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails} />
                         )}
                         {editFormOpen && (
                             <EditRequestForm quoteId={selectedQuoteId} refId={queryId} onClose={() => { setEditFormOpen(!editFormOpen) }} after={fetchScopeDetails} />
@@ -795,4 +766,4 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
     );
 };
 
-export default AskForScope;
+export default AskForScopeFollower;

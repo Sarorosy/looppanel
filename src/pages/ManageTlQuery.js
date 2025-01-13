@@ -9,7 +9,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, FileQuestion, X } from 'lucide-react';
+import { RefreshCcw, Filter, FileQuestion, X, PlusCircle } from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -18,8 +18,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import FeasabilityPage from './FeasabilityPage';
 import QueryDetailsTl from './QueryDetailsTl';
+import SelectUsers from './SelectUsers';
 
-const ManageTlQuery = ({onClose}) => {
+const ManageTlQuery = ({ onClose }) => {
     const [quotes, setQuotes] = useState([]);
     const [refID, setRefId] = useState('');
     const [keyword, setKeyword] = useState('');
@@ -41,13 +42,14 @@ const ManageTlQuery = ({onClose}) => {
     const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [isAllFeasOpen, setIsAllFeasOpen] = useState(false);
+    const [selectuserDiv, setSelectUserDiv] = useState(false);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const navigate = useNavigate();
 
     DataTable.use(DT);
 
-    const userData = sessionStorage.getItem('user');
+    const userData = localStorage.getItem('user');
 
     const userObject = JSON.parse(userData);
     useEffect(() => {
@@ -63,6 +65,9 @@ const ManageTlQuery = ({onClose}) => {
 
     const toggleAllFeasPage = () => {
         setIsAllFeasOpen(!isAllFeasOpen);
+    };
+    const toggleUsersDiv = () => {
+        setSelectUserDiv(!selectuserDiv);
     };
 
     const handleViewButtonClick = (query) => {
@@ -114,13 +119,13 @@ const ManageTlQuery = ({onClose}) => {
         fetchTags();
 
     }, []);
-    const loopuserData = sessionStorage.getItem('loopuser');
+    const loopuserData = localStorage.getItem('loopuser');
 
     const loopuserObject = JSON.parse(loopuserData);
     const currentTlEmail = loopuserObject.fld_email;
 
     const fetchQuotes = async (nopayload = false) => {
-        setLoading(true); 
+        setLoading(true);
 
         // Only use the filters if `nopayload` is false
         const userid = selectedUser;
@@ -133,7 +138,7 @@ const ManageTlQuery = ({onClose}) => {
         const end_date = endDate;
         const assign_users = loopuserObject.tl_users;
         const current_tl = currentTlEmail;
-        
+
 
         // Define the payload conditionally
         let payload = {
@@ -142,7 +147,7 @@ const ManageTlQuery = ({onClose}) => {
 
         if (nopayload) {
             // If nopayload is true, send an empty payload
-            payload = {assign_users, current_tl};
+            payload = { assign_users, current_tl };
         }
 
         try {
@@ -265,6 +270,15 @@ const ManageTlQuery = ({onClose}) => {
             orderable: true,
             className: 'text-center',
         },
+        {
+            title: 'Client Name',
+            data: 'client_name',
+            orderable: false,
+            className: 'text-center',
+            render: function(data, type, row) {
+                return data ? data : 'null'; // Check if data exists; if not, return 'null'
+            },
+        },        
         {
             title: 'CRM Name',
             data: 'fld_first_name',
@@ -408,30 +422,33 @@ const ManageTlQuery = ({onClose}) => {
 
     return (
         <motion.div
-                    initial={{ x: '100%' }}
-                    animate={{ x: 0 }}
-                    exit={{ x: '100%' }}
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
-                >
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
+        >
 
 
             {/* Filter Section */}
             <div className=" mb-3 bg-white  rounded ">
-            <div className='bg-blue-400 text-white py-3 mb-3'>
-                <div className='container flex items-center justify-between p-0'>
-                <h2 className="text-xl font-semibold">All Users Request</h2>
-
-
-                <button
-                    onClick={onClose}
-                    className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
-                >
-                    {/* <CircleX size={32} /> */}
-                    <X size={15} />
-                </button>
+                <div className='bg-blue-400 text-white py-3 mb-3'>
+                    <div className='container flex items-center justify-between p-0'>
+                        <h2 className="text-xl font-semibold">All Users Request</h2>
+                        <div className='flex items-center justify-between space-x-2'>
+                            <button onClick={toggleUsersDiv} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
+                                <PlusCircle size={15} className='mr-1' /> <div>Add New</div>
+                            </button>
+                            <button
+                                onClick={onClose}
+                                className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
+                            >
+                                {/* <CircleX size={32} /> */}
+                                <X size={15} />
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
                 <div className='flex items-end space-x-2 px-3'>
                     <div className="row">
                         <div className="col-2 mb-3">
@@ -529,7 +546,7 @@ const ManageTlQuery = ({onClose}) => {
                                 maxDate={new Date()} // Optional: Restrict to past dates
                             />
                         </div>
-                        <div className='col-2' style={{display:currentTlEmail == "balakumar.v@dissertationindia.net" ? "none" : ""}}>
+                        <div className='col-2' style={{ display: currentTlEmail == "balakumar.v@dissertationindia.net" ? "none" : "" }}>
                             <select
                                 name="tags"
                                 id="tags"
@@ -556,14 +573,14 @@ const ManageTlQuery = ({onClose}) => {
                                     <Filter size={12} /> &nbsp;
                                     Apply
                                 </button>
-                                
+
                             </div>
 
 
                         </div>
                     </div>
 
-                    
+
                 </div>
             </div>
 
@@ -602,6 +619,9 @@ const ManageTlQuery = ({onClose}) => {
                 )}
                 {isAllFeasOpen && (
                     <FeasabilityPage onClose={toggleAllFeasPage} after={() => { fetchQuotes(false) }} />
+                )}
+                {selectuserDiv && (
+                    <SelectUsers onClose={toggleUsersDiv} />
                 )}
             </AnimatePresence>
 

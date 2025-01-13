@@ -9,6 +9,15 @@ import { RefreshCcw, X } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import FeasabilityQueryDetails from './FeasabilityQueryDetails';
 
+import { io } from "socket.io-client";
+const socket = io("https://looppanelsocket.onrender.com", {
+        reconnection: true,             
+        reconnectionAttempts: 50,         
+        reconnectionDelay: 1000,      
+        reconnectionDelayMax: 5000,    
+        timeout: 20000,                 
+        autoConnect: true                
+    });
 
 const FeasabilityPage = ({ onClose, after }) => {
     const [quoteSummary, setQuoteSummary] = useState([]);
@@ -18,7 +27,7 @@ const FeasabilityPage = ({ onClose, after }) => {
     const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-    const userData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
 
@@ -56,6 +65,33 @@ const FeasabilityPage = ({ onClose, after }) => {
             }
         }
     };
+    const fetchQuoteSummaryForSocket = async () => {
+        
+        try {
+            const response = await fetch(
+                'https://apacvault.com/Webapi/getAllFeasabilityAssignedToUser',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify({ user_id: userObject.id, }),
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            console.log(data)
+            if (data.status) {
+                setQuoteSummary(data.data); // Update the quotes state
+                setPendingCount(data.pending_count ? data.pending_count : 0);
+            } else {
+                console.error('Failed to fetch Details:', data.message);
+            }
+            
+        } catch (error) {
+            console.error('Error fetching details:', error);
+        } 
+    };
 
     const toggleDetailsPage = () => {
         setIsDetailsOpen(!isDetailsOpen);
@@ -85,6 +121,64 @@ const FeasabilityPage = ({ onClose, after }) => {
 
     useEffect(() => {
         fetchQuoteSummary();
+    }, []);
+
+    useEffect(() => {
+        socket.on("updateTable", (data) => {
+            console.log(data);
+            const formattedData = {
+                ref_id: data.ref_id,
+                id: data.id,
+                feasability_status: data.feasability_status,
+                service_name: data.service_name,
+                currency: data.currency,
+                other_currency: data.other_currency ?? null,
+                demodone: data.demodone,
+                tags: data.tag_names,
+                status: data.status,
+                fld_first_name: data.fld_first_name,
+                created_date: data.created_date,
+                
+                comments: data.comments,
+            };
+            if(data.isfeasability == 1 && data.feasability_user == userObject.id){
+                setQuoteSummary((prevQuotes) => [...prevQuotes, formattedData]);
+            }
+
+            
+            
+        });
+
+
+        return () => {
+            socket.off("updateTable");
+        };
+
+    }, []);
+
+    useEffect(() => {
+        socket.on('feasTransferred', (data) => {
+            if (data.user_id == userObject.id) {
+
+                fetchQuoteSummaryForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('feasTransferred');  // Clean up on component unmount
+        };
+    }, []);
+    useEffect(() => {
+        socket.on('feasabilityDone', (data) => {
+            if (data.user_id == userObject.id) {
+
+                fetchQuoteSummaryForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('feasabilityDone');  // Clean up on component unmount
+        };
     }, []);
 
     const columns = [

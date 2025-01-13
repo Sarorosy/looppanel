@@ -9,9 +9,9 @@ import $ from 'jquery';
 import 'select2/dist/css/select2.min.css'; // Import Select2 CSS
 import 'select2';
 import CustomLoader from '../CustomLoader';
-// import { io } from "socket.io-client";
+import { io } from "socket.io-client";
 
-const SubmitRequestQuote = ({ refId, after, onClose }) => {
+const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined , clientName}) => {
     const [currencies, setCurrencies] = useState([]);
     const [services, setServices] = useState([]);
     const [selectedCurrency, setSelectedCurrency] = useState('');
@@ -30,7 +30,14 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
     const [demodone, setDemodone] = useState('no');
     const [demoId, setDemoId] = useState('');
     const [demoStatus, setDemoStatus] = useState(false);
-    // const socket = io("http://localhost:3001");
+    const socket = io("https://looppanelsocket.onrender.com", {
+            reconnection: true,             
+            reconnectionAttempts: 50,         
+            reconnectionDelay: 1000,      
+            reconnectionDelayMax: 5000,    
+            timeout: 20000,                 
+            autoConnect: true                
+        });
 
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prev) =>
@@ -52,8 +59,8 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         Advanced: 'text-yellow-500', // Gold color
     };
 
-    const userData = sessionStorage.getItem('user');
-    const LoopUserData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('user');
+    const LoopUserData = localStorage.getItem('loopuser');
 
     // Parse the JSON string into an object
     const userObject = JSON.parse(userData);
@@ -98,11 +105,11 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
 
     const fetchServices = async () => {
         try {
-            const user = JSON.parse(sessionStorage.getItem('user')); // Parse user object from sessionStorage
+            const user = JSON.parse(localStorage.getItem('user')); // Parse user object from localStorage
             const category = user?.category; // Retrieve the category
 
             if (!category) {
-                toast.error('Category is not available in sessionStorage');
+                toast.error('Category is not available in localStorage');
                 return;
             }
 
@@ -129,11 +136,11 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
 
     const fetchUsers = async () => {
         try {
-            const user = JSON.parse(sessionStorage.getItem('loopuser')); // Parse user object from sessionStorage
+            const user = JSON.parse(localStorage.getItem('loopuser')); // Parse user object from localStorage
             const user_id = user?.id; // Retrieve the category
 
             if (!user_id) {
-                toast.error('User is not available in sessionStorage');
+                toast.error('User is not available in localStorage');
                 return;
             }
 
@@ -211,6 +218,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         formData.append('service_name', selectedService);
         formData.append('plan', sortedPlans);
         formData.append('comments', comments);
+        formData.append('client_name', clientName);
         let planCommentsJson = {};
         let emptyCommentFound = false;
 
@@ -237,7 +245,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
 
         formData.append('isfeasability', isfeasability);
         formData.append('feasability_user', selectedUser);
-        formData.append('user_id', loopUserObject.id);
+        formData.append('user_id', (userIdDefined && userIdDefined != null  && userIdDefined != "") ? userIdDefined : loopUserObject.id);
         formData.append('user_name', loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name);
         formData.append('category', userObject.category);
         formData.append('demo_done', demodone);
@@ -257,11 +265,7 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
             const data = await response.json();
             if (data.status) {
                 toast.success('Quote request submitted successfully');
-                // socket.emit("newRequest", {
-                //     ref_id: "12345", // Replace with actual request ID
-                //     service_name: "Sample Service", // Replace with actual data
-                //     timestamp: new Date(),
-                // });
+                socket.emit("newRequest",data.quote_details)
 
                 after();
                 onClose();
@@ -305,9 +309,43 @@ const SubmitRequestQuote = ({ refId, after, onClose }) => {
         };
     }, [users]);
 
-    // const testSocket = () => {
-    //     socket.emit("newRequest", { "id": "11544", "ref_id": "263864", "user_id": "208", "comments": "<p>NA - Test<\/p>", "deadline_date": null, "currency": "INR", "other_currency": "", "relevant_file": "", "service_name": "Topic Selection", "tags": "1,6", "plan": "Basic,Standard,Advanced", "plan_comments": null, "old_plan": null, "ptp": null, "ptp_currency": null, "ptp_amount": null, "ptp_comments": null, "ptp_file": null, "ptp_count": "0", "demodone": "0", "demo_id": "", "status": "0", "created_date": "1735709759", "isfeasability": "1", "feasability_user": "337", "feasability_status": "Pending", "feasability_comments": null, "feas_file_name": null, "submittedtoadmin": "false", "changestatus": "0", "final_comments": null, "edited": "0", "fld_first_name": "Gunjan", "fld_last_name": "Nagpal", "tag_names": "Topic&Proposal(Tech), ThesisWriting" });
-    // };
+    const testSocket = () => {
+        socket.emit("newRequest", { 
+            "id": "11544",
+            "ref_id": "abcdefg",
+            "user_id": "208", 
+            "comments": "<p>NA - Test<\/p>", 
+            "deadline_date": null, "currency": 
+            "INR", "other_currency": "", 
+            "relevant_file": "", "service_name": 
+            "Topic Selection", "tags": "1,6", 
+            "plan": "Basic,Standard,Advanced", 
+            "plan_comments": null, 
+            "old_plan": null, 
+            "ptp": null, 
+            "ptp_currency": null, 
+            "ptp_amount": null, 
+            "ptp_comments": null, 
+            "ptp_file": null, 
+            "ptp_count": "0", 
+            "demodone": "0", 
+            "demo_id": "", 
+            "status": "0", 
+            "created_date": "1735709759", 
+            "isfeasability": "1", 
+            "feasability_user": "337", 
+            "feasability_status": "Completed", 
+            "feasability_comments": null, 
+            "feas_file_name": null, 
+            "submittedtoadmin": "true", 
+            "changestatus": "0", 
+            "final_comments": null, 
+            "edited": "0", 
+            "fld_first_name": 
+            "Gunjan", "fld_last_name": 
+            "Nagpal", "tag_names": 
+            "Topic&Proposal(Tech), ThesisWriting" });
+    };
 
     return (
         <motion.div

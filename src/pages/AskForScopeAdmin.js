@@ -3,13 +3,29 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Paperclip, Hash, RefreshCcw, PlusCircle, Hourglass, CirclePause, CircleCheck } from 'lucide-react';
+import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Paperclip, Hash, RefreshCcw, PlusCircle, Hourglass, CirclePause, CircleCheck, Bell, UserRoundPlus, Settings2, Pencil } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
 import HistorySideBar from './HistorySideBar';
 import FeasHistorySideBar from './FeasHistorySideBar';
 import AllRequestSideBar from './AllRequestSideBar';
-const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
+import ClientEmailSideBar from './ClientEmailSideBar';
+import AddFollowers from './AddFollowers';
+import { io } from "socket.io-client";
+import EditRequestForm from './EditRequestForm';
+import EditPriceComponent from './EditPriceComponent';
+import EditFeasibilityCommentsComponent from './EditFeasabilityCommentsComponent';
+import CompleteFeasability from './CompleteFeasability';
+
+const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail }) => {
+    const socket = io("https://looppanelsocket.onrender.com", {
+        reconnection: true,
+        reconnectionAttempts: 50,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 20000,
+        autoConnect: true
+    });
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -28,11 +44,18 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
     const [adminComments, setAdminComments] = useState('');
     const [expandedRowIndex, setExpandedRowIndex] = useState(0);
     const [editFormOpen, setEditFormOpen] = useState(false);
+    const [editingFormOpen, setEditingFormOpen] = useState(false);
+    const [feascommentseditingFormOpen, setFeasCommentsEditingFormOpen] = useState(false);
     const [selectedQuoteId, setSelectedQuoteId] = useState('');
+    const [selectedRefId, setSelectedRefId] = useState('');
     const [historyData, setHistoryData] = useState([]);
     const [historyLoading, setHistoryLoading] = useState(false);
     const [userIdForTag, setUserIdForTag] = useState('');
     const [isFeasabilityCompleted, setIsFeasabilityCompleted] = useState(null);
+    const [refIds, setRefIds] = useState([]);
+    const [clientEmailDivOpen, setClientEmailDivOpen] = useState(false);
+    const [followersFormOpen, setFollowersFormOpen] = useState(false);
+    const [completeFeasabilityDiv, setCompleteFeasabilityDiv] = useState(false);
 
     const [selectedAllReqRefId, setSelectedAllReqRefId] = useState('');
     const [allRequestDivOpen, setAllRequestDivOpen] = useState(false);
@@ -45,6 +68,11 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
     const [quoteIdForFeasHistory, setQuoteIdForFeasHistory] = useState('');
     const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
 
+    const loopuserData = localStorage.getItem('loopuser');
+    const loopUserObject = JSON.parse(loopuserData);
+
+    const thisUserId = loopUserObject.id
+
     const toggleAllRequestDiv = () => {
         setSelectedAllReqRefId(queryId);
         setAllRequestDivOpen((prev) => !prev)
@@ -54,6 +82,20 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
         setQuoteIdForHistory($id);
         SetHistoryPanelOpen(true);
     }
+    const toggleClientEmailDiv = () => {
+        setClientEmailDivOpen((prev) => !prev);
+    };
+    const toggleFollowersForm = (id, user_id) => {
+        setSelectedQuoteId(id);
+        setUserIdForTag(user_id);
+        setFollowersFormOpen((prev) => !prev)
+    };
+    const toggleCompleteFeasability = (id,ref_id, user_id) => {
+        setSelectedQuoteId(id);
+        setSelectedRefId(ref_id);
+        setSelectedUser(user_id);
+        setCompleteFeasabilityDiv((prev) => !prev)
+    };
 
     const toggleFeasHistoyDiv = (assign_id, quote_id) => {
         setQuoteIdForFeasHistory(quote_id);
@@ -108,7 +150,50 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
         } finally {
             if (hasResponse) {
                 setLoading(false); // Hide the loader
+                fetchAllRefIds();
             }
+        }
+    };
+
+    const fetchScopeDetailsForSocket = async () => {
+
+        try {
+            const response = await fetch(
+                'https://apacvault.com/Webapi/adminScopeDetails',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify({ ref_id: queryId, user_type: userType, quote_id: quotationId }),
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            console.log(data)
+            if (data.status) {
+                if (data.quoteInfo != null && Array.isArray(data.quoteInfo)) {
+
+                    const parsedQuoteInfo = data.quoteInfo.map((quote) => ({
+                        ...quote,
+                        relevant_file: quote.relevant_file
+                            ? JSON.parse(quote.relevant_file)
+                            : [], // Parse the file data if present
+                    }));
+
+                    setScopeDetails(parsedQuoteInfo); // Set the array of quotes
+                    setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
+                    setTotalCount(data.totalCounter ? data.totalCounter : '0');
+                    setIsFeasabilityCompleted(data.isFeasabilityCompleted ? data.isFeasabilityCompleted : null);
+                } else {
+                    setScopeDetails(null); // If no quoteInfo, set scopeDetails to null
+                }
+            } else {
+                console.error('Failed to fetch Details:', data.message);
+            }
+
+        } catch (error) {
+            console.error('Error fetching details:', error);
         }
     };
 
@@ -202,6 +287,14 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
         setUserIdForTag(user_id);
         setEditFormOpen((prev) => !prev)
     };
+    const toggleEditingForm = (id) => {
+        setSelectedQuoteId(id);
+        setEditingFormOpen((prev) => !prev)
+    };
+    const toggleFeasCommentsEditingForm = (id) => {
+        setSelectedQuoteId(id);
+        setFeasCommentsEditingFormOpen((prev) => !prev)
+    };
 
     const handleAmountChange = (e, plan) => {
         const value = e.target.value;
@@ -214,12 +307,53 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
         });
     };
 
-    // Set default values for all plans (if not already set) when submitting the form
+    const fetchAllRefIds = async () => {
+
+        try {
+            const response = await fetch('https://apacvault.com/webapi/selectallrefids/', {
+                method: 'POST', // Use POST method
+                headers: {
+                    'Content-Type': 'application/json', // Set content type to JSON
+                },
+                body: JSON.stringify({ email: clientEmail }), // Send client email
+            });
+
+            const data = await response.json(); // Parse the response as JSON
+            console.log("all refids " + data.ref_ids);
+
+            if (data.status) {
+                if (data.ref_ids && Array.isArray(data.ref_ids)) {
+                    setRefIds(data.ref_ids); // Store ref_ids array in state
+                } else {
+                    setRefIds([]); // If no ref_ids, set an empty array
+                }
+            } else {
+                console.error('Failed to fetch ref_ids:', data.message);
+            }
+
+        } catch (error) {
+            console.error('Error fetching ref_ids:', error);
+        }
+    };
+
+    useEffect(() => {
+        socket.on('feasabilityDone', (data) => {
+            if (data.quote_id == quotationId) {
+
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('feasabilityDone');  // Clean up on component unmount
+        };
+    }, []);
 
 
+    const PriceSubmitValidate = async (refId, quoteId, plans, userId) => {
 
-    const PriceSubmitValidate = async (refId, quoteId, plans) => {
         const form = document.getElementById('submitQuoteForm');
+
 
         // Define the amount variables
         const basicAmount = document.getElementById('amount_Basic')?.value.trim() || "0";
@@ -268,6 +402,11 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                 document.getElementById('amount_Standard').value = '0';
                 document.getElementById('amount_Advanced').value = '0';
                 setComment('');
+                socket.emit("quoteSubmitted", {
+                    quote_id: quoteId,
+                    ref_id: refId,
+                    user_id: userId,
+                })
 
             } else {
                 toast.error('Failed to update quote price');
@@ -327,6 +466,30 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
         }
     }, [queryId]);
 
+    useEffect(() => {
+        socket.on('discountReceived', (data) => {
+            if (data.quote_id == quotationId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('discountReceived');  // Clean up on component unmount
+        };
+    }, []);
+
+    useEffect(() => {
+        socket.on('demoDone', (data) => {
+            if (data.ref_id == queryId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('demoDone');  // Clean up on component unmount
+        };
+    }, []);
+
     const formatDate = (timestamp) => {
         const date = new Date(timestamp * 1000); // Convert Unix timestamp to Date object
         return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
@@ -356,10 +519,19 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
                 <div className='flex items-center'>
+                    {refIds && refIds.length > 0 && (
+                        <div
+                            title='You have new RefIds'
+                            className='cursor-pointer flex items-center mx-2 px-2 py-1 rounded-full'
+                            onClick={toggleClientEmailDiv}
+                        >
+                            <Bell size={20} className='text-yellow-200' />
+                        </div>
+                    )}
                     {isFeasabilityCompleted && isFeasabilityCompleted != null && (
                         <p className={`cursor-help flex items-center mx-2 px-2 py-1 rounded-full ${isFeasabilityCompleted.feasability_status === 'Pending'
-                                ? 'bg-orange-100 text-orange-500'
-                                : 'bg-green-100 text-green-600'
+                            ? 'bg-orange-100 text-orange-500'
+                            : 'bg-green-100 text-green-600'
                             }`} title={`${isFeasabilityCompleted.feasability_status === 'Pending' ? 'Feasability is Pending for his RefId' : 'Feasability has been completed for this RefId'}`}>Feasability {isFeasabilityCompleted.feasability_status == 'Pending' ? <CirclePause size={18} className='ml-2 text-orange-500' /> : <CircleCheck size={18} className='ml-2 text-green-700' />}</p>
                     )}
                     {viewAll && (
@@ -472,6 +644,9 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                                                         className='flex items-center rounded-full border-2 border-blue-500'>
                                                         <Hash className='p-1' />
                                                     </button>
+                                                    <button onClick={() => { toggleFollowersForm(quote.quoteid, thisUserId) }} className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
+                                                        <UserRoundPlus className='p-1' />
+                                                    </button>
 
                                                 </td>
                                             </tr>
@@ -582,6 +757,12 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                                                                             ? "Submitted"
                                                                             : "Discount Requested"}
                                                                 </strong>
+                                                                {(quote.quote_status == 1) && loopUserObject.id != "206" && (
+                                                                    <button onClick={() => { toggleEditingForm(quote) }}
+                                                                        className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
+                                                                        <Pencil className='p-1' />
+                                                                    </button>
+                                                                )}
                                                             </p>
 
                                                             {quote.ptp != null && (
@@ -605,7 +786,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                                                             )}
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                 <>
-                                                                    {quote.old_plan && (quote.old_plan != quote.plan && (
+                                                                    {quote.old_plan && (
                                                                         <p className='text-gray-600'>
                                                                             <strong>Quote Price For Old Plan:</strong>{' '}
                                                                             {(() => {
@@ -620,7 +801,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                                                                             })()}
                                                                         </p>
 
-                                                                    ))}
+                                                                    )}
                                                                     {quote.quote_status != 2 && (
                                                                         <p>
                                                                             <strong>Quote Price:</strong>{' '}
@@ -749,7 +930,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                                                                     )}
                                                                 </>
                                                             )}
-                                                            {quote.quote_status != 1 && quote.submittedtoadmin == "true" && (
+                                                            {quote.quote_status != 1 && quote.submittedtoadmin == "true" && loopUserObject.id != "206" && (
                                                                 <>
                                                                     <div className="nav-tabs-custom tabb">
                                                                         <ul className="nav nav-tabs">
@@ -807,7 +988,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                                                                                             name="priceSubmitted"
                                                                                             className="btn pull-right btn-success"
                                                                                             value="Submit"
-                                                                                            onClick={() => PriceSubmitValidate(quote.assign_id, quote.quoteid, quote.plan)}
+                                                                                            onClick={() => PriceSubmitValidate(quote.assign_id, quote.quoteid, quote.plan, quote.user_id)}
                                                                                             disabled={priceLoading}
                                                                                         />
                                                                                     </div>
@@ -819,18 +1000,32 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                                                             )}
                                                             {quote.isfeasability == 1 && (
                                                                 <>
-                                                                    <div className='flex items-center'>
+                                                                    <div className='flex flex-col items-start justify-start'>
                                                                         <>
                                                                             <p><strong>Feasability Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "badge-danger p-1 f-10 rounded" : "badge-success p-1 f-10 rounded"}`}>{quote.feasability_status}</span></p>
 
-                                                                            {/* Button to View History */}
+
+
+                                                                        </>
+
+
+                                                                        <p className='flex items-center mt-2'>{quote.feasability_history.formatted_message}
+
                                                                             <button
                                                                                 onClick={() => toggleFeasHistoyDiv(quote.assign_id, quote.quoteid)}
                                                                                 className="bg-blue-400 text-white p-1 rounded hover:bg-blue-600 ml-3"
                                                                             >
                                                                                 <History size={15} />
                                                                             </button>
-                                                                        </>
+                                                                            {quote.feasability_status == "Pending" && loopUserObject.id != "206" && (
+                                                                                <button onClick={()=>{toggleCompleteFeasability(quote.quoteid,quote.assign_id, quote.user_id)}} className='bg-green-100 text-sm text-green-600 px-2 py-1 rounded mx-2'>
+                                                                                    Give feasability
+                                                                                </button>
+                                                                            )}
+                                                                        </p>
+
+
+
 
                                                                     </div>
 
@@ -838,6 +1033,12 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                                                                         <>
                                                                             <p style={{ textDecoration: "italic" }} className='italic'>
                                                                                 Feasibility Comments:
+                                                                                {loopUserObject.id != "206" && (
+                                                                                    <button onClick={() => { toggleFeasCommentsEditingForm(quote) }}
+                                                                                        className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
+                                                                                        <Pencil className='p-1' />
+                                                                                    </button>
+                                                                                )}
                                                                                 <span
                                                                                     className='mt-2'
                                                                                     dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
@@ -880,7 +1081,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                                                             )}
 
                                                         </div>
-                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} />
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} allDetails={quote} finalfunctionforsocket={fetchScopeDetailsForSocket} />
                                                     </td>
                                                 </tr>
                                             )}
@@ -908,6 +1109,21 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll }) => {
                 )}
                 {allRequestDivOpen && (
                     <AllRequestSideBar refId={queryId} onClose={() => { setAllRequestDivOpen(!allRequestDivOpen) }} />
+                )}
+                {clientEmailDivOpen && (
+                    <ClientEmailSideBar refIds={refIds} onClose={() => { setClientEmailDivOpen(!clientEmailDivOpen) }} />
+                )}
+                {followersFormOpen && (
+                    <AddFollowers quoteId={selectedQuoteId} refId={queryId} onClose={() => { setFollowersFormOpen(!followersFormOpen) }} after={fetchScopeDetails} />
+                )}
+                {editingFormOpen && (
+                    <EditPriceComponent quote={selectedQuoteId} PriceSubmitValidate={PriceSubmitValidate} refId={queryId} onClose={() => { setEditingFormOpen(!editingFormOpen) }} after={fetchScopeDetailsForSocket} />
+                )}
+                {feascommentseditingFormOpen && (
+                    <EditFeasibilityCommentsComponent quote={selectedQuoteId} onClose={() => { setFeasCommentsEditingFormOpen(!feascommentseditingFormOpen) }} after={fetchScopeDetailsForSocket} />
+                )}
+                {completeFeasabilityDiv && (
+                    <CompleteFeasability onClose={()=>{setCompleteFeasabilityDiv(!completeFeasabilityDiv)}} quoteId={selectedQuoteId} refId={selectedRefId} userId={selectedUser} after={fetchScopeDetailsForSocket}/>
                 )}
             </AnimatePresence>
         </div>

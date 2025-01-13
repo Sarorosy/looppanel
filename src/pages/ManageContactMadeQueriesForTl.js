@@ -9,7 +9,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, ListIcon, FileQuestion, UserCircle, UserCheck } from 'lucide-react';
+import { RefreshCcw, Filter, ListIcon, FileQuestion, UserCircle, UserCheck, X } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import { AnimatePresence, motion } from 'framer-motion';
 import SummaryPage from './SummaryPage';
@@ -19,7 +19,6 @@ import ManageTlQuery from './ManageTlQuery';
 import FollowingPage from './FollowingPage';
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
 
 import { io } from "socket.io-client";
 const socket = io("https://looppanelsocket.onrender.com", {
@@ -31,7 +30,7 @@ const socket = io("https://looppanelsocket.onrender.com", {
         autoConnect: true                
     });
 
-const ManageContactMadeQueries = ({ notification }) => {
+const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
     const [quotes, setQuotes] = useState([]);
     const [websites, setWebsites] = useState([]);
     const [selectedWebsite, setSelectedWebsite] = useState('');
@@ -49,7 +48,6 @@ const ManageContactMadeQueries = ({ notification }) => {
     const [feasPageOpen, setFeasPageOpen] = useState(false);
     const [tlPageOpen, setTlPageOpen] = useState(false);
     const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0)
-    const navigate = useNavigate();
 
     const userData = localStorage.getItem('user');
 
@@ -58,12 +56,7 @@ const ManageContactMadeQueries = ({ notification }) => {
     // Access the 'id' field
     const userId = userObject.id;
 
-    const loopuserData = localStorage.getItem('loopuser');
-
-    const loopuserObject = JSON.parse(loopuserData);
-
-    // Access the 'id' field
-    const loopuserId = loopuserObject.id;
+    
 
     DataTable.use(DT);
 
@@ -121,7 +114,6 @@ const ManageContactMadeQueries = ({ notification }) => {
     useEffect(() => {
         fetchQuotes(false);
         fetchWebsites();
-        notification();
     }, []);
 
     const fetchWebsites = async () => {
@@ -153,11 +145,11 @@ const ManageContactMadeQueries = ({ notification }) => {
         setLoading(true);
 
         let hasResponse = false;
-        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite }
+        let payload = { loop_user_id: loopUserId, user_id: instaUserId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite }
 
         if (nopayload) {
             // If nopayload is true, send an empty payload
-            payload = { loop_user_id: loopuserId, user_id: userId, };
+            payload = { loop_user_id: loopUserId, user_id: instaUserId, };
         }
 
         try {
@@ -192,7 +184,7 @@ const ManageContactMadeQueries = ({ notification }) => {
     useEffect(() => {
 
         socket.on("updateTable", (data) => {
-            if (data.isfeasability == 1 && data.feasability_user == loopuserObject.id) {
+            if (data.isfeasability == 1 && data.feasability_user == loopUserId) {
                 toast(data.fld_first_name + ' Submitted a request QuoteId ' + data.id + ' for refId ' + data.ref_id, {
                     icon: '💡',
                 });
@@ -215,11 +207,11 @@ const ManageContactMadeQueries = ({ notification }) => {
             }
 
             if (
-                data.all_details.user_id == loopuserObject.id ||
-                (data.all_details.isfeasability == 1 && data.all_details.feasability_status == "Pending" && data.all_details.feasability_user == loopuserObject.id) ||
-                followersArray.includes(loopuserObject.id)
+                data.all_details.user_id == loopUserId ||
+                (data.all_details.isfeasability == 1 && data.all_details.feasability_status == "Pending" && data.all_details.feasability_user == loopUserId) ||
+                followersArray.includes(loopUserId)
             )
-                if (data.user_id != loopuserObject.id) {
+                if (data.user_id != loopUserId) {
                     toast(data.user_name + " Sent a chat for Quote" + data.quote_id, {
                         icon: "💬",
                     })
@@ -234,7 +226,7 @@ const ManageContactMadeQueries = ({ notification }) => {
 
     useEffect(() => {
         socket.on('quoteReceived', (data) => {
-            if (data.user_id == loopuserObject.id) {
+            if (data.user_id == loopUserId) {
 
                 toast(" Admin Submitted price Quote for " + data.quote_id, {
                     icon: "💲",
@@ -249,7 +241,7 @@ const ManageContactMadeQueries = ({ notification }) => {
 
     useEffect(() => {
         socket.on('feasTransferred', (data) => {
-            if (data.user_id == loopuserObject.id) {
+            if (data.user_id == loopUserId) {
 
                 toast(data.user_name + " Transferred you a Feasability Check Request for " + data.quote_id, {
                     icon: "❓❗",
@@ -264,7 +256,7 @@ const ManageContactMadeQueries = ({ notification }) => {
 
     useEffect(() => {
         socket.on('feasabilityDone', (data) => {
-            if (data.user_id == loopuserObject.id) {
+            if (data.user_id == loopUserId) {
 
                 toast(data.user_name + " Completed the Feasability Check for " + data.quote_id, {
                     icon: "✅",
@@ -336,11 +328,27 @@ const ManageContactMadeQueries = ({ notification }) => {
     };
 
     return (
-        <div className="container bg-gray-100 w-full">
+        <motion.div
+                    initial={{ x: '100%' }}
+                    animate={{ x: 0 }}
+                    exit={{ x: '100%' }}
+                    transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
+                >
+                    
 
             {/* Filter Section */}
             <div className="mb-3 bg-white px-3 py-3 rounded aql">
+            <div className='flex items-center justify-between mb-5'>
                 <h1 className='text-xl font-bold mb-3'>Query History</h1>
+                <button
+                            onClick={onClose}
+                            className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
+                        >
+                            {/* <CircleX size={32} /> */}
+                            <X size={15} />
+                        </button>
+                        </div>
                 <div className='flex items-center space-x-2 '>
                     <div className="w-1/6">
                         <input
@@ -351,7 +359,7 @@ const ManageContactMadeQueries = ({ notification }) => {
                             onChange={(e) => setRefId(e.target.value)}
                         />
                     </div>
-                    <div className="w-1/5">
+                    <div className="w-1/4">
                         <input
                             type="text"
                             className="form-control"
@@ -360,7 +368,7 @@ const ManageContactMadeQueries = ({ notification }) => {
                             onChange={(e) => setKeyword(e.target.value)}
                         />
                     </div>
-                    <div className="w-1/5">
+                    <div className="w-1/4">
                         <select
                             id="user_id"
                             className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
@@ -394,17 +402,7 @@ const ManageContactMadeQueries = ({ notification }) => {
                             <UserCheck size={12} />
                             Following
                         </button>
-                        {loopuserObject.tl == 1 && (
-                            <button className="bg-gray-200 flex items-center relative" onClick={handleTlButtonClick} title='All Users Request'>
-                                <UserCircle size={15} />
-                                User Requests
-                            </button>
-                        )}
-                        {loopuserObject.id == "206" && (
-                            <button className="bg-gray-200 flex items-center relative" onClick={()=>{navigate("/query")}}>
-                                Scope Requests
-                            </button>
-                        )}
+                        
                         <button className="bg-gray-200 flex items-center relative" onClick={handleFeasButtonClick} title='Feasability Check'>
                             <FileQuestion size={12} />
                             Feasability Request
@@ -445,7 +443,7 @@ const ManageContactMadeQueries = ({ notification }) => {
 
                     <QueryDetails
                         onClose={toggleDetailsPage}
-
+                        userIdDefined={loopUserId}
                         queryId={selectedQuery.assign_id}
                         after={() => { fetchQuotes(false) }}
                     />
@@ -456,6 +454,7 @@ const ManageContactMadeQueries = ({ notification }) => {
                     <SummaryPage
                         onClose={toggleSummaryPage}
                         after={() => { fetchQuotes(false) }}
+                        userIdDefined={loopUserId}
                     />
 
                 )}
@@ -489,8 +488,8 @@ const ManageContactMadeQueries = ({ notification }) => {
                     },
                 },
             }} />
-        </div>
+        </motion.div>
     );
 };
 
-export default ManageContactMadeQueries;
+export default ManageContactMadeQueriesForTl;

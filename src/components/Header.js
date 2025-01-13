@@ -41,7 +41,7 @@ const Header = ({ requestPermission }) => {
   }, []);
 
   const handleLogout = () => {
-    sessionStorage.clear();
+    localStorage.clear();
     window.close();
   };
 
@@ -75,7 +75,7 @@ const Header = ({ requestPermission }) => {
   };
 
   useEffect(() => {
-    const authenticated = sessionStorage.getItem('authenticated');
+    const authenticated = localStorage.getItem('authenticated');
 
     if (!authenticated) {
       navigate('/login');
@@ -86,11 +86,11 @@ const Header = ({ requestPermission }) => {
     setUserMenuOpen(!userMenuOpen);
   };
 
-  const userData = sessionStorage.getItem('loopuser');
+  const userData = localStorage.getItem('loopuser');
   const userObject = JSON.parse(userData);
   const userName = userObject.fld_first_name;
 
-  const userData2 = sessionStorage.getItem('user');
+  const userData2 = localStorage.getItem('user');
   const userObject2 = JSON.parse(userData2);
 
   const handleNavigation = (path) => {

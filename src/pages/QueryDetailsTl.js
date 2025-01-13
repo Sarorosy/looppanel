@@ -9,6 +9,7 @@ import { CircleX, HistoryIcon, X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import AskForScopeAdmin from './AskForScopeAdmin';
 import AskForScopeTl from './AskForScopeTl';
+import AskForScope from './AskForScope';
 
 
 const QueryDetailsTl = ({ onClose, queryId, quotationId, after }) => {
@@ -24,7 +25,7 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [activityloading, setActivityLoading] = useState(false);
 
-    const userData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
 
@@ -289,10 +290,9 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after }) => {
 
                         </div>
                     </div>
-                    <AskForScopeTl queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId} />
+                    <AskForScope queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId} />
                 </div>
             )}
-
             <ToastContainer />
         </motion.div>
     );

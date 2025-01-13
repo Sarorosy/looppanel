@@ -3,12 +3,23 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp,Paperclip, History, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, Paperclip, History, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
 import HistorySideBar from './HistorySideBar';
 import FeasHistorySideBar from './FeasHistorySideBar';
+import { io } from "socket.io-client";
+
+
 const AskForScopeTl = ({ queryId, userType, quotationId }) => {
+    const socket = io("https://looppanelsocket.onrender.com", {
+            reconnection: true,             
+            reconnectionAttempts: 50,         
+            reconnectionDelay: 1000,      
+            reconnectionDelayMax: 5000,    
+            timeout: 20000,                 
+            autoConnect: true                
+        });
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -95,6 +106,46 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
             if (hasResponse) {
                 setLoading(false); // Hide the loader
             }
+        }
+    };
+
+    const fetchScopeDetailsForSocket = async () => {
+
+        try {
+            const response = await fetch(
+                'https://apacvault.com/Webapi/adminScopeDetails',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify({ ref_id: queryId, user_type: userType, quote_id: quotationId }),
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            console.log(data)
+            if (data.status) {
+                if (data.quoteInfo != null && Array.isArray(data.quoteInfo)) {
+
+                    const parsedQuoteInfo = data.quoteInfo.map((quote) => ({
+                        ...quote,
+                        relevant_file: quote.relevant_file
+                            ? JSON.parse(quote.relevant_file)
+                            : [], // Parse the file data if present
+                    }));
+
+                    setScopeDetails(parsedQuoteInfo); // Set the array of quotes
+                    setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
+                } else {
+                    setScopeDetails(null); // If no quoteInfo, set scopeDetails to null
+                }
+            } else {
+                console.error('Failed to fetch Details:', data.message);
+            }
+
+        } catch (error) {
+            console.error('Error fetching details:', error);
         }
     };
 
@@ -246,6 +297,52 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
             fetchScopeDetails(); // Fetch the scope details when the component mounts
         }
     }, [queryId]);
+
+    useEffect(() => {
+        socket.on('quoteReceived', (data) => {
+            if (data.ref_id == queryId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('quoteReceived');  // Clean up on component unmount
+        };
+    }, []);
+    useEffect(() => {
+        socket.on('discountReceived', (data) => {
+            if (data.quote_id == quotationId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('discountReceived');  // Clean up on component unmount
+        };
+    }, []);
+    useEffect(() => {
+            socket.on('feasabilityDone', (data) => {
+                if (data.quote_id == quotationId) {
+                    fetchScopeDetailsForSocket();
+                }
+            });
+    
+            return () => {
+                socket.off('feasabilityDone');  // Clean up on component unmount
+            };
+        }, []);
+
+    useEffect(() => {
+        socket.on('demoDone', (data) => {
+            if (data.ref_id == queryId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('demoDone');  // Clean up on component unmount
+        };
+    }, []);
 
     const formatDate = (timestamp) => {
         const date = new Date(timestamp * 1000); // Convert Unix timestamp to Date object
@@ -415,14 +512,14 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                     ))}
                                                                 </p>
                                                             )}
-                                                            
+
                                                             {quote.service_name && quote.plan && (
                                                                 <>
                                                                     <p><strong>Service Required:</strong> {quote.service_name}</p>
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                             {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
+                                                            {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
                                                                 <div>
                                                                     <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
                                                                     {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
@@ -498,7 +595,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                             )}
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                 <>
-                                                                    {quote.old_plan && (quote.old_plan != quote.plan && (
+                                                                    {quote.old_plan && (
                                                                         <p className='text-gray-600'>
                                                                             <strong>Quote Price For Old Plan:</strong>{' '}
                                                                             {(() => {
@@ -513,7 +610,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                             })()}
                                                                         </p>
 
-                                                                    ))}
+                                                                    )}
                                                                     {quote.quote_status != 2 && (
                                                                         <p>
                                                                             <strong>Quote Price:</strong>{' '}
@@ -670,7 +767,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                             </p>
                                                                             {quote.feas_file_name && (
                                                                                 <p className='flex items-center'>Feasability Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
-                                                                        )}
+                                                                            )}
                                                                         </>
                                                                     )}
                                                                     {historyLoading && <CustomLoader />}
@@ -705,7 +802,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                             )}
 
                                                         </div>
-                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} />
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} allDetails={quote} />
                                                     </td>
                                                 </tr>
                                             )}

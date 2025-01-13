@@ -1,25 +1,39 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast as toastify, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { ScaleLoader } from 'react-spinners';
 import { File, Paperclip, RefreshCcw, X } from 'lucide-react';
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
+import { io } from "socket.io-client";
+const socket = io("https://looppanelsocket.onrender.com", {
+        reconnection: true,             
+        reconnectionAttempts: 50,         
+        reconnectionDelay: 1000,      
+        reconnectionDelayMax: 5000,    
+        timeout: 20000,                 
+        autoConnect: true                
+    });
 
-export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction }) => {
+
+export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,finalfunctionforsocket ,allDetails}) => {
     const [messages, setMessages] = useState('');
     const [newMessage, setNewMessage] = useState('');
     const [loadingMessages, setLoadingMessages] = useState(false);
     const [buttonDisabled, setButtonDisabled] = useState(false);
     const [file, setFile] = useState(null);
     const [fileName, setFileName] = useState("");
-    const [markStatus, setMarkStatus] = useState(true);
+    const [markStatus, setMarkStatus] = useState(false);
 
-    const userData = sessionStorage.getItem('user');
+    
+
+    const userData = localStorage.getItem('user');
 
 
     const userObject = JSON.parse(userData);
 
-    const loopUserData = sessionStorage.getItem('loopuser');
+    const loopUserData = localStorage.getItem('loopuser');
 
     const chatContainerRef = useRef(null);
 
@@ -52,10 +66,26 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction }
             setLoadingMessages(false);
         }
     };
+    const fetchMessagesForSocket = async () => {
+        try {
+            const response = await fetch('https://apacvault.com/Webapi/getquotechatapi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ quote_id: quoteId, user_id: loopUserObject.id })
+            });
+            const data = await response.text(); // Expecting an HTML response
+            setMessages(data);
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+        }
+    };
+   
 
     const sendMessage = async () => {
         if (!newMessage.trim()) {
-            toast.error('Message is required');
+            toastify.error('Message is required');
             return;
         }
 
@@ -83,12 +113,20 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction }
                 setFile(null); // Clear the file input after sending
                 setFileName('');
                 finalFunction();
+                const user_name = loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name;
+                socket.emit('sendmessage',{
+                    quote_id: quoteId,
+                    ref_id :refId,
+                    user_name: user_name,
+                    all_details:allDetails,
+                    user_id:loopUserObject.id
+                })
             } else {
-                toast.error('Failed to send message');
+                toastify.error('Failed to send message');
             }
         } catch (error) {
             console.error('Error sending message:', error);
-            toast.error('Error sending message');
+            toastify.error('Error sending message');
         } finally {
             setButtonDisabled(false);
         }
@@ -98,10 +136,24 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction }
         if (quoteId) {
             fetchMessages();
         }
-        if(loopUserObject.id == 1){
+        if((loopUserObject.id == 1 || loopUserObject.id == 342) && allDetails.status == 0){
             setMarkStatus(true);
         }
     }, [quoteId]);
+
+    useEffect(() => {
+    socket.on('chatresponse', (data) => {
+        if(data.quote_id == quoteId && data.ref_id == refId){
+            
+            fetchMessagesForSocket();
+        }
+    });
+
+    return () => {
+        socket.off('chatresponse');  // Clean up on component unmount
+    };
+}, []);
+
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -202,7 +254,25 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction }
                     </div>
                 )}
             </div>
-
+            <Toaster position="top-center" reverseOrder={false} toastOptions={{
+                            // Define default options
+                            className: 'border',
+                            duration: 3000,
+                            removeDelay: 500,
+                            style: {
+                                background: '#161616FF',
+                                color: '#fff',
+                            },
+            
+                            // Default options for specific types
+                            success: {
+                                duration: 3000,
+                                iconTheme: {
+                                    primary: 'green',
+                                    secondary: 'black',
+                                },
+                            },
+                        }} />
         </div>
     );
 };

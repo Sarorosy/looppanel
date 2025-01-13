@@ -23,7 +23,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
     const [isVisible, setIsVisible] = useState(false);
     const [activityloading, setActivityLoading] = useState(false);
 
-    const userData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
 
@@ -80,7 +80,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
 
     const close = () => {
         onClose();
-        if (after) { after() }
+        //if (after) { after() }
     }
 
     return (
@@ -288,7 +288,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
 
                         </div>
                     </div>
-                    <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId} viewAll={viewAll}/>
+                    <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId} viewAll={viewAll} clientEmail={queryInfo.email_id}/>
                 </div>
             )}
 

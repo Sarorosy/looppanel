@@ -65,7 +65,7 @@ function DecryptPage() {
                 if (data.status === "success") {
                     setResponseMessage("Verification successful."); // Message for step 1
                     setSuccessStep1(true); // Step 1 success
-                    sessionStorage.setItem("loopuser", JSON.stringify(data.data))
+                    localStorage.setItem("loopuser", JSON.stringify(data.data))
                     setStep(2); // Move to step 2 (Authentication)
                 } else {
                     setResponseMessage(data.message || "Unauthorized access.");
@@ -98,8 +98,8 @@ function DecryptPage() {
                 if (data.status === "success") {
                     setResponseMessage2("Authentication successful!"); // Step 2 success
                     setSuccessStep2(true); // Step 2 success
-                    sessionStorage.setItem("user", JSON.stringify(data.data));
-                    sessionStorage.setItem('authenticated', true);
+                    localStorage.setItem("user", JSON.stringify(data.data));
+                    localStorage.setItem('authenticated', true);
                     const userType = data.data.user_type; // Retrieve user type from response
                     setTimeout(() => {
                         if (decryptedEmail == "puneet@redmarkediting.com" || decryptedEmail == "clientsupport@chanakyaresearch.net") {

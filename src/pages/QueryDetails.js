@@ -11,7 +11,7 @@ import AskForScope from './AskForScope';
 import SubmitRequestQuote from './SubmitRequestQuote';
 
 
-const QueryDetails = ({ onClose, queryId, quotationId, after }) => {
+const QueryDetails = ({ onClose, queryId, quotationId, after, userIdDefined }) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -24,7 +24,7 @@ const QueryDetails = ({ onClose, queryId, quotationId, after }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [activityloading, setActivityLoading] = useState(false);
 
-    const userData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
 
@@ -309,7 +309,7 @@ const QueryDetails = ({ onClose, queryId, quotationId, after }) => {
 
                         </div>
                     </div>
-                    <AskForScope queryId={queryInfo.assign_id} quotationId={quotationId} userType={userObject.fld_admin_type} />
+                    <AskForScope queryId={queryInfo.assign_id} clientName={queryInfo.name} quotationId={quotationId} userType={userObject.fld_admin_type} userIdDefined={userIdDefined}/>
 
                 </div>
             )}

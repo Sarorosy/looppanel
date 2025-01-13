@@ -12,9 +12,17 @@ import EditRequestForm from './EditRequestForm';
 import 'react-quill/dist/quill.snow.css';
 import ReactQuill from 'react-quill';
 import TransferForm from './TransferForm';
-
+import { io } from "socket.io-client";
 
 const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) => {
+    const socket = io("https://looppanelsocket.onrender.com", {
+        reconnection: true,
+        reconnectionAttempts: 50,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 20000,
+        autoConnect: true
+    });
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -29,8 +37,8 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
     const [comment, setComment] = useState('');
     const [selectedUser, setSelectedUser] = useState(null);
     const [adminComments, setAdminComments] = useState('');
-    const userData = sessionStorage.getItem('user');
-    const loopuserData = sessionStorage.getItem('loopuser');
+    const userData = localStorage.getItem('user');
+    const loopuserData = localStorage.getItem('loopuser');
     const [expandedRowIndex, setExpandedRowIndex] = useState(null);
     const [addNewFormOpen, setAddNewFormOpen] = useState(false);
     const [editFormOpen, setEditFormOpen] = useState(false);
@@ -99,6 +107,62 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
         }
     };
 
+    const fetchScopeDetailsForSocket = async () => {
+
+        try {
+            const response = await fetch(
+                'https://apacvault.com/Webapi/adminScopeDetails',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify({ ref_id: queryId, user_type: userType, quote_id: quotationId }), // Send the ref_id
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+
+
+            if (data.status) {
+                if (data.quoteInfo != null && Array.isArray(data.quoteInfo)) {
+                    // If quoteInfo is an array, process each entry
+                    const parsedQuoteInfo = data.quoteInfo.map((quote) => ({
+                        ...quote,
+                        relevant_file: quote.relevant_file
+                            ? JSON.parse(quote.relevant_file)
+                            : [], // Parse the file data if present
+                    }));
+
+                    setScopeDetails(parsedQuoteInfo); // Set the array of quotes
+
+
+                    setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
+                } else {
+                    setScopeDetails(null); // If no quoteInfo, set scopeDetails to null
+                }
+            } else {
+                console.error('Failed to fetch Details:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching details:', error);
+        }
+    };
+
+    useEffect(() => {
+        const savedComments = localStorage.getItem(`feasabilityComments_${quotationId}`);
+        if (savedComments) {
+            setFeasabilityComments(savedComments);  // Set the comment state for this specific quotationId
+        }
+    }, [quotationId]);  // Re-run when the `quotationId` changes
+    
+
+
+    const handleCommentsChange = (value) => {
+        setFeasabilityComments(value);
+        localStorage.setItem(`feasabilityComments_${quotationId}`, value);
+    };
+
     const checkAccessType = () => {
         // if(scopeDetails.isfeasability == 1 && scopeDetails[0].feasability_user != thisUserId){
         //     toast.error("You dont have access for this");
@@ -157,6 +221,29 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
         }
     };
 
+
+    useEffect(() => {
+        socket.on('discountReceived', (data) => {
+            if (data.quote_id == quotationId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('discountReceived');  // Clean up on component unmount
+        };
+    }, []);
+
+    useEffect(() => {
+        socket.on('demoDone', (data) => {
+            if (data.ref_id == queryId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+        return () => {
+            socket.off('demoDone');  // Clean up on component unmount
+        };
+    }, []);
 
     const toggleTransferForm = () => setTransferForm((prev) => !prev);
 
@@ -372,6 +459,12 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                             if (result.status) {
                                                                 toast.success("Feasibility completed successfully!");
                                                                 finalFunction();
+                                                                socket.emit("feasabilityCompleted", {
+                                                                    ref_id: queryId,
+                                                                    quote_id: quotationId,
+                                                                    user_id: quote.user_id ,
+                                                                    user_name: loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name
+                                                                })
                                                             } else {
                                                                 toast.error(result.message || "Failed to complete feasibility.");
                                                             }
@@ -386,7 +479,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                     </label>
                                                     <ReactQuill
                                                         value={feasabilityComments}
-                                                        onChange={setFeasabilityComments}
+                                                        onChange={handleCommentsChange}
                                                         className="mt-1"
                                                         theme="snow"
                                                         placeholder="Add your comments here"
@@ -427,7 +520,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                         </button>
                                                     </div>
                                                 </form>
-                                                <Chat quoteId={quotationId} refId={queryId} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} />
+                                                <Chat quoteId={quotationId} refId={queryId} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} allDetails={quote} />
                                             </div>
                                         )}
                                     </>) : (
