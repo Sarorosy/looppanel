@@ -17,7 +17,7 @@ import AddTags from './AddTags';
 import AddFollowers from './AddFollowers';
 import { io } from "socket.io-client";
 
-const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName }) => {
+const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName }) => {
     const socket = io("https://looppanelsocket.onrender.com", {
         reconnection: true,
         reconnectionAttempts: 50,
@@ -76,7 +76,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
     const loopUserObject = JSON.parse(loopuserData);
 
     const thisUserId = (userIdDefined && userIdDefined != null && userIdDefined != "") ? userIdDefined : loopUserObject.id
-    
+
 
     const fetchScopeDetails = async () => {
         setLoading(true); // Show loading spinner
@@ -270,7 +270,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
             ref_id: assign_id,
             quote_id: quote_id,
             user_id: user_id,
-           
+
         };
 
         try {
@@ -286,9 +286,9 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
             if (data.status) {
                 toast.success("The quote has been successfully submitted to the admin.");
                 socket.emit("updateRequest", {
-                    quote_id:quote_id,
+                    quote_id: quote_id,
                     ref_id: assign_id,
-                    user_name : loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name
+                    user_name: loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name
                 })
                 setTimeout(() => {
                     fetchScopeDetails();
@@ -429,12 +429,18 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
                                                         {expandedRowIndex == index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
 
-                                                    {(quote.quote_status == 0 || quote.quote_status == 1) && (
-                                                        <button onClick={() => { toggleEditForm(quote.quoteid) }}
-                                                            className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
-                                                            <Settings2 className='p-1' />
-                                                        </button>
-                                                    )}
+                                                    {
+                                                        (quote.isfeasability == 1 && quote.feasability_status == "Pending") ||
+                                                            (quote.isfeasability == 0 && quote.status == 0) ? (
+                                                            <button
+                                                                onClick={() => { toggleEditForm(quote.quoteid); }}
+                                                                className='flex items-center rounded-full border-2 border-blue-500 mx-2'
+                                                            >
+                                                                <Settings2 className='p-1' />
+                                                            </button>
+                                                        ) : null
+                                                    }
+
                                                     <button onClick={() => { toggleHashEditForm(quote.quoteid, quote.user_id) }}
                                                         className='flex items-center rounded-full border-2 border-blue-500'>
                                                         <Hash className='p-1' />
@@ -769,7 +775,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined,clientName 
                     )}
                     <AnimatePresence>
                         {addNewFormOpen && (
-                            <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails} userIdDefined={userIdDefined} clientName={clientName}/>
+                            <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails} userIdDefined={userIdDefined} clientName={clientName} />
                         )}
                         {editFormOpen && (
                             <EditRequestForm quoteId={selectedQuoteId} refId={queryId} onClose={() => { setEditFormOpen(!editFormOpen) }} after={fetchScopeDetails} />
