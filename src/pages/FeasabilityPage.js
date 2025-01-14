@@ -194,7 +194,7 @@ const FeasabilityPage = ({ onClose, after }) => {
             className: 'text-center',
         },
         {
-            title: 'Feasability Status',
+            title: 'Feasibility Status',
             data: 'feasability_status', // Replace with actual field name
             orderable: false,
             render: function (data, type, row) {
@@ -259,7 +259,7 @@ const FeasabilityPage = ({ onClose, after }) => {
         >
             <div className='bg-blue-400 text-white py-3 mb-3'>
                 <div className='container flex items-center justify-between p-0'>
-                <h2 className="text-xl font-semibold">All Feasability Request</h2>
+                <h2 className="text-xl font-semibold">All Feasibility Request</h2>
 
 
                 <button

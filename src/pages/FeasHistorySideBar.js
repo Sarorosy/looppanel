@@ -49,7 +49,7 @@ const FeasHistorySideBar = ({ refId, quoteId, onClose }) => {
             className="fixed right-0 top-0 h-full w-1/3 bg-gray-100 shadow-lg z-50 overflow-y-auto"
         >
             <div className='flex items-center justify-between bg-blue-400 text-white p-3'>
-                <h2 className="text-xl font-semibold">Feasability History </h2>
+                <h2 className="text-xl font-semibold">Feasibility History </h2>
 
                 <button
                     onClick={onClose}

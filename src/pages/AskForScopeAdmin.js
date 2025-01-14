@@ -16,6 +16,7 @@ import EditRequestForm from './EditRequestForm';
 import EditPriceComponent from './EditPriceComponent';
 import EditFeasibilityCommentsComponent from './EditFeasabilityCommentsComponent';
 import CompleteFeasability from './CompleteFeasability';
+import MergedHistoryComponent from './MergedHistoryComponent';
 
 const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail }) => {
     const socket = io("https://looppanelsocket.onrender.com", {
@@ -90,7 +91,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
         setUserIdForTag(user_id);
         setFollowersFormOpen((prev) => !prev)
     };
-    const toggleCompleteFeasability = (id,ref_id, user_id) => {
+    const toggleCompleteFeasability = (id, ref_id, user_id) => {
         setSelectedQuoteId(id);
         setSelectedRefId(ref_id);
         setSelectedUser(user_id);
@@ -532,7 +533,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                         <p className={`cursor-help flex items-center mx-2 px-2 py-1 rounded-full ${isFeasabilityCompleted.feasability_status === 'Pending'
                             ? 'bg-orange-100 text-orange-500'
                             : 'bg-green-100 text-green-600'
-                            }`} title={`${isFeasabilityCompleted.feasability_status === 'Pending' ? 'Feasability is Pending for his RefId' : 'Feasability has been completed for this RefId'}`}>Feasability {isFeasabilityCompleted.feasability_status == 'Pending' ? <CirclePause size={18} className='ml-2 text-orange-500' /> : <CircleCheck size={18} className='ml-2 text-green-700' />}</p>
+                            }`} title={`${isFeasabilityCompleted.feasability_status === 'Pending' ? 'Feasibility is Pending for his RefId' : 'Feasibility has been completed for this RefId'}`}>Feasibility {isFeasabilityCompleted.feasability_status == 'Pending' ? <CirclePause size={18} className='ml-2 text-orange-500' /> : <CircleCheck size={18} className='ml-2 text-green-700' />}</p>
                     )}
                     {viewAll && (
                         <button onClick={fetchAllScopeDetails} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
@@ -625,10 +626,15 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                         }
                                                     </span>
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
-                                                        <><br /><span className='text-green-700 text-sm' style={{ fontSize: "11px" }}>Feasability Completed</span></>
+                                                        <><br /><span className='text-green-700 text-sm' style={{ fontSize: "11px" }}>Feasibility Completed</span></>
                                                     )}
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Pending" && (
-                                                        <><br /><span className='text-red-700 text-sm font-bold' style={{ fontSize: "11px" }}>Feasability Pending</span></>
+                                                        <><br /><span className='text-red-700 text-sm font-bold' style={{ fontSize: "11px" }}>Feasibility Pending</span></>
+                                                    )}
+                                                    {quote.isfeasability == 1 && quote.feasability_status == "Pending" && loopUserObject.id != "206" && (
+                                                        <button onClick={() => { toggleCompleteFeasability(quote.quoteid, quote.assign_id, quote.user_id) }} className='bg-green-100 text-green-600 px-2 py-1 rounded' style={{fontSize:"11px"}}>
+                                                            Give Feasibility
+                                                        </button>
                                                     )}
                                                 </td>
                                                 <td className=" px-4 py-2 flex items-center">
@@ -672,12 +678,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                                         PTP
                                                                     </span>
                                                                 )}
-                                                                <button
-                                                                    onClick={() => toggleHistoryDiv(quote.quoteid)}
-                                                                    className="ml-2 bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
-                                                                >
-                                                                    <History size={15} />
-                                                                </button>
+
                                                                 {quote.edited == 1 && (
                                                                     <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
                                                                 )}
@@ -722,7 +723,6 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                                     <p><strong>Final Comments:</strong> {quote.final_comments}</p>
                                                                 </div>
                                                             )}
-                                                            <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
                                                                 <div>
                                                                     <strong>Relevant Files:</strong>
@@ -742,28 +742,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                                     </div>
                                                                 </div>
                                                             )}
-                                                            <p className='flex items-center'>
-                                                                <strong className='mr-2'>Quote Status:</strong>
-                                                                <strong
-                                                                    className={quote.quote_status == 0
-                                                                        ? "badge-danger py-0 px-1 f-12 font-semibold text-white" // Red for Pending
-                                                                        : quote.quote_status == 1
-                                                                            ? "badge-success  py-0 px-1 f-12 font-semibold text-white" // Green for Submitted
-                                                                            : "badge-warning  py-0 px-1 f-12 font-semibold text-white"} // Yellow for Discount Requested
-                                                                >
-                                                                    {quote.quote_status == 0
-                                                                        ? "Pending"
-                                                                        : quote.quote_status == 1
-                                                                            ? "Submitted"
-                                                                            : "Discount Requested"}
-                                                                </strong>
-                                                                {(quote.quote_status == 1) && loopUserObject.id != "206" && (
-                                                                    <button onClick={() => { toggleEditingForm(quote) }}
-                                                                        className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
-                                                                        <Pencil className='p-1' />
-                                                                    </button>
-                                                                )}
-                                                            </p>
+
 
                                                             {quote.ptp != null && (
                                                                 <>
@@ -848,6 +827,15 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                                             })()}
                                                                         </p>
                                                                     )}
+                                                                    <p className='flex items-center'>
+                                                                        Edit Quote Price
+                                                                        {(quote.quote_status == 1) && loopUserObject.id != "206" && (
+                                                                            <button onClick={() => { toggleEditingForm(quote) }}
+                                                                                className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
+                                                                                <Pencil className='p-1' />
+                                                                            </button>
+                                                                        )}
+                                                                    </p>
                                                                     {quote.user_comments && (
                                                                         <p><strong style={{ textDecoration: "underline" }}>Admin Comments:</strong> {quote.user_comments}</p>
                                                                     )}
@@ -1001,30 +989,6 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                             {quote.isfeasability == 1 && (
                                                                 <>
                                                                     <div className='flex flex-col items-start justify-start'>
-                                                                        <>
-                                                                            <p><strong>Feasability Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "badge-danger p-1 f-10 rounded" : "badge-success p-1 f-10 rounded"}`}>{quote.feasability_status}</span></p>
-
-
-
-                                                                        </>
-
-
-                                                                        <p className='flex items-center mt-2'>{quote.feasability_history.formatted_message}
-
-                                                                            <button
-                                                                                onClick={() => toggleFeasHistoyDiv(quote.assign_id, quote.quoteid)}
-                                                                                className="bg-blue-400 text-white p-1 rounded hover:bg-blue-600 ml-3"
-                                                                            >
-                                                                                <History size={15} />
-                                                                            </button>
-                                                                            {quote.feasability_status == "Pending" && loopUserObject.id != "206" && (
-                                                                                <button onClick={()=>{toggleCompleteFeasability(quote.quoteid,quote.assign_id, quote.user_id)}} className='bg-green-100 text-sm text-green-600 px-2 py-1 rounded mx-2'>
-                                                                                    Give feasability
-                                                                                </button>
-                                                                            )}
-                                                                        </p>
-
-
 
 
                                                                     </div>
@@ -1045,43 +1009,17 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                                                 />
                                                                             </p>
                                                                             {quote.feas_file_name && (
-                                                                                <p className='flex items-center'>Feasability Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
+                                                                                <p className='flex items-center'>Feasibility Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
                                                                             )}
                                                                         </>
                                                                     )}
-                                                                    {historyLoading && <CustomLoader />}
-                                                                    {historyData.length > 0 && (
-                                                                        <div className="mt-4 space-y-4">
-                                                                            <strong className="">Feasibility Check History:</strong>
-                                                                            <div className="">
-                                                                                {historyData.map((historyItem, index) => (
-                                                                                    <div key={historyItem.id} className="mb-4">
-                                                                                        <div className="flex items-start space-x-3">
-                                                                                            {/* Timeline Icon */}
-                                                                                            <div className="w-h-2 bg-blue-500 rounded-full mt-1"></div>
-                                                                                            <div className="flex flex-col">
-                                                                                                {/* User Details */}
-                                                                                                <p className=" font-semibold text-gray-700">
-                                                                                                    {historyItem.from_first_name} {historyItem.from_last_name}
-                                                                                                    {historyItem.to_first_name && historyItem.to_first_name && (<span className="text-gray-500 text-xs"> to </span>)}
 
-                                                                                                    {historyItem.to_first_name} {historyItem.to_last_name}
-                                                                                                </p>
-                                                                                                <p className=" text-gray-500">{historyItem.created_at}</p>
-                                                                                                {/* Message */}
-                                                                                                <p className="text-gray-600">{historyItem.message}</p>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                ))}
-                                                                            </div>
-                                                                        </div>
-                                                                    )}
                                                                 </>
                                                             )}
 
                                                         </div>
                                                         <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} allDetails={quote} finalfunctionforsocket={fetchScopeDetailsForSocket} />
+                                                        <MergedHistoryComponent quoteId={quote.quoteid} refId={quote.assign_id} />
                                                     </td>
                                                 </tr>
                                             )}
@@ -1123,7 +1061,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                     <EditFeasibilityCommentsComponent quote={selectedQuoteId} onClose={() => { setFeasCommentsEditingFormOpen(!feascommentseditingFormOpen) }} after={fetchScopeDetailsForSocket} />
                 )}
                 {completeFeasabilityDiv && (
-                    <CompleteFeasability onClose={()=>{setCompleteFeasabilityDiv(!completeFeasabilityDiv)}} quoteId={selectedQuoteId} refId={selectedRefId} userId={selectedUser} after={fetchScopeDetailsForSocket}/>
+                    <CompleteFeasability onClose={() => { setCompleteFeasabilityDiv(!completeFeasabilityDiv) }} quoteId={selectedQuoteId} refId={selectedRefId} userId={selectedUser} after={fetchScopeDetailsForSocket} />
                 )}
             </AnimatePresence>
         </div>

@@ -333,7 +333,7 @@ const ManageTlQuery = ({ onClose }) => {
             },
         },
         {
-            title: 'Feasability Status',
+            title: 'Feasibility Status',
             data: 'feasability_status', // Replace with actual field name
             orderable: false,
             render: function (data, type, row) {
@@ -524,7 +524,7 @@ const ManageTlQuery = ({ onClose }) => {
                                 value={feasStatus}
                                 onChange={(e) => setFeasStatus(e.target.value)}
                             >
-                                <option value="">Feasability Status</option>
+                                <option value="">Feasibility Status</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Completed">Completed</option>
                             </select>

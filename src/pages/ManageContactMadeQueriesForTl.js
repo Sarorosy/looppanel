@@ -243,7 +243,7 @@ const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
         socket.on('feasTransferred', (data) => {
             if (data.user_id == loopUserId) {
 
-                toast(data.user_name + " Transferred you a Feasability Check Request for " + data.quote_id, {
+                toast(data.user_name + " Transferred you a Feasibility Check Request for " + data.quote_id, {
                     icon: "❓❗",
                 });
             }
@@ -258,7 +258,7 @@ const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
         socket.on('feasabilityDone', (data) => {
             if (data.user_id == loopUserId) {
 
-                toast(data.user_name + " Completed the Feasability Check for " + data.quote_id, {
+                toast(data.user_name + " Completed the Feasibility Check for " + data.quote_id, {
                     icon: "✅",
                 });
             }
@@ -403,9 +403,9 @@ const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
                             Following
                         </button>
                         
-                        <button className="bg-gray-200 flex items-center relative" onClick={handleFeasButtonClick} title='Feasability Check'>
+                        <button className="bg-gray-200 flex items-center relative" onClick={handleFeasButtonClick} title='Feasibility Check'>
                             <FileQuestion size={12} />
-                            Feasability Request
+                            Feasibility Request
                             <span style={{ top: "-15px", right: "-10px" }} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
                                 {pendingFeasRequestCount}
                             </span>

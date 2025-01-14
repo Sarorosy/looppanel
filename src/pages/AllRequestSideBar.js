@@ -109,7 +109,7 @@ const AllRequestSideBar = ({ refId, onClose }) => {
             },
         },
         {
-            title: 'Feasability Status',
+            title: 'Feasibility Status',
             data: 'feasability_status', // Replace with actual field name
             orderable: false,
             render: function (data, type, row) {

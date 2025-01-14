@@ -156,10 +156,10 @@ const ClientEmailSideBar = ({ refIds, onClose }) => {
                                                         }
                                                     </span>
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
-                                                        <><br /><span className='text-green-700 text-sm' style={{ fontSize: "11px" }}>Feasability Completed</span></>
+                                                        <><br /><span className='text-green-700 text-sm' style={{ fontSize: "11px" }}>Feasibility Completed</span></>
                                                     )}
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Pending" && (
-                                                        <><br /><span className='text-red-700 text-sm font-bold' style={{ fontSize: "11px" }}>Feasability Pending</span></>
+                                                        <><br /><span className='text-red-700 text-sm font-bold' style={{ fontSize: "11px" }}>Feasibility Pending</span></>
                                                     )}
                                                 </td>
                                                 <td className=" px-4 py-2 flex items-center">
@@ -372,7 +372,7 @@ const ClientEmailSideBar = ({ refIds, onClose }) => {
                                                                 <>
                                                                     <div className='flex items-center'>
                                                                         <>
-                                                                            <p><strong>Feasability Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "badge-danger p-1 f-10 rounded" : "badge-success p-1 f-10 rounded"}`}>{quote.feasability_status}</span></p>
+                                                                            <p><strong>Feasibility Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "badge-danger p-1 f-10 rounded" : "badge-success p-1 f-10 rounded"}`}>{quote.feasability_status}</span></p>
 
                                                                            
                                                                             
@@ -390,7 +390,7 @@ const ClientEmailSideBar = ({ refIds, onClose }) => {
                                                                                 />
                                                                             </p>
                                                                             {quote.feas_file_name && (
-                                                                                <p className='flex items-center'>Feasability Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
+                                                                                <p className='flex items-center'>Feasibility Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
                                                                             )}
                                                                         </>
                                                                     )}

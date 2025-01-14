@@ -106,7 +106,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     const handleExport = () => {
         // Define the custom headers and map the data
-        const headers = ['Ref ID', 'Ask For Scope Id' , 'Client Name', 'CRM Name','Currrency', 'Comments', 'Service', 'Quote Status', 'Feasability Status', 'Created On']; // Define your custom table headings
+        const headers = ['Ref ID', 'Ask For Scope Id' , 'Client Name', 'CRM Name','Currrency', 'Comments', 'Service', 'Quote Status', 'Feasibility Status', 'Created On']; // Define your custom table headings
         const filteredData = quotes
             .filter((row) => selectedRows.includes(row.id))
             .map((row) => ({
@@ -382,7 +382,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     icon: '💡',
                 });
             } else if (data.isfeasability == 1) {
-                toast(data.fld_first_name + ' Created Feasability request Quote ' + data.id + ' for refId ' + data.ref_id, {
+                toast(data.fld_first_name + ' Created Feasibility request Quote ' + data.id + ' for refId ' + data.ref_id, {
                     icon: '❓❗',
                 });
             }
@@ -675,7 +675,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             },
         },
         {
-            title: 'Feasability Status',
+            title: 'Feasibility Status',
             data: 'feasability_status', // Replace with actual field name
             orderable: false,
             render: function (data, type, row) {
@@ -882,7 +882,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 value={feasStatus}
                                 onChange={(e) => setFeasStatus(e.target.value)}
                             >
-                                <option value="">Feasability Status</option>
+                                <option value="">Feasibility Status</option>
                                 <option value="Pending">Pending</option>
                                 <option value="Completed">Completed</option>
                             </select>

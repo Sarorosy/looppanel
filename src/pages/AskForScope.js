@@ -16,6 +16,7 @@ import FeasHistorySideBar from './FeasHistorySideBar';
 import AddTags from './AddTags';
 import AddFollowers from './AddFollowers';
 import { io } from "socket.io-client";
+import MergedHistoryComponent from './MergedHistoryComponent';
 
 const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName }) => {
     const socket = io("https://looppanelsocket.onrender.com", {
@@ -431,7 +432,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
 
                                                     {
                                                         (quote.isfeasability == 1 && quote.feasability_status == "Pending") ||
-                                                            (quote.isfeasability == 0 && quote.status == 0) ? (
+                                                            (quote.quote_status == 0) ? (
                                                             <button
                                                                 onClick={() => { toggleEditForm(quote.quoteid); }}
                                                                 className='flex items-center rounded-full border-2 border-blue-500 mx-2'
@@ -488,12 +489,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                         PTP
                                                                     </span>
                                                                 )}
-                                                                <button
-                                                                    onClick={() => toggleHistoryDiv(quote.quoteid)}
-                                                                    className="ml-2 bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
-                                                                >
-                                                                    <History size={15} />
-                                                                </button>
+                                                                
                                                                 {quote.edited == 1 && (
                                                                     <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
                                                                 )}
@@ -542,7 +538,6 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 </div>
                                                             )}
 
-                                                            <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
                                                                 <div>
                                                                     <strong>Relevant Files:</strong>
@@ -650,24 +645,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                     )}
                                                                 </>
                                                             )}
-                                                            {quote.submittedtoadmin == "true" && (
-                                                                <p>
-                                                                    <strong>Quote Status:</strong>
-                                                                    <span
-                                                                        className={quote.quote_status == 0
-                                                                            ? "badge-danger p-1 f-10" // Red for Pending
-                                                                            : quote.quote_status == 1
-                                                                                ? "badge-success p-1 f-10" // Green for Submitted
-                                                                                : "badge-warning p-1 f-10"} // Yellow for Discount Requested
-                                                                    >
-                                                                        {quote.quote_status == 0
-                                                                            ? "Pending"
-                                                                            : quote.quote_status == 1
-                                                                                ? "Submitted"
-                                                                                : "Discount Requested"}
-                                                                    </span>
-                                                                </p>
-                                                            )}
+                                                            
 
                                                             {assignQuoteInfo && assignQuoteInfo != false && (
                                                                 <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
@@ -686,15 +664,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 <>
                                                                     <div className='flex items-center'>
                                                                         <>
-                                                                            <p><strong>Feasability Status:</strong> <span className={`${quote.feasability_status == "Pending" ? "badge-danger p-1 f-10 rounded-sm px-2 font-semibold ml-2" : "badge-success p-1 f-10 rounded-sm px-2 font-semibold ml-2"}`}>{quote.feasability_status}</span></p>
-
-                                                                            {/* Button to View History */}
-                                                                            <button
-                                                                                onClick={() => toggleFeasHistoyDiv(quote.assign_id, quote.quoteid)}
-                                                                                className="bg-blue-400 text-white p-1 rounded hover:bg-blue-600 ml-3"
-                                                                            >
-                                                                                <History size={15} />
-                                                                            </button>
+                                        
                                                                             {quote.feasability_status == "Completed" && quote.submittedtoadmin == "false" && (
                                                                                 <button
                                                                                     onClick={() => {
@@ -720,7 +690,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                                 />
                                                                             </p>
                                                                             {quote.feas_file_name && (
-                                                                                <p className='flex items-center'>Feasability Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
+                                                                                <p className='flex items-center'>Feasibility Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
                                                                             )}
                                                                         </>
                                                                     )}
@@ -756,6 +726,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
 
                                                         </div>
                                                         <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} finalfunctionforsocket={fetchScopeDetailsForScoket} allDetails={quote} />
+                                                        <MergedHistoryComponent quoteId={quote.quoteid} refId={quote.assign_id} />
                                                     </td>
 
                                                 </tr>

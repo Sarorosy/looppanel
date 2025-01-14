@@ -195,14 +195,14 @@ const AllFeasPage = ({ onClose }) => {
             },
         },
         {
-            title: 'Feasability Status',
+            title: 'Feasibility Status',
             data: 'feasability_status', // Replace with actual field name
             orderable: false,
             render: function (data, type, row) {
                 if (data == 'Pending') {
-                    return '<span class="text-red-600 font-bold">Feasability Pending</span>';
+                    return '<span class="text-red-600 font-bold">Feasibility Pending</span>';
                 } else if (data == 'Completed') {
-                    return '<span class="text-green-600 font-bold">Feasability Completed</span>';
+                    return '<span class="text-green-600 font-bold">Feasibility Completed</span>';
                 }
                 return '<span class="text-gray-600">Unknown</span>';
             },
@@ -260,7 +260,7 @@ const AllFeasPage = ({ onClose }) => {
         >
             <div className='flex items-center justify-between bg-blue-400 text-white mb-3 py-3'>
                 <div className='container flex items-center justify-between p-0'>
-                    <h2 className="text-xl font-semibold">All Feasability Request</h2>
+                    <h2 className="text-xl font-semibold">All Feasibility Request</h2>
 
 
                     <button
@@ -273,7 +273,7 @@ const AllFeasPage = ({ onClose }) => {
                 </div>
             </div>
             <div className=" mb-3 bg-white container py-3 rounded "> 
-            <h1 className='text-xl font-bold mb-3'>All Feasability List</h1>
+            <h1 className='text-xl font-bold mb-3'>All Feasibility List</h1>
             <div className='flex items-center space-x-2 aql'>
 
                 <div className="w-1/2">
@@ -316,8 +316,8 @@ const AllFeasPage = ({ onClose }) => {
                         onChange={(e) => setStatus(e.target.value)}
                     >
                         <option value="">Select Status</option>
-                        <option value="Pending">Feasability Pending</option>
-                        <option value="Completed">Feasability Completed</option>
+                        <option value="Pending">Feasibility Pending</option>
+                        <option value="Completed">Feasibility Completed</option>
                     </select>
                 </div>
                 <div className="w-1/2 flex justify-content-end space-x-2 items-center">

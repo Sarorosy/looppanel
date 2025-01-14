@@ -130,9 +130,9 @@ const SummaryPage = ({ onClose, after,userIdDefined }) => {
                     return '<span class="text-gray-600">Unknown</span>';
                 } else {
                     if (row.feasability_status == 'Pending') {
-                        return '<span class="text-red-600 font-bold">Feasability Submitted</span>';
+                        return '<span class="text-red-600 font-bold">Feasibility Submitted</span>';
                     } else {
-                        return '<span class="text-green-600 font-bold">Feasability Completed</span>';
+                        return '<span class="text-green-600 font-bold">Feasibility Completed</span>';
                     }
                 }
             },
