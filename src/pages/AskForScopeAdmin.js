@@ -387,6 +387,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                     ref_id: refId,
                     quote_id: quoteId,
                     quote_amount: quoteAmount,
+                    user_id: loopUserObject.id,
                     comment: comment,
                 }), // Send the data as JSON
             });

@@ -400,7 +400,7 @@ const ManageContactMadeQueries = ({ notification }) => {
                                 User Requests
                             </button>
                         )}
-                        {loopuserObject.id == "206" && (
+                        {(loopuserObject.id == "206" || loopuserObject.scopeadmin == 1) && (
                             <button className="bg-gray-200 flex items-center relative" onClick={()=>{navigate("/query")}}>
                                 Scope Requests
                             </button>

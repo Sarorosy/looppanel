@@ -73,11 +73,22 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const loopUserObject = JSON.parse(loopUserData);
 
     useEffect(() => {
-        // Check if the user is not an admin or the email is not 'clientsupport@chanakyaresearch.net'
-        if (!(userObject && (userObject.email_id == "accounts@redmarkediting.com" || userObject.email_id == "clientsupport@chanakyaresearch.net" || userObject.id == "366"))) {
+        const isAuthorizedUser = 
+            userObject && (
+                userObject.email_id == "accounts@redmarkediting.com" ||
+                userObject.email_id == "clientsupport@chanakyaresearch.net" ||
+                userObject.id == "366"
+            );
+    
+        const isScopeAdmin = loopUserObject && loopUserObject.scopeadmin == 1;
+    
+        if (!isAuthorizedUser && !isScopeAdmin) {
             navigate('/assignquery');
         }
-    }, [userObject, navigate]);
+
+        loopUserObject.scopeadmin == 1 ? setActiveTab("pendingAdmin") : setActiveTab("all")
+    }, [userObject, loopUserObject, navigate]);
+    
 
 
     const handleTabClick = (tab) => {
@@ -788,7 +799,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 <div className='flex justify-between  mb-4'>
                     <h1 className='text-xl font-bold'>All Quote List</h1>
                     <div className='flex'>
-                        {loopUserObject.id == "206" && (
+                        {(loopUserObject.id == "206" || loopUserObject.scopeadmin == 1) && (
                             <button className="bg-gray-200 flex items-center relative mr-3 p-1 rounded" onClick={() => { navigate("/assignquery") }}>
                                 <MoveLeft size={20} className='mr-2' />
                                 Queries
@@ -924,8 +935,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         <div className="col flex items-center justify-end">
                             {/* <label>&nbsp;</label> */}
                             <div className='flex'>
-                                <button className="bg-gray-200 text-gray-500  hover:bg-gray-300  f-12 btn px-2 py-1 mr-2" onClick={resetFilters}>
-                                    <RefreshCcw size={14} />
+                                <button className="bg-gray-200 text-gray-500 flex items-cente  hover:bg-gray-300  f-12 btn px-2 py-1 mr-2" onClick={resetFilters}>
+                                    <RefreshCcw size={14} /> &nbsp;
+                                    Reset Filters
                                 </button>
                                 <button className="gree text-white mr-1 flex items-center f-12 btn px-2 py-1" onClick={() => { fetchQuotes(false) }}>
                                     <Filter size={12} /> &nbsp;
@@ -948,7 +960,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 <div className="bg-white p-4 border-t-2 border-blue-400 rounded">
                     {/* Tab Buttons */}
                     <div className="mb-4">
-                        <div className="flex space-x-4">
+                        <div className="flex space-x-4" style={{display: loopUserObject.scopeadmin == 1 ? "none" : ""}}>
                             <button
                                 onClick={() => handleTabClick('all')}
                                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'all'

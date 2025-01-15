@@ -107,7 +107,7 @@ function App() {
   const ViewDetails = () => {
     const { ref_id, quote_id } = useParams();
   
-    if (userObject && (userObject.id == 1 || userObject.id == 342)) {
+    if (userObject && (userObject.id == 1 || userObject.id == 342 || userObject.scopeadmin == 1)) {
       return <ManageQuery sharelinkrefid={ref_id} sharelinkquoteid={quote_id}/>;
     } else {
       return <Navigate to="/query" replace />;
