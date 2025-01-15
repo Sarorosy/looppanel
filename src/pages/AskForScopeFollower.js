@@ -471,7 +471,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                         PTP
                                                                     </span>
                                                                 )}
-                                                                
+
                                                                 {quote.edited == 1 && (
                                                                     <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
                                                                 )}
@@ -505,11 +505,17 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                             {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
                                                                 <div>
                                                                     <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
-                                                                    {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
-                                                                        <p key={index}><strong>{plan}:</strong> <span dangerouslySetInnerHTML={{ __html: comment }} /></p>
-                                                                    ))}
+                                                                    <div className="row">
+                                                                        {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
+                                                                            <div key={index} className="col-md-4 mb-3">
+                                                                                <p><strong>{plan}:</strong></p>
+                                                                                <div dangerouslySetInnerHTML={{ __html: comment }} />
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
                                                                 </div>
                                                             )}
+
 
                                                             {quote.comments && quote.comments != "" && quote.comments != null && (
                                                                 <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
@@ -628,7 +634,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                     )}
                                                                 </>
                                                             )}
-                                                            
+
 
                                                             {assignQuoteInfo && assignQuoteInfo != false && (
                                                                 <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
@@ -638,7 +644,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
 
                                                             {quote.isfeasability == 1 && (
                                                                 <>
-                                                                    
+
 
                                                                     {quote.feasability_status == "Completed" && (
                                                                         <>

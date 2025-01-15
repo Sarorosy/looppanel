@@ -633,7 +633,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                         <><br /><span className='text-red-700 text-sm font-bold' style={{ fontSize: "11px" }}>Feasibility Pending</span></>
                                                     )}
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Pending" && loopUserObject.id != "206" && (
-                                                        <button onClick={() => { toggleCompleteFeasability(quote.quoteid, quote.assign_id, quote.user_id) }} className='bg-green-100 text-green-600 px-2 py-1 rounded' style={{fontSize:"11px"}}>
+                                                        <button onClick={() => { toggleCompleteFeasability(quote.quoteid, quote.assign_id, quote.user_id) }} className='bg-green-100 text-green-600 px-2 py-1 rounded' style={{ fontSize: "11px" }}>
                                                             Give Feasibility
                                                         </button>
                                                     )}
@@ -710,11 +710,17 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                             {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
                                                                 <div>
                                                                     <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
-                                                                    {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
-                                                                        <p key={index}><strong>{plan}:</strong> <span dangerouslySetInnerHTML={{ __html: comment }} /></p>
-                                                                    ))}
+                                                                    <div className="row">
+                                                                        {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
+                                                                            <div key={index} className="col-md-4 mb-3">
+                                                                                <p><strong>{plan}:</strong></p>
+                                                                                <div dangerouslySetInnerHTML={{ __html: comment }} />
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
                                                                 </div>
                                                             )}
+
 
                                                             {quote.comments && quote.comments != "" && quote.comments != null && (
                                                                 <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>

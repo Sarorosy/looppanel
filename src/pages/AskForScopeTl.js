@@ -14,13 +14,13 @@ import MergedHistoryComponent from './MergedHistoryComponent';
 
 const AskForScopeTl = ({ queryId, userType, quotationId }) => {
     const socket = io("https://looppanelsocket.onrender.com", {
-            reconnection: true,             
-            reconnectionAttempts: 50,         
-            reconnectionDelay: 1000,      
-            reconnectionDelayMax: 5000,    
-            timeout: 20000,                 
-            autoConnect: true                
-        });
+        reconnection: true,
+        reconnectionAttempts: 50,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
+        timeout: 20000,
+        autoConnect: true
+    });
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -322,16 +322,16 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
         };
     }, []);
     useEffect(() => {
-            socket.on('feasabilityDone', (data) => {
-                if (data.quote_id == quotationId) {
-                    fetchScopeDetailsForSocket();
-                }
-            });
-    
-            return () => {
-                socket.off('feasabilityDone');  // Clean up on component unmount
-            };
-        }, []);
+        socket.on('feasabilityDone', (data) => {
+            if (data.quote_id == quotationId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('feasabilityDone');  // Clean up on component unmount
+        };
+    }, []);
 
     useEffect(() => {
         socket.on('demoDone', (data) => {
@@ -493,7 +493,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                         PTP
                                                                     </span>
                                                                 )}
-                                                                
+
                                                             </p>
                                                             {quote.tag_names && (
                                                                 <p>
@@ -518,11 +518,17 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                             {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
                                                                 <div>
                                                                     <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
-                                                                    {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
-                                                                        <p key={index}><strong>{plan}:</strong> <span dangerouslySetInnerHTML={{ __html: comment }} /></p>
-                                                                    ))}
+                                                                    <div className="row">
+                                                                        {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
+                                                                            <div key={index} className="col-md-4 mb-3">
+                                                                                <p><strong>{plan}:</strong></p>
+                                                                                <div dangerouslySetInnerHTML={{ __html: comment }} />
+                                                                            </div>
+                                                                        ))}
+                                                                    </div>
                                                                 </div>
                                                             )}
+
 
                                                             {quote.comments && quote.comments != "" && quote.comments != null && (
                                                                 <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
@@ -553,7 +559,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                     </div>
                                                                 </div>
                                                             )}
-                                                            
+
 
                                                             {quote.ptp != null && (
                                                                 <>
@@ -722,7 +728,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
 
                                                             {quote.isfeasability == 1 && (
                                                                 <>
-                                                                    
+
 
                                                                     {quote.feasability_status == "Completed" && (
                                                                         <>
@@ -738,7 +744,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                             )}
                                                                         </>
                                                                     )}
-                                                                    
+
                                                                 </>
                                                             )}
 

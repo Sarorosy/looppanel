@@ -520,14 +520,20 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             )}
 
 
-                                                            {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
-                                                                <div>
-                                                                    <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
-                                                                    {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
-                                                                        <p key={index}><strong>{plan}:</strong> <span dangerouslySetInnerHTML={{ __html: comment }} /></p>
-                                                                    ))}
-                                                                </div>
-                                                            )}
+{quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
+  <div>
+    <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
+    <div className="row">
+      {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
+        <div key={index} className="col-md-4 mb-3">
+          <p><strong>{plan}:</strong></p>
+          <div dangerouslySetInnerHTML={{ __html: comment }} />
+        </div>
+      ))}
+    </div>
+  </div>
+)}
+
 
                                                             {quote.comments && quote.comments != "" && quote.comments != null && (
                                                                 <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>

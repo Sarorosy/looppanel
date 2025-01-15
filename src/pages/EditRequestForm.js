@@ -182,7 +182,16 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             payload.append('currency', currency);
             payload.append('other_currency', otherCurrency);
             payload.append('service_name', serviceName);
-            payload.append('plan', plan);
+            const planOrder = ['Basic', 'Standard', 'Advanced'];
+
+// Ensure formData.plan is sorted in the desired order
+const sortedPlans = formData.plan.sort((a, b) => {
+    return planOrder.indexOf(a) - planOrder.indexOf(b);
+});
+
+// Send sorted plans as a single string
+payload.append('plan', sortedPlans.join(','));
+
             payload.append('comments', comments);
             payload.append('plan_comments', JSON.stringify(formData.planComments));
             payload.append('user_id', userObject.id);
