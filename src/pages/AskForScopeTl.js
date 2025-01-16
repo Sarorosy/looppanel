@@ -518,7 +518,12 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                             {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
                                                                 <div>
                                                                     <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
-                                                                    <div className="row">
+                                                                    <div className="row"                     style={{
+                        wordWrap: "break-word", // Ensures text wraps within the container
+                        overflowWrap: "break-word", // Handles long unbreakable words
+                        wordBreak: "break-word", // Forces breaking of long words
+                    }}
+>
                                                                         {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
                                                                             <div key={index} className="col-md-4 mb-3">
                                                                                 <p><strong>{plan}:</strong></p>
