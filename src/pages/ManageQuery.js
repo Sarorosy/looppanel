@@ -86,8 +86,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         if (!isAuthorizedUser && !isScopeAdmin) {
             navigate('/assignquery');
         }
-
-        loopUserObject.scopeadmin == 1 ? setActiveTab("pendingAdmin") : setActiveTab("all")
+        
     }, [userObject, loopUserObject, navigate]);
 
 
@@ -838,7 +837,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             <input
                                 type="text"
                                 className="form-control form-control-sm"
-                                placeholder='Scope Id'
+                                placeholder='Scope ID'
                                 value={scopeId}
                                 onChange={(e) => setScopeId(e.target.value)}
                             />
@@ -1136,7 +1135,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 <div className="bg-white p-4 border-t-2 border-blue-400 rounded">
                     {/* Tab Buttons */}
                     <div className="mb-4">
-                        <div className="flex space-x-4" style={{ display: loopUserObject.scopeadmin == 1 ? "none" : "" }}>
+                        <div className="flex space-x-4" >
                             <button
                                 onClick={() => handleTabClick('all')}
                                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'all'

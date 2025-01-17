@@ -19,7 +19,7 @@ import CompleteFeasability from './CompleteFeasability';
 import MergedHistoryComponent from './MergedHistoryComponent';
 import ScopeLoader from './ScopeLoader';
 
-const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail }) => {
+const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail, finalFunction }) => {
     const socket = io("https://looppanelsocket.onrender.com", {
         reconnection: true,
         reconnectionAttempts: 50,
@@ -158,6 +158,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
             if (hasResponse) {
                 setLoading(false); // Hide the loader
                 fetchAllRefIds();
+                finalFunction();
             }
         }
     };

@@ -69,7 +69,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
         }
     };
     useEffect(() => {
-        fetchQueryDetails();
+        //fetchQueryDetails();
     }, []);
 
     function convertMinutesToHoursAndMinutes(totalMinutes) {
@@ -288,7 +288,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
 
                         </div>
                     </div>
-                    <AskForScopeAdmin queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId} viewAll={viewAll} clientEmail={queryInfo.email_id}/>
+                    <AskForScopeAdmin queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} viewAll={viewAll} clientEmail={queryInfo.email_id} finalFunction={fetchQueryDetails}/>
                 </div>
             )}
 
