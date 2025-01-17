@@ -9,6 +9,7 @@ import QueryDetailsAdmin from '../pages/QueryDetailsAdmin';
 import FeasabilityQueryDetails from '../pages/FeasabilityQueryDetails';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import NotificationLoader from '../pages/NotificationLoader';
 
 const Header = ({ requestPermission }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -264,7 +265,7 @@ const Header = ({ requestPermission }) => {
               <button onClick={MarkAllAsRead} className='mr-2 rounded px-1 border-2 hover:border-blue-400 duration-200'>Read All</button>
               </div>
               {loading ? (
-                <CustomLoader />
+                <NotificationLoader />
               ) : notifications.length === 0 ? (
                 <p>No notifications</p>
               ) : (

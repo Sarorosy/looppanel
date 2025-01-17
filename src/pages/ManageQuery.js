@@ -78,7 +78,6 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         const isAuthorizedUser =
             userObject && (
                 userObject.email_id == "accounts@redmarkediting.com" ||
-                userObject.email_id == "clientsupport@chanakyaresearch.net" ||
                 userObject.id == "366"
             );
 

@@ -102,7 +102,7 @@ function DecryptPage() {
                     localStorage.setItem('authenticated', true);
                     const userType = data.data.user_type; // Retrieve user type from response
                     setTimeout(() => {
-                        if (decryptedEmail == "puneet@redmarkediting.com" || decryptedEmail == "clientsupport@chanakyaresearch.net") {
+                        if (decryptedEmail == "puneet@redmarkediting.com") {
                             navigate("/query"); // Navigate to '/query' for admin users
                         } else {
                             navigate("/assignquery"); // Navigate to '/assignquery' for other users
