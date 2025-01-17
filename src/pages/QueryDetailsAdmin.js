@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { CircleX, HistoryIcon, X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import AskForScopeAdmin from './AskForScopeAdmin';
-
+import QueryLoader from './QueryLoader';
 
 const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true }) => {
     const [teamName, setTeamName] = useState('');
@@ -125,7 +125,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
 
 
             {loading ? (
-                <CustomLoader />
+                <QueryLoader />
             ) : (
                 <div className=' flex items-start justify-between space-x-1 pnav text-black'>
                     <div className='col-md-3'>

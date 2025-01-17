@@ -19,18 +19,21 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         plan: [],
         comments: '',
         planComments: {},
+        wordCounts: {},
         isfeasability: 0,
         selectedUser: ''
     });
     const [currency, setCurrency] = useState('');
     const [otherCurrency, setOtherCurrency] = useState('');
     const [serviceName, setServiceName] = useState('');
+    const [selectedSubjectArea, setSelectedSubjectArea] = useState('');
+    const [otherSubjectArea, setOtherSubjectArea] = useState('');
     const [plan, setPlan] = useState([]);
     const [comments, setComments] = useState('');
     const [planComments, setPlanComments] = useState({});
     const [isFeasability, setIsFeasability] = useState(0);
     const [selectedUser, setSelectedUser] = useState('');
-
+    const [wordCountTexts, setWordCountTexts] = useState({});
 
     const [currencies, setCurrencies] = useState([]);
     const [users, setUsers] = useState([]);
@@ -55,6 +58,18 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                 [plan]: value,
             },
         }));
+    };
+
+    const handleWordCountChange = (plan, value) => {
+        if (!isNaN(value)) {
+            setFormData((prevState) => ({
+                ...prevState,
+                wordCounts: {
+                    ...prevState.wordCounts,
+                    [plan]: value,
+                },
+            }));
+        }
     };
 
     const fetchCurrencies = async () => {
@@ -112,7 +127,23 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         }
     };
 
+    const numberToWords = (num) => {
+        const toWords = require("number-to-words");
+        return toWords.toWords(num);
+    };
 
+    useEffect(() => {
+        const updatedWordCountTexts = {};
+        for (const plan in formData.wordCounts) {
+            const wordCount = parseInt(formData.wordCounts[plan], 10);
+            if (!isNaN(wordCount) && wordCount > 0) {
+                updatedWordCountTexts[plan] = numberToWords(wordCount) + " words";
+            } else {
+                updatedWordCountTexts[plan] = "";
+            }
+        }
+        setWordCountTexts(updatedWordCountTexts);
+    }, [formData.wordCounts]);
 
 
 
@@ -167,9 +198,21 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             const plainTextComment = comment.replace(/<[^>]*>/g, '').trim();  // Remove HTML tags
             return plainTextComment !== '';  // Ensure there's something other than just empty content
         });
-    
+
         if (!allCommentsFilled) {
             toast.error('Please fill all plan comments.');
+            setSubmitting(false);
+            return;
+        }
+        
+        
+        if (selectedSubjectArea == "") {
+            toast.error('Please select subject area!');
+            setSubmitting(false);
+            return;
+        }
+        if (selectedSubjectArea == "Other" && !otherSubjectArea) {
+            toast.error('Please enter other subject area name!');
             setSubmitting(false);
             return;
         }
@@ -182,18 +225,21 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             payload.append('currency', currency);
             payload.append('other_currency', otherCurrency);
             payload.append('service_name', serviceName);
+            payload.append('subject_area', selectedSubjectArea);
+            payload.append('other_subject_area', otherSubjectArea);
             const planOrder = ['Basic', 'Standard', 'Advanced'];
 
-// Ensure formData.plan is sorted in the desired order
-const sortedPlans = formData.plan.sort((a, b) => {
-    return planOrder.indexOf(a) - planOrder.indexOf(b);
-});
+            // Ensure formData.plan is sorted in the desired order
+            const sortedPlans = formData.plan.sort((a, b) => {
+                return planOrder.indexOf(a) - planOrder.indexOf(b);
+            });
 
-// Send sorted plans as a single string
-payload.append('plan', sortedPlans.join(','));
+            // Send sorted plans as a single string
+            payload.append('plan', sortedPlans.join(','));
 
             payload.append('comments', comments);
             payload.append('plan_comments', JSON.stringify(formData.planComments));
+            payload.append('word_counts', JSON.stringify(formData.wordCounts));
             payload.append('user_id', userObject.id);
             payload.append('feas_user', selectedUser);
 
@@ -274,6 +320,7 @@ payload.append('plan', sortedPlans.join(','));
                 // Convert tags from comma-separated string to an array
                 const planArray = details.plan ? details.plan.split(',') : [];
                 const parsedPlanComments = details.plan_comments ? JSON.parse(details.plan_comments) : {};
+                const parsedWordCounts = details.word_counts ? JSON.parse(details.word_counts) : {};
 
                 await setFormData({
                     currency: details.currency || '',
@@ -281,13 +328,16 @@ payload.append('plan', sortedPlans.join(','));
                     service_name: details.service_name || '',
                     plan: planArray,
                     comments: details.comments || '',
-                    planComments: parsedPlanComments, 
+                    planComments: parsedPlanComments,
+                    wordCounts: parsedWordCounts,
                     isfeasability: details.isfeasability || 0,
                     selectedUser: details.feasability_user || '',
                 });
                 setCurrency(details.currency ?? '')
                 setOtherCurrency(details.otherCurrency ?? '')
-                setServiceName(details.service_name ?? '')
+                setServiceName(details.service_name ?? '');
+                setSelectedSubjectArea(details.subject_area ?? '');
+                setOtherSubjectArea(details.other_subject_area ?? '');
                 setPlan(planArray);
                 setComments(details.comments ?? '')
                 setIsFeasability(details.isfeasability ?? 0)
@@ -445,6 +495,184 @@ payload.append('plan', sortedPlans.join(','));
                             </div>
 
                         </div>
+                        <div className='flex w-full items-end space-x-2'>
+                            <div className='w-1/2'>
+                                <label htmlFor="subject_area" className="block text-sm font-medium text-gray-700">
+                                    Subject Area
+                                </label>
+                                <select
+                                    id="subject_area"
+                                    value={selectedSubjectArea}
+                                    onChange={(e) => setSelectedSubjectArea(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="">Select Subject Area</option>
+
+                                    <option value="Accounting">Accounting</option>
+                                    <option value="Accounts Law">Accounts Law</option>
+                                    <option value="Agency Law">Agency Law</option>
+                                    <option value="Alternative Dispute Resolution (ADR)/Mediation">Alternative Dispute Resolution (ADR)/Mediation</option>
+                                    <option value="Anthropology">Anthropology</option>
+                                    <option value="Archaeology">Archaeology</option>
+                                    <option value="Architecture">Architecture</option>
+                                    <option value="Art">Art</option>
+                                    <option value="Biology">Biology</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Chemistry">Chemistry</option>
+                                    <option value="Children &amp; Young People">Children &amp; Young People</option>
+                                    <option value="Civil Litigation Law">Civil Litigation Law</option>
+                                    <option value="Commercial Law">Commercial Law</option>
+                                    <option value="Commercial Property Law">Commercial Property Law</option>
+                                    <option value="Communications">Communications</option>
+                                    <option value="Company/business/partnership Law">Company/business/partnership Law</option>
+                                    <option value="Comparative Law">Comparative Law</option>
+                                    <option value="Competition Law">Competition Law</option>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Constitutional/administrative Law">Constitutional/administrative Law</option>
+                                    <option value="Construction">Construction</option>
+                                    <option value="Consumer Law">Consumer Law</option>
+                                    <option value="Contract Law">Contract Law</option>
+                                    <option value="Corporate Finance">Corporate Finance</option>
+                                    <option value="Counselling">Counselling</option>
+                                    <option value="Criminal Law">Criminal Law</option>
+                                    <option value="Criminal Litigation">Criminal Litigation</option>
+                                    <option value="Criminology">Criminology</option>
+                                    <option value="Cultural Studies">Cultural Studies</option>
+                                    <option value="Cybernetics">Cybernetics</option>
+                                    <option value="Design">Design</option>
+                                    <option value="Dental">Dental</option>
+                                    <option value="Drama">Drama</option>
+                                    <option value="Economics">Economics</option>
+                                    <option value="EEconometrics">EEconometrics</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Employment">Employment</option>
+                                    <option value="Employment Law">Employment Law</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="English Language">English Language</option>
+                                    <option value="English Literature">English Literature</option>
+                                    <option value="Environment">Environment</option>
+                                    <option value="Environment Law">Environment Law</option>
+                                    <option value="Environmental Sciences">Environmental Sciences</option>
+                                    <option value="Equity Law">Equity Law</option>
+                                    <option value="Estate Management">Estate Management</option>
+                                    <option value="European Law">European Law</option>
+                                    <option value="European Studies">European Studies</option>
+                                    <option value="Eviews">Eviews</option>
+                                    <option value="Family Law">Family Law</option>
+                                    <option value="Fashion">Fashion</option>
+                                    <option value="Film Studies">Film Studies</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Finance Law">Finance Law</option>
+                                    <option value="Food and Nutrition">Food and Nutrition</option>
+                                    <option value="Forensic Science">Forensic Science</option>
+                                    <option value="French">French</option>
+                                    <option value="General Law">General Law</option>
+                                    <option value="Geography">Geography</option>
+                                    <option value="Geology">Geology</option>
+                                    <option value="German">German</option>
+                                    <option value="Health">Health</option>
+                                    <option value="Health &amp; Social Care">Health &amp; Social Care</option>
+                                    <option value="Health and Safety">Health and Safety</option>
+                                    <option value="Health and Safety Law">Health and Safety Law</option>
+                                    <option value="History">History</option>
+                                    <option value="Holistic/alternative therapy">Holistic/alternative therapy</option>
+                                    <option value="Housing">Housing</option>
+                                    <option value="Housing Law">Housing Law</option>
+                                    <option value="Human Resource Management">Human Resource Management</option>
+                                    <option value="Human Rights">Human Rights</option>
+                                    <option value="HR">HR</option>
+                                    <option value="Immigration/refugee Law">Immigration/refugee Law</option>
+                                    <option value="Information - Media &amp; Technology Law">Information - Media &amp; Technology Law</option>
+                                    <option value="Information Systems">Information Systems</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="IT">IT</option>
+                                    <option value="Intellectual Property Law">Intellectual Property Law</option>
+                                    <option value="International Business">International Business</option>
+                                    <option value="International Commerical Law">International Commerical Law</option>
+                                    <option value="International Law">International Law</option>
+                                    <option value="International political economy">International political economy</option>
+                                    <option value="International Relations">International Relations</option>
+                                    <option value="International Studies">International Studies</option>
+                                    <option value="Jurisprudence">Jurisprudence</option>
+                                    <option value="Land/property Law">Land/property Law</option>
+                                    <option value="Landlord &amp; Tenant Law">Landlord &amp; Tenant Law</option>
+                                    <option value="Law of Evidence">Law of Evidence</option>
+                                    <option value="Life Sciences">Life Sciences</option>
+                                    <option value="Linguistics">Linguistics</option>
+                                    <option value="Logistics">Logistics</option>
+                                    <option value="Management">Management</option>
+                                    <option value="Maritime Law">Maritime Law</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Maths">Maths</option>
+                                    <option value="Media">Media</option>
+                                    <option value="Medical Law">Medical Law</option>
+                                    <option value="Medical Technology">Medical Technology</option>
+                                    <option value="Medicine">Medicine</option>
+                                    <option value="Mental Health">Mental Health</option>
+                                    <option value="Mental Health Law">Mental Health Law</option>
+                                    <option value="Methodology">Methodology</option>
+                                    <option value="Music">Music</option>
+                                    <option value="Negligence Law">Negligence Law</option>
+                                    <option value="Nursing">Nursing</option>
+                                    <option value="Occupational therapy">Occupational therapy</option>
+                                    <option value="Operations">Operations</option>
+                                    <option value="Pharmacology">Pharmacology</option>
+                                    <option value="Philosophy">Philosophy</option>
+                                    <option value="Photography">Photography</option>
+                                    <option value="Physical Education">Physical Education</option>
+                                    <option value="Physics">Physics</option>
+                                    <option value="Planning/environmental Law">Planning/environmental Law</option>
+                                    <option value="Politics">Politics</option>
+                                    <option value="Project Management">Project Management</option>
+                                    <option value="Professional Conduct Law">Professional Conduct Law</option>
+                                    <option value="Psychology">Psychology</option>
+                                    <option value="Psychotherapy">Psychotherapy</option>
+                                    <option value="Public Administration">Public Administration</option>
+                                    <option value="Public Health">Public Health</option>
+                                    <option value="Public Law">Public Law</option>
+                                    <option value="Quantity Surveying">Quantity Surveying</option>
+                                    <option value="Real Estate">Real Estate</option>
+                                    <option value="Restitution Law">Restitution Law</option>
+                                    <option value="Shipping Law">Shipping Law</option>
+                                    <option value="Sports">Sports</option>
+                                    <option value="Social Policy">Social Policy</option>
+                                    <option value="Social Work">Social Work</option>
+                                    <option value="Social Work Law">Social Work Law</option>
+                                    <option value="Sociology">Sociology</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="Sports Law">Sports Law</option>
+                                    <option value="Sports Science">Sports Science</option>
+                                    <option value="SPSS">SPSS</option>
+                                    <option value="Statistics">Statistics</option>
+                                    <option value="Succession Law">Succession Law</option>
+                                    <option value="Supply">Supply Chain</option>
+                                    <option value="Tax Law">Tax Law</option>
+                                    <option value="Teacher Training">Teacher Training</option>
+                                    <option value="Theatre Studies">Theatre Studies</option>
+                                    <option value="Theology &amp; Religion">Theology &amp; Religion</option>
+                                    <option value="Tort Law">Tort Law</option>
+                                    <option value="Tourism">Tourism</option>
+                                    <option value="Town &amp; Country Planning">Town &amp; Country Planning</option>
+                                    <option value="Translation">Translation</option>
+                                    <option value="Trusts Law">Trusts Law</option>
+                                    <option value="Wills/probate Law">Wills/probate Law</option>
+                                    <option value="Economics (Social Sciences)">Economics (Social Sciences)</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            {selectedSubjectArea == "Other" && (
+                                <div className='w-1/2'>
+                                    <input
+                                        type="text"
+                                        id="other_subject_area"
+                                        value={otherSubjectArea}
+                                        onChange={(e) => setOtherSubjectArea(e.target.value)}
+                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                        placeholder="Enter Other Subject Area"
+                                    />
+                                </div>
+                            )}
+                        </div>
                         <div className='w-full mb-3'>
                             {/* Plan Checkboxes */}
                             <label className="">Plan</label>
@@ -464,18 +692,45 @@ payload.append('plan', sortedPlans.join(','));
                         </div>
                         <div className="mt-4">
                             {formData.plan.map((plan) => (
-                                <div key={plan} className="mb-4">
-                                    <label htmlFor={`comment_${plan}`} className="block text-sm font-medium text-gray-700">
-                                        Add comment for {plan} plan
-                                    </label>
-                                    <ReactQuill
-                                        value={formData.planComments[plan] || ''}
-                                        onChange={(value) => handleCommentChange(plan, value)} // Handle Quill's onChange
-                                        className="mt-1"
-                                        theme="snow"
-                                        placeholder={`Add comment for ${plan} plan`}
-                                    />
-                                </div>
+                                <>
+                                    <div key={plan} className="mb-4">
+                                        <label htmlFor={`comment_${plan}`} className="block text-sm font-medium text-gray-700">
+                                            Add comment for {plan} plan
+                                        </label>
+                                        <ReactQuill
+                                            value={formData.planComments[plan] || ''}
+                                            onChange={(value) => handleCommentChange(plan, value)} // Handle Quill's onChange
+                                            className="mt-1"
+                                            theme="snow"
+                                            placeholder={`Add comment for ${plan} plan`}
+                                        />
+                                    </div>
+                                    <div className="my-2 flex items-end">
+                                        <div className='flex flex-col'>
+                                            <label htmlFor={`word_count_${plan}`} className="block text-sm font-medium text-gray-700">
+                                                Enter Word Count for {plan} Plan
+                                            </label>
+                                            <input
+                                                type="text" // Changed to text to remove spinner (up/down buttons)
+                                                id={`word_count_${plan}`}
+                                                className="mt-1 block w-full py-1 px-2 rounded-md border border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                                value={formData.wordCounts[plan] || ''}
+                                                onChange={(e) => handleWordCountChange(plan, e.target.value)}
+                                                onKeyPress={(e) => {
+                                                    if (!/^[0-9]$/.test(e.key)) {
+                                                        e.preventDefault(); // Block non-numeric characters and special characters
+                                                    }
+                                                }}
+                                                placeholder="Enter word count"
+                                            />
+                                        </div>
+                                        {wordCountTexts[plan] && (
+                                            <span className="text-gray-600 text-sm ml-3">
+                                                {wordCountTexts[plan]}
+                                            </span>
+                                        )}
+                                    </div>
+                                </>
                             ))}
                         </div>
                         <div className={`w-full ${isFeasability == 0 ? "hidden" : "block"}`}>
@@ -514,7 +769,7 @@ payload.append('plan', sortedPlans.join(','));
                         </div>
                     </form>
                 </div>
-            <ToastContainer />
+                <ToastContainer />
             </div>
         </motion.div>
     );

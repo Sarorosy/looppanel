@@ -9,6 +9,7 @@ import { CircleX, HistoryIcon, X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import AskForScope from './AskForScope';
 import SubmitRequestQuote from './SubmitRequestQuote';
+import QueryLoader from './QueryLoader';
 
 
 const QueryDetails = ({ onClose, queryId, quotationId, after, userIdDefined }) => {
@@ -146,7 +147,7 @@ const QueryDetails = ({ onClose, queryId, quotationId, after, userIdDefined }) =
 
 
             {loading ? (
-                <CustomLoader />
+                <QueryLoader />
             ) : (
                 <div className=' flex items-start justify-between space-x-1 pnav text-black'>
                     <div className='col-md-3'>

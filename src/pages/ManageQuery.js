@@ -35,6 +35,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [userPendingQuotes, setUserPendingQuotes] = useState([]);
     const [adminPendingQuotes, setAdminPendingQuotes] = useState([]);
     const [refID, setRefId] = useState('');
+    const [scopeId, setScopeId] = useState('');
     const [keyword, setKeyword] = useState('');
     const [status, setStatus] = useState('');
     const [feasStatus, setFeasStatus] = useState('');
@@ -42,6 +43,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [users, setUsers] = useState([]);
     const [services, setServices] = useState([]);
     const [selectedService, setSelectedService] = useState('');
+    const [selectedSubjectArea, setSelectedSubjectArea] = useState('');
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedTags, setSelectedTags] = useState([]);
     const [ptp, setPtp] = useState('');
@@ -73,22 +75,22 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const loopUserObject = JSON.parse(loopUserData);
 
     useEffect(() => {
-        const isAuthorizedUser = 
+        const isAuthorizedUser =
             userObject && (
                 userObject.email_id == "accounts@redmarkediting.com" ||
                 userObject.email_id == "clientsupport@chanakyaresearch.net" ||
                 userObject.id == "366"
             );
-    
+
         const isScopeAdmin = loopUserObject && loopUserObject.scopeadmin == 1;
-    
+
         if (!isAuthorizedUser && !isScopeAdmin) {
             navigate('/assignquery');
         }
 
         loopUserObject.scopeadmin == 1 ? setActiveTab("pendingAdmin") : setActiveTab("all")
     }, [userObject, loopUserObject, navigate]);
-    
+
 
 
     const handleTabClick = (tab) => {
@@ -105,7 +107,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             $('.row-checkbox').prop('checked', false); // Uncheck all row checkboxes
         }
     };
-    
+
 
     const handleRowSelect = (rowId, isChecked) => {
         setSelectedRows((prevSelected) =>
@@ -117,7 +119,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     const handleExport = () => {
         // Define the custom headers and map the data
-        const headers = ['Ref ID', 'Ask For Scope Id' , 'Client Name', 'CRM Name','Currrency', 'Comments', 'Service', 'Quote Status', 'Feasibility Status', 'Created On']; // Define your custom table headings
+        const headers = ['Ref ID', 'Ask For Scope Id', 'Client Name', 'CRM Name', 'Currrency', 'Comments', 'Service', 'Quote Status', 'Feasibility Status', 'Created On']; // Define your custom table headings
         const filteredData = quotes
             .filter((row) => selectedRows.includes(row.id))
             .map((row) => ({
@@ -132,19 +134,19 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 FeasibilityStatus: row.isfeasability == 1 ? row.feasability_status : "",
                 CreatedOn: new Date(row.created_date * 1000).toLocaleString(), // Adjust field names based on your data
             }));
-    
+
         // Add the headers as the first row
         const worksheetData = [headers, ...filteredData.map(Object.values)];
-    
+
         // Create worksheet and workbook
         const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, 'Quotes');
-    
+
         // Export the file
         XLSX.writeFile(workbook, 'Exported_Data.xlsx');
     };
-    
+
 
     const toggleDetailsPage = () => {
         setIsDetailsOpen(!isDetailsOpen);
@@ -220,15 +222,17 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
         const userid = selectedUser;
         const ref_id = refID;
+        const scope_id = scopeId;
         const search_keywords = keyword;
         const service_name = selectedService;
+        const subject_area = selectedSubjectArea;
         const tags = selectedTags;
         const feasability_status = feasStatus;
         const start_date = startDate;
         const end_date = endDate;
 
         let payload = {
-            userid, ref_id, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date
+            userid, ref_id, scope_id,subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date
         };
 
         if (nopayload) {
@@ -766,6 +770,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const resetFilters = async () => {
         // Reset filter states
         setRefId('');
+        setScopeId('');
         setKeyword('');
         setStatus('');
         setFeasStatus('');
@@ -773,6 +778,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setEndDate('');
         setSelectedUser('');  // Reset selected user
         setSelectedService('');  // Reset selected service
+        setSelectedSubjectArea('');
         setSelectedTags([]);  // Reset selected tags
 
         // Reset the select elements and trigger change
@@ -830,6 +836,15 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             />
                         </div>
                         <div className="col-2 mb-3">
+                            <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder='Scope Id'
+                                value={scopeId}
+                                onChange={(e) => setScopeId(e.target.value)}
+                            />
+                        </div>
+                        <div className="col-2 mb-3">
                             <select
                                 id="user_id"
                                 className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control form-control-sm slt-x-isu "
@@ -859,6 +874,168 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                         {service.name}
                                     </option>
                                 ))}
+                            </select>
+                        </div>
+                        <div className="col-2 mb-3">
+                            <select
+                                id="subject_area"
+                                className=" px-3 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control form-control-sm"
+                                value={selectedSubjectArea}
+                                onChange={(e) => setSelectedSubjectArea(e.target.value)}
+                            >
+                                <option value="">Select Subject Area</option>
+
+                                <option value="Accounting">Accounting</option>
+                                <option value="Accounts Law">Accounts Law</option>
+                                <option value="Agency Law">Agency Law</option>
+                                <option value="Alternative Dispute Resolution (ADR)/Mediation">Alternative Dispute Resolution (ADR)/Mediation</option>
+                                <option value="Anthropology">Anthropology</option>
+                                <option value="Archaeology">Archaeology</option>
+                                <option value="Architecture">Architecture</option>
+                                <option value="Art">Art</option>
+                                <option value="Biology">Biology</option>
+                                <option value="Business">Business</option>
+                                <option value="Chemistry">Chemistry</option>
+                                <option value="Children &amp; Young People">Children &amp; Young People</option>
+                                <option value="Civil Litigation Law">Civil Litigation Law</option>
+                                <option value="Commercial Law">Commercial Law</option>
+                                <option value="Commercial Property Law">Commercial Property Law</option>
+                                <option value="Communications">Communications</option>
+                                <option value="Company/business/partnership Law">Company/business/partnership Law</option>
+                                <option value="Comparative Law">Comparative Law</option>
+                                <option value="Competition Law">Competition Law</option>
+                                <option value="Computer Science">Computer Science</option>
+                                <option value="Constitutional/administrative Law">Constitutional/administrative Law</option>
+                                <option value="Construction">Construction</option>
+                                <option value="Consumer Law">Consumer Law</option>
+                                <option value="Contract Law">Contract Law</option>
+                                <option value="Corporate Finance">Corporate Finance</option>
+                                <option value="Counselling">Counselling</option>
+                                <option value="Criminal Law">Criminal Law</option>
+                                <option value="Criminal Litigation">Criminal Litigation</option>
+                                <option value="Criminology">Criminology</option>
+                                <option value="Cultural Studies">Cultural Studies</option>
+                                <option value="Cybernetics">Cybernetics</option>
+                                <option value="Design">Design</option>
+                                <option value="Dental">Dental</option>
+                                <option value="Drama">Drama</option>
+                                <option value="Economics">Economics</option>
+                                <option value="EEconometrics">EEconometrics</option>
+                                <option value="Education">Education</option>
+                                <option value="Employment">Employment</option>
+                                <option value="Employment Law">Employment Law</option>
+                                <option value="Engineering">Engineering</option>
+                                <option value="English Language">English Language</option>
+                                <option value="English Literature">English Literature</option>
+                                <option value="Environment">Environment</option>
+                                <option value="Environment Law">Environment Law</option>
+                                <option value="Environmental Sciences">Environmental Sciences</option>
+                                <option value="Equity Law">Equity Law</option>
+                                <option value="Estate Management">Estate Management</option>
+                                <option value="European Law">European Law</option>
+                                <option value="European Studies">European Studies</option>
+                                <option value="Eviews">Eviews</option>
+                                <option value="Family Law">Family Law</option>
+                                <option value="Fashion">Fashion</option>
+                                <option value="Film Studies">Film Studies</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Finance Law">Finance Law</option>
+                                <option value="Food and Nutrition">Food and Nutrition</option>
+                                <option value="Forensic Science">Forensic Science</option>
+                                <option value="French">French</option>
+                                <option value="General Law">General Law</option>
+                                <option value="Geography">Geography</option>
+                                <option value="Geology">Geology</option>
+                                <option value="German">German</option>
+                                <option value="Health">Health</option>
+                                <option value="Health &amp; Social Care">Health &amp; Social Care</option>
+                                <option value="Health and Safety">Health and Safety</option>
+                                <option value="Health and Safety Law">Health and Safety Law</option>
+                                <option value="History">History</option>
+                                <option value="Holistic/alternative therapy">Holistic/alternative therapy</option>
+                                <option value="Housing">Housing</option>
+                                <option value="Housing Law">Housing Law</option>
+                                <option value="Human Resource Management">Human Resource Management</option>
+                                <option value="Human Rights">Human Rights</option>
+                                <option value="HR">HR</option>
+                                <option value="Immigration/refugee Law">Immigration/refugee Law</option>
+                                <option value="Information - Media &amp; Technology Law">Information - Media &amp; Technology Law</option>
+                                <option value="Information Systems">Information Systems</option>
+                                <option value="Information Technology">Information Technology</option>
+                                <option value="IT">IT</option>
+                                <option value="Intellectual Property Law">Intellectual Property Law</option>
+                                <option value="International Business">International Business</option>
+                                <option value="International Commerical Law">International Commerical Law</option>
+                                <option value="International Law">International Law</option>
+                                <option value="International political economy">International political economy</option>
+                                <option value="International Relations">International Relations</option>
+                                <option value="International Studies">International Studies</option>
+                                <option value="Jurisprudence">Jurisprudence</option>
+                                <option value="Land/property Law">Land/property Law</option>
+                                <option value="Landlord &amp; Tenant Law">Landlord &amp; Tenant Law</option>
+                                <option value="Law of Evidence">Law of Evidence</option>
+                                <option value="Life Sciences">Life Sciences</option>
+                                <option value="Linguistics">Linguistics</option>
+                                <option value="Logistics">Logistics</option>
+                                <option value="Management">Management</option>
+                                <option value="Maritime Law">Maritime Law</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Maths">Maths</option>
+                                <option value="Media">Media</option>
+                                <option value="Medical Law">Medical Law</option>
+                                <option value="Medical Technology">Medical Technology</option>
+                                <option value="Medicine">Medicine</option>
+                                <option value="Mental Health">Mental Health</option>
+                                <option value="Mental Health Law">Mental Health Law</option>
+                                <option value="Methodology">Methodology</option>
+                                <option value="Music">Music</option>
+                                <option value="Negligence Law">Negligence Law</option>
+                                <option value="Nursing">Nursing</option>
+                                <option value="Occupational therapy">Occupational therapy</option>
+                                <option value="Operations">Operations</option>
+                                <option value="Pharmacology">Pharmacology</option>
+                                <option value="Philosophy">Philosophy</option>
+                                <option value="Photography">Photography</option>
+                                <option value="Physical Education">Physical Education</option>
+                                <option value="Physics">Physics</option>
+                                <option value="Planning/environmental Law">Planning/environmental Law</option>
+                                <option value="Politics">Politics</option>
+                                <option value="Project Management">Project Management</option>
+                                <option value="Professional Conduct Law">Professional Conduct Law</option>
+                                <option value="Psychology">Psychology</option>
+                                <option value="Psychotherapy">Psychotherapy</option>
+                                <option value="Public Administration">Public Administration</option>
+                                <option value="Public Health">Public Health</option>
+                                <option value="Public Law">Public Law</option>
+                                <option value="Quantity Surveying">Quantity Surveying</option>
+                                <option value="Real Estate">Real Estate</option>
+                                <option value="Restitution Law">Restitution Law</option>
+                                <option value="Shipping Law">Shipping Law</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Social Policy">Social Policy</option>
+                                <option value="Social Work">Social Work</option>
+                                <option value="Social Work Law">Social Work Law</option>
+                                <option value="Sociology">Sociology</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="Sports Law">Sports Law</option>
+                                <option value="Sports Science">Sports Science</option>
+                                <option value="SPSS">SPSS</option>
+                                <option value="Statistics">Statistics</option>
+                                <option value="Succession Law">Succession Law</option>
+                                <option value="Supply">Supply Chain</option>
+                                <option value="Tax Law">Tax Law</option>
+                                <option value="Teacher Training">Teacher Training</option>
+                                <option value="Theatre Studies">Theatre Studies</option>
+                                <option value="Theology &amp; Religion">Theology &amp; Religion</option>
+                                <option value="Tort Law">Tort Law</option>
+                                <option value="Tourism">Tourism</option>
+                                <option value="Town &amp; Country Planning">Town &amp; Country Planning</option>
+                                <option value="Translation">Translation</option>
+                                <option value="Trusts Law">Trusts Law</option>
+                                <option value="Wills/probate Law">Wills/probate Law</option>
+                                <option value="Economics (Social Sciences)">Economics (Social Sciences)</option>
+                                <option value="Other">Other</option>
+
                             </select>
                         </div>
                         <div className="col-2 mb-3">
@@ -960,7 +1137,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 <div className="bg-white p-4 border-t-2 border-blue-400 rounded">
                     {/* Tab Buttons */}
                     <div className="mb-4">
-                        <div className="flex space-x-4" style={{display: loopUserObject.scopeadmin == 1 ? "none" : ""}}>
+                        <div className="flex space-x-4" style={{ display: loopUserObject.scopeadmin == 1 ? "none" : "" }}>
                             <button
                                 onClick={() => handleTabClick('all')}
                                 className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'all'
@@ -1001,16 +1178,18 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 options={{
                                     pageLength: 50,
                                     ordering: true,
+                                    order: [[11, 'desc']],
+
                                     createdRow: (row, data) => {
                                         // Attach event listener for the "View Details" button
                                         $(row).find('.view-btn').on('click', () => handleViewButtonClick(data));
-                            
+
                                         // Handle row-specific checkbox events
                                         $(row).find('.row-checkbox').on('change', (e) => {
                                             const isChecked = e.target.checked;
                                             handleRowSelect(data.id, isChecked);
                                         });
-                                        
+
                                     },
                                     initComplete: () => {
                                         // Attach event listener for "Select All" checkbox

@@ -17,6 +17,7 @@ import EditPriceComponent from './EditPriceComponent';
 import EditFeasibilityCommentsComponent from './EditFeasabilityCommentsComponent';
 import CompleteFeasability from './CompleteFeasability';
 import MergedHistoryComponent from './MergedHistoryComponent';
+import ScopeLoader from './ScopeLoader';
 
 const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail }) => {
     const socket = io("https://looppanelsocket.onrender.com", {
@@ -104,6 +105,11 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
         SetFeasHistoryPanelOpen((prev) => !prev);
 
     }
+
+    const numberToWords = (num) => {
+        const toWords = require("number-to-words");
+        return toWords.toWords(num);
+    };
 
     const toggleRow = (index) => {
         setExpandedRowIndex(expandedRowIndex === index ? null : index);
@@ -546,7 +552,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
             </div>
 
             {loading ? (
-                <CustomLoader /> // A loader component when data is being fetched
+                <ScopeLoader /> // A loader component when data is being fetched
             ) : (
                 <div className="bg-white p-6 m-2 shadow rounded-md space-y-4">
                     {errorMessage && <p className="text-red-600">{errorMessage}</p>}
@@ -707,24 +713,62 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                                     <p><strong>Plan:</strong> {quote.plan}</p>
                                                                 </>
                                                             )}
-                                                            {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
-                                                                <div>
-                                                                    <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
-                                                                    <div className="row"                     style={{
-                        wordWrap: "break-word", // Ensures text wraps within the container
-                        overflowWrap: "break-word", // Handles long unbreakable words
-                        wordBreak: "break-word", // Forces breaking of long words
-                    }}
->
-                                                                        {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
-                                                                            <div key={index} className="col-md-4 mb-3">
-                                                                                <p><strong>{plan}:</strong></p>
-                                                                                <div dangerouslySetInnerHTML={{ __html: comment }} />
-                                                                            </div>
-                                                                        ))}
-                                                                    </div>
-                                                                </div>
+                                                            {quote.subject_area && (
+                                                                <>
+                                                                    <p><strong>Subject Area:</strong> {quote.subject_area}</p>
+                                                                    {quote.subject_area == "Other" && (
+                                                                        <p className='text-gray-500'><strong>Other Subject Area name:</strong> {quote.other_subject_area}</p>
+                                                                    )}
+                                                                </>
                                                             )}
+                                                            {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
+                                                                <>
+                                                                    <div>
+                                                                        <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
+                                                                        <div className="row" style={{
+                                                                            wordWrap: "break-word", // Ensures text wraps within the container
+                                                                            overflowWrap: "break-word", // Handles long unbreakable words
+                                                                            wordBreak: "break-word", // Forces breaking of long words
+                                                                        }}>
+                                                                            {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
+                                                                                <div key={index} className="col-md-4 mb-3">
+                                                                                    <p><strong>{plan}:</strong></p>
+                                                                                    <div dangerouslySetInnerHTML={{ __html: comment }} />
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    {quote.word_counts && quote.word_counts != null && (
+                                                                        <div>
+                                                                            <p className="mb-2"><strong style={{ textDecoration: "underline" }}>Word Counts:</strong></p>
+                                                                            <div className="row" style={{
+                                                                                wordWrap: "break-word",
+                                                                                overflowWrap: "break-word",
+                                                                                wordBreak: "break-word",
+                                                                            }}>
+                                                                                {Object.entries(JSON.parse(quote.word_counts)).map(([plan, wordcount], index) => (
+                                                                                    <div key={index} className="col-md-4 mb-3">
+                                                                                        <p style={{
+                                                                                            fontWeight: "bold",
+                                                                                            color: "#007bff",
+                                                                                            backgroundColor: "#f0f8ff", // Background color for word count text
+                                                                                            padding: "5px", // Padding around the word count text
+                                                                                            borderRadius: "5px", // Rounded corners for the background
+                                                                                            border: "1px solid #40BD5DFF"
+                                                                                        }}>
+                                                                                            {plan}: <span style={{ color: "#28a745" }}>{wordcount} words</span>
+                                                                                            <br/>
+                                                                                            <span style={{color:"gray"}}>{numberToWords(wordcount)} words</span>
+                                                                                        </p>
+                                                                                    </div>
+                                                                                ))}
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
+                                                                </>
+                                                            )}
+
 
 
                                                             {quote.comments && quote.comments != "" && quote.comments != null && (

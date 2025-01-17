@@ -10,6 +10,7 @@ import CustomLoader from '../CustomLoader';
 import AskForScope from './AskForScope';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import AskForScopeFollower from './AskForScopeFollower';
+import QueryLoader from './QueryLoader';
 
 
 const QueryDetailsFollowing = ({ onClose, queryId, quotationId, after }) => {
@@ -147,7 +148,7 @@ const QueryDetailsFollowing = ({ onClose, queryId, quotationId, after }) => {
 
 
             {loading ? (
-                <CustomLoader />
+                <QueryLoader />
             ) : (
                 <div className=' flex items-start justify-between space-x-1 pnav text-black'>
                     <div className='col-md-3'>
