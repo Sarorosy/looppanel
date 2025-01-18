@@ -10,16 +10,9 @@ import 'select2/dist/css/select2.min.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
 import { io } from "socket.io-client";
-
+import { getSocket } from './Socket';
 const CompleteFeasability = ({ refId, quoteId, after, onClose, userId, notification }) => {
-    const socket = io("https://looppanelsocket.onrender.com", {
-        reconnection: true,
-        reconnectionAttempts: 50,
-        reconnectionDelay: 1000,
-        reconnectionDelayMax: 5000,
-        timeout: 20000,
-        autoConnect: true
-    });
+    const socket = getSocket();
     const [feasabilityComments, setFeasabilityComments] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);

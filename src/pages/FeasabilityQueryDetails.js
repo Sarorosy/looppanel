@@ -10,6 +10,7 @@ import CustomLoader from '../CustomLoader';
 import AskForScope from './AskForScope';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import FeasabilityUpdate from './FeasabilityUpdate';
+import QueryLoader from './QueryLoader';
 
 
 const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction }) => {
@@ -28,8 +29,8 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
     const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
-    
-    const close = () =>{
+
+    const close = () => {
         onClose();
         finalFunction();
     }
@@ -65,7 +66,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://instacrm.rapidcollaborate.com/api/viewquerydetails',
+                'https://apacvault.com/Webapi/view_query_details_api',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -146,11 +147,12 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
             </div>
 
 
-            {loading ? (
-                <CustomLoader />
-            ) : (
-                <div className=' flex items-start justify-between space-x-1 pnav text-black'>
-                    <div className='col-md-3'>
+
+            <div className=' flex items-start justify-between space-x-1 pnav text-black'>
+                <div className='col-md-3'>
+                    {loading ? (
+                        <QueryLoader />
+                    ) : (
                         <div className="space-y-4 bg-white p-6 shadow rounded-md border-t-2 border-blue-400 m-2 text-sm">
                             <div className="relative">
                                 {queryInfo.assign_id && (
@@ -158,7 +160,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
 
                                         className="flex"
                                     >
-                                        <strong>Ref. No.:</strong> {queryInfo.assign_id} 
+                                        <strong>Ref. No.:</strong> {queryInfo.assign_id}
                                         {/* <HistoryIcon className='ml-2 bg-blue-300 p-1 rounded' onClick={fetchActivityHistory} /> */}
                                     </p>
                                 )}
@@ -194,7 +196,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                                 )}
                             </div>
                             {queryInfo.profile_name && <p><strong>Profile:</strong> {queryInfo.profile_name}</p>}
-                            
+
                             {queryInfo.latest_requirement && (
                                 <div className="bg-green-100 p-2 rounded">
                                     <p><strong>Latest Requirement:</strong></p>
@@ -292,14 +294,15 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                                     </span>
                                 </p>
                             )}
-                            
+
 
                         </div>
-                    </div>
-                    <FeasabilityUpdate queryId={queryInfo.assign_id} quotationId={quotationId} userType={userObject.fld_admin_type} finalFunction={finalFunction} />
-
+                    )}
                 </div>
-            )}
+                <FeasabilityUpdate queryId={queryId} quotationId={quotationId} userType={userObject.fld_admin_type} finalFunction={finalFunction} />
+
+            </div>
+
 
             <ToastContainer />
         </motion.div>

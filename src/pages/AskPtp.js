@@ -3,17 +3,10 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { io } from "socket.io-client";
-
+import { getSocket } from './Socket';
 
 function AskPtp({ scopeDetails, quoteId, after, plans }) {
-    const socket = io("https://looppanelsocket.onrender.com", {
-            reconnection: true,             
-            reconnectionAttempts: 50,         
-            reconnectionDelay: 1000,      
-            reconnectionDelayMax: 5000,    
-            timeout: 20000,                 
-            autoConnect: true                
-        });
+    const socket = getSocket();
     const [showForm, setShowForm] = useState(false);
     const [ptp, setPtp] = useState(scopeDetails.ptp); // Default value is "No"
     const [ptpAmount, setPtpAmount] = useState(scopeDetails.ptp_amount);

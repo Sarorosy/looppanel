@@ -10,14 +10,8 @@ import 'select2/dist/css/select2.min.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
 import { io } from "socket.io-client";
-const socket = io("https://looppanelsocket.onrender.com", {
-        reconnection: true,             
-        reconnectionAttempts: 50,         
-        reconnectionDelay: 1000,      
-        reconnectionDelayMax: 5000,    
-        timeout: 20000,                 
-        autoConnect: true                
-    });
+import { getSocket } from './Socket';
+const socket = getSocket();
 
 const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
     const [selectedUser, setSelectedUser] = useState('');

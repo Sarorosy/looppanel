@@ -21,14 +21,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import FeasabilityPage from './FeasabilityPage';
 import * as XLSX from 'xlsx';
 import { io } from "socket.io-client";
-const socket = io("https://looppanelsocket.onrender.com", {
-    reconnection: true,
-    reconnectionAttempts: 50,
-    reconnectionDelay: 1000,
-    reconnectionDelayMax: 5000,
-    timeout: 20000,
-    autoConnect: true
-});
+import { getSocket } from './Socket';
+const socket = getSocket();
 
 const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [quotes, setQuotes] = useState([]);

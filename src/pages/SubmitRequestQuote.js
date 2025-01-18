@@ -10,6 +10,8 @@ import 'select2/dist/css/select2.min.css'; // Import Select2 CSS
 import 'select2';
 import CustomLoader from '../CustomLoader';
 import { io } from "socket.io-client";
+import { getSocket } from './Socket';
+
 
 const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }) => {
     const [currencies, setCurrencies] = useState([]);
@@ -34,14 +36,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
     const [demodone, setDemodone] = useState('no');
     const [demoId, setDemoId] = useState('');
     const [demoStatus, setDemoStatus] = useState(false);
-    const socket = io("https://looppanelsocket.onrender.com", {
-        reconnection: true,
-        reconnectionAttempts: 50,
-        reconnectionDelay: 1000,
-        reconnectionDelayMax: 5000,
-        timeout: 20000,
-        autoConnect: true
-    });
+    const socket = getSocket();
 
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prev) =>
@@ -74,7 +69,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
         const updatedWordCountTexts = {};
         for (const plan in wordCounts) {
             const wordCount = parseInt(wordCounts[plan], 10);
-            if (!isNaN(wordCount) && wordCount > 0) {
+            if (!isNaN(wordCount) && wordCount >= 0) {
                 updatedWordCountTexts[plan] = numberToWords(wordCount) + " words";
             } else {
                 updatedWordCountTexts[plan] = "";
@@ -275,7 +270,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                 toast.error(`Please add a comment for the ${plan} plan!`);
             }
 
-            if (wordCount.trim() === '' || isNaN(wordCount) || parseInt(wordCount) <= 0) {
+            if (wordCount.trim() === '' || isNaN(wordCount) || parseInt(wordCount) < 0) {
                 emptyWordCountFound = true;
                 toast.error(`Please enter a valid word count for the ${plan} plan!`);
             }

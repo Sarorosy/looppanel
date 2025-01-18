@@ -7,14 +7,8 @@ import { File, Paperclip, RefreshCcw, X } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 import { io } from "socket.io-client";
-const socket = io("https://looppanelsocket.onrender.com", {
-        reconnection: true,             
-        reconnectionAttempts: 50,         
-        reconnectionDelay: 1000,      
-        reconnectionDelayMax: 5000,    
-        timeout: 20000,                 
-        autoConnect: true                
-    });
+import { getSocket } from './Socket';
+const socket = getSocket();
 
 
 export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,finalfunctionforsocket ,allDetails}) => {

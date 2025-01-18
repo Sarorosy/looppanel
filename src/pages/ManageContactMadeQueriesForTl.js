@@ -19,16 +19,9 @@ import ManageTlQuery from './ManageTlQuery';
 import FollowingPage from './FollowingPage';
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
-
+import { getSocket } from './Socket';
 import { io } from "socket.io-client";
-const socket = io("https://looppanelsocket.onrender.com", {
-        reconnection: true,             
-        reconnectionAttempts: 50,         
-        reconnectionDelay: 1000,      
-        reconnectionDelayMax: 5000,    
-        timeout: 20000,                 
-        autoConnect: true                
-    });
+const socket = getSocket();
 
 const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
     const [quotes, setQuotes] = useState([]);

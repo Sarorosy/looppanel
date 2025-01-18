@@ -4,18 +4,11 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle, CheckIcon } from 'lucide-react';
 import { io } from "socket.io-client";
-
+import { getSocket } from './Socket';
 function DemoDone({ scopeDetails, quoteId , after}) {
     const [showForm, setShowForm] = useState(false);
     const [demoId, setdemoId] = useState('');
-    const socket = io("https://looppanelsocket.onrender.com", {
-            reconnection: true,             
-            reconnectionAttempts: 50,         
-            reconnectionDelay: 1000,      
-            reconnectionDelayMax: 5000,    
-            timeout: 20000,                 
-            autoConnect: true                
-        });
+    const socket = getSocket();
 
     const loopuserData = localStorage.getItem('loopuser');
     const loopUserObject = JSON.parse(loopuserData);

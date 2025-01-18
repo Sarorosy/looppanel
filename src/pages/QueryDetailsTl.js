@@ -43,7 +43,7 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after }) => {
 
         try {
             const response = await fetch(
-                'https://instacrm.rapidcollaborate.com/api/viewquerydetails',
+                'https://apacvault.com/Webapi/view_query_details_api',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -127,11 +127,12 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after }) => {
             </div>
 
 
-            {loading ? (
-                <QueryLoader />
-            ) : (
-                <div className=' flex items-start justify-between space-x-1 pnav text-black'>
-                    <div className='col-md-3'>
+
+            <div className=' flex items-start justify-between space-x-1 pnav text-black'>
+                <div className='col-md-3'>
+                    {loading ? (
+                        <QueryLoader />
+                    ) : (
                         <div className="space-y-4 bg-white p-6 shadow rounded-md border-t-2 border-blue-400 m-2 text-sm">
                             <div className="relative">
                                 {queryInfo.assign_id && (
@@ -287,13 +288,14 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after }) => {
                                     </span>
                                 </p>
                             )}
-                           
+
 
                         </div>
-                    </div>
-                    <AskForScope queryId={queryInfo.assign_id} userType={userObject.fld_admin_type} quotationId={quotationId} />
+                    )}
                 </div>
-            )}
+                <AskForScope queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} />
+            </div>
+
             <ToastContainer />
         </motion.div>
     );

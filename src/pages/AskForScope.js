@@ -18,16 +18,10 @@ import AddFollowers from './AddFollowers';
 import { io } from "socket.io-client";
 import MergedHistoryComponent from './MergedHistoryComponent';
 import ScopeLoader from './ScopeLoader';
+import { getSocket } from './Socket';
 
 const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName }) => {
-    const socket = io("https://looppanelsocket.onrender.com", {
-        reconnection: true,
-        reconnectionAttempts: 50,
-        reconnectionDelay: 1000,
-        reconnectionDelayMax: 5000,
-        timeout: 20000,
-        autoConnect: true
-    });
+    const socket = getSocket();
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -533,21 +527,32 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             )}
 
 
-{quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
+                                                            {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
                                                                 <>
                                                                     <div>
-                                                                        <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
-                                                                        <div className="row" style={{
-                                                                            wordWrap: "break-word", // Ensures text wraps within the container
-                                                                            overflowWrap: "break-word", // Handles long unbreakable words
-                                                                            wordBreak: "break-word", // Forces breaking of long words
-                                                                        }}>
-                                                                            {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
-                                                                                <div key={index} className="col-md-4 mb-3">
-                                                                                    <p><strong>{plan}:</strong></p>
-                                                                                    <div dangerouslySetInnerHTML={{ __html: comment }} />
-                                                                                </div>
-                                                                            ))}
+                                                                        <p className="mb-2">
+                                                                            <strong style={{ textDecoration: "underline" }}>Plan Description:</strong>
+                                                                        </p>
+                                                                        <div
+                                                                            className="row"
+                                                                            style={{
+                                                                                wordWrap: "break-word", // Ensures text wraps within the container
+                                                                                overflowWrap: "break-word", // Handles long unbreakable words
+                                                                                wordBreak: "break-word", // Forces breaking of long words
+                                                                            }}
+                                                                        >
+                                                                            {quote.plan_comments && typeof quote.plan_comments === "string" && quote.plan && (
+                                                                                Object.entries(JSON.parse(quote.plan_comments))
+                                                                                    .filter(([plan]) => quote.plan.split(',').includes(plan)) // Filter based on the updated plan list
+                                                                                    .map(([plan, comment], index) => (
+                                                                                        <div key={index} className="col-md-4 mb-3">
+                                                                                            <p>
+                                                                                                <strong>{plan}:</strong>
+                                                                                            </p>
+                                                                                            <div dangerouslySetInnerHTML={{ __html: comment }} />
+                                                                                        </div>
+                                                                                    ))
+                                                                            )}
                                                                         </div>
                                                                     </div>
 
@@ -559,22 +564,29 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                                 overflowWrap: "break-word",
                                                                                 wordBreak: "break-word",
                                                                             }}>
-                                                                                {Object.entries(JSON.parse(quote.word_counts)).map(([plan, wordcount], index) => (
-                                                                                    <div key={index} className="col-md-4 mb-3">
-                                                                                        <p style={{
-                                                                                            fontWeight: "bold",
-                                                                                            color: "#007bff",
-                                                                                            backgroundColor: "#f0f8ff", // Background color for word count text
-                                                                                            padding: "5px", // Padding around the word count text
-                                                                                            borderRadius: "5px", // Rounded corners for the background
-                                                                                            border: "1px solid #40BD5DFF"
-                                                                                        }}>
-                                                                                            {plan}: <span style={{ color: "#28a745" }}>{wordcount} words</span>
-                                                                                            <br/>
-                                                                                            <span style={{color:"gray"}}>{numberToWords(wordcount)} words</span>
-                                                                                        </p>
-                                                                                    </div>
-                                                                                ))}
+                                                                                {quote.word_counts && typeof quote.word_counts === "string" && quote.plan && (
+                                                                                    Object.entries(JSON.parse(quote.word_counts))
+                                                                                        .filter(([plan]) => quote.plan.split(',').includes(plan)) // Filter based on the updated plan list
+                                                                                        .map(([plan, wordcount], index) => (
+                                                                                            <div key={index} className="col-md-4 mb-3">
+                                                                                                <p
+                                                                                                    style={{
+                                                                                                        fontWeight: "bold",
+                                                                                                        color: "#007bff",
+                                                                                                        backgroundColor: "#f0f8ff", // Background color for word count text
+                                                                                                        padding: "5px", // Padding around the word count text
+                                                                                                        borderRadius: "5px", // Rounded corners for the background
+                                                                                                        border: "1px solid #40BD5DFF",
+                                                                                                    }}
+                                                                                                >
+                                                                                                    {plan}: <span style={{ color: "#28a745" }}>{wordcount} words</span>
+                                                                                                    <br />
+                                                                                                    <span style={{ color: "gray" }}>{numberToWords(wordcount)} words</span>
+                                                                                                </p>
+                                                                                            </div>
+                                                                                        ))
+                                                                                )}
+
                                                                             </div>
                                                                         </div>
                                                                     )}

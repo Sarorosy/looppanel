@@ -10,7 +10,7 @@ import CustomLoader from '../CustomLoader';
 import AskForScopeAdmin from './AskForScopeAdmin';
 import QueryLoader from './QueryLoader';
 
-const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true }) => {
+const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after, viewAll = true }) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -40,7 +40,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
 
         try {
             const response = await fetch(
-                'https://instacrm.rapidcollaborate.com/api/viewquerydetails',
+                'https://apacvault.com/Webapi/view_query_details_api',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -69,7 +69,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
         }
     };
     useEffect(() => {
-        //fetchQueryDetails();
+        fetchQueryDetails();
     }, []);
 
     function convertMinutesToHoursAndMinutes(totalMinutes) {
@@ -124,11 +124,10 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
             </div>
 
 
-            {loading ? (
-                <QueryLoader />
-            ) : (
-                <div className=' flex items-start justify-between space-x-1 pnav text-black'>
-                    <div className='col-md-3'>
+
+            <div className=' flex items-start justify-between space-x-1 pnav text-black'>
+                <div className='col-md-3'>
+                    {loading ? (<QueryLoader />) : (
                         <div className="space-y-4 bg-white p-6 shadow rounded-md border-t-2 border-blue-400 m-2 text-sm">
                             <div className="relative">
                                 {queryInfo.assign_id && (
@@ -284,13 +283,14 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after , viewAll=true
                                     </span>
                                 </p>
                             )}
-                            
+
 
                         </div>
-                    </div>
-                    <AskForScopeAdmin queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} viewAll={viewAll} clientEmail={queryInfo.email_id} finalFunction={fetchQueryDetails}/>
+                    )}
                 </div>
-            )}
+                <AskForScopeAdmin queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} viewAll={viewAll} clientEmail={queryInfo.email_id} />
+            </div>
+
 
             <ToastContainer />
         </motion.div>
