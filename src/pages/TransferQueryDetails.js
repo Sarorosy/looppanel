@@ -7,13 +7,13 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { CircleX, HistoryIcon, X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
-import AskForScopeAdmin from './AskForScopeAdmin';
-import AskForScopeTl from './AskForScopeTl';
 import AskForScope from './AskForScope';
+import SubmitRequestQuote from './SubmitRequestQuote';
 import QueryLoader from './QueryLoader';
+import AskForScopeTransfer from './AskForScopeTransfer';
 
 
-const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
+const TransferQueryDetails = ({ onClose, queryId, quotationId, after, userIdDefined }) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -30,7 +30,26 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
 
     const userObject = JSON.parse(userData);
 
+    const fetchActivityHistory = async () => {
 
+        try {
+            setIsVisible(true);
+            setActivityLoading(true);
+            const response = await fetch('https://instacrm.rapidcollaborate.com/api/viewqueryhistory', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ assign_id: queryInfo.assign_id }),
+            });
+            const data = await response.json();
+            setActivityData(data.activity);
+        } catch (error) {
+            console.error('Error fetching activity history:', error);
+        } finally {
+            setActivityLoading(false);
+        }
+    };
 
     // Hide the activity div when clicked elsewhere
     const hideActivityDiv = () => {
@@ -40,7 +59,6 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
     const fetchQueryDetails = async () => {
         setLoading(true); // Show loading spinner
         let hasResponse = false;
-
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/view_query_details_api',
@@ -83,57 +101,22 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
 
     const close = () => {
         onClose();
-        if (after) { after() }
+        if (after) {
+            after();
+        }
     }
 
     return (
-        <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
+        <div
+            className=" h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
         >
-            <div className='flex items-center justify-between bg-blue-400 text-white pnav py-3'>
-                <h2 className="text-xl font-semibold">Query Details </h2>
-
-                {/* {tatScore && tatScore.total_rows > 0 ? (
-                <div className="flex items-center justify-between space-x-2 mr-16">
-                    <p>
-                        <span className="font-bold">Average TAT:</span>{" "}
-                        <span className="">
-                            {convertMinutesToHoursAndMinutes(
-                                Math.round(tatScore.total_minute / tatScore.total_rows)
-                            )}
-                        </span>
-                    </p>
-                    <p className="">
-                        <span className="font-bold">Average Score:</span>{" "}
-                        <span className="">
-                            {(tatScore.total_score / tatScore.total_rows).toFixed(2)}
-                        </span>
-                    </p>
-                </div>
-            ) : (
-                <p className="text-gray-500"></p>
-            )} */}
-                <button
-                    onClick={close}
-                    className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
-                >
-                    {/* <CircleX size={32} /> */}
-                    <X size={15} />
-                </button>
-            </div>
-
-
-
-            <div className=' flex items-start justify-between space-x-1 pnav text-black'>
-                <div className='col-md-3'>
+            
+            <div className=' flex items-start justify-center space-x-1 text-black'>
+                <div className='col-md-4'>
                     {loading ? (
                         <QueryLoader />
                     ) : (
-                        <div className="space-y-4 bg-white p-6 shadow rounded-md border-t-2 border-blue-400 m-2 text-sm">
+                        <div className="space-y-4 bg-white px-2 py-1 shadow rounded-md border-t-2 border-blue-400 my-2 text-sm">
                             <div className="relative">
                                 {queryInfo.assign_id && (
                                     <p
@@ -212,14 +195,14 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
                             <p>
                                 <strong>Tag: </strong>
                                 {queryInfo.tags && queryInfo.tags.length > 0 ? (
-                                    <span className="space-x-1">
+                                    <span className="">
                                         {queryInfo.tags.map((tag, index) => (
-                                            <span
+                                            <div
                                                 key={index}
                                                 className="bg-yellow-500 px-1 rounded text-white mr-1 mb-1 d-inline-block"
                                             >
                                                 {tag}
-                                            </span>
+                                            </div>
                                         ))}
                                     </span>
                                 ) : (
@@ -244,7 +227,7 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
                                 </p>
                             )}
 
-                            {queryInfo.update_status != undefined && (
+                            {queryInfo.update_status !== undefined && (
                                 <p className='qss'>
                                     <strong>Query Status:</strong>{' '}
                                     <span
@@ -293,13 +276,15 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
                         </div>
                     )}
                 </div>
-                <AskForScope queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} tlType={tlType}/>
+                <AskForScopeTransfer queryId={queryId} clientName={queryInfo.name} quotationId={quotationId} userType={userObject.fld_admin_type} userIdDefined={userIdDefined} />
+
             </div>
 
+
             <ToastContainer />
-        </motion.div>
+        </div>
     );
 
 };
 
-export default QueryDetailsTl;
+export default TransferQueryDetails;

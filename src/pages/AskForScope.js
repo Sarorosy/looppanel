@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2 } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -19,8 +19,9 @@ import { io } from "socket.io-client";
 import MergedHistoryComponent from './MergedHistoryComponent';
 import ScopeLoader from './ScopeLoader';
 import { getSocket } from './Socket';
+import ReactTooltip, { Tooltip } from 'react-tooltip'
 
-const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName }) => {
+const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName, tlType }) => {
     const socket = getSocket();
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -321,7 +322,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
                 <div className='flex items-center'>
-                    <button onClick={toggleAddNewForm} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
+                    <button disabled={tlType && tlType == 2} onClick={toggleAddNewForm} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
                         <PlusCircle size={15} className='mr-1' /> <div>Add New</div>
                     </button>
                     <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
@@ -377,6 +378,12 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         )}
                                                         {quote.edited == 1 && (
                                                             <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
+                                                        )}
+                                                        {quote.ownership_transferred == 1 && (
+                                                            <div className="relative group">
+                                                                <ArrowLeftRight size={24} className="text-yellow-600 bg-yellow-300 border-2 border-yellow-600 p-1 rounded-full ml-1" data-tooltip-id="my-tooltip" data-tooltip-content={ `Ownership transferred from ${quote.old_user_name}`} />
+                                                                
+                                                            </div>
                                                         )}
 
                                                     </p>
@@ -434,6 +441,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             (quote.quote_status == 0) ? (
                                                             <button
                                                                 onClick={() => { toggleEditForm(quote.quoteid); }}
+                                                                disabled={tlType && tlType == 2}
                                                                 className='flex items-center rounded-full border-2 border-blue-500 mx-2'
                                                             >
                                                                 <Settings2 className='p-1' />
@@ -441,11 +449,11 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         ) : null
                                                     }
 
-                                                    <button onClick={() => { toggleHashEditForm(quote.quoteid, quote.user_id) }}
+                                                    <button disabled={tlType && tlType == 2} onClick={() => { toggleHashEditForm(quote.quoteid, quote.user_id) }}
                                                         className='flex items-center rounded-full border-2 border-blue-500'>
                                                         <Hash className='p-1' />
                                                     </button>
-                                                    <button onClick={() => { toggleFollowersForm(quote.quoteid, thisUserId) }} className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
+                                                    <button disabled={tlType && tlType == 2} onClick={() => { toggleFollowersForm(quote.quoteid, thisUserId) }} className='flex items-center rounded-full border-2 border-blue-500 mx-2'>
                                                         <UserRoundPlus className='p-1' />
                                                     </button>
                                                     <button
@@ -716,7 +724,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                                             )}
 
-                                                            <div className='flex items-start space-x-1'>
+                                                            <div className='flex items-start space-x-1' >
                                                                 {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId && (
                                                                     <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} plans={quote.plan} />
                                                                 )}
@@ -732,6 +740,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
 
                                                                             {quote.feasability_status == "Completed" && quote.submittedtoadmin == "false" && (
                                                                                 <button
+                                                                                    disabled={tlType && tlType == 2}
                                                                                     onClick={() => {
                                                                                         submitToAdmin(quote.assign_id, quote.quoteid, quote.user_id);
                                                                                     }}
@@ -790,7 +799,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 </>)}
 
                                                         </div>
-                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} finalfunctionforsocket={fetchScopeDetailsForScoket} allDetails={quote} />
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} finalfunctionforsocket={fetchScopeDetailsForScoket} allDetails={quote} tlType={tlType} />
                                                         <MergedHistoryComponent quoteId={quote.quoteid} refId={quote.assign_id} />
                                                     </td>
 
@@ -829,6 +838,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                             <AddFollowers quoteId={selectedQuoteId} refId={queryId} onClose={() => { setFollowersFormOpen(!followersFormOpen) }} after={fetchScopeDetails} />
                         )}
                     </AnimatePresence>
+                    <Tooltip id="my-tooltip" />
 
                 </div>
             )}

@@ -11,7 +11,7 @@ import { getSocket } from './Socket';
 const socket = getSocket();
 
 
-export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,finalfunctionforsocket ,allDetails}) => {
+export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,finalfunctionforsocket ,allDetails, tlType}) => {
     const [messages, setMessages] = useState('');
     const [newMessage, setNewMessage] = useState('');
     const [loadingMessages, setLoadingMessages] = useState(false);
@@ -212,6 +212,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         rows={4}
+                        disabled={tlType && tlType == 2}
                     ></textarea>
 
                     <div className="flex items-center justify-center ">

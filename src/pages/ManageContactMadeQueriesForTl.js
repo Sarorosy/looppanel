@@ -61,6 +61,39 @@ const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
         setSelectedQuery(query);
         setIsDetailsOpen(true);
     };
+
+    const handleRequestAccessClick = async (data) => {
+        try {
+            const response = await fetch('https://apacvault.com/Webapi/requestAccessfortransferredquery', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    // Include the data you want to send in the API request
+                    assign_id: data.assign_id,
+                    user_id: loopUserId,
+                    // Add other necessary fields from `data` as required by the API
+                }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                // Handle successful response
+                toast.success('Request Access Sent Successfully!');
+            } else {
+                // Handle error response
+                toast.error(`Error: ${result.message}`);
+            }
+        } catch (error) {
+            // Handle network errors
+            toast.error('There was an error sending the request.');
+        }finally{
+            fetchQuotes(false);
+        }
+    };
+
     const handleSummaryButtonClick = (query) => {
         setSummaryOpen(true);
     };
@@ -304,11 +337,41 @@ const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
             title: 'Actions',
             data: null,
             orderable: false,
-            render: (data, type, row) => `
-        <button class="view-btn vd mx-1 p-1  text-white" style="font-size:10px;border-radius:3px;white-space: nowrap;" data-id="${row.assign_id}">
-            View Details
-        </button>
-      `,
+            render: (data, type, row) => {
+                // Check conditions for buttons
+                if (row.transfer_type != 0) {
+                    if (row.looppanel_transfer_access == 2) {
+                        // Show View Details button
+                        return `
+                            <button class="view-btn vd mx-1 p-1 text-white bg-green-500" style="font-size:10px;border-radius:3px;white-space: nowrap;" data-id="${row.assign_id}">
+                                View Details
+                            </button>
+                        `;
+                    } else if (row.looppanel_transfer_access == 0 || row.looppanel_transfer_access == 3) {
+                        // Show Request Access button
+                        return `
+                            <button class="request-access-btn mx-1 p-1 text-white bg-blue-500" style="font-size:10px;border-radius:3px;white-space: nowrap;" title="Since this query has been transferred, you need to request scope access before requesting a scope." data-id="${row.assign_id}">
+                                Request Access
+                            </button>
+                        `;
+                    } else if (row.looppanel_transfer_access == 1) {
+                        return `
+                            <span class=" p-1 text-white bg-yellow-500" style="font-size:10px;border-radius:3px;white-space: nowrap;" title="Request Status pending." data-id="${row.assign_id}">
+                                Request Pending
+                            </span>
+                        `;
+                    }
+                } else if (row.transfer_type == 0) {
+                    // Show View Details button for transfer_type == 0
+                    return `
+                        <button class="view-btn vd mx-1 p-1 text-white bg-green-500" style="font-size:10px;border-radius:3px;white-space: nowrap;" data-id="${row.assign_id}">
+                            View Details
+                        </button>
+                    `;
+                }
+                // Default case
+                return '';
+            }
         },
     ];
 
@@ -422,6 +485,7 @@ const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
                                 pageLength: 50,
                                 createdRow: (row, data) => {
                                     $(row).find('.view-btn').on('click', () => handleViewButtonClick(data));
+                                    $(row).find('.request-access-btn').on('click', () => handleRequestAccessClick(data));
                                 },
                             }}
                         />

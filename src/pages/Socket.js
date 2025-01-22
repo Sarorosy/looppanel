@@ -7,7 +7,7 @@ export const getSocket = () => {
     if (!socket) {
         socket = io("https://looppanelsocket-qlcd.onrender.com", {
             reconnection: true,
-            reconnectionAttempts: 10,
+            reconnectionAttempts: 1,
             reconnectionDelay: 3000,
             reconnectionDelayMax: 5000,
             timeout: 20000,

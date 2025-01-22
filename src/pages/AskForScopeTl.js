@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp, Paperclip, History, CheckCircle, CheckCircle2, Hash, RefreshCcw } from 'lucide-react';
+import { ArrowDown, ArrowUp, Paperclip, History, CheckCircle, CheckCircle2, Hash, RefreshCcw, ArrowLeftRight } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
 import HistorySideBar from './HistorySideBar';
@@ -12,6 +12,7 @@ import { io } from "socket.io-client";
 import MergedHistoryComponent from './MergedHistoryComponent';
 import ScopeLoader from './ScopeLoader';
 import { getSocket } from './Socket';
+import ReactTooltip, { Tooltip } from 'react-tooltip'
 
 const AskForScopeTl = ({ queryId, userType, quotationId }) => {
     const socket = getSocket();
@@ -418,6 +419,12 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                             >
                                                                 PTP
                                                             </span>
+                                                        )}
+                                                        {quote.ownership_transferred == 1 && (
+                                                            <div className="relative group">
+                                                                <ArrowLeftRight size={24} className="text-yellow-600 bg-yellow-300 border-2 border-yellow-600 p-1 rounded-full ml-1" data-tooltip-id="my-tooltip" data-tooltip-content={ `Ownership transferred from ${quote.old_user_name}`} />
+                                                                
+                                                            </div>
                                                         )}
 
                                                     </p>
@@ -835,6 +842,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                     <FeasHistorySideBar quoteId={quoteIdForFeasHistory} refId={refIdForFeasHistory} onClose={() => { SetFeasHistoryPanelOpen(!feasHistoryPanelOpen) }} />
                 )}
             </AnimatePresence>
+            <Tooltip id="my-tooltip" />
         </div>
     );
 };

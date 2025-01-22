@@ -10,12 +10,14 @@ import FeasabilityQueryDetails from '../pages/FeasabilityQueryDetails';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import NotificationLoader from '../pages/NotificationLoader';
+import TransferRequestsPage from '../pages/TransferRequestsPage';
 
 const Header = ({ requestPermission }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0); // State for notification count
   const [notifications, setNotifications] = useState([]); // State for notifications
   const [notificationsVisible, setNotificationsVisible] = useState(false); // To control visibility of notifications dropdown
+  const [TransferPageVisible, setTransferPageVisible] = useState(false);
   const [loading, setLoading] = useState(false); // State for loading spinner
   const [selectedQuery, setSelectedQuery] = useState('');
   const [selectedQuote, setSelectedQuote] = useState('');
@@ -226,6 +228,10 @@ const Header = ({ requestPermission }) => {
       fetchNotifications(); // Fetch notifications when the dropdown is shown
     }
   };
+
+  const toggleTransferRequests = () => {
+    setTransferPageVisible(!TransferPageVisible);
+  };
   
 
 
@@ -247,6 +253,11 @@ const Header = ({ requestPermission }) => {
         {/* User Session Info */}
         <div className="relative n-dp-dn z-50 items-center flex">
           {/* Bell Button with Notification Count */}
+          {userObject.id == 1 && (
+            <button onClick={toggleTransferRequests}>
+              <ArrowLeftRight size={24} />
+            </button>
+          )}
           <button onClick={toggleNotifications} className="text-dark ml-6 relative">
             <Bell size={24} />
             {notificationCount > 0 && (
@@ -374,6 +385,10 @@ const Header = ({ requestPermission }) => {
             <FeasabilityQueryDetails queryId={selectedQuery} quotationId={selectedQuote} onClose={toggleFeasDetailsPage} />
           )
         }
+
+        {TransferPageVisible && (
+          <TransferRequestsPage onClose={()=>{setTransferPageVisible(!TransferPageVisible)}} />
+        )}
       </AnimatePresence>
 
     </header>

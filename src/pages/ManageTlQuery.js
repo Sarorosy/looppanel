@@ -436,7 +436,8 @@ const ManageTlQuery = ({ onClose }) => {
                     <div className='container flex items-center justify-between p-0'>
                         <h2 className="text-xl font-semibold">All Users Request</h2>
                         <div className='flex items-center justify-between space-x-2'>
-                            <button onClick={toggleUsersDiv} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
+                            
+                            <button disabled={loopuserObject.tl == 1 && loopuserObject.tl_type == 2 } onClick={toggleUsersDiv} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
                                 <PlusCircle size={15} className='mr-1' /> <div>Add New</div>
                             </button>
                             <button
@@ -614,6 +615,7 @@ const ManageTlQuery = ({ onClose }) => {
                         quotationId={selectedQuote}
                         queryId={selectedQuery.ref_id}
                         after={() => { fetchQuotes(false) }}
+                        tlType={loopuserObject.tl_type}
                     />
 
                 )}

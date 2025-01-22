@@ -5,7 +5,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, ArrowLeftRight } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2 } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -19,9 +19,8 @@ import { io } from "socket.io-client";
 import MergedHistoryComponent from './MergedHistoryComponent';
 import ScopeLoader from './ScopeLoader';
 import { getSocket } from './Socket';
-import ReactTooltip, { Tooltip } from 'react-tooltip'
 
-const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
+const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, clientName }) => {
     const socket = getSocket();
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -39,7 +38,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
     const [adminComments, setAdminComments] = useState('');
     const userData = localStorage.getItem('user');
     const loopuserData = localStorage.getItem('loopuser');
-    const [expandedRowIndex, setExpandedRowIndex] = useState(0);
+    const [expandedRowIndex, setExpandedRowIndex] = useState(null);
     const [addNewFormOpen, setAddNewFormOpen] = useState(false);
     const [editFormOpen, setEditFormOpen] = useState(false);
     const [hashEditFormOpen, setHashEditFormOpen] = useState(false);
@@ -72,7 +71,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
     const userObject = JSON.parse(userData);
     const loopUserObject = JSON.parse(loopuserData);
 
-    const thisUserId = loopUserObject.id
+    const thisUserId = (userIdDefined && userIdDefined != null && userIdDefined != "") ? userIdDefined : loopUserObject.id
 
 
     const fetchScopeDetails = async () => {
@@ -120,8 +119,8 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
             }
         }
     };
-    const fetchScopeDetailsForSocket = async () => {
-
+    const fetchScopeDetailsForScoket = async () => {
+        let hasResponse = false;
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/adminScopeDetails',
@@ -135,8 +134,6 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
             );
 
             const data = await response.json(); // Parse the response as JSON
-            console.log(data);
-
             if (data.status) {
                 if (data.quoteInfo != null && Array.isArray(data.quoteInfo)) {
                     // If quoteInfo is an array, process each entry
@@ -155,23 +152,13 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
-
+            hasResponse = true;
         } catch (error) {
             console.error('Error fetching details:', error);
         }
     };
 
-    useEffect(() => {
-        socket.on('feasabilityDone', (data) => {
-            if (data.quote_id == quotationId) {
-                fetchScopeDetailsForSocket();
-            }
-        });
 
-        return () => {
-            socket.off('feasabilityDone');  // Clean up on component unmount
-        };
-    }, []);
 
 
     useEffect(() => {
@@ -179,11 +166,12 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
             fetchScopeDetails(); // Fetch the scope details when the component mounts
         }
     }, [queryId]);
+
     useEffect(() => {
         socket.on('quoteReceived', (data) => {
             if (data.ref_id == queryId) {
 
-                fetchScopeDetailsForSocket();
+                fetchScopeDetailsForScoket();
             }
         });
 
@@ -193,26 +181,15 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
     }, []);
 
     useEffect(() => {
-        socket.on('discountReceived', (data) => {
-            if (data.quote_id == quotationId) {
-                fetchScopeDetailsForSocket();
-            }
-        });
-
-        return () => {
-            socket.off('discountReceived');  // Clean up on component unmount
-        };
-    }, []);
-
-    useEffect(() => {
-        socket.on('demoDone', (data) => {
+        socket.on('feasabilityDone', (data) => {
             if (data.ref_id == queryId) {
-                fetchScopeDetailsForSocket();
+
+                fetchScopeDetailsForScoket();
             }
         });
 
         return () => {
-            socket.off('demoDone');  // Clean up on component unmount
+            socket.off('feasabilityDone');  // Clean up on component unmount
         };
     }, []);
 
@@ -284,12 +261,12 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
         });
     };
 
-    const submitToAdmin = async (assign_id, quote_id, user_id, finalComments) => {
+    const submitToAdmin = async (assign_id, quote_id, user_id) => {
         const payload = {
             ref_id: assign_id,
             quote_id: quote_id,
             user_id: user_id,
-            final_comments: finalComments // Include the comments in the payload
+
         };
 
         try {
@@ -304,6 +281,11 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
             const data = await response.json();
             if (data.status) {
                 toast.success("The quote has been successfully submitted to the admin.");
+                socket.emit("updateRequest", {
+                    quote_id: quote_id,
+                    ref_id: assign_id,
+                    user_name: loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name
+                })
                 setTimeout(() => {
                     fetchScopeDetails();
                 }, 1000);
@@ -336,10 +318,10 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
 
     return (
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
-            <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
-                <h2 className="text-xl font-semibold " >Ask For Scope </h2>
+            <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-2">
+                <h2 className="text-xl font-semibold " >Previous Requests</h2>
                 <div className='flex items-center'>
-
+                
                     <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
                 </div>
             </div>
@@ -358,9 +340,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                     <tr className="bg-gray-100">
                                         <th className="border px-2 py-2 text-left">Ref No.</th>
                                         <th className="border px-2 py-2 text-left">Quote Id.</th>
-                                        <th className="border px-2 py-2 text-left">Currency</th>
-                                        <th className="border px-2 py-2 text-left">Plan</th>
-                                        <th className="border px-2 py-2 text-left">Service Name</th>
+                                        <th className="border px-2 py-2 text-left">User Name</th>
                                         <th className="border px-2 py-2 text-left">Quote Status</th>
                                         <th className="border px-2 py-2 text-left">Action</th>
                                     </tr>
@@ -394,19 +374,11 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                         {quote.edited == 1 && (
                                                             <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
                                                         )}
-                                                        {quote.ownership_transferred == 1 && (
-                                                            <div className="relative group">
-                                                                <ArrowLeftRight size={24} className="text-yellow-600 bg-yellow-300 border-2 border-yellow-600 p-1 rounded-full ml-1" data-tooltip-id="my-tooltip" data-tooltip-content={ `Ownership transferred from ${quote.old_user_name}`} />
-                                                                
-                                                            </div>
-                                                        )}
 
                                                     </p>
                                                 </td>
                                                 <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.quoteid}</td>
-                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.currency}</td>
-                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.plan}</td>
-                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.service_name || 'N/A'}</td>
+                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.fld_first_name + " " + quote.fld_last_name}</td>
                                                 <td className="border px-2 py-2" style={{ fontSize: "11px" }}>
                                                     {quote.isfeasability == 1 ? (
                                                         quote.submittedtoadmin == "false" ? (
@@ -451,7 +423,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                         {expandedRowIndex == index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
 
-
+                                                    
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
@@ -516,7 +488,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                             )}
 
 
-{quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
+                                                            {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
                                                                 <>
                                                                     <div>
                                                                         <p className="mb-2">
@@ -592,7 +564,6 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                 </div>
                                                             )}
 
-                                                            <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
                                                             {quote.relevant_file && quote.relevant_file.length > 0 && (
                                                                 <div>
                                                                     <strong>Relevant Files:</strong>
@@ -706,11 +677,34 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                 <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
                                                             )}
 
-
+                                                            <div className='flex items-start space-x-1'>
+                                                                {quote.quote_status == 1 && quote.submittedtoadmin == "true" && quote.user_id == thisUserId && (
+                                                                    <AskPtp scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} plans={quote.plan} />
+                                                                )}
+                                                                {quote.user_id == thisUserId && quote.submittedtoadmin == "true" && quote.demodone != 1 && (
+                                                                    <DemoDone scopeDetails={quote} quoteId={quote.quoteid} after={fetchScopeDetails} />
+                                                                )}
+                                                            </div>
 
                                                             {quote.isfeasability == 1 && (
                                                                 <>
+                                                                    <div className='flex items-center'>
+                                                                        <>
 
+                                                                            {quote.feasability_status == "Completed" && quote.submittedtoadmin == "false" && (
+                                                                                <button
+                                                                                    onClick={() => {
+                                                                                        submitToAdmin(quote.assign_id, quote.quoteid, quote.user_id);
+                                                                                    }}
+                                                                                    className="bg-green-100 text-green-700 p-1 rounded border border-green-900 ml-5 hover:bg-green-200"
+                                                                                    title='Submit request to admin for Ask For Scope'
+                                                                                >
+                                                                                    Request Quote
+                                                                                </button>
+                                                                            )}
+                                                                        </>
+
+                                                                    </div>
 
                                                                     {quote.feasability_status == "Completed" && (
                                                                         <>
@@ -757,10 +751,9 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                 </>)}
 
                                                         </div>
-                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} allDetails={quote} />
+                                                        <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} finalfunctionforsocket={fetchScopeDetailsForScoket} allDetails={quote} />
                                                         <MergedHistoryComponent quoteId={quote.quoteid} refId={quote.assign_id} />
                                                     </td>
-
 
                                                 </tr>
 
@@ -779,7 +772,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                     )}
                     <AnimatePresence>
                         {addNewFormOpen && (
-                            <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails} />
+                            <SubmitRequestQuote refId={queryId} onClose={toggleAddNewForm} after={fetchScopeDetails} userIdDefined={userIdDefined} clientName={clientName} />
                         )}
                         {editFormOpen && (
                             <EditRequestForm quoteId={selectedQuoteId} refId={queryId} onClose={() => { setEditFormOpen(!editFormOpen) }} after={fetchScopeDetails} />
@@ -797,7 +790,6 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                             <AddFollowers quoteId={selectedQuoteId} refId={queryId} onClose={() => { setFollowersFormOpen(!followersFormOpen) }} after={fetchScopeDetails} />
                         )}
                     </AnimatePresence>
-                    <Tooltip id="my-tooltip" />
 
                 </div>
             )}
@@ -806,4 +798,4 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
     );
 };
 
-export default AskForScopeFollower;
+export default AskForScopeTransfer;

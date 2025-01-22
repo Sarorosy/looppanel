@@ -3,7 +3,7 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
-import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Paperclip, Hash, RefreshCcw, PlusCircle, Hourglass, CirclePause, CircleCheck, Bell, UserRoundPlus, Settings2, Pencil } from 'lucide-react';
+import { ArrowDown, ArrowUp, History, CheckCircle, CheckCircle2, Paperclip, Hash, RefreshCcw, PlusCircle, Hourglass, CirclePause, CircleCheck, Bell, UserRoundPlus, Settings2, Pencil, ArrowLeftRight } from 'lucide-react';
 import { AnimatePresence } from 'framer-motion';
 import AddTags from './AddTags';
 import HistorySideBar from './HistorySideBar';
@@ -19,6 +19,9 @@ import CompleteFeasability from './CompleteFeasability';
 import MergedHistoryComponent from './MergedHistoryComponent';
 import ScopeLoader from './ScopeLoader';
 import { getSocket } from './Socket';
+import ReactTooltip, { Tooltip } from 'react-tooltip';
+
+
 const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail }) => {
     const socket = getSocket();
     const [scopeDetails, setScopeDetails] = useState(null);
@@ -595,6 +598,13 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                         {quote.edited == 1 && (
                                                             <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
                                                         )}
+                                                        {quote.ownership_transferred == 1 && (
+                                                            <div className="relative group">
+                                                                <ArrowLeftRight size={24} className="text-yellow-600 bg-yellow-300 border-2 border-yellow-600 p-1 rounded-full ml-1" data-tooltip-id="my-tooltip" data-tooltip-content={ `Ownership transferred from ${quote.old_user_name}`} />
+                                                                
+                                                            </div>
+                                                        )}
+
 
                                                     </p>
                                                 </td>
@@ -1132,6 +1142,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                     <CompleteFeasability onClose={() => { setCompleteFeasabilityDiv(!completeFeasabilityDiv) }} quoteId={selectedQuoteId} refId={selectedRefId} userId={selectedUser} after={fetchScopeDetailsForSocket} />
                 )}
             </AnimatePresence>
+            <Tooltip id="my-tooltip" />
         </div>
     );
 };
