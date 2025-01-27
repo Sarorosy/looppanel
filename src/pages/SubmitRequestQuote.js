@@ -713,7 +713,10 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                             </div>
                         </div>
                         <div className="mt-4">
-                            {selectedPlans.map((plan) => (
+                            {selectedPlans.sort((a, b) => {
+                                    const order = ['Basic', 'Standard', 'Advanced'];
+                                    return order.indexOf(a) - order.indexOf(b); // Sort based on the predefined order
+                                }).map((plan) => (
                                 <>
                                     <div key={plan} className="mb-4">
                                         <label htmlFor={`comment_${plan}`} className="block text-sm font-medium text-gray-700">
