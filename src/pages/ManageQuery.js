@@ -11,7 +11,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft } from 'lucide-react';
+import { RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight } from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -22,6 +22,7 @@ import FeasabilityPage from './FeasabilityPage';
 import * as XLSX from 'xlsx';
 import { io } from "socket.io-client";
 import { getSocket } from './Socket';
+import TransferRequestsPage from './TransferRequestsPage';
 const socket = getSocket();
 
 const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
@@ -51,7 +52,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [isAllFeasOpen, setIsAllFeasOpen] = useState(false);
     const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0);
+    const [pendingTransRequestCount, setPendingTransRequestCount] = useState(0);
     const [startDate, setStartDate] = useState(null);
+    const [TransferPageVisible, setTransferPageVisible] = useState(false);
     const [endDate, setEndDate] = useState(null);
     const [activeTab, setActiveTab] = useState('all');
     const [selectedRows, setSelectedRows] = useState([]);
@@ -80,7 +83,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         if (!isAuthorizedUser && !isScopeAdmin) {
             navigate('/assignquery');
         }
-        
+
     }, [userObject, loopUserObject, navigate]);
 
 
@@ -146,6 +149,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     const toggleAllFeasPage = () => {
         setIsAllFeasOpen(!isAllFeasOpen);
+    };
+    const toggleTransferRequests = () => {
+        setTransferPageVisible(!TransferPageVisible);
     };
 
     const handleViewButtonClick = (query) => {
@@ -224,7 +230,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         const end_date = endDate;
 
         let payload = {
-            userid, ref_id, scope_id,subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date
+            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date
         };
 
         if (nopayload) {
@@ -276,6 +282,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 }
                 setUsers(data.users);
                 setPendingFeasRequestCount(data.pendingFeasRequestCount);
+                setPendingTransRequestCount(data.pendingTransferRequestCount ?? 0);
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
@@ -814,6 +821,13 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 {pendingFeasRequestCount}
                             </span>
                         </button>
+                        <button className="ml-2 bg-gray-200 text-gray-500 hover:bg-gray-300  f-12 btn px-2 py-1 flex items-center relative" onClick={toggleTransferRequests}>
+                            <ArrowLeftRight size={15} className="mr-1" />
+                            Transfer Requests
+                            <span style={{ top: "-15px", right: "-10px" }} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
+                                {pendingTransRequestCount}
+                            </span>
+                        </button>
                     </div>
                 </div>
                 <div className='flex items-end space-x-2'>
@@ -1243,6 +1257,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 )}
                 {isAllFeasOpen && (
                     <FeasabilityPage onClose={toggleAllFeasPage} after={() => { fetchQuotes(false) }} />
+                )}
+                {TransferPageVisible && (
+                    <TransferRequestsPage onClose={() => { setTransferPageVisible(!TransferPageVisible) }} />
                 )}
             </AnimatePresence>
             <Toaster position="top-center" reverseOrder={false} toastOptions={{

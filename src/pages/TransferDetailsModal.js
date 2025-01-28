@@ -6,7 +6,7 @@ import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 import transferGif  from '../transfer.gif';
 
-const TransferDetailsModal = ({ refId, userName, onClose, after }) => {
+const TransferDetailsModal = ({ refId, userName,fromUserName, onClose, after }) => {
     const [showConfirmation, setShowConfirmation] = useState(false);
     const [actionType, setActionType] = useState("");
 
@@ -127,11 +127,13 @@ const TransferDetailsModal = ({ refId, userName, onClose, after }) => {
                             <h3 className="text-lg font-semibold text-gray-700 text-center">
                                 Are you sure you want to {actionType} this request?
                             </h3>
+                            {fromUserName && fromUserName !="" && fromUserName!=null && (
                             <div className="flex items-center justify-center">
-                                <h3>Pragya Chauhan</h3>
+                                <h3>{fromUserName}</h3>
                                 <img src={transferGif} />
-                                <h3>Mandeep Tamang</h3>
+                                <h3>{userName}</h3>
                             </div>
+                            )}
                             
                             {actionType == "approve" && (
                                 <span className="text-gray-400 mt-2 text-sm"> All the Scope and Feasibility requests will be transferred to this particular user</span>

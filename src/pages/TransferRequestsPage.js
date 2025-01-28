@@ -16,6 +16,7 @@ const TransferRequestsPage = ({ onClose, after,userIdDefined }) => {
     const [loading, setLoading] = useState(false);
     const [selectedQuery, setSelectedQuery] = useState('');
     const [selectedUsername, setSelectedUsername] = useState('');
+    const [selectedFromUsername, setSelectedFromUsername] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
     const userData = localStorage.getItem('loopuser');
@@ -64,6 +65,7 @@ const TransferRequestsPage = ({ onClose, after,userIdDefined }) => {
     const handleViewBtnClick = (query) => {
         setSelectedQuery(query.ref_id);
         setSelectedUsername(query.fld_first_name + " " + query.fld_last_name)
+        setSelectedFromUsername(query.from_user_name);
         console.log(selectedQuery)
         setIsDetailsOpen(true);
 
@@ -198,7 +200,7 @@ const TransferRequestsPage = ({ onClose, after,userIdDefined }) => {
 
                     <TransferDetailsModal
                         onClose={toggleDetailsPage}
-                       
+                       fromUserName={selectedFromUsername}
                         refId={selectedQuery}
                         userName={selectedUsername}
                         after={fetchQuoteSummary}
