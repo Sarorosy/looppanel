@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
-import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import 'react-quill/dist/quill.snow.css';

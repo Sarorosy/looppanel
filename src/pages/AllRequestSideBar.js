@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
-import 'react-toastify/dist/ReactToastify.css';
+
 import CustomLoader from '../CustomLoader';
 import DataTable from 'datatables.net-react';
 import DT from 'datatables.net-dt';

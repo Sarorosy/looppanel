@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import toast from 'react-hot-toast';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle, CheckIcon } from 'lucide-react';
 import { io } from "socket.io-client";

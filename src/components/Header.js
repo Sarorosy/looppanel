@@ -7,8 +7,8 @@ import { AnimatePresence } from 'framer-motion';
 import QueryDetails from '../pages/QueryDetails';
 import QueryDetailsAdmin from '../pages/QueryDetailsAdmin';
 import FeasabilityQueryDetails from '../pages/FeasabilityQueryDetails';
-import { toast, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+
+import toast from 'react-hot-toast';
 import NotificationLoader from '../pages/NotificationLoader';
 import TransferRequestsPage from '../pages/TransferRequestsPage';
 

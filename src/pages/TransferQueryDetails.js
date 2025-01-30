@@ -3,7 +3,7 @@ import $ from 'jquery';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import { motion } from 'framer-motion';
-import { toast, ToastContainer } from 'react-toastify';
+import toast from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 import { CircleX, HistoryIcon, X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
