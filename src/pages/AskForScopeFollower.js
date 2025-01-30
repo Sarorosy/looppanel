@@ -801,7 +801,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
 
                 </div>
             )}
-            <ToastContainer />
+            
         </div>
     );
 };

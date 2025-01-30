@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
@@ -618,7 +619,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
                 </div>
             )}
-            <ToastContainer />
+            
         </div>
     );
 };

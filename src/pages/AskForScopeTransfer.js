@@ -793,7 +793,7 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
 
                 </div>
             )}
-            <ToastContainer />
+            
         </div>
     );
 };

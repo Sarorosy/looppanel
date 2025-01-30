@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
@@ -22,18 +23,18 @@ const CompleteFeasability = ({ refId, quoteId, after, onClose, userId, notificat
     const loopUserObject = JSON.parse(loopUserData);
 
     useEffect(() => {
-            const savedComments = localStorage.getItem(`feasabilityComments_${quoteId}`);
-            if (savedComments) {
-                setFeasabilityComments(savedComments);  // Set the comment state for this specific quotationId
-            }
-        }, [quoteId]);  // Re-run when the `quotationId` changes
-        
-    
+        const savedComments = localStorage.getItem(`feasabilityComments_${quoteId}`);
+        if (savedComments) {
+            setFeasabilityComments(savedComments);  // Set the comment state for this specific quotationId
+        }
+    }, [quoteId]);  // Re-run when the `quotationId` changes
 
-        const handleCommentsChange = (value) => {
-            setFeasabilityComments(value);
-            localStorage.setItem(`feasabilityComments_${quoteId}`, value);
-        };
+
+
+    const handleCommentsChange = (value) => {
+        setFeasabilityComments(value);
+        localStorage.setItem(`feasabilityComments_${quoteId}`, value);
+    };
 
     return (
         <motion.div
@@ -87,7 +88,7 @@ const CompleteFeasability = ({ refId, quoteId, after, onClose, userId, notificat
                                 toast.error(result.message || "Failed to complete feasibility.");
                             }
                         } catch (error) {
-                           
+
                             console.error(error);
                         }
                     }}
@@ -138,7 +139,7 @@ const CompleteFeasability = ({ refId, quoteId, after, onClose, userId, notificat
                         </button>
                     </div>
                 </form>
-
+                
             </div>
         </motion.div>
     );

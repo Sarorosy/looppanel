@@ -310,7 +310,7 @@ const AdminFeasQueryDetails = ({ onClose, queryId, quotationId, finalFunction })
                 </div>
             )}
 
-            <ToastContainer />
+
         </motion.div>
     );
 

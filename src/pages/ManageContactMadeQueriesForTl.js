@@ -526,25 +526,7 @@ const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
                     <ManageTlQuery onClose={() => { setTlPageOpen(!tlPageOpen) }} />
                 )}
             </AnimatePresence>
-            <Toaster position="top-center" reverseOrder={false} toastOptions={{
-                // Define default options
-                className: 'border',
-                duration: 3000,
-                removeDelay: 500,
-                style: {
-                    background: '#161616FF',
-                    color: '#fff',
-                },
-
-                // Default options for specific types
-                success: {
-                    duration: 3000,
-                    iconTheme: {
-                        primary: 'green',
-                        secondary: 'black',
-                    },
-                },
-            }} />
+            
         </motion.div>
     );
 };

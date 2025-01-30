@@ -292,7 +292,7 @@ const QueryDetailsAdmin = ({ onClose, queryId, quotationId, after, viewAll = tru
             </div>
 
 
-            <ToastContainer />
+            
         </motion.div>
     );
 

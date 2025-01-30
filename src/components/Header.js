@@ -320,7 +320,7 @@ const Header = ({ requestPermission }) => {
                             </span>
                           )}
                           <span>
-                          {notification.fld_first_name} {notification.message} on quotation for ref_id{' '}
+                          {notification.isdeleted == 1 ? <span style={{textDecoration:"line-through", color:"red"}}>{notification.deleted_user_name } </span>: notification.fld_first_name} {notification.message} on quotation for ref_id{' '}
                           <strong>{notification.ref_id}</strong>
                           <span className="text-gray-500 text-xs ml-2">
                         {timeAgo(notification.date)} {/* Display time ago */}

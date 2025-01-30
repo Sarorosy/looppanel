@@ -1001,9 +1001,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                                                                     <div className="nav-tabs-custom tabb">
                                                                         <ul className="nav nav-tabs">
                                                                             <li>
-                                                                                <a href="#tab_2" data-toggle="tab">
                                                                                     Submit Price
-                                                                                </a>
                                                                             </li>
                                                                         </ul>
                                                                         <div className="tab-content">
@@ -1110,7 +1108,7 @@ const AskForScopeAdmin = ({ queryId, userType, quotationId, viewAll, clientEmail
                     )}
                 </div>
             )}
-            <ToastContainer />
+            
             <AnimatePresence>
 
                 {editFormOpen && (

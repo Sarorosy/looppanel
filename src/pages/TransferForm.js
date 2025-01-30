@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
@@ -73,7 +74,7 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
             payload.append('ref_id', refId);
             payload.append('quote_id', quotationId);
             payload.append('user_id', selectedUser);
-            payload.append('ref_user_id',userObject.id )
+            payload.append('ref_user_id', userObject.id)
 
             const response = await fetch('https://apacvault.com/Webapi/TransferUser', {
                 method: 'POST',
@@ -85,13 +86,13 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
                 toast.success('Request updated successfully.');
                 onClose();
                 finalFunction();
-                socket.emit("feasabilityTransferred",{
-                    quote_id:quotationId,
-                    ref_id:refId,
-                    user_id:selectedUser,
-                    ref_user_id:userObject.id,
+                socket.emit("feasabilityTransferred", {
+                    quote_id: quotationId,
+                    ref_id: refId,
+                    user_id: selectedUser,
+                    ref_user_id: userObject.id,
                     user_name: userObject.fld_first_name + " " + userObject.fld_last_name
-                    
+
                 })
             } else {
                 toast.error('Failed to update request.');
@@ -186,7 +187,7 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
                         </button>
                     </div>
                 </form>
-
+                
             </div>
         </motion.div>
     );

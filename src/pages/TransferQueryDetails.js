@@ -281,7 +281,7 @@ const TransferQueryDetails = ({ onClose, queryId, quotationId, after, userIdDefi
             </div>
 
 
-            <ToastContainer />
+            
         </div>
     );
 

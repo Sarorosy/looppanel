@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
@@ -769,7 +770,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                         </div>
                     </form>
                 </div>
-                <ToastContainer />
+                
             </div>
         </motion.div>
     );

@@ -304,7 +304,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
             </div>
 
 
-            <ToastContainer />
+            
         </motion.div>
     );
 

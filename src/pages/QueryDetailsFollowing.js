@@ -319,7 +319,7 @@ const QueryDetailsFollowing = ({ onClose, queryId, quotationId, after }) => {
             </div>
 
 
-            <ToastContainer />
+           
         </motion.div>
     );
 

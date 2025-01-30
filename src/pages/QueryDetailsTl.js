@@ -296,7 +296,7 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
                 <AskForScope queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} tlType={tlType}/>
             </div>
 
-            <ToastContainer />
+            
         </motion.div>
     );
 

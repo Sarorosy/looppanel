@@ -79,7 +79,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
 
     const sendMessage = async () => {
         if (!newMessage.trim()) {
-            toastify.error('Message is required');
+            toast.error('Message is required');
             return;
         }
 
@@ -116,11 +116,11 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                     user_id:loopUserObject.id
                 })
             } else {
-                toastify.error('Failed to send message');
+                toast.error('Failed to send message');
             }
         } catch (error) {
             console.error('Error sending message:', error);
-            toastify.error('Error sending message');
+            toast.error('Error sending message');
         } finally {
             setButtonDisabled(false);
         }
@@ -249,25 +249,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                     </div>
                 )}
             </div>
-            <Toaster position="top-center" reverseOrder={false} toastOptions={{
-                            // Define default options
-                            className: 'border',
-                            duration: 3000,
-                            removeDelay: 500,
-                            style: {
-                                background: '#161616FF',
-                                color: '#fff',
-                            },
             
-                            // Default options for specific types
-                            success: {
-                                duration: 3000,
-                                iconTheme: {
-                                    primary: 'green',
-                                    secondary: 'black',
-                                },
-                            },
-                        }} />
         </div>
     );
 };

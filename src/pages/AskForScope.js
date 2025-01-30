@@ -842,7 +842,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
 
                 </div>
             )}
-            <ToastContainer />
+            
         </div>
     );
 };

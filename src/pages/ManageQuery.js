@@ -637,8 +637,20 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             title: 'CRM Name',
             data: 'fld_first_name',
             orderable: false,
-            render: (data, type, row) => `<div style="text-align: left;">${row.fld_first_name + " " + (row.fld_last_name != null ? row.fld_last_name : "")}</div>`,
-        },
+            render: (data, type, row) => {
+                let name = row.fld_first_name + " " + (row.fld_last_name != null ? row.fld_last_name : "");
+                
+                // Check if the user is deleted
+                if (row.isdeleted == 1) {
+                    return `<div style="text-align: left; color: red; text-decoration: line-through;" title="This user was deleted">
+                                ${row.deleted_user_name}
+                            </div>`;
+                }
+        
+                // If the user is not deleted, just return the normal name
+                return `<div style="text-align: left;">${name}</div>`;
+            },
+        },        
         {
             title: 'Currency',
             data: 'null',
@@ -1262,25 +1274,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     <TransferRequestsPage onClose={() => { setTransferPageVisible(!TransferPageVisible) }} />
                 )}
             </AnimatePresence>
-            <Toaster position="top-center" reverseOrder={false} toastOptions={{
-                // Define default options
-                className: 'border',
-                duration: 3000,
-                removeDelay: 500,
-                style: {
-                    background: '#161616FF',
-                    color: '#fff',
-                },
-
-                // Default options for specific types
-                success: {
-                    duration: 3000,
-                    iconTheme: {
-                        primary: 'green',
-                        secondary: 'black',
-                    },
-                },
-            }} />
+            
         </div>
     );
 };

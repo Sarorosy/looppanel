@@ -317,7 +317,7 @@ const QueryDetails = ({ onClose, queryId, quotationId, after, userIdDefined }) =
             </div>
 
 
-            <ToastContainer />
+            
         </motion.div>
     );
 

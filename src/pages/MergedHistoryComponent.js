@@ -72,8 +72,8 @@ const MergedHistoryComponent = ({ refId, quoteId, onClose }) => {
         {/* Quote History */}
         <div
           className={`${feasibilityHistoryData.length > 0
-              ? "w-1/2"
-              : "w-full"
+            ? "w-1/2"
+            : "w-full"
             } bg-white p-2 rounded shadow-sm space-y-4`}
         >
           <h3 className="text-sm font-semibold text-gray-700">
@@ -86,7 +86,16 @@ const MergedHistoryComponent = ({ refId, quoteId, onClose }) => {
               <div key={item.id} className=" text-gray-600" style={{ fontSize: "11px" }}>
                 <p>
                   <strong>
-                    {item.fld_first_name} {item.fld_last_name}
+                    {
+                      item.isdeleted == 1 ? (
+                        <span style={{ textDecoration: "line-through", color: "red" }} title="This user was deleted">
+                          {item.deleted_user_name}
+                        </span>
+                      ) : (
+                        item.fld_first_name + (item.fld_last_name ? ` ${item.fld_last_name}` : "")
+                      )
+                    }
+
                   </strong>{" "}
                   {item.message}
                 </p>
@@ -121,12 +130,12 @@ const MergedHistoryComponent = ({ refId, quoteId, onClose }) => {
                 <div key={item.id} className=" text-gray-600" style={{ fontSize: "11px" }}>
                   <p>
                     <strong>
-                      {item.from_first_name} {item.from_last_name}
+                      {item.isfromdeleted == 1 ? <span style={{ textDecoration: "line-through", color: "red" }}>{item.deleted_from_user_name}</span> : item.from_first_name + item.from_last_name}
                     </strong>{" "}
                     {item.to_first_name && item.to_last_name && (
                       <>
                         {" "}
-                        to <strong> {item.to_first_name} {item.to_last_name}</strong>
+                        to <strong> {item.istodeleted == 1 ? <span style={{ textDecoration: "line-through", color: "red" }}>{item.deleted_to_user_name}</span> : item.to_first_name + item.to_last_name}</strong>
                       </>
                     )}
                   </p>

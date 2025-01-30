@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactQuill from 'react-quill';
-import { toast } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import axios from 'axios';
 import { X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
@@ -19,7 +20,7 @@ const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
                         ref_id: quote.assign_id,
                         quote_id: quote.quoteid,
                     });
-    
+
                     if (response.data.status) {
                         // Properly set feasibilityComments from the API response
                         setFeasibilityComments(response.data.feasibilityComments?.feasability_comments || "");
@@ -36,7 +37,7 @@ const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
         };
         fetchFeasibilityComments();
     }, [quote.assign_id, quote.quoteid]);
-    
+
 
     const handleCommentsChange = (value) => {
         setFeasibilityComments(value);
@@ -101,6 +102,7 @@ const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
                     </button>
                 </div>
             </div>
+            
         </div>
     );
 };

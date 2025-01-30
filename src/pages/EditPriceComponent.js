@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { toast, ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import CustomLoader from '../CustomLoader';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -21,19 +22,19 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
                         ref_id: quote.assign_id,
                         quote_id: quote.quoteid,
                     });
-    
+
                     console.log(response);
                     if (response.data.status) {
                         const priceDetails = response.data.priceDetails;
-                    
+
                         // Split the prices into arrays (if available)
                         const quotePrices = priceDetails.quote_price ? priceDetails.quote_price.split(',') : [];
                         const finalPrices = priceDetails.final_price ? priceDetails.final_price.split(',') : [];
                         const discountPrices = priceDetails.discount_price ? priceDetails.discount_price.split(',') : [];
-                    
+
                         // Convert quote.plan into an array (comma-separated string to array)
                         const plans = quote.plan ? quote.plan.split(',') : [];
-                    
+
                         // Check for final_price first, if present
                         if (finalPrices.length > 0) {
                             setFieldToUpdate('final');
@@ -45,7 +46,7 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
                             setComment(priceDetails.user_comments);
                             return;  // Early return after setting final prices
                         }
-                    
+
                         // Check for discount_price if final_price is not present
                         if (discountPrices.length > 0) {
                             setFieldToUpdate('discount');
@@ -57,7 +58,7 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
                             setComment(priceDetails.user_comments);
                             return;  // Early return after setting discount prices
                         }
-                    
+
                         // Check for quote_price if neither final_price nor discount_price are present
                         if (quotePrices.length > 0) {
                             setFieldToUpdate('quote');
@@ -74,8 +75,8 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
                     } else {
                         toast.error("Failed to fetch price details.");
                     }
-                    
-                    
+
+
                 } catch (error) {
                     toast.error("Error fetching price details.");
                     console.log(error);
@@ -84,12 +85,12 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
                 }
             }
         };
-    
+
         fetchPriceDetails();
     }, [quote.assign_id, quote.quoteid]);
-    
-    
-    
+
+
+
     const handleAmountChange = (e, plan) => {
         const updatedAmounts = { ...amounts, [plan]: e.target.value };
         setAmounts(updatedAmounts);
@@ -234,6 +235,7 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
                         </div>
                     </div>
                 </div>
+                
             </div>
         </motion.div>
     );

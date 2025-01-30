@@ -190,7 +190,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                 </AnimatePresence>
             )}
 
-            <ToastContainer />
+            
         </div>
     );
 }

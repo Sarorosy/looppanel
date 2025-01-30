@@ -9,9 +9,9 @@ import './index.css';
 import { getToken } from 'firebase/messaging';
 import { messaging } from './firebase-config';
 import { onMessage } from 'firebase/messaging';
-import { ToastContainer, toast , Slide} from 'react-toastify';
+import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
+import { Toaster } from 'react-hot-toast';
 // basename="/askforscope"
 
 
@@ -88,7 +88,7 @@ function App() {
     } catch (error) {
       console.error('Error getting notification permission or token:', error);
     }
-};
+  };
 
   useEffect(() => {
 
@@ -106,9 +106,9 @@ function App() {
 
   const ViewDetails = () => {
     const { ref_id, quote_id } = useParams();
-  
+
     if (userObject && (userObject.id == 1 || userObject.id == 342 || userObject.scopeadmin == 1)) {
-      return <ManageQuery sharelinkrefid={ref_id} sharelinkquoteid={quote_id}/>;
+      return <ManageQuery sharelinkrefid={ref_id} sharelinkquoteid={quote_id} />;
     } else {
       return <Navigate to="/query" replace />;
     }
@@ -125,7 +125,7 @@ function App() {
           path="/"
           element={<Layout request={requestPermission} />}
         >
-          <Route path="/assignquery" element={<ManageContactMadeQueries notification={requestPermission}/>} />
+          <Route path="/assignquery" element={<ManageContactMadeQueries notification={requestPermission} />} />
           <Route path="/query" element={<ManageQuery />} />
           <Route path="/viewdetails/:ref_id/:quote_id" element={<ViewDetails />} />
         </Route>
@@ -146,6 +146,25 @@ function App() {
         theme="dark"
         transition={Slide}
       />
+      <Toaster position="top-center" reverseOrder={false} toastOptions={{
+        // Define default options
+        className: 'border',
+        duration: 3000,
+        removeDelay: 500,
+        style: {
+          background: '#161616FF',
+          color: '#fff',
+        },
+
+        // Default options for specific types
+        success: {
+          duration: 3000,
+          iconTheme: {
+            primary: 'green',
+            secondary: 'black',
+          },
+        },
+      }} />
     </Router>
   );
 }

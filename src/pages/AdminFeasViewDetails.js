@@ -387,7 +387,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
 
                 </div>
             )}
-            <ToastContainer />
+           
         </div>
     );
 };

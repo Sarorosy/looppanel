@@ -155,25 +155,7 @@ const TransferDetailsModal = ({ refId, userName,fromUserName, onClose, after }) 
                             </button>
                         </div>
                     </motion.div>
-                    <Toaster position="top-center" reverseOrder={false} toastOptions={{
-                        // Define default options
-                        className: 'border',
-                        duration: 3000,
-                        removeDelay: 500,
-                        style: {
-                            background: '#161616FF',
-                            color: '#fff',
-                        },
-
-                        // Default options for specific types
-                        success: {
-                            duration: 3000,
-                            iconTheme: {
-                                primary: 'green',
-                                secondary: 'black',
-                            },
-                        },
-                    }} />
+                    
                 </div>
             )}
         </div>
