@@ -559,7 +559,7 @@ const ManageTlQuery = ({ onClose }) => {
                                 maxDate={new Date()} // Optional: Restrict to past dates
                             />
                         </div>
-                        <div className='col-2' style={{ display: currentTlEmail == "balakumar.v@dissertationindia.net" ? "none" : "" }}>
+                        <div className='col-2' style={{ display: (currentTlEmail == "balakumar.v@dissertationindia.net" || currentTlEmail == "rc.tech.3@dissertationindia.net") ? "none" : "" }}>
                             <select
                                 name="tags"
                                 id="tags"
