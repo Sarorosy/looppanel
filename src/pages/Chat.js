@@ -3,7 +3,7 @@ import { toast as toastify, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { ScaleLoader } from 'react-spinners';
-import { File, Paperclip, RefreshCcw, X } from 'lucide-react';
+import { File, Paperclip, RefreshCcw, X, Expand, Minimize2 } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 import { io } from "socket.io-client";
@@ -11,7 +11,7 @@ import { getSocket } from './Socket';
 const socket = getSocket();
 
 
-export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,finalfunctionforsocket ,allDetails, tlType}) => {
+export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,finalfunctionforsocket ,allDetails, tlType, handlefullScreenBtnClick,chatTabVisible, fullScreenTab}) => {
     const [messages, setMessages] = useState('');
     const [newMessage, setNewMessage] = useState('');
     const [loadingMessages, setLoadingMessages] = useState(false);
@@ -166,12 +166,22 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
 
 
     return (
-        <div className="mt-6 py-4 px-2 border-t border-gray-300">
-            <div className='flex items-center justify-between'>
-                <h3 className="text-lg font-semibold">Communication Hub</h3>
-                <button className='bg-gray-300 p-1 rounded' onClick={fetchMessages}>
-                    <RefreshCcw size={15} />
-                </button>
+        <div className="px-3 pt-3 bg-white pb-4 w-full">
+            <div className='flex items-center justify-between border-bottom mb-0 pb-2'>
+                <h3 class="f-18 mb-0">Communication Hub</h3>
+                {/* <h3 className="text-lg font-semibold">Communication Hub</h3> */}
+                <div className='flex items-center'>
+                    <button className='bg-gray-300 p-1 rounded mr-1' onClick={fetchMessages}>
+                        <RefreshCcw size={15} />
+                    </button>
+                    <div>
+                        <button className="btn btn-sm btn-light flex items-center px-1" 
+                        >
+                            {fullScreenTab == "chat" ? (<Minimize2 size={15} onClick={()=>{handlefullScreenBtnClick(null)}}/>) : (<Expand size={15} onClick={()=>{handlefullScreenBtnClick("chat")}}/>)}
+                            
+                            </button>
+                    </div>
+                </div>
             </div>
 
             {loadingMessages ? (
@@ -179,7 +189,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
             ) : (
                 messages && messages !== "" && messages !== null && (
                     <div
-                        className="mt-4 space-y-2 max-h-56 overflow-y-auto chats pr-3 pl-3 pb-0 "
+                        className="mt-4 space-y-2 max-h-56 overflow-y-auto chats pr-3 pl-3 pb-0 pt-2"
                         id="chatContainer"
                         ref={chatContainerRef}
                         dangerouslySetInnerHTML={{ __html: messages }}
@@ -187,14 +197,13 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                 )
             )}
 
-            <div className="mt-4">
+            <div className="mt-3 px-0">
 
                 {/* Input Section */}
-                <div className="flex items-center space-x-2">
                     {((loopUserObject.fld_email == 'puneet@redmarkediting.com' ||
                         loopUserObject.fld_email == 'clientsupport@chankyaresearch.net') && status == 0 && submittedToAdmin == "true") ? (
-                        <div className="flex items-center space-x-2 ">
-                            <label for="markStatus" style={{ fontSize: "10px", maxWidth: "70px" }}>Mark as pending at user</label>
+                        <div className="flex items-center space-x-2 mb-2">
+                            <label className='mb-0' for="markStatus" style={{ fontSize: "15px" }}>Mark as pending at user</label>
                             <input
                                 type="checkbox"
                                 id="markStatus"
@@ -206,46 +215,51 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
 
                         </div>
                     ) : null}
+                <div className="space-x-2">
                     <textarea
                         placeholder="Type your message"
-                        className="flex-1  text-gray-700 bg-white px-3 resize-none py-1 rounded focus:outline-none border"
+                        className="w-full text-gray-700 bg-white px-3 resize-none py-1 rounded focus:outline-none border"
                         value={newMessage}
                         onChange={(e) => setNewMessage(e.target.value)}
                         rows={4}
                         disabled={tlType && tlType == 2}
                     ></textarea>
 
-                    <div className="flex items-center justify-center ">
-                        <label
-                            htmlFor="fileInput"
-                            className="border border-gray-300 rounded px-3 py-1 bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200"
+                    <div className='flex items-end justify-end'>
+                        <div className="flex items-end justify-end ">
+                            <label
+                                htmlFor="fileInput"
+                                className="border border-gray-300 rounded px-2 py-1 bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200 mb-0 mr-2"
+                            >
+                                <Paperclip size={15}/>
+                            </label>
+                            <input
+                                type="file"
+                                id="fileInput"
+                                onChange={handleFileChange}
+                                className="hidden"
+                            />
+                        </div>
+                        <button
+                            onClick={sendMessage}
+                            disabled={buttonDisabled}
+                            className="text-white chatsbut "
                         >
-                            <Paperclip />
-                        </label>
-                        <input
-                            type="file"
-                            id="fileInput"
-                            onChange={handleFileChange}
-                            className="hidden"
-                        />
+                            {buttonDisabled ? "Sending..." : "Send"}
+                        </button>
                     </div>
-                    <button
-                        onClick={sendMessage}
-                        disabled={buttonDisabled}
-                        className="text-white chatsbut"
-                    >
-                        {buttonDisabled ? "Sending..." : "Send"}
-                    </button>
                 </div>
                 {fileName && (
-                    <div className="flex items-center justify-end space-x-2">
-                        <span className="text-sm text-right text-gray-500">{fileName}</span>
-                        <button
-                            onClick={clearFile}
-                            className="text-sm text-white bg-red-500 rounded-full p-1 hover:bg-red-600"
-                        >
-                            <X />
-                        </button>
+                    <div className='d-flex justify-end'>
+                        <div className="flex items-center justify-end space-x-2 bg-red-100 d-inline-flex mt-3 p-2">
+                            <span className="text-sm text-right text-gray-500">{fileName}</span>
+                            <button
+                                onClick={clearFile}
+                                className="text-sm text-white bg-red-500 rounded-full p-1 hover:bg-red-600"
+                            >
+                                <X size={13}/>
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>

@@ -1,253 +1,469 @@
-{scopeDetails && scopeDetails.length > 0 && (
-                        <div>
-                            {/* Table Header */}
-                            <table className="w-full border-collapse border border-gray-200 f-14">
-                                <thead>
-                                    <tr className="bg-gray-100">
-                                        <th className="border px-4 py-2 text-left">Ref No.</th>
-                                        <th className="border px-4 py-2 text-left">Quote Id.</th>
-                                        <th className="border px-4 py-2 text-left">Currency</th>
-                                        <th className="border px-4 py-2 text-left">Plan</th>
-                                        <th className="border px-4 py-2 text-left">Service Name</th>
-                                        <th className="border px-4 py-2 text-left">Quote Status</th>
-                                        <th className="border px-4 py-2 text-left">Action</th>
-                                    </tr>
-                                </thead>
-                                {/* Table Body */}
-                                <tbody>
-                                    {scopeDetails.map((quote, index) => (
-                                        <React.Fragment key={index}>
-                                            {/* Row */}
-                                            <tr
-                                                className="cursor-pointer hover:bg-gray-50"
-                                            >
-                                                <td className="border px-4 py-2">
-                                                    <p className='flex items-center'>
-                                                        {quote.assign_id}
-                                                        {quote.ptp == "Yes" && (
-                                                            <span
-                                                                className="inline-block pl-3 pr-2 py-1 f-10 ml-1" // Increased padding for more space
-                                                                
-                                                            >
-                                                                PTP
-                                                            </span>
-                                                        )}
-                                                        {quote.edited == 1 && (
-                                                            <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
-                                                        )}
+<div>
+                                        <h3 className="f-18 font-weight-bold mb-3">
+                                          Plan Description
+                                        </h3>
+                                      </div>
+                                      {quote.plan_comments &&
+                                        quote.plan_comments !== "" &&
+                                        quote.plan_comments !== null && (
+                                          <>
+                                            {/* <h6 className="mb-2 f-20">
+                                              <strong
+                                                style={{
+                                                  textDecoration: "underline",
+                                                }}
+                                              >
+                                                Plan Description:
+                                              </strong>
+                                            </h6> */}
 
-                                                    </p>
-                                                </td>
-                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>{quote.quoteid}</td>
-                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>{quote.currency}</td>
-                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>{quote.plan}</td>
-                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>{quote.service_name || 'N/A'}</td>
-                                                <td className="border px-4 py-2" style={{ fontSize: "11px" }}>
-                                                    <span
-                                                        
+                                            {/* Row container to hold 3 cards */}
+                                            <div className="row border-bottom">
+                                              {/* Card 1 */}
+                                              <div
+                                                className={`${
+                                                  colClass == "col-md-12"
+                                                    ? "col-md-4"
+                                                    : "col-md-12"
+                                                } mb-3 `}
+                                              >
+                                                
+                                                    {/* Plan Comments */}
+                                                    {/* <h5 className="card-title">Plan Comments</h5> */}
+                                                    <div
+                                                      className=""
+                                                      style={{
+                                                        wordWrap: "break-word",
+                                                        overflowWrap:
+                                                          "break-word",
+                                                        wordBreak: "break-word",
+                                                      }}
                                                     >
-                                                        {
-                                                            quote.quote_status == 0 && quote.submittedtoadmin == 'false'
-                                                                ? 'Pending at User'
-                                                                : quote.quote_status == 0 && quote.submittedtoadmin == 'true'
-                                                                    ? 'Pending at Admin'
-                                                                    : quote.quote_status == 1
-                                                                        ? 'Submitted'
-                                                                        : quote.quote_status == 2
-                                                                            ? 'Discount Requested'
-                                                                            : 'Unknown'
-                                                        }
-                                                    </span>
-                                                    {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
-                                                        <><br /><span className='text-green-700 text-sm' style={{ fontSize: "11px" }}>Feasability Completed</span></>
-                                                    )}
-                                                    {quote.isfeasability == 1 && quote.feasability_status == "Pending" && (
-                                                        <><br /><span className='text-red-700 text-sm font-bold' style={{ fontSize: "11px" }}>Feasability Pending</span></>
-                                                    )}
-                                                </td>
-                                                <td className=" px-4 py-2 flex items-center">
-                                                    {/* Up/Down Arrow Button */}
-                                                    <button
-                                                        onClick={() => toggleRow(index)}
-                                                        className="flex items-center justify-center p-2"
-                                                    >
-                                                        {expandedRowIndex === index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
-                                                    </button>
-
-                                                </td>
-                                            </tr>
-                                            {/* Accordion */}
-                                            {expandedRowIndex == index && (
-                                                <tr>
-                                                    <td colSpan={7} className="border px-4 py-4 bg-gray-50">
-                                                        <div className="space-y-4 text-sm">
-                                                            <p className='d-flex align-items-center'><strong>Ref No.:</strong>
-                                                                {quote.assign_id}
-                                                                {quote.ptp == "Yes" && (
-                                                                    <span
-                                                                        className="inline-block pl-3 pr-2 py-1 f-10 ml-1" // Increased padding for more space
-                                                                        
-                                                                    >
-                                                                        PTP
-                                                                    </span>
-                                                                )}
-                                                                <button
-                                                                    onClick={() => toggleHistoryDiv(quote.quoteid)}
-                                                                    className="ml-2 bg-blue-500 text-white py-1 px-2 rounded hover:bg-blue-600"
-                                                                >
-                                                                    <History size={15} />
-                                                                </button>
-                                                                {quote.edited == 1 && (
-                                                                    <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
-                                                                )}
-                                                            </p>
-                                                            {quote.tag_names && (
+                                                      {quote.plan_comments &&
+                                                        typeof quote.plan_comments ===
+                                                          "string" &&
+                                                        quote.plan &&
+                                                        Object.entries(
+                                                          JSON.parse(
+                                                            quote.plan_comments
+                                                          )
+                                                        )
+                                                          .filter(
+                                                            ([plan]) =>
+                                                              plan === "Basic"
+                                                          ) // Only display the "Basic" plan comments
+                                                          .map(
+                                                            (
+                                                              [plan, comment],
+                                                              index
+                                                            ) => (
+                                                              <div
+                                                                key={index}
+                                                                className="border-top border-right border-left p-2"
+                                                              >
                                                                 <p>
-                                                                    <strong>Tags:</strong>
-                                                                    {quote.tag_names.split(',').map((tag, index) => (
-                                                                        <span
-                                                                            key={index}
-                                                                            className="text-blue-500 p-1 rounded-full text-sm font-medium inline-block ml-1"
-                                                                        >
-                                                                            #{tag.trim()}
-                                                                        </span>
-                                                                    ))}
+                                                                  <strong>
+                                                                    {plan}
+                                                                  </strong>
                                                                 </p>
-                                                            )}
+                                                                <div
+                                                                  dangerouslySetInnerHTML={{
+                                                                    __html:
+                                                                      comment,
+                                                                  }}
+                                                                />
+                                                              </div>
+                                                            )
+                                                          )}
+                                                    </div>
 
-                                                            {quote.service_name && quote.plan && (
-                                                                <>
-                                                                    <p><strong>Service Required:</strong> {quote.service_name}</p>
-                                                                    {quote.old_plan && (
-                                                                        <p className='text-gray-500'><strong>Old Plan:</strong> {quote.old_plan}</p>
-                                                                    )}
-                                                                    <p><strong>Plan:</strong> {quote.plan}</p>
-                                                                </>
-                                                            )}
-                                                            {quote.plan_comments && quote.plan_comments !== "" && quote.plan_comments !== null && (
-                                                                <div>
-                                                                    <p className='mb-2'><strong style={{ textDecoration: "underline" }}>Plan Description:</strong></p>
-                                                                    {Object.entries(JSON.parse(quote.plan_comments)).map(([plan, comment], index) => (
-                                                                        <p key={index}><strong>{plan}:</strong> <span dangerouslySetInnerHTML={{ __html: comment }} /></p>
-                                                                    ))}
-                                                                </div>
-                                                            )}
-
-                                                            {quote.comments && quote.comments != "" && quote.comments != null && (
-                                                                <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
-                                                            )}
-                                                            {quote.final_comments != null && (
-                                                                <div >
-                                                                    <p><strong>Final Comments:</strong> {quote.final_comments}</p>
-                                                                </div>
-                                                            )}
-                                                            <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
-                                                            
-                                                            <p className='flex items-center'>
-                                                                <strong className='mr-2'>Quote Status:</strong>
-                                                                <strong
-                                                                    className={quote.quote_status == 0
-                                                                        ? "badge-danger py-0 px-1 f-12 font-semibold text-white" // Red for Pending
-                                                                        : quote.quote_status == 1
-                                                                            ? "badge-success  py-0 px-1 f-12 font-semibold text-white" // Green for Submitted
-                                                                            : "badge-warning  py-0 px-1 f-12 font-semibold text-white"} // Yellow for Discount Requested
-                                                                >
-                                                                    {quote.quote_status == 0
-                                                                        ? "Pending"
-                                                                        : quote.quote_status == 1
-                                                                            ? "Submitted"
-                                                                            : "Discount Requested"}
-                                                                </strong>
-                                                            </p>
-
-                                                            {quote.ptp != null && (
-                                                                <>
-                                                                    <p><strong>PTP:</strong> {quote.ptp}</p>
-                                                                    {quote.ptp_amount && quote.ptp_amount != 0 && (
-                                                                        <p><strong>PTP Amount:</strong> {quote.ptp_amount}</p>
-                                                                    )}
-                                                                    {quote.ptp == "Yes" && (
-                                                                        <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
-                                                                    )}
-                                                                    {quote.ptp_file != null && (
-                                                                        <p><strong>Attached File : </strong><a className='text-blue-500 font-semibold' href={`https://apacvault.com/public/${quote.ptp_file}`} download={quote.ptpfile} target='_blank'>{quote.ptp_file}</a></p>
-                                                                    )}
-                                                                </>
-                                                            )}
-                                                            {quote.demodone != 0 && (
-                                                                <>
-                                                                    <p className='flex items-center '>  <p className=''> <strong>Demo Id : </strong> {quote.demo_id}</p> <span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={12} className='ml-1' /> </span></p>
-                                                                </>
-                                                            )}
-                                                            {quote.quote_status != 0 && quote.quote_price && quote.plan && (
-                                                                <>
-                                                                    
-                                                                    {quote.quote_status != 2 && (
-                                                                        <p>
-                                                                            <strong>Quote Price:</strong>{' '}
-                                                                            {(() => {
-                                                                                const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                                const plans = quote.plan.split(','); // Split plan into an array
-                                                                                return plans.map((plan, index) => (
-                                                                                    <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                        {index < plans.length - 1 && ', '}
-                                                                                    </span>
-                                                                                ));
-                                                                            })()}
-                                                                        </p>
-                                                                    )}
-
-                                                                    {quote.discount_price && (
-                                                                        <p>
-                                                                            <strong>Discounted Price:</strong>{' '}
-                                                                            {(() => {
-                                                                                const prices = quote.discount_price.split(','); // Split quote_price into an array
-                                                                                const plans = quote.plan.split(','); // Split plan into an array
-                                                                                return plans.map((plan, index) => (
-                                                                                    <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
-                                                                                        {index < plans.length - 1 && ', '}
-                                                                                    </span>
-                                                                                ));
-                                                                            })()}
-                                                                        </p>
-                                                                    )}
-                                                                    {quote.final_price && (
-                                                                        <p >
-                                                                            <strong>Final Price:</strong>{' '}
-                                                                            {(() => {
-                                                                                const prices = quote.final_price.split(','); // Split quote_price into an array
-                                                                                const plans = quote.plan.split(','); // Split plan into an array
-                                                                                return plans.map((plan, index) => (
-                                                                                    <span key={index} className=' px-1 py-2 rounded mr-1 gold'>
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
-                                                                                        {index < plans.length - 1 && ', '}
-                                                                                    </span>
-                                                                                ));
-                                                                            })()}
-                                                                        </p>
-                                                                    )}
-                                                                    {quote.user_comments && (
-                                                                        <p><strong style={{ textDecoration: "underline" }}>Admin Comments:</strong> {quote.user_comments}</p>
-                                                                    )}
-                                                                </>
-                                                            )}
-                                                            {assignQuoteInfo && assignQuoteInfo != false && (
-                                                                <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
-                                                            )}
-
-                                                            
-
+                                                    {/* Word Counts */}
+                                                    {quote.word_counts &&
+                                                      quote.word_counts !==
+                                                        null && (
+                                                        <div
+                                                          className=""
+                                                          style={{
+                                                            wordWrap:
+                                                              "break-word",
+                                                            overflowWrap:
+                                                              "break-word",
+                                                            wordBreak:
+                                                              "break-word",
+                                                          }}
+                                                        >
+                                                          {quote.word_counts &&
+                                                            typeof quote.word_counts ===
+                                                              "string" &&
+                                                            quote.plan &&
+                                                            Object.entries(
+                                                              JSON.parse(
+                                                                quote.word_counts
+                                                              )
+                                                            )
+                                                              .filter(
+                                                                ([plan]) =>
+                                                                  plan ===
+                                                                  "Basic"
+                                                              ) // Only display the "Basic" plan word counts
+                                                              .map(
+                                                                (
+                                                                  [
+                                                                    plan,
+                                                                    wordcount,
+                                                                  ],
+                                                                  index
+                                                                ) => (
+                                                                  <div
+                                                                    key={index}
+                                                                    className="border-bottom border-right border-left p-2"
+                                                                  >
+                                                                    <p
+                                                                      style={{
+                                                                        fontWeight:
+                                                                          "bold",
+                                                                        color:
+                                                                          "#007bff",
+                                                                        backgroundColor:
+                                                                          "#f0f8ff",
+                                                                        padding:
+                                                                          "5px",
+                                                                        borderRadius:
+                                                                          "5px",
+                                                                        border:
+                                                                          "1px solid #40BD5DFF",
+                                                                      }}
+                                                                    >
+                                                                      {plan}:{" "}
+                                                                      <span
+                                                                        style={{
+                                                                          color:
+                                                                            "#28a745",
+                                                                        }}
+                                                                      >
+                                                                        {
+                                                                          wordcount
+                                                                        }{" "}
+                                                                        words
+                                                                      </span>
+                                                                      <br />
+                                                                      <span
+                                                                        style={{
+                                                                          color:
+                                                                            "gray",
+                                                                        }}
+                                                                      >
+                                                                        {numberToWords(
+                                                                          wordcount
+                                                                        )}{" "}
+                                                                        words
+                                                                      </span>
+                                                                    </p>
+                                                                  </div>
+                                                                )
+                                                              )}
                                                         </div>
-                                                        
-                                                    </td>
-                                                </tr>
-                                            )}
-                                        </React.Fragment>
-                                    ))}
-                                </tbody>
-                            </table>
+                                                      )}
+                                                  
+                                              </div>
 
-                        </div>
-                    )}
+                                              {/* Card 2 */}
+                                              <div
+                                                className={`${
+                                                  colClass == "col-md-12"
+                                                    ? "col-md-4"
+                                                    : "col-md-12"
+                                                } mb-3`}
+                                              >
+                                                
+                                                    {/* Plan Comments */}
+                                                    {/* <h5 className="card-title">Plan Comments</h5> */}
+                                                    <div
+                                                      className=""
+                                                      style={{
+                                                        wordWrap: "break-word",
+                                                        overflowWrap:
+                                                          "break-word",
+                                                        wordBreak: "break-word",
+                                                      }}
+                                                    >
+                                                      {quote.plan_comments &&
+                                                        typeof quote.plan_comments ===
+                                                          "string" &&
+                                                        quote.plan &&
+                                                        Object.entries(
+                                                          JSON.parse(
+                                                            quote.plan_comments
+                                                          )
+                                                        )
+                                                          .filter(
+                                                            ([plan]) =>
+                                                              plan ===
+                                                              "Standard"
+                                                          ) // Only display the "Basic" plan comments
+                                                          .map(
+                                                            (
+                                                              [plan, comment],
+                                                              index
+                                                            ) => (
+                                                              <div
+                                                                key={index}
+                                                                className=" border-top border-right border-left p-2"
+                                                              >
+                                                                <p>
+                                                                  <strong>
+                                                                    {plan}
+                                                                  </strong>
+                                                                </p>
+                                                                <div
+                                                                  dangerouslySetInnerHTML={{
+                                                                    __html:
+                                                                      comment,
+                                                                  }}
+                                                                />
+                                                              </div>
+                                                            )
+                                                          )}
+                                                    </div>
+
+                                                    {/* Word Counts */}
+                                                    {quote.word_counts &&
+                                                      quote.word_counts !==
+                                                        null && (
+                                                        <div
+                                                          className=""
+                                                          style={{
+                                                            wordWrap:
+                                                              "break-word",
+                                                            overflowWrap:
+                                                              "break-word",
+                                                            wordBreak:
+                                                              "break-word",
+                                                          }}
+                                                        >
+                                                          {quote.word_counts &&
+                                                            typeof quote.word_counts ===
+                                                              "string" &&
+                                                            quote.plan &&
+                                                            Object.entries(
+                                                              JSON.parse(
+                                                                quote.word_counts
+                                                              )
+                                                            )
+                                                              .filter(
+                                                                ([plan]) =>
+                                                                  plan ===
+                                                                  "Standard"
+                                                              ) // Only display the "Basic" plan word counts
+                                                              .map(
+                                                                (
+                                                                  [
+                                                                    plan,
+                                                                    wordcount,
+                                                                  ],
+                                                                  index
+                                                                ) => (
+                                                                  <div
+                                                                    key={index}
+                                                                    className="border-bottom border-right border-left p-2"
+                                                                  >
+                                                                    <p
+                                                                      style={{
+                                                                        fontWeight:
+                                                                          "bold",
+                                                                        color:
+                                                                          "#007bff",
+                                                                        backgroundColor:
+                                                                          "#f0f8ff",
+                                                                        padding:
+                                                                          "5px",
+                                                                        borderRadius:
+                                                                          "5px",
+                                                                        border:
+                                                                          "1px solid #40BD5DFF",
+                                                                      }}
+                                                                    >
+                                                                      {plan}:{" "}
+                                                                      <span
+                                                                        style={{
+                                                                          color:
+                                                                            "#28a745",
+                                                                        }}
+                                                                      >
+                                                                        {
+                                                                          wordcount
+                                                                        }{" "}
+                                                                        words
+                                                                      </span>
+                                                                      <br />
+                                                                      <span
+                                                                        style={{
+                                                                          color:
+                                                                            "gray",
+                                                                        }}
+                                                                      >
+                                                                        {numberToWords(
+                                                                          wordcount
+                                                                        )}{" "}
+                                                                        words
+                                                                      </span>
+                                                                    </p>
+                                                                  </div>
+                                                                )
+                                                              )}
+                                                        </div>
+                                                      )}
+                                                  </div>
+                                                
+
+                                              {/* Card 3 */}
+                                              <div
+                                                className={`${
+                                                  colClass == "col-md-12"
+                                                    ? "col-md-4"
+                                                    : "col-md-12"
+                                                } mb-3`}
+                                              >
+                                                
+                                                    {/* Plan Comments */}
+                                                    {/* <h5 className="card-title">Plan Comments</h5> */}
+                                                    <div
+                                                      className=""
+                                                      style={{
+                                                        wordWrap: "break-word",
+                                                        overflowWrap:
+                                                          "break-word",
+                                                        wordBreak: "break-word",
+                                                      }}
+                                                    >
+                                                      {quote.plan_comments &&
+                                                        typeof quote.plan_comments ===
+                                                          "string" &&
+                                                        quote.plan &&
+                                                        Object.entries(
+                                                          JSON.parse(
+                                                            quote.plan_comments
+                                                          )
+                                                        )
+                                                          .filter(
+                                                            ([plan]) =>
+                                                              plan ===
+                                                              "Advanced"
+                                                          ) // Only display the "Basic" plan comments
+                                                          .map(
+                                                            (
+                                                              [plan, comment],
+                                                              index
+                                                            ) => (
+                                                              <div
+                                                                key={index}
+                                                                className="border-top border-right border-left p-2"
+                                                              >
+                                                                <p>
+                                                                  <strong>
+                                                                    {plan}
+                                                                  </strong>
+                                                                </p>
+                                                                <div
+                                                                  dangerouslySetInnerHTML={{
+                                                                    __html:
+                                                                      comment,
+                                                                  }}
+                                                                />
+                                                              </div>
+                                                            )
+                                                          )}
+                                                    </div>
+
+                                                    {/* Word Counts */}
+                                                    {quote.word_counts &&
+                                                      quote.word_counts !==
+                                                        null && (
+                                                        <div
+                                                          className=""
+                                                          style={{
+                                                            wordWrap:
+                                                              "break-word",
+                                                            overflowWrap:
+                                                              "break-word",
+                                                            wordBreak:
+                                                              "break-word",
+                                                          }}
+                                                        >
+                                                          {quote.word_counts &&
+                                                            typeof quote.word_counts ===
+                                                              "string" &&
+                                                            quote.plan &&
+                                                            Object.entries(
+                                                              JSON.parse(
+                                                                quote.word_counts
+                                                              )
+                                                            )
+                                                              .filter(
+                                                                ([plan]) =>
+                                                                  plan ===
+                                                                  "Advanced"
+                                                              ) // Only display the "Basic" plan word counts
+                                                              .map(
+                                                                (
+                                                                  [
+                                                                    plan,
+                                                                    wordcount,
+                                                                  ],
+                                                                  index
+                                                                ) => (
+                                                                  <div
+                                                                    key={index}
+                                                                    className="border-bottom border-right border-left p-2"
+                                                                  >
+                                                                    <p
+                                                                      style={{
+                                                                        fontWeight:
+                                                                          "bold",
+                                                                        color:
+                                                                          "#007bff",
+                                                                        backgroundColor:
+                                                                          "#f0f8ff",
+                                                                        padding:
+                                                                          "5px",
+                                                                        borderRadius:
+                                                                          "5px",
+                                                                        border:
+                                                                          "1px solid #40BD5DFF",
+                                                                      }}
+                                                                    >
+                                                                      {plan}:{" "}
+                                                                      <span
+                                                                        style={{
+                                                                          color:
+                                                                            "#28a745",
+                                                                        }}
+                                                                      >
+                                                                        {
+                                                                          wordcount
+                                                                        }{" "}
+                                                                        words
+                                                                      </span>
+                                                                      <br />
+                                                                      <span
+                                                                        style={{
+                                                                          color:
+                                                                            "gray",
+                                                                        }}
+                                                                      >
+                                                                        {numberToWords(
+                                                                          wordcount
+                                                                        )}{" "}
+                                                                        words
+                                                                      </span>
+                                                                    </p>
+                                                                  </div>
+                                                                )
+                                                              )}
+                                                        </div>
+                                                      )}
+                                                  </div>
+                                                </div>
+                                             
+                                          </>
+                                        )}
