@@ -663,3 +663,6 @@ focus-outline-none:focus:not(:focus-visible) {
   margin-right: -5px;
   padding-right: 10px;
 }
+.line-h-in{
+  line-height: initial;
+}

@@ -122,8 +122,8 @@ const QueryDetailsAdmin = ({
                 <p className="text-gray-500"></p>
             )} */}
         <div className="d-flex align-items-center ">
-            <button onClick={handleDetailsTabBtn} className="btn btn-light btn-sm mr-2 flex items-center">
-                Details <ArrowDownNarrowWide size={15} className="ml-1"/>
+            <button onClick={handleDetailsTabBtn} className="btn btn-light btn-sm mr-2 py-0 px-1 flex items-center f-12">
+                Details <ArrowDownNarrowWide size={13} className="ml-1"/>
             </button>
             <button
             onClick={close}
@@ -137,12 +137,20 @@ const QueryDetailsAdmin = ({
 
       <div className=" flex items-start justify-between space-x-1 pnav text-black">
         
+        
+        <AskForScopeAdmin
+          queryId={queryId}
+          userType={userObject.fld_admin_type}
+          quotationId={quotationId}
+          viewAll={viewAll}
+          clientEmail={queryInfo.email_id}
+        />
         {detailsTabVisible && (
           <div className="col-md-3">
             {loading ? (
               <QueryLoader />
             ) : (
-              <div className="space-y-4 bg-white p-6 shadow rounded-md border-t-2 border-blue-400 m-2 text-sm">
+              <div className="space-y-4 bg-white p-6 rounded-md border-t-2 border-blue-400 mt-2 text-sm">
                 <div className="relative">
                   {queryInfo.assign_id && (
                     <p className="flex">
@@ -157,6 +165,7 @@ const QueryDetailsAdmin = ({
                       className="absolute top-0 left-0 bg-white w-full shadow-xl p-2 z-10 border"
                       onClick={(e) => e.stopPropagation()} // Prevent hiding when clicking inside the div
                     >
+                      
                       <button
                         className="text-red-500 float-end"
                         onClick={hideActivityDiv} // Button to hide the div
@@ -385,13 +394,6 @@ const QueryDetailsAdmin = ({
             )}
           </div>
         )}
-        <AskForScopeAdmin
-          queryId={queryId}
-          userType={userObject.fld_admin_type}
-          quotationId={quotationId}
-          viewAll={viewAll}
-          clientEmail={queryInfo.email_id}
-        />
       </div>
     </motion.div>
   );

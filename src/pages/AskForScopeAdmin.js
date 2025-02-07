@@ -117,9 +117,9 @@ const AskForScopeAdmin = ({
 
   const handlefullScreenBtnClick = (tab) =>{
       if(tab == "scope"){
-        setChatTabVisible(false);
-        setFeasTabVisible(false);
-        setScopeTabVisible(true);
+        // setChatTabVisible(false);
+        // setFeasTabVisible(false);
+        // setScopeTabVisible(true);
         setFullScreenTab("scope")
       }else if(tab == "chat"){
         // setChatTabVisible(true);
@@ -127,9 +127,9 @@ const AskForScopeAdmin = ({
         // setScopeTabVisible(false);
         setFullScreenTab("chat")
       }else if(tab =="feas"){
-        setChatTabVisible(false);
-        setFeasTabVisible(true);
-        setScopeTabVisible(false);
+        // setChatTabVisible(false);
+        // setFeasTabVisible(true);
+        // setScopeTabVisible(false);
         setFullScreenTab("feas")
       }else{
         setFullScreenTab(null)
@@ -633,7 +633,7 @@ const AskForScopeAdmin = ({
   };
 
   return (
-    <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
+    <div className=" h-full bg-gray-100  z-50 overflow-y-auto mt-2 rounded w-full">
       <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
         <h2 className="text-sx font-semibold ">Ask For Scope </h2>
         <div className="flex items-center">
@@ -696,13 +696,13 @@ const AskForScopeAdmin = ({
               <table className="w-full border-collapse border border-gray-200 f-14">
                 <thead>
                   <tr className="bg-gray-100">
-                    <th className="border px-3 py-2 text-left">Ref No.</th>
-                    <th className="border px-3 py-2 text-left">Quote Id.</th>
-                    <th className="border px-3 py-2 text-left">Currency</th>
-                    <th className="border px-3 py-2 text-left">Plan</th>
-                    <th className="border px-3 py-2 text-left">Service Name</th>
-                    <th className="border px-3 py-2 text-left">Quote Status</th>
-                    <th className="border px-3 py-2 text-left">Action</th>
+                    <th className="border px-2 py-2 text-left">Ref No.</th>
+                    <th className="border px-2 py-2 text-left">Quote Id.</th>
+                    <th className="border px-2 py-2 text-left">Currency</th>
+                    <th className="border px-2 py-2 text-left">Plan</th>
+                    <th className="border px-2 py-2 text-left">Service Name</th>
+                    <th className="border px-2 py-2 text-left">Quote Status</th>
+                    <th className="border px-2 py-2 text-left">Action</th>
                   </tr>
                 </thead>
                 {/* Table Body */}
@@ -712,7 +712,7 @@ const AskForScopeAdmin = ({
                       {/* Row */}
                       <tr className="cursor-pointer hover:bg-gray-50">
                         <td
-                          className="border px-3 py-2"
+                          className="border px-2 py-2"
                           style={{ fontSize: "11px" }}
                         >
                           <p className="flex items-center">
@@ -754,31 +754,31 @@ const AskForScopeAdmin = ({
                           </p>
                         </td>
                         <td
-                          className="border px-3 py-2"
+                          className="border px-2 py-2"
                           style={{ fontSize: "11px" }}
                         >
                           {quote.quoteid}
                         </td>
                         <td
-                          className="border px-3 py-2"
+                          className="border px-2 py-2"
                           style={{ fontSize: "11px" }}
                         >
                           {quote.currency}
                         </td>
                         <td
-                          className="border px-3 py-2"
+                          className="border px-2 py-2"
                           style={{ fontSize: "11px" }}
                         >
                           {quote.plan}
                         </td>
                         <td
-                          className="border px-3 py-2"
+                          className="border px-2 py-2"
                           style={{ fontSize: "11px" }}
                         >
                           {quote.service_name || "N/A"}
                         </td>
                         <td
-                          className="border px-3 py-2"
+                          className="border px-2 py-2"
                           style={{ fontSize: "11px" }}
                         >
                           <span
@@ -846,7 +846,7 @@ const AskForScopeAdmin = ({
                               </button>
                             )}
                         </td>
-                        <td className="border px-3 py-2">
+                        <td className="border px-2 py-2">
                           {/* Up/Down Arrow Button */}
                           <>
                             <div className="flex items-center">
@@ -924,7 +924,7 @@ const AskForScopeAdmin = ({
                                 </button>
                               </div>
                             </div>
-                            <div className="mx-3 mb-0 bg-gray-100 pt-3 pb-3 px-3 row ">
+                            <div className="mx-3 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
                               {scopeTabVisible && (
                               <div className={`${fullScreenTab == "scope" ? "custom-modal" : colClass}`}>
                               <div className={`${fullScreenTab == "scope" ? "custom-modal-content" : ""}`}>
@@ -933,9 +933,9 @@ const AskForScopeAdmin = ({
                                     <div className=" border-bottom pb-2 mb-3 flex items-center justify-between">
                                       <h3 className="f-18">Scope Details</h3>
                                       <div>
-                                        <button className="btn btn-sm btn-light flex items-center px-1"
+                                        <button className=""
                                         >
-                                          {fullScreenTab == "scope" ? (<Minimize2 size={15} onClick={()=>{handlefullScreenBtnClick(null)}}/>) : (<Expand size={15} onClick={()=>{handlefullScreenBtnClick("scope")}}/>)}
+                                          {fullScreenTab == "scope" ? (<Minimize2 size={25} onClick={()=>{handlefullScreenBtnClick(null)}} className="btn btn-sm btn-light flex items-center px-1"/> ) : (<Expand size={25} onClick={()=>{handlefullScreenBtnClick("scope")}} className="btn btn-sm btn-light flex items-center px-1"/>)}
                                         </button>
                                       </div>
                                     </div>
@@ -1773,8 +1773,8 @@ const AskForScopeAdmin = ({
                                 </div>
                               )}
                               {chatTabVisible && (
-                                <div className={`${fullScreenTab == "chat" ? "custom-modal" : colClass}`}>
-                                <div className={`${fullScreenTab == "chat" ? "custom-modal-content" : ""}`}>
+                                <div className={`${fullScreenTab == "chat" ? "custom-modal" : colClass} p-0`}>
+                                <div className={`${fullScreenTab == "chat" ? "custom-modal-content" : ""} `}>
                                   
                                   <div className={`p-0 `}>
                                     <Chat
@@ -1796,7 +1796,7 @@ const AskForScopeAdmin = ({
 
                               {feasTabVisible && quote.isfeasability == 1 && (
                                 <div className={`${fullScreenTab == "feas" ? "custom-modal" : colClass}`}>
-                              <div className={`${fullScreenTab == "feas" ? "custom-modal-content" : ""}`}>
+                              <div className={`${fullScreenTab == "feas" ? "custom-modal-content" : ""} `}>
                                 <div className={` pr-0`}>
                                   <div className="bg-white px-3 pt-3 pb-3">
                                     <>
@@ -1827,8 +1827,8 @@ const AskForScopeAdmin = ({
                                                   )}
                                                 </>
                                               )}
-                                              <button className="btn btn-sm btn-light flex items-center px-1">
-                                                {fullScreenTab == "feas" ? (<Minimize2 size={15} onClick={()=>{handlefullScreenBtnClick(null)}}/>) : (<Expand size={15} onClick={()=>{handlefullScreenBtnClick("feas")}}/>)}
+                                              <button className="">
+                                                {fullScreenTab == "feas" ? (<Minimize2 size={25} onClick={()=>{handlefullScreenBtnClick(null)}}  className="btn btn-sm btn-light flex items-center px-1"/>) : (<Expand size={25} onClick={()=>{handlefullScreenBtnClick("feas")}}  className="btn btn-sm btn-light flex items-center px-1"/>)}
                                               </button>
                                             </div>
                                           </div>

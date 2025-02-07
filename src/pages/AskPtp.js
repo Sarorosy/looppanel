@@ -100,8 +100,8 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
     };
 
     return (
-        <div className='flex flex-col'>
-            <button onClick={() => setShowForm(!showForm)} className="bg-blue-100 hover:bg-blue-200 text-blue-900 px-4 py-2 rounded-3xl w-44 max-w-44">
+        <div className='border-top pt-3'>
+            <button onClick={() => setShowForm(!showForm)} className="btn btn-info btn-sm ">
                 Ask Discount
             </button>
 
@@ -112,7 +112,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: 20 }}
                         transition={{ duration: 0.5 }}
-                        className="mt-4 p-4 border border-gray-300 rounded"
+                        className="mt-2 p-3 border border-gray-300 rounded bg-light"
                     >
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
@@ -144,7 +144,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                             </div>
 
                             <div className="mb-4">
-                                <label className="block text-sm font-medium text-gray-700">Plans</label>
+                                <label className="block text-sm font-semibold ">Plans</label>
                                 <div className="mt-2 flex flex-wrap">
                                     {['Basic', 'Standard', 'Advanced'].map((plan, index) => (
                                         <div key={index} className="flex items-center mb-2 mr-5">
@@ -156,7 +156,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                                                 onChange={() => handleCheckboxChange(plan)}
                                                 className="form-checkbox h-4 w-4 border-gray-300 rounded"
                                             />
-                                            <label htmlFor={`plan-${plan}`} className="ml-2 text-sm font-medium">{plan}</label>
+                                            <label htmlFor={`plan-${plan}`} className="ml-2 text-sm font-medium mb-0">{plan}</label>
                                         </div>
                                     ))}
                                 </div>
@@ -181,9 +181,11 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                                     className="w-full p-2 border border-gray-300 rounded"
                                 />
                             </div>
-                            <button type="submit" disabled={ptploading} className="bg-blue-500 text-white px-4 py-2 rounded">
-                                {ptploading ? "Submitting..." : "Submit"}
-                            </button>
+                            <div className='text-right'>
+                                <button type="submit" disabled={ptploading} className="btn btn-primary btn-sm ">
+                                    {ptploading ? "Submitting..." : "Submit"}
+                                </button>
+                            </div>
                         </form>
                     </motion.div>
                 </AnimatePresence>

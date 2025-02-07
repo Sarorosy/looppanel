@@ -174,13 +174,13 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                     <button className='bg-gray-300 p-1 rounded mr-1' onClick={fetchMessages}>
                         <RefreshCcw size={15} />
                     </button>
-                    <div>
-                        <button className="btn btn-sm btn-light flex items-center px-1" 
+                    
+                        <button className="" 
                         >
-                            {fullScreenTab == "chat" ? (<Minimize2 size={15} onClick={()=>{handlefullScreenBtnClick(null)}}/>) : (<Expand size={15} onClick={()=>{handlefullScreenBtnClick("chat")}}/>)}
+                            {fullScreenTab == "chat" ? (<Minimize2 size={25} onClick={()=>{handlefullScreenBtnClick(null)}}  className="btn btn-sm btn-light flex items-center px-1"/>) : (<Expand size={25} onClick={()=>{handlefullScreenBtnClick("chat")}}  className="btn btn-sm btn-light flex items-center px-1"/>)}
                             
-                            </button>
-                    </div>
+                        </button>
+                    
                 </div>
             </div>
 

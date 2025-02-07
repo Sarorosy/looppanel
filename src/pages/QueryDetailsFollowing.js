@@ -4,7 +4,7 @@ import 'select2/dist/css/select2.css';
 import 'select2';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { CircleX, HistoryIcon, X } from 'lucide-react';
+import { ArrowDownNarrowWide, CircleX, HistoryIcon, X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import AskForScope from './AskForScope';
 import SubmitRequestQuote from './SubmitRequestQuote';
@@ -24,6 +24,13 @@ const QueryDetailsFollowing = ({ onClose, queryId, quotationId, after }) => {
     const [quoteId, setQuoteId] = useState(null);
     const [isVisible, setIsVisible] = useState(false);
     const [activityloading, setActivityLoading] = useState(false);
+    const [detailsTabVisible, setDetilsTabVisible] = useState(false);
+
+    const handleDetailsTabBtn = () => {
+        setDetilsTabVisible(!detailsTabVisible);
+    };
+
+
 
     const userData = localStorage.getItem('loopuser');
 
@@ -136,18 +143,26 @@ const QueryDetailsFollowing = ({ onClose, queryId, quotationId, after }) => {
                 ) : (
                     <p className="text-gray-500"></p>
                 )} */}
-                <button
-                    onClick={close}
-                    className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
-                >
-                    {/* <CircleX size={32} /> */}
-                    <X size={15} />
-                </button>
+                <div className="d-flex align-items-center ">
+                    <button onClick={handleDetailsTabBtn} className="btn btn-light btn-sm mr-2 py-0 px-1 flex items-center f-12">
+                        Details <ArrowDownNarrowWide size={13} className="ml-1"/>
+                    </button>
+                    <button
+                        onClick={close}
+                        className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
+                    >
+                        {/* <CircleX size={32} /> */}
+                        <X size={15} />
+                    </button>
+                </div>
             </div>
 
 
 
             <div className=' flex items-start justify-between space-x-1 pnav text-black'>
+
+                <AskForScopeFollower queryId={queryId} quotationId={quotationId} userType={userObject.fld_admin_type} />
+                {detailsTabVisible && (
                 <div className='col-md-3'>
                     {loading ? (
                         <QueryLoader />
@@ -312,9 +327,7 @@ const QueryDetailsFollowing = ({ onClose, queryId, quotationId, after }) => {
                         </div>
                     )}
                 </div>
-
-                <AskForScopeFollower queryId={queryId} quotationId={quotationId} userType={userObject.fld_admin_type} />
-
+                )}
             </div>
 
 
