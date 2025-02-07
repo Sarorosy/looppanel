@@ -58,8 +58,8 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
     const numberToWords = (num) => {
         const toWords = require("number-to-words");
-        return toWords.toWords(num);
-    };
+        return toWords.toWords(Number(num));
+      };
 
     const fetchScopeDetails = async () => {
         setLoading(true); // Show loading spinner

@@ -330,8 +330,8 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
     };
     const numberToWords = (num) => {
         const toWords = require("number-to-words");
-        return toWords.toWords(num);
-    };
+        return toWords.toWords(Number(num));
+      };
 
     return (
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">

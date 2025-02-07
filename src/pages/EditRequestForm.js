@@ -130,8 +130,8 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
 
     const numberToWords = (num) => {
         const toWords = require("number-to-words");
-        return toWords.toWords(num);
-    };
+        return toWords.toWords(Number(num));
+      };
 
     useEffect(() => {
         const updatedWordCountTexts = {};
