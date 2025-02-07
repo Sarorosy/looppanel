@@ -203,7 +203,7 @@ const AskForScopeAdmin = ({
 
   const numberToWords = (num) => {
     const toWords = require("number-to-words");
-    return toWords.toWords(num);
+    return toWords.toWords(Number(num));
   };
 
   const toggleRow = (index) => {
