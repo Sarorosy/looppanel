@@ -36,6 +36,17 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const [selectedUser, setSelectedUser] = useState('');
     const [wordCountTexts, setWordCountTexts] = useState({});
 
+    const modules = {
+        toolbar: [
+            [{ 'header': [1, 2, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }], // Text color & highlight
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['blockquote', 'code-block'],
+            ['clean']
+        ]
+    };
+
     const [currencies, setCurrencies] = useState([]);
     const [users, setUsers] = useState([]);
     const userRef = useRef(null);
@@ -704,6 +715,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                             className="mt-1"
                                             theme="snow"
                                             placeholder={`Add comment for ${plan} plan`}
+                                            modules={modules}
                                         />
                                     </div>
                                     <div className="my-2 flex items-end">
@@ -756,7 +768,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                         <div className='w-full mb-3'>
                             {/* Comments */}
                             <label>Additional Comments <span className='text-gray-400 text-sm ml-2'>(optional)</span></label>
-                            <ReactQuill value={comments} onChange={(value) => setComments(value)} />
+                            <ReactQuill value={comments} onChange={(value) => setComments(value)} modules={modules}/>
                         </div>
 
                         <div className='mt-2 text-right'>

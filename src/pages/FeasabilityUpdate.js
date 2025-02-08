@@ -44,6 +44,17 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
     const [feasabilityComments, setFeasabilityComments] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
 
+    const modules = {
+        toolbar: [
+            [{ 'header': [1, 2, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }], // Text color & highlight
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['blockquote', 'code-block'],
+            ['clean']
+        ]
+    };
+
 
     const [transferForm, setTransferForm] = useState(false);
 
@@ -555,6 +566,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                         className="mt-1"
                                                         theme="snow"
                                                         placeholder="Add your comments here"
+                                                        modules={modules}
 
                                                     />
                                                     <div className="mt-4">

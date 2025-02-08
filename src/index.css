@@ -666,3 +666,7 @@ focus-outline-none:focus:not(:focus-visible) {
 .line-h-in{
   line-height: initial;
 }
+.peneditbtn{
+  border: 2px solid #27679b;
+  color: #27679b;
+}

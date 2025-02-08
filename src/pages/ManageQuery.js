@@ -11,7 +11,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight } from 'lucide-react';
+import { RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight, FilterIcon } from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -23,6 +23,7 @@ import * as XLSX from 'xlsx';
 import { io } from "socket.io-client";
 import { getSocket } from './Socket';
 import TransferRequestsPage from './TransferRequestsPage';
+import TableLoader from '../components/TableLoader';
 const socket = getSocket();
 
 const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
@@ -58,6 +59,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [endDate, setEndDate] = useState(null);
     const [activeTab, setActiveTab] = useState('all');
     const [selectedRows, setSelectedRows] = useState([]);
+    const [filterSummary, setFilterSummary] = useState('');
+    const [showFilterDiv, setShowFilterDiv] = useState(false);
+
     const navigate = useNavigate();
 
 
@@ -217,7 +221,6 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setLoading(true);
 
 
-
         const userid = selectedUser;
         const ref_id = refID;
         const scope_id = scopeId;
@@ -266,6 +269,22 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     setUserPendingQuotes(userPending);
 
                     setAdminPendingQuotes(adminPending);
+                    setFilterSummary('')
+                    let summary = 'Showing results for: ';
+                    const appliedFilters = [];
+
+                    if (refID) appliedFilters.push(`Ref ID: ${refID}`);
+                    if (scope_id) appliedFilters.push(`Scope ID: ${scope_id}`);
+                    if (ptp && ptp == 'Yes') appliedFilters.push(`PTP: YES`);
+                    if (userid) appliedFilters.push(`User: ${users.find(u => u.id === userid)?.fld_first_name ?? 'N/A'}`);
+                    if (service_name) appliedFilters.push(`Service: ${services.find(s => s.id === service_name)?.name ?? 'N/A'}`);
+                    if (subject_area) appliedFilters.push(`Subject: ${subject_area}`);
+                    if (tags.length > 0) appliedFilters.push(`Tags: ${tags.join(', ')}`);
+                    if (status) appliedFilters.push(`Status: ${status}`);
+                    if (feasability_status) appliedFilters.push(`Feasibility: ${feasability_status}`);
+                    if (start_date && end_date) appliedFilters.push(`Date: ${start_date.toLocaleDateString()} - ${end_date.toLocaleDateString()}`);
+
+                    setFilterSummary(appliedFilters.length > 0 ? summary + appliedFilters.join(', ') : 'Showing all results');
 
                 } else if (quotes.length == 0) {
                     setQuotes(data.allQuoteData);
@@ -639,18 +658,18 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             orderable: false,
             render: (data, type, row) => {
                 let name = row.fld_first_name + " " + (row.fld_last_name != null ? row.fld_last_name : "");
-                
+
                 // Check if the user is deleted
                 if (row.isdeleted == 1) {
                     return `<div style="text-align: left; color: red; text-decoration: line-through;" title="This user was deleted">
                                 ${row.deleted_user_name}
                             </div>`;
                 }
-        
+
                 // If the user is not deleted, just return the normal name
                 return `<div style="text-align: left;">${name}</div>`;
             },
-        },        
+        },
         {
             title: 'Currency',
             data: 'null',
@@ -796,6 +815,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         $(selectUserRef.current).val(null).trigger('change');
         $(selectServiceRef.current).val(null).trigger('change');
         $(tagsRef.current).val([]).trigger('change');
+        setFilterSummary('');
 
 
         try {
@@ -814,7 +834,16 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             {/* Filter Section */}
             <div className=" mb-3 bg-white px-3 py-3 rounded ">
                 <div className='flex justify-between  mb-4'>
-                    <h1 className='text-xl font-bold'>All Quote List</h1>
+                    <div className='flex items-center space-x-2'>
+                        <h1 className='text-xl font-bold'>All Quote List</h1>
+                        <button
+                            onClick={() => setShowFilterDiv(!showFilterDiv)}
+                            className="flex items-center gap-2 px-2 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md transition duration-300"
+                        >
+                            <FilterIcon size={18} />
+                        </button>
+
+                    </div>
                     <div className='flex'>
                         {(loopUserObject.id == "206" || loopUserObject.scopeadmin == 1) && (
                             <button className="bg-gray-200 flex items-center relative mr-3 p-1 rounded" onClick={() => { navigate("/assignquery") }}>
@@ -842,7 +871,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         </button>
                     </div>
                 </div>
-                <div className='flex items-end space-x-2'>
+                <div className={`${showFilterDiv ? 'hidden' : 'flex'} items-end space-x-2`}>
                     <div className="row">
                         <div className="col-2 mb-3">
                             <input
@@ -1150,9 +1179,11 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             </div>
 
             {loading ? (
-                <CustomLoader />
+                <TableLoader />
             ) : (
                 <div className="bg-white p-4 border-t-2 border-blue-400 rounded">
+                    {filterSummary && <p className="text-gray-600 text-sm my-2 font-semibold">{filterSummary}</p>}
+
                     {/* Tab Buttons */}
                     <div className="mb-4">
                         <div className="flex space-x-4" >
@@ -1274,7 +1305,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     <TransferRequestsPage onClose={() => { setTransferPageVisible(!TransferPageVisible) }} />
                 )}
             </AnimatePresence>
-            
+
         </div>
     );
 };

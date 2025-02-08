@@ -144,6 +144,7 @@ const QueryDetailsAdmin = ({
           quotationId={quotationId}
           viewAll={viewAll}
           clientEmail={queryInfo.email_id}
+          info={queryInfo}
         />
         {detailsTabVisible && (
           <div className="col-md-3">

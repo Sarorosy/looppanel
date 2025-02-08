@@ -39,6 +39,17 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
     const [demoStatus, setDemoStatus] = useState(false);
     const socket = getSocket();
 
+    const modules = {
+        toolbar: [
+            [{ 'header': [1, 2, false] }],
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ 'color': [] }, { 'background': [] }], // Text color & highlight
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            ['blockquote', 'code-block'],
+            ['clean']
+        ]
+    };
+
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prev) =>
             prev.includes(plan)
@@ -728,6 +739,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                                             onChange={(value) => handleCommentChange(plan, value)} // Handle Quill's onChange
                                             className="mt-1"
                                             theme="snow"
+                                            modules={modules}
                                             placeholder={`Add comment for ${plan} plan`}
                                         />
                                     </div>
@@ -819,6 +831,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                                     className="mt-1"
                                     theme="snow"
                                     placeholder="Add your comments here"
+                                    modules={modules}
 
                                 />
                             </div>

@@ -26,6 +26,8 @@ import {
   Minimize2,
   X,
   EyeClosed,
+  Pen,
+  CircleUserRound,
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import AddTags from "./AddTags";
@@ -44,6 +46,7 @@ import ScopeLoader from "./ScopeLoader";
 import { getSocket } from "./Socket";
 import ReactTooltip, { Tooltip } from "react-tooltip";
 import MergedHistoryComponentNew from "./MergedHistoryComponentNew";
+import EditCommentsComponent from "./EditCommentsComponent";
 
 const AskForScopeAdmin = ({
   queryId,
@@ -51,6 +54,7 @@ const AskForScopeAdmin = ({
   quotationId,
   viewAll,
   clientEmail,
+  info
 }) => {
   const socket = getSocket();
   const [scopeDetails, setScopeDetails] = useState(null);
@@ -84,6 +88,14 @@ const AskForScopeAdmin = ({
   const [clientEmailDivOpen, setClientEmailDivOpen] = useState(false);
   const [followersFormOpen, setFollowersFormOpen] = useState(false);
   const [completeFeasabilityDiv, setCompleteFeasabilityDiv] = useState(false);
+
+
+  const [commentEditFormOpen, setCommentEditFormOpen] = useState(false);
+  const [commentQuote, setCommentQuote] = useState(null);
+  const [commentPlan, setCommentPlan] = useState("");
+  const [commentText, setCommentText] = useState("");
+  const [commentWordCount, setCommentWordCount] = useState(null);
+
 
   const [selectedAllReqRefId, setSelectedAllReqRefId] = useState("");
   const [allRequestDivOpen, setAllRequestDivOpen] = useState(false);
@@ -625,6 +637,27 @@ const AskForScopeAdmin = ({
     return str.charAt(0).toUpperCase() + str.slice(1);
   }
 
+  const handleEditClick = (quote, plan, comment) => {
+    //console.log("Quote Ref ID:", quote.assign_id);
+    //console.log("Quote ID:", quote.quoteid);
+    //console.log("Plan:", plan);
+    //console.log("Comment:", comment);
+
+    const planComments = typeof quote.plan_comments === "string" ? JSON.parse(quote.plan_comments) : quote.plan_comments;
+    const wordCounts =quote.word_counts && typeof quote.word_counts === "string" ? JSON.parse(quote.word_counts) : quote.word_counts;
+
+    //console.log("Plan Comments for Selected Plan:", planComments[plan]);
+    //console.log("Word Count for Selected Plan:", wordCounts ? wordCounts[plan] : null);
+
+    setCommentQuote(quote);
+    setCommentPlan(plan);
+    setCommentText(planComments[plan]);
+    setCommentWordCount(wordCounts ? wordCounts[plan] : null);
+    setCommentEditFormOpen(true);
+
+};
+
+
   
   const referenceUrl = `https://instacrm.rapidcollaborate.com/managequote/view-askforscope/${scopeDetails?.ref_id}`;
 
@@ -635,7 +668,13 @@ const AskForScopeAdmin = ({
   return (
     <div className=" h-full bg-gray-100  z-50 overflow-y-auto mt-2 rounded w-full">
       <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
+        <div className="flex items-center space-x-2">
         <h2 className="text-sx font-semibold ">Ask For Scope </h2>
+        <div className="flex items-center space-x-1 bg-white px-1 rounded text-gray-900" title="Client Name">
+          <CircleUserRound size={18} className="mr-2" />
+          {info.name ?? 'Loading..'}
+        </div>
+        </div>
         <div className="flex items-center">
           {refIds && refIds.length > 0 && (
             <div
@@ -1084,8 +1123,13 @@ const AskForScopeAdmin = ({
                                               .map(([plan, comment], index) => (
                                                 <div key={index} className={planColClass}>
                                                   <div className="border p-3 mb-2">
-                                                    <p>
-                                                      <strong>{plan}</strong>
+                                                    <p className="flex items-center space-x-2 mb-1">
+                                                      <strong>{plan}</strong> <button
+                                                      className="peneditbtn p-1  rounded-full"
+                                                      onClick={() => handleEditClick(quote, plan, comment)}
+                                                    >
+                                                      <Pen size={12} />
+                                                    </button>
                                                     </p>
                                                     <div dangerouslySetInnerHTML={{ __html: comment }} />
                                                     
@@ -1985,6 +2029,10 @@ const AskForScopeAdmin = ({
             userId={selectedUser}
             after={fetchScopeDetailsForSocket}
           />
+        )}
+
+        {commentEditFormOpen && (
+          <EditCommentsComponent quote={commentQuote} plan={commentPlan} comment={commentText} wordCount={commentWordCount} onClose={()=>{setCommentEditFormOpen(false)} } after={fetchScopeDetailsForSocket}/>
         )}
       </AnimatePresence>
       <Tooltip id="my-tooltip" />
