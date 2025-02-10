@@ -9,6 +9,7 @@ import { RefreshCcw, X } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import { io } from "socket.io-client";
 import { getSocket } from './Socket';
+import UserTableLoading from '../components/UserTableLoading';
 const socket = getSocket();
 
 const SummaryPage = ({ onClose, after,userIdDefined }) => {
@@ -263,7 +264,7 @@ const SummaryPage = ({ onClose, after,userIdDefined }) => {
             </div>
 
             {loading ? (
-                <CustomLoader />
+                <UserTableLoading />
             ) : (
                 <div className='bg-white p-4 border-t-2 border-blue-400 rounded container'>
                     <div className="table-scrollable">

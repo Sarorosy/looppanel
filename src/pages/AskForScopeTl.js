@@ -656,6 +656,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                                     <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
                                                                                         <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                                         {index < plans.length - 1 && ', '}
+                                                                                        {quote.mp_price === plan && " (MP Price)"}
                                                                                     </span>
                                                                                 ));
                                                                             })()}
@@ -672,6 +673,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                                     <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
                                                                                         <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                                         {index < plans.length - 1 && ', '}
+                                                                                        {quote.mp_price === plan && " (MP Price)"}
                                                                                     </span>
                                                                                 ));
                                                                             })()}
@@ -687,6 +689,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                                     <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
                                                                                         <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
                                                                                         {index < plans.length - 1 && ', '}
+                                                                                        {quote.mp_price === plan && " (MP Price)"}
                                                                                     </span>
                                                                                 ));
                                                                             })()}
@@ -702,6 +705,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                                     <span key={index} className=' px-1 py-2 rounded mr-1 gold'>
                                                                                         <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
                                                                                         {index < plans.length - 1 && ', '}
+                                                                                        {quote.mp_price === plan && " (MP Price)"}
                                                                                     </span>
                                                                                 ));
                                                                             })()}

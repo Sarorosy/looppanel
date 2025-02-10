@@ -1192,6 +1192,7 @@ const getVisibleTabCount = () => {
                                                                   {index <
                                                                     plans.length -
                                                                       1 && ", "}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
                                                                 </span>
                                                               )
                                                             );
@@ -1242,6 +1243,7 @@ const getVisibleTabCount = () => {
                                                                   {index <
                                                                     plans.length -
                                                                       1 && ", "}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
                                                                 </span>
                                                               )
                                                             );
@@ -1285,6 +1287,7 @@ const getVisibleTabCount = () => {
                                                                   {index <
                                                                     plans.length -
                                                                       1 && ", "}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
                                                                 </span>
                                                               )
                                                             );
@@ -1329,6 +1332,7 @@ const getVisibleTabCount = () => {
                                                                   {index <
                                                                     plans.length -
                                                                       1 && ", "}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
                                                                 </span>
                                                               )
                                                             );

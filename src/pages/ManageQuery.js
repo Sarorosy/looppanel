@@ -60,7 +60,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [activeTab, setActiveTab] = useState('all');
     const [selectedRows, setSelectedRows] = useState([]);
     const [filterSummary, setFilterSummary] = useState('');
-    const [showFilterDiv, setShowFilterDiv] = useState(false);
+    const [showFilterDiv, setShowFilterDiv] = useState(true);
 
     const navigate = useNavigate();
 

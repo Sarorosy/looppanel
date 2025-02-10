@@ -10,6 +10,7 @@ import QueryDetails from './QueryDetails';
 import FeasabilityQueryDetails from './FeasabilityQueryDetails';
 import AdminFeasViewDetails from './AdminFeasViewDetails';
 import AdminFeasQueryDetails from './AdminFeasQueryDetails';
+import UserTableLoading from '../components/UserTableLoading';
 
 
 const AllFeasPage = ({ onClose }) => {
@@ -337,7 +338,7 @@ const AllFeasPage = ({ onClose }) => {
             </div>
 
             {loading ? (
-                <CustomLoader />
+                <UserTableLoading />
             ) : (
                 <div className='bg-white p-4 border-t-2 border-blue-400 rounded container '>
                     <div className="table-scrollable">

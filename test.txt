@@ -1,469 +1,102 @@
-<div>
-                                        <h3 className="f-18 font-weight-bold mb-3">
-                                          Plan Description
-                                        </h3>
-                                      </div>
-                                      {quote.plan_comments &&
-                                        quote.plan_comments !== "" &&
-                                        quote.plan_comments !== null && (
-                                          <>
-                                            {/* <h6 className="mb-2 f-20">
-                                              <strong
-                                                style={{
-                                                  textDecoration: "underline",
-                                                }}
-                                              >
-                                                Plan Description:
-                                              </strong>
-                                            </h6> */}
-
-                                            {/* Row container to hold 3 cards */}
-                                            <div className="row border-bottom">
-                                              {/* Card 1 */}
-                                              <div
-                                                className={`${
-                                                  colClass == "col-md-12"
-                                                    ? "col-md-4"
-                                                    : "col-md-12"
-                                                } mb-3 `}
-                                              >
-                                                
-                                                    {/* Plan Comments */}
-                                                    {/* <h5 className="card-title">Plan Comments</h5> */}
-                                                    <div
-                                                      className=""
-                                                      style={{
-                                                        wordWrap: "break-word",
-                                                        overflowWrap:
-                                                          "break-word",
-                                                        wordBreak: "break-word",
-                                                      }}
-                                                    >
-                                                      {quote.plan_comments &&
-                                                        typeof quote.plan_comments ===
-                                                          "string" &&
-                                                        quote.plan &&
-                                                        Object.entries(
-                                                          JSON.parse(
-                                                            quote.plan_comments
-                                                          )
-                                                        )
-                                                          .filter(
-                                                            ([plan]) =>
-                                                              plan === "Basic"
-                                                          ) // Only display the "Basic" plan comments
-                                                          .map(
-                                                            (
-                                                              [plan, comment],
-                                                              index
-                                                            ) => (
-                                                              <div
-                                                                key={index}
-                                                                className="border-top border-right border-left p-2"
-                                                              >
-                                                                <p>
-                                                                  <strong>
-                                                                    {plan}
-                                                                  </strong>
-                                                                </p>
+<div className="row">
+                                                            {[
+                                                              "Basic",
+                                                              "Standard",
+                                                              "Advanced",
+                                                            ].map(
+                                                              (plan, index) => (
                                                                 <div
-                                                                  dangerouslySetInnerHTML={{
-                                                                    __html:
-                                                                      comment,
-                                                                  }}
-                                                                />
-                                                              </div>
-                                                            )
-                                                          )}
-                                                    </div>
-
-                                                    {/* Word Counts */}
-                                                    {quote.word_counts &&
-                                                      quote.word_counts !==
-                                                        null && (
-                                                        <div
-                                                          className=""
-                                                          style={{
-                                                            wordWrap:
-                                                              "break-word",
-                                                            overflowWrap:
-                                                              "break-word",
-                                                            wordBreak:
-                                                              "break-word",
-                                                          }}
-                                                        >
-                                                          {quote.word_counts &&
-                                                            typeof quote.word_counts ===
-                                                              "string" &&
-                                                            quote.plan &&
-                                                            Object.entries(
-                                                              JSON.parse(
-                                                                quote.word_counts
-                                                              )
-                                                            )
-                                                              .filter(
-                                                                ([plan]) =>
-                                                                  plan ===
-                                                                  "Basic"
-                                                              ) // Only display the "Basic" plan word counts
-                                                              .map(
-                                                                (
-                                                                  [
-                                                                    plan,
-                                                                    wordcount,
-                                                                  ],
-                                                                  index
-                                                                ) => (
-                                                                  <div
-                                                                    key={index}
-                                                                    className="border-bottom border-right border-left p-2"
+                                                                  className="form-group col-12"
+                                                                  key={index}
+                                                                >
+                                                                  <label
+                                                                    htmlFor={`amount_${plan}`}
+                                                                    className="control-label"
                                                                   >
-                                                                    <p
-                                                                      style={{
-                                                                        fontWeight:
-                                                                          "bold",
-                                                                        color:
-                                                                          "#007bff",
-                                                                        backgroundColor:
-                                                                          "#f0f8ff",
-                                                                        padding:
-                                                                          "5px",
-                                                                        borderRadius:
-                                                                          "5px",
-                                                                        border:
-                                                                          "1px solid #40BD5DFF",
-                                                                      }}
-                                                                    >
-                                                                      {plan}:{" "}
-                                                                      <span
-                                                                        style={{
-                                                                          color:
-                                                                            "#28a745",
-                                                                        }}
-                                                                      >
-                                                                        {
-                                                                          wordcount
-                                                                        }{" "}
-                                                                        words
-                                                                      </span>
-                                                                      <br />
-                                                                      <span
-                                                                        style={{
-                                                                          color:
-                                                                            "gray",
-                                                                        }}
-                                                                      >
-                                                                        {numberToWords(
-                                                                          wordcount
-                                                                        )}{" "}
-                                                                        words
-                                                                      </span>
-                                                                    </p>
+                                                                    Amount for{" "}
+                                                                    <strong>
+                                                                      {plan} (
+                                                                      {quote.currency ===
+                                                                      "Other"
+                                                                        ? quote.other_currency
+                                                                        : quote.currency}
+                                                                      )
+                                                                    </strong>
+                                                                  </label>
+                                                                  <div className="">
+                                                                    <input
+                                                                      type="text"
+                                                                      name={`amount_${plan}`}
+                                                                      id={`amount_${plan}`}
+                                                                      className="form-control form-conotrol-sm"
+                                                                      value={
+                                                                        amounts[
+                                                                          plan
+                                                                        ] || ""
+                                                                      } // Default to empty if no amount is set
+                                                                      required={
+                                                                        quote.plan &&
+                                                                        quote.plan
+                                                                          .split(
+                                                                            ","
+                                                                          )
+                                                                          .includes(
+                                                                            plan
+                                                                          )
+                                                                      } // Required only if the plan is included in quote.plan
+                                                                      disabled={
+                                                                        !quote.plan ||
+                                                                        !quote.plan
+                                                                          .split(
+                                                                            ","
+                                                                          )
+                                                                          .includes(
+                                                                            plan
+                                                                          )
+                                                                      } // Disable if the plan is not in quote.plan
+                                                                      onChange={(
+                                                                        e
+                                                                      ) =>
+                                                                        handleAmountChange(
+                                                                          e,
+                                                                          plan
+                                                                        )
+                                                                      }
+                                                                    />
+                                                                    <div
+                                                                      className="error"
+                                                                      id={`amountError_${plan}`}
+                                                                    ></div>
                                                                   </div>
-                                                                )
-                                                              )}
-                                                        </div>
-                                                      )}
-                                                  
-                                              </div>
+                                                                </div>
+                                                              )
+                                                            )}
 
-                                              {/* Card 2 */}
-                                              <div
-                                                className={`${
-                                                  colClass == "col-md-12"
-                                                    ? "col-md-4"
-                                                    : "col-md-12"
-                                                } mb-3`}
-                                              >
-                                                
-                                                    {/* Plan Comments */}
-                                                    {/* <h5 className="card-title">Plan Comments</h5> */}
-                                                    <div
-                                                      className=""
-                                                      style={{
-                                                        wordWrap: "break-word",
-                                                        overflowWrap:
-                                                          "break-word",
-                                                        wordBreak: "break-word",
-                                                      }}
-                                                    >
-                                                      {quote.plan_comments &&
-                                                        typeof quote.plan_comments ===
-                                                          "string" &&
-                                                        quote.plan &&
-                                                        Object.entries(
-                                                          JSON.parse(
-                                                            quote.plan_comments
-                                                          )
-                                                        )
-                                                          .filter(
-                                                            ([plan]) =>
-                                                              plan ===
-                                                              "Standard"
-                                                          ) // Only display the "Basic" plan comments
-                                                          .map(
-                                                            (
-                                                              [plan, comment],
-                                                              index
-                                                            ) => (
-                                                              <div
-                                                                key={index}
-                                                                className=" border-top border-right border-left p-2"
+                                                            <div className="form-group col-sm-12">
+                                                              <label
+                                                                htmlFor="comment"
+                                                                className="col-sm-3 control-label"
                                                               >
-                                                                <p>
-                                                                  <strong>
-                                                                    {plan}
-                                                                  </strong>
-                                                                </p>
+                                                                Comments
+                                                              </label>
+                                                              <div className="">
+                                                                <textarea
+                                                                  name="comment"
+                                                                  id="comment"
+                                                                  placeholder="Comments"
+                                                                  className="form-control form-conotrol-sm"
+                                                                  value={comment}
+                                                                  onChange={(e) =>
+                                                                    setComment(
+                                                                      e.target
+                                                                        .value
+                                                                    )
+                                                                  }
+                                                                ></textarea>
                                                                 <div
-                                                                  dangerouslySetInnerHTML={{
-                                                                    __html:
-                                                                      comment,
-                                                                  }}
-                                                                />
+                                                                  className="error"
+                                                                  id="commentError"
+                                                                ></div>
                                                               </div>
-                                                            )
-                                                          )}
-                                                    </div>
-
-                                                    {/* Word Counts */}
-                                                    {quote.word_counts &&
-                                                      quote.word_counts !==
-                                                        null && (
-                                                        <div
-                                                          className=""
-                                                          style={{
-                                                            wordWrap:
-                                                              "break-word",
-                                                            overflowWrap:
-                                                              "break-word",
-                                                            wordBreak:
-                                                              "break-word",
-                                                          }}
-                                                        >
-                                                          {quote.word_counts &&
-                                                            typeof quote.word_counts ===
-                                                              "string" &&
-                                                            quote.plan &&
-                                                            Object.entries(
-                                                              JSON.parse(
-                                                                quote.word_counts
-                                                              )
-                                                            )
-                                                              .filter(
-                                                                ([plan]) =>
-                                                                  plan ===
-                                                                  "Standard"
-                                                              ) // Only display the "Basic" plan word counts
-                                                              .map(
-                                                                (
-                                                                  [
-                                                                    plan,
-                                                                    wordcount,
-                                                                  ],
-                                                                  index
-                                                                ) => (
-                                                                  <div
-                                                                    key={index}
-                                                                    className="border-bottom border-right border-left p-2"
-                                                                  >
-                                                                    <p
-                                                                      style={{
-                                                                        fontWeight:
-                                                                          "bold",
-                                                                        color:
-                                                                          "#007bff",
-                                                                        backgroundColor:
-                                                                          "#f0f8ff",
-                                                                        padding:
-                                                                          "5px",
-                                                                        borderRadius:
-                                                                          "5px",
-                                                                        border:
-                                                                          "1px solid #40BD5DFF",
-                                                                      }}
-                                                                    >
-                                                                      {plan}:{" "}
-                                                                      <span
-                                                                        style={{
-                                                                          color:
-                                                                            "#28a745",
-                                                                        }}
-                                                                      >
-                                                                        {
-                                                                          wordcount
-                                                                        }{" "}
-                                                                        words
-                                                                      </span>
-                                                                      <br />
-                                                                      <span
-                                                                        style={{
-                                                                          color:
-                                                                            "gray",
-                                                                        }}
-                                                                      >
-                                                                        {numberToWords(
-                                                                          wordcount
-                                                                        )}{" "}
-                                                                        words
-                                                                      </span>
-                                                                    </p>
-                                                                  </div>
-                                                                )
-                                                              )}
-                                                        </div>
-                                                      )}
-                                                  </div>
-                                                
-
-                                              {/* Card 3 */}
-                                              <div
-                                                className={`${
-                                                  colClass == "col-md-12"
-                                                    ? "col-md-4"
-                                                    : "col-md-12"
-                                                } mb-3`}
-                                              >
-                                                
-                                                    {/* Plan Comments */}
-                                                    {/* <h5 className="card-title">Plan Comments</h5> */}
-                                                    <div
-                                                      className=""
-                                                      style={{
-                                                        wordWrap: "break-word",
-                                                        overflowWrap:
-                                                          "break-word",
-                                                        wordBreak: "break-word",
-                                                      }}
-                                                    >
-                                                      {quote.plan_comments &&
-                                                        typeof quote.plan_comments ===
-                                                          "string" &&
-                                                        quote.plan &&
-                                                        Object.entries(
-                                                          JSON.parse(
-                                                            quote.plan_comments
-                                                          )
-                                                        )
-                                                          .filter(
-                                                            ([plan]) =>
-                                                              plan ===
-                                                              "Advanced"
-                                                          ) // Only display the "Basic" plan comments
-                                                          .map(
-                                                            (
-                                                              [plan, comment],
-                                                              index
-                                                            ) => (
-                                                              <div
-                                                                key={index}
-                                                                className="border-top border-right border-left p-2"
-                                                              >
-                                                                <p>
-                                                                  <strong>
-                                                                    {plan}
-                                                                  </strong>
-                                                                </p>
-                                                                <div
-                                                                  dangerouslySetInnerHTML={{
-                                                                    __html:
-                                                                      comment,
-                                                                  }}
-                                                                />
-                                                              </div>
-                                                            )
-                                                          )}
-                                                    </div>
-
-                                                    {/* Word Counts */}
-                                                    {quote.word_counts &&
-                                                      quote.word_counts !==
-                                                        null && (
-                                                        <div
-                                                          className=""
-                                                          style={{
-                                                            wordWrap:
-                                                              "break-word",
-                                                            overflowWrap:
-                                                              "break-word",
-                                                            wordBreak:
-                                                              "break-word",
-                                                          }}
-                                                        >
-                                                          {quote.word_counts &&
-                                                            typeof quote.word_counts ===
-                                                              "string" &&
-                                                            quote.plan &&
-                                                            Object.entries(
-                                                              JSON.parse(
-                                                                quote.word_counts
-                                                              )
-                                                            )
-                                                              .filter(
-                                                                ([plan]) =>
-                                                                  plan ===
-                                                                  "Advanced"
-                                                              ) // Only display the "Basic" plan word counts
-                                                              .map(
-                                                                (
-                                                                  [
-                                                                    plan,
-                                                                    wordcount,
-                                                                  ],
-                                                                  index
-                                                                ) => (
-                                                                  <div
-                                                                    key={index}
-                                                                    className="border-bottom border-right border-left p-2"
-                                                                  >
-                                                                    <p
-                                                                      style={{
-                                                                        fontWeight:
-                                                                          "bold",
-                                                                        color:
-                                                                          "#007bff",
-                                                                        backgroundColor:
-                                                                          "#f0f8ff",
-                                                                        padding:
-                                                                          "5px",
-                                                                        borderRadius:
-                                                                          "5px",
-                                                                        border:
-                                                                          "1px solid #40BD5DFF",
-                                                                      }}
-                                                                    >
-                                                                      {plan}:{" "}
-                                                                      <span
-                                                                        style={{
-                                                                          color:
-                                                                            "#28a745",
-                                                                        }}
-                                                                      >
-                                                                        {
-                                                                          wordcount
-                                                                        }{" "}
-                                                                        words
-                                                                      </span>
-                                                                      <br />
-                                                                      <span
-                                                                        style={{
-                                                                          color:
-                                                                            "gray",
-                                                                        }}
-                                                                      >
-                                                                        {numberToWords(
-                                                                          wordcount
-                                                                        )}{" "}
-                                                                        words
-                                                                      </span>
-                                                                    </p>
-                                                                  </div>
-                                                                )
-                                                              )}
-                                                        </div>
-                                                      )}
-                                                  </div>
-                                                </div>
-                                             
-                                          </>
-                                        )}
+                                                            </div>
+                                                          </div>

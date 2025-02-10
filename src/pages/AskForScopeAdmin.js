@@ -88,7 +88,7 @@ const AskForScopeAdmin = ({
   const [clientEmailDivOpen, setClientEmailDivOpen] = useState(false);
   const [followersFormOpen, setFollowersFormOpen] = useState(false);
   const [completeFeasabilityDiv, setCompleteFeasabilityDiv] = useState(false);
-
+  const [selectedMP, setSelectedMP] = useState("");
 
   const [commentEditFormOpen, setCommentEditFormOpen] = useState(false);
   const [commentQuote, setCommentQuote] = useState(null);
@@ -127,26 +127,31 @@ const AskForScopeAdmin = ({
     }
   };
 
-  const handlefullScreenBtnClick = (tab) =>{
-      if(tab == "scope"){
-        // setChatTabVisible(false);
-        // setFeasTabVisible(false);
-        // setScopeTabVisible(true);
-        setFullScreenTab("scope")
-      }else if(tab == "chat"){
-        // setChatTabVisible(true);
-        // setFeasTabVisible(false);
-        // setScopeTabVisible(false);
-        setFullScreenTab("chat")
-      }else if(tab =="feas"){
-        // setChatTabVisible(false);
-        // setFeasTabVisible(true);
-        // setScopeTabVisible(false);
-        setFullScreenTab("feas")
-      }else{
-        setFullScreenTab(null)
-      }
+  const handlefullScreenBtnClick = (tab) => {
+    if (tab == "scope") {
+      // setChatTabVisible(false);
+      // setFeasTabVisible(false);
+      // setScopeTabVisible(true);
+      setFullScreenTab("scope")
+    } else if (tab == "chat") {
+      // setChatTabVisible(true);
+      // setFeasTabVisible(false);
+      // setScopeTabVisible(false);
+      setFullScreenTab("chat")
+    } else if (tab == "feas") {
+      // setChatTabVisible(false);
+      // setFeasTabVisible(true);
+      // setScopeTabVisible(false);
+      setFullScreenTab("feas")
+    } else {
+      setFullScreenTab(null)
+    }
   }
+
+  const handleMPChange = (plan) => {
+    setSelectedMP(selectedMP === plan ? "" : plan); // Toggle selection
+  };
+
   const getVisibleTabCount = () => {
     let visibleCount = 0;
     if (scopeTabVisible) visibleCount++;
@@ -512,6 +517,7 @@ const AskForScopeAdmin = ({
             quote_id: quoteId,
             quote_amount: quoteAmount,
             user_id: loopUserObject.id,
+            mp_price : selectedMP,
             comment: comment,
           }), // Send the data as JSON
         }
@@ -644,7 +650,7 @@ const AskForScopeAdmin = ({
     //console.log("Comment:", comment);
 
     const planComments = typeof quote.plan_comments === "string" ? JSON.parse(quote.plan_comments) : quote.plan_comments;
-    const wordCounts =quote.word_counts && typeof quote.word_counts === "string" ? JSON.parse(quote.word_counts) : quote.word_counts;
+    const wordCounts = quote.word_counts && typeof quote.word_counts === "string" ? JSON.parse(quote.word_counts) : quote.word_counts;
 
     //console.log("Plan Comments for Selected Plan:", planComments[plan]);
     //console.log("Word Count for Selected Plan:", wordCounts ? wordCounts[plan] : null);
@@ -655,10 +661,10 @@ const AskForScopeAdmin = ({
     setCommentWordCount(wordCounts ? wordCounts[plan] : null);
     setCommentEditFormOpen(true);
 
-};
+  };
 
 
-  
+
   const referenceUrl = `https://instacrm.rapidcollaborate.com/managequote/view-askforscope/${scopeDetails?.ref_id}`;
 
   const handleUserChange = (event) => {
@@ -669,11 +675,11 @@ const AskForScopeAdmin = ({
     <div className=" h-full bg-gray-100  z-50 overflow-y-auto mt-2 rounded w-full">
       <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
         <div className="flex items-center space-x-2">
-        <h2 className="text-sx font-semibold ">Ask For Scope </h2>
-        <div className="flex items-center space-x-1 bg-white px-1 rounded text-gray-900" title="Client Name">
-          <CircleUserRound size={18} className="mr-2" />
-          {info.name ?? 'Loading..'}
-        </div>
+          <h2 className="text-sx font-semibold ">Ask For Scope </h2>
+          <div className="flex items-center space-x-1 bg-white px-1 rounded text-gray-900" title="Client Name">
+            <CircleUserRound size={18} className="mr-2" />
+            {info.name ?? 'Loading..'}
+          </div>
         </div>
         <div className="flex items-center">
           {refIds && refIds.length > 0 && (
@@ -687,16 +693,14 @@ const AskForScopeAdmin = ({
           )}
           {isFeasabilityCompleted && isFeasabilityCompleted != null && (
             <p
-              className={`cursor-help text-xs flex items-center mx-2 px-2 py-1 rounded ${
-                isFeasabilityCompleted.feasability_status === "Pending"
+              className={`cursor-help text-xs flex items-center mx-2 px-2 py-1 rounded ${isFeasabilityCompleted.feasability_status === "Pending"
                   ? "bg-orange-100 text-orange-500"
                   : "bg-green-100 text-green-600"
-              }`}
-              title={`${
-                isFeasabilityCompleted.feasability_status === "Pending"
+                }`}
+              title={`${isFeasabilityCompleted.feasability_status === "Pending"
                   ? "Feasibility is Pending for his RefId"
                   : "Feasibility has been completed for this RefId"
-              }`}
+                }`}
             >
               Feasibility{" "}
               {isFeasabilityCompleted.feasability_status == "Pending" ? (
@@ -825,23 +829,23 @@ const AskForScopeAdmin = ({
                               quote.quote_status == 0
                                 ? "text-red-600" // Pending - Red
                                 : quote.quote_status == 1
-                                ? "text-green-600" // Submitted - Green
-                                : quote.quote_status == 2
-                                ? "text-yellow-600" // Discount Requested - Yellow
-                                : "text-gray-600" // Default - Gray for Unknown
+                                  ? "text-green-600" // Submitted - Green
+                                  : quote.quote_status == 2
+                                    ? "text-yellow-600" // Discount Requested - Yellow
+                                    : "text-gray-600" // Default - Gray for Unknown
                             }
                           >
                             {quote.quote_status == 0 &&
-                            quote.submittedtoadmin == "false"
+                              quote.submittedtoadmin == "false"
                               ? "Pending at User"
                               : quote.quote_status == 0 &&
                                 quote.submittedtoadmin == "true"
-                              ? "Pending at Admin"
-                              : quote.quote_status == 1
-                              ? "Submitted"
-                              : quote.quote_status == 2
-                              ? "Discount Requested"
-                              : "Unknown"}
+                                ? "Pending at Admin"
+                                : quote.quote_status == 1
+                                  ? "Submitted"
+                                  : quote.quote_status == 2
+                                    ? "Discount Requested"
+                                    : "Unknown"}
                           </span>
                           {quote.isfeasability == 1 &&
                             quote.feasability_status == "Completed" && (
@@ -932,1000 +936,1009 @@ const AskForScopeAdmin = ({
                               <div className="">
                                 <button
                                   onClick={() => handleTabButtonClick("scope")}
-                                  className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${
-                                    scopeTabVisible
+                                  className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${scopeTabVisible
                                       ? "btn-info focus-outline-none"
                                       : "btn-light"
-                                  } btn btn-sm  focus:outline-none`}
+                                    } btn btn-sm  focus:outline-none`}
                                 >
-                                  Scope Details {scopeTabVisible ? <Eye size={20} className="badge badge-dark ml-2"/> : <EyeClosed size={20} className="badge badge-dark ml-2"/>} 
+                                  Scope Details {scopeTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
                                 </button>
                                 <button
                                   onClick={() => handleTabButtonClick("chat")}
-                                  className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${
-                                    chatTabVisible
+                                  className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${chatTabVisible
                                       ? "btn-info focus-outline-none"
                                       : "btn-light"
-                                  } btn btn-sm`}
+                                    } btn btn-sm`}
                                 >
-                                  Communication Hub {chatTabVisible ? <Eye size={20} className="badge badge-dark ml-2"/>  : <EyeClosed size={20} className="badge badge-dark ml-2"/> }
+                                  Communication Hub {chatTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
                                 </button>
                                 <button
                                   disabled={quote.isfeasability == 0}
                                   onClick={() => handleTabButtonClick("feas")}
-                                  className={`px-2 py-1 mr-1 text-sm inline-flex items-center ${
-                                    feasTabVisible
+                                  className={`px-2 py-1 mr-1 text-sm inline-flex items-center ${feasTabVisible
                                       ? "btn-info focus-outline-none"
                                       : "btn-light"
-                                  } btn btn-sm`}
+                                    } btn btn-sm`}
                                 >
-                                  Feasibility  {feasTabVisible ? <Eye size={20} className="badge badge-dark ml-2"/>  : <EyeClosed size={20} className="badge badge-dark ml-2"/> }
+                                  Feasibility  {feasTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
                                 </button>
                               </div>
                             </div>
                             <div className="mx-3 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
                               {scopeTabVisible && (
-                              <div className={`${fullScreenTab == "scope" ? "custom-modal" : colClass}`}>
-                              <div className={`${fullScreenTab == "scope" ? "custom-modal-content" : ""}`}>
-                                <div className={`  pl-0`}>
-                                  <div className="bg-white p-3">
-                                    <div className=" border-bottom pb-2 mb-3 flex items-center justify-between">
-                                      <h3 className="f-18">Scope Details</h3>
-                                      <div>
-                                        <button className=""
-                                        >
-                                          {fullScreenTab == "scope" ? (<Minimize2 size={25} onClick={()=>{handlefullScreenBtnClick(null)}} className="btn btn-sm btn-light flex items-center px-1"/> ) : (<Expand size={25} onClick={()=>{handlefullScreenBtnClick("scope")}} className="btn btn-sm btn-light flex items-center px-1"/>)}
-                                        </button>
-                                      </div>
-                                    </div>
-                                    <div className="overscroll-modal">
-                                      <div className="space-y-4 text-sm px-0">
-                                        <div className="row">
-                                          {/* Ref No Section */}
-
-                                          <div className="col-md-12 mb-3">
-                                            <p className="">
-                                              <div>
-                                                <strong className="mr-2">
-                                                  Ref No
-                                                </strong>
-                                              </div>
-                                              {quote.assign_id}
-                                              {quote.ptp === "Yes" && (
-                                                <span
-                                                  className="ptp-badge ml-2"
-                                                  style={{
-                                                    backgroundColor: "#2B9758FF", // Green for PTP
-                                                    color: "#fff",
-                                                    fontSize: "14px", // Adjusted for better visibility
-                                                    fontWeight: "bold",
-                                                  }}
-                                                >
-                                                  PTP
-                                                </span>
-                                              )}
-                                              {quote.edited === 1 && (
-                                                <span
-                                                  className="edited-badge ml-2"
-                                                  style={{
-                                                    fontSize: "11px",
-                                                    padding: "2px 8px",
-                                                    backgroundColor: "#f0f0f0",
-                                                    color: "#666",
-                                                    borderRadius: "16px",
-                                                  }}
-                                                >
-                                                  Edited
-                                                </span>
-                                              )}
-                                            </p>
+                                <div className={`${fullScreenTab == "scope" ? "custom-modal" : colClass}`}>
+                                  <div className={`${fullScreenTab == "scope" ? "custom-modal-content" : ""}`}>
+                                    <div className={`  pl-0`}>
+                                      <div className="bg-white p-3">
+                                        <div className=" border-bottom pb-2 mb-3 flex items-center justify-between">
+                                          <h3 className="f-18">Scope Details</h3>
+                                          <div>
+                                            <button className=""
+                                            >
+                                              {fullScreenTab == "scope" ? (<Minimize2 size={25} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center px-1" />) : (<Expand size={25} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center px-1" />)}
+                                            </button>
                                           </div>
+                                        </div>
+                                        <div className="overscroll-modal">
+                                          <div className="space-y-4 text-sm px-0">
+                                            <div className="row">
+                                              {/* Ref No Section */}
 
-                                          {/* Tags Section */}
-                                          {quote.tag_names && (
-                                            <div className="col-md-12 mb-3">
-                                              <p>
-                                                <div>
-                                                  <strong className="mb-2 d-block">
-                                                    Tags
-                                                  </strong>
-                                                </div>
-                                                {quote.tag_names
-                                                  .split(",")
-                                                  .map((tag, index) => (
-                                                    <div
-                                                      key={index}
-                                                      className="tag-badge mr-1 d-inline"
+                                              <div className="col-md-12 mb-3">
+                                                <p className="">
+                                                  <div>
+                                                    <strong className="mr-2">
+                                                      Ref No
+                                                    </strong>
+                                                  </div>
+                                                  {quote.assign_id}
+                                                  {quote.ptp === "Yes" && (
+                                                    <span
+                                                      className="ptp-badge ml-2"
                                                       style={{
-                                                        padding: "5px 10px",
-                                                        borderRadius: "20px",
-                                                        backgroundColor:
-                                                          "#007bff",
+                                                        backgroundColor: "#2B9758FF", // Green for PTP
                                                         color: "#fff",
-                                                        fontSize: "12px",
+                                                        fontSize: "14px", // Adjusted for better visibility
+                                                        fontWeight: "bold",
                                                       }}
                                                     >
-                                                      #{tag.trim()}
-                                                    </div>
-                                                  ))}
-                                              </p>
-                                            </div>
-                                          )}
-
-                                          {/* Service Required & Plan Section */}
-                                          {quote.service_name && quote.plan && (
-                                            <>
-                                              <div className="col-md-12 mb-3">
-                                                <p>
-                                                  <div>
-                                                    <strong>
-                                                      Service Required
-                                                    </strong>{" "}
-                                                  </div>
-                                                  {quote.service_name}
-                                                </p>
-                                              </div>
-
-                                              {quote.old_plan && (
-                                                <div className="col-md-12 mb-3">
-                                                  <p className="text-muted">
-                                                    <div>
-                                                      <strong>Old Plan</strong>{" "}
-                                                    </div>
-                                                    {quote.old_plan}
-                                                  </p>
-                                                </div>
-                                              )}
-
-                                              <div className="col-md-12 mb-3">
-                                                <p>
-                                                  <div>
-                                                    <strong>Plan</strong>{" "}
-                                                  </div>
-                                                  {quote.plan}
-                                                </p>
-                                              </div>
-                                            </>
-                                          )}
-
-                                          {/* Subject Area Section */}
-                                          <div className="col-md-12 mb-3">
-                                            {quote.subject_area && (
-                                              <>
-                                                <p>
-                                                  <div>
-                                                    <strong>Subject Area</strong>{" "}
-                                                  </div>
-                                                  {quote.subject_area}
-                                                </p>
-                                                {quote.subject_area ===
-                                                  "Other" && (
-                                                  <p className="text-muted">
-                                                    <strong>
-                                                      Other Subject Area:
-                                                    </strong>{" "}
-                                                    {quote.other_subject_area}
-                                                  </p>
-                                                )}
-                                              </>
-                                            )}
-                                          </div>
-                                        </div>
-                                        <div className="row">
-                                          <div className="col-md-12">
-                                          <h3 className="f-18 mb-2">
-                                            Plan Description
-                                          </h3>
-                                          </div>
-                                          {quote.plan_comments && typeof quote.plan_comments === "string" && quote.plan && (
-                                            Object.entries(JSON.parse(quote.plan_comments))
-                                              .filter(([plan]) => quote.plan.split(',').includes(plan)) // Filter based on the updated plan list
-                                              .map(([plan, comment], index) => (
-                                                <div key={index} className={planColClass}>
-                                                  <div className="border p-3 mb-2">
-                                                    <p className="flex items-center space-x-2 mb-1">
-                                                      <strong>{plan}</strong> <button
-                                                      className="peneditbtn p-1  rounded-full"
-                                                      onClick={() => handleEditClick(quote, plan, comment)}
-                                                    >
-                                                      <Pen size={12} />
-                                                    </button>
-                                                    </p>
-                                                    <div dangerouslySetInnerHTML={{ __html: comment }} />
-                                                    
-                                                    {/* Word Count Section */}
-                                                    {quote.word_counts && typeof quote.word_counts === "string" && (
-                                                      Object.entries(JSON.parse(quote.word_counts))
-                                                        .filter(([planWordCount]) => quote.plan.split(',').includes(planWordCount)) // Filter word count based on the plan list
-                                                        .map(([planWordCount, wordcount], wcIndex) => (
-                                                          plan === planWordCount && (
-                                                            <div key={wcIndex} className=" mt-2">
-                                                              <p
-                                                                style={{
-                                                                  fontWeight: "bold",
-                                                                  color: "#007bff",
-                                                                  backgroundColor: "#f0f8ff", // Background color for word count text
-                                                                  padding: "5px", // Padding around the word count text
-                                                                  borderRadius: "5px", // Rounded corners for the background
-                                                                  border: "1px solid #40BD5DFF",
-                                                                }}
-                                                              >
-                                                                <p className="mb-1 text-black">
-                                                                  <div>Word Counts:</div>
-                                                                </p>
-                                                                {planWordCount}:{" "}
-                                                                <span style={{ color: "#28a745" }}>
-                                                                  {wordcount} words
-                                                                </span>
-                                                                <br />
-                                                                <span style={{ color: "gray" }}>
-                                                                {capitalizeFirstLetter(numberToWords(wordcount))} words
-                                                                </span>
-                                                              </p>
-                                                            </div>
-                                                          )
-                                                        ))
-                                                    )}
-                                                  </div>
-                                                </div>
-                                              ))
-                                          )}
-                                        </div>
-
-                                        <div className="mb-0 row px-2 pb-3">
-                                          {quote.comments &&
-                                            quote.comments != "" &&
-                                            quote.comments != null && (
-                                              <p>
-                                                <strong
-                                                  style={{
-                                                    textDecoration: "underline",
-                                                  }}
-                                                >
-                                                  Description
-                                                </strong>{" "}
-                                                <span
-                                                  dangerouslySetInnerHTML={{
-                                                    __html: quote.comments,
-                                                  }}
-                                                />
-                                              </p>
-                                            )}
-                                          {quote.final_comments != null && (
-                                            <div>
-                                              <p>
-                                                <strong>Final Comments:</strong>{" "}
-                                                {quote.final_comments}
-                                              </p>
-                                            </div>
-                                          )}
-                                          {quote.relevant_file &&
-                                            quote.relevant_file.length > 0 && (
-                                              <div>
-                                                <strong>Relevant Files:</strong>
-                                                <div className="space-y-2 mt-2">
-                                                  {quote.relevant_file.map(
-                                                    (file, fileIndex) => (
-                                                      <div key={fileIndex}>
-                                                        <a
-                                                          href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
-                                                          download
-                                                          target="_blank"
-                                                          className="text-blue-500"
-                                                        >
-                                                          {file.filename}
-                                                        </a>
-                                                      </div>
-                                                    )
+                                                      PTP
+                                                    </span>
                                                   )}
-                                                </div>
+                                                  {quote.edited === 1 && (
+                                                    <span
+                                                      className="edited-badge ml-2"
+                                                      style={{
+                                                        fontSize: "11px",
+                                                        padding: "2px 8px",
+                                                        backgroundColor: "#f0f0f0",
+                                                        color: "#666",
+                                                        borderRadius: "16px",
+                                                      }}
+                                                    >
+                                                      Edited
+                                                    </span>
+                                                  )}
+                                                </p>
                                               </div>
-                                            )}
 
-                                          {quote.ptp != null && (
-                                            <>
-                                              <p>
-                                                <strong>PTP:</strong> {quote.ptp}
-                                              </p>
-                                              {quote.ptp_amount &&
-                                                quote.ptp_amount != 0 && (
+                                              {/* Tags Section */}
+                                              {quote.tag_names && (
+                                                <div className="col-md-12 mb-3">
                                                   <p>
-                                                    <strong>PTP Amount:</strong>{" "}
-                                                    {quote.ptp_amount}
+                                                    <div>
+                                                      <strong className="mb-2 d-block">
+                                                        Tags
+                                                      </strong>
+                                                    </div>
+                                                    {quote.tag_names
+                                                      .split(",")
+                                                      .map((tag, index) => (
+                                                        <div
+                                                          key={index}
+                                                          className="tag-badge mr-1 d-inline"
+                                                          style={{
+                                                            padding: "5px 10px",
+                                                            borderRadius: "20px",
+                                                            backgroundColor:
+                                                              "#007bff",
+                                                            color: "#fff",
+                                                            fontSize: "12px",
+                                                          }}
+                                                        >
+                                                          #{tag.trim()}
+                                                        </div>
+                                                      ))}
                                                   </p>
-                                                )}
-                                              {quote.ptp == "Yes" && (
-                                                <p>
-                                                  <strong>PTP Comments:</strong>{" "}
-                                                  {quote.ptp_comments}
-                                                </p>
+                                                </div>
                                               )}
-                                              {quote.ptp_file != null && (
-                                                <p>
-                                                  <strong>
-                                                    Attached File :{" "}
-                                                  </strong>
-                                                  <a
-                                                    className="text-blue-500 font-semibold"
-                                                    href={`https://apacvault.com/public/${quote.ptp_file}`}
-                                                    download={quote.ptpfile}
-                                                    target="_blank"
-                                                  >
-                                                    {quote.ptp_file}
-                                                  </a>
-                                                </p>
-                                              )}
-                                            </>
-                                          )}
-                                          {quote.demodone != 0 && (
-                                            <>
-                                              <p className="flex items-center ">
-                                                {" "}
-                                                <p className="">
-                                                  {" "}
-                                                  <strong>Demo Id : </strong>{" "}
-                                                  {quote.demo_id}
-                                                </p>{" "}
-                                                <span className="badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12">
-                                                  Demo Completed{" "}
-                                                  <CheckCircle2
-                                                    size={12}
-                                                    className="ml-1"
-                                                  />{" "}
-                                                </span>
-                                              </p>
-                                            </>
-                                          )}
-                                          {quote.quote_status != 0 &&
-                                            quote.quote_price &&
-                                            quote.plan && (
-                                              <>
-                                                {quote.old_plan && (
-                                                  <p className="text-gray-600">
-                                                    <strong>
-                                                      Quote Price For Old Plan:
-                                                    </strong>{" "}
-                                                    {(() => {
-                                                      const prices =
-                                                        quote.quote_price.split(
-                                                          ","
-                                                        ); // Split quote_price into an array
-                                                      const plans =
-                                                        quote.old_plan.split(","); // Split plan into an array
-                                                      return plans.map(
-                                                        (plan, index) => (
-                                                          <span
-                                                            key={index}
-                                                            className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500"
-                                                          >
-                                                            <strong>
-                                                              {plan}{" "}
-                                                            </strong>
-                                                            :{" "}
-                                                            {quote.currency ==
-                                                            "Other"
-                                                              ? quote.other_currency
-                                                              : quote.currency}{" "}
-                                                            {prices[index]
-                                                              ? prices[index]
-                                                              : 0}
-                                                            {index <
-                                                              plans.length - 1 &&
-                                                              ", "}
-                                                          </span>
-                                                        )
-                                                      );
-                                                    })()}
-                                                  </p>
-                                                )}
-                                                {quote.quote_status != 2 && (
-                                                  <p>
-                                                    <strong>Quote Price:</strong>{" "}
-                                                    {(() => {
-                                                      const prices =
-                                                        quote.quote_price.split(
-                                                          ","
-                                                        ); // Split quote_price into an array
-                                                      const plans =
-                                                        quote.plan.split(","); // Split plan into an array
-                                                      return plans.map(
-                                                        (plan, index) => (
-                                                          <span
-                                                            key={index}
-                                                            className={`${
-                                                              quote.discount_price !=
-                                                              null
-                                                                ? "line-through bg-red-200 p-1 rounded mr-1 f-12"
-                                                                : ""
-                                                            }`}
-                                                          >
-                                                            <strong>
-                                                              {plan}{" "}
-                                                            </strong>
-                                                            :{" "}
-                                                            {quote.currency ==
-                                                            "Other"
-                                                              ? quote.other_currency
-                                                              : quote.currency}{" "}
-                                                            {prices[index]
-                                                              ? prices[index]
-                                                              : 0}
-                                                            {index <
-                                                              plans.length - 1 &&
-                                                              ", "}
-                                                          </span>
-                                                        )
-                                                      );
-                                                    })()}
-                                                  </p>
-                                                )}
 
-                                                {quote.discount_price && (
-                                                  <p>
-                                                    <strong>
-                                                      Discounted Price:
-                                                    </strong>{" "}
-                                                    {(() => {
-                                                      const prices =
-                                                        quote.discount_price.split(
-                                                          ","
-                                                        ); // Split quote_price into an array
-                                                      const plans =
-                                                        quote.plan.split(","); // Split plan into an array
-                                                      return plans.map(
-                                                        (plan, index) => (
-                                                          <span
-                                                            key={index}
-                                                            className="silver px-1 py-1 f-12 rounded mr-1"
-                                                          >
-                                                            <strong>
-                                                              {plan}{" "}
-                                                            </strong>
-                                                            :{" "}
-                                                            {quote.currency ==
-                                                            "Other"
-                                                              ? quote.other_currency
-                                                              : quote.currency}{" "}
-                                                            {prices[index] ?? 0}
-                                                            {index <
-                                                              plans.length - 1 &&
-                                                              ", "}
-                                                          </span>
-                                                        )
-                                                      );
-                                                    })()}
-                                                  </p>
+                                              {/* Service Required & Plan Section */}
+                                              {quote.service_name && quote.plan && (
+                                                <>
+                                                  <div className="col-md-12 mb-3">
+                                                    <p>
+                                                      <div>
+                                                        <strong>
+                                                          Service Required
+                                                        </strong>{" "}
+                                                      </div>
+                                                      {quote.service_name}
+                                                    </p>
+                                                  </div>
+
+                                                  {quote.old_plan && (
+                                                    <div className="col-md-12 mb-3">
+                                                      <p className="text-muted">
+                                                        <div>
+                                                          <strong>Old Plan</strong>{" "}
+                                                        </div>
+                                                        {quote.old_plan}
+                                                      </p>
+                                                    </div>
+                                                  )}
+
+                                                  <div className="col-md-12 mb-3">
+                                                    <p>
+                                                      <div>
+                                                        <strong>Plan</strong>{" "}
+                                                      </div>
+                                                      {quote.plan}
+                                                    </p>
+                                                  </div>
+                                                </>
+                                              )}
+
+                                              {/* Subject Area Section */}
+                                              <div className="col-md-12 mb-3">
+                                                {quote.subject_area && (
+                                                  <>
+                                                    <p>
+                                                      <div>
+                                                        <strong>Subject Area</strong>{" "}
+                                                      </div>
+                                                      {quote.subject_area}
+                                                    </p>
+                                                    {quote.subject_area ===
+                                                      "Other" && (
+                                                        <p className="text-muted">
+                                                          <strong>
+                                                            Other Subject Area:
+                                                          </strong>{" "}
+                                                          {quote.other_subject_area}
+                                                        </p>
+                                                      )}
+                                                  </>
                                                 )}
-                                                {quote.final_price && (
-                                                  <p>
-                                                    <strong>Final Price:</strong>{" "}
-                                                    {(() => {
-                                                      const prices =
-                                                        quote.final_price.split(
-                                                          ","
-                                                        ); // Split quote_price into an array
-                                                      const plans =
-                                                        quote.plan.split(","); // Split plan into an array
-                                                      return plans.map(
-                                                        (plan, index) => (
-                                                          <span
-                                                            key={index}
-                                                            className=" px-1 py-2 rounded mr-1 gold"
+                                              </div>
+                                            </div>
+                                            <div className="row">
+                                              <div className="col-md-12">
+                                                <h3 className="f-18 mb-2">
+                                                  Plan Description
+                                                </h3>
+                                              </div>
+                                              {quote.plan_comments && typeof quote.plan_comments === "string" && quote.plan && (
+                                                Object.entries(JSON.parse(quote.plan_comments))
+                                                  .filter(([plan]) => quote.plan.split(',').includes(plan)) // Filter based on the updated plan list
+                                                  .map(([plan, comment], index) => (
+                                                    <div key={index} className={planColClass}>
+                                                      <div className="border p-3 mb-2">
+                                                        <p className="flex items-center space-x-2 mb-1">
+                                                          <strong>{plan}</strong> <button
+                                                            className="peneditbtn p-1  rounded-full"
+                                                            onClick={() => handleEditClick(quote, plan, comment)}
                                                           >
-                                                            <strong>
-                                                              {plan}{" "}
-                                                            </strong>
-                                                            :{" "}
-                                                            {quote.currency ==
-                                                            "Other"
-                                                              ? quote.other_currency
-                                                              : quote.currency}{" "}
-                                                            {prices[index]}
-                                                            {index <
-                                                              plans.length - 1 &&
-                                                              ", "}
-                                                          </span>
-                                                        )
-                                                      );
-                                                    })()}
-                                                  </p>
-                                                )}
-                                                <p className="flex items-center">
-                                                  Edit Quote Price
-                                                  {quote.quote_status == 1 &&
-                                                    loopUserObject.id !=
-                                                      "206" && (
-                                                      <button
-                                                        onClick={() => {
-                                                          toggleEditingForm(
-                                                            quote
-                                                          );
-                                                        }}
-                                                        className="flex items-center rounded-full border-2 border-blue-500 mx-2"
-                                                      >
-                                                        <Pencil className="p-1" />
-                                                      </button>
-                                                    )}
-                                                </p>
-                                                {quote.user_comments && (
+                                                            <Pen size={12} />
+                                                          </button>
+                                                        </p>
+                                                        <div dangerouslySetInnerHTML={{ __html: comment }} />
+
+                                                        {/* Word Count Section */}
+                                                        {quote.word_counts && typeof quote.word_counts === "string" && (
+                                                          Object.entries(JSON.parse(quote.word_counts))
+                                                            .filter(([planWordCount]) => quote.plan.split(',').includes(planWordCount)) // Filter word count based on the plan list
+                                                            .map(([planWordCount, wordcount], wcIndex) => (
+                                                              plan === planWordCount && (
+                                                                <div key={wcIndex} className=" mt-2">
+                                                                  <p
+                                                                    style={{
+                                                                      fontWeight: "bold",
+                                                                      color: "#007bff",
+                                                                      backgroundColor: "#f0f8ff", // Background color for word count text
+                                                                      padding: "5px", // Padding around the word count text
+                                                                      borderRadius: "5px", // Rounded corners for the background
+                                                                      border: "1px solid #40BD5DFF",
+                                                                    }}
+                                                                  >
+                                                                    <p className="mb-1 text-black">
+                                                                      <div>Word Counts:</div>
+                                                                    </p>
+                                                                    {planWordCount}:{" "}
+                                                                    <span style={{ color: "#28a745" }}>
+                                                                      {wordcount} words
+                                                                    </span>
+                                                                    <br />
+                                                                    <span style={{ color: "gray" }}>
+                                                                      {capitalizeFirstLetter(numberToWords(wordcount))} words
+                                                                    </span>
+                                                                  </p>
+                                                                </div>
+                                                              )
+                                                            ))
+                                                        )}
+                                                      </div>
+                                                    </div>
+                                                  ))
+                                              )}
+                                            </div>
+
+                                            <div className="mb-0 row px-2 pb-3">
+                                              {quote.comments &&
+                                                quote.comments != "" &&
+                                                quote.comments != null && (
                                                   <p>
                                                     <strong
                                                       style={{
-                                                        textDecoration:
-                                                          "underline",
+                                                        textDecoration: "underline",
                                                       }}
                                                     >
-                                                      Admin Comments:
+                                                      Description
                                                     </strong>{" "}
-                                                    {quote.user_comments}
+                                                    <span
+                                                      dangerouslySetInnerHTML={{
+                                                        __html: quote.comments,
+                                                      }}
+                                                    />
                                                   </p>
                                                 )}
-                                              </>
-                                            )}
-                                          {assignQuoteInfo &&
-                                            assignQuoteInfo != false && (
-                                              <p>
-                                                <strong>Assigned To:</strong>{" "}
-                                                {assignQuoteInfo.name}
-                                              </p>
-                                            )}
-
-                                          {assignQuoteInfo &&
-                                            assignQuoteInfo != false && (
-                                              <>
-                                                {assignQuoteInfo.status === 0 ? (
-                                                  <>
-                                                    <p>
-                                                      <strong>
-                                                        Assigned To:
-                                                      </strong>{" "}
-                                                      {assignQuoteInfo.name}
-                                                    </p>
-                                                    <p>
-                                                      <strong>
-                                                        Assign Date:
-                                                      </strong>{" "}
-                                                      {
-                                                        assignQuoteInfo.assigned_date
-                                                      }
-                                                    </p>
-                                                    <p>
-                                                      <strong>
-                                                        Admin Comments:
-                                                      </strong>{" "}
-                                                      {
-                                                        assignQuoteInfo.admin_comments
-                                                      }
-                                                    </p>
-                                                  </>
-                                                ) : (
-                                                  <>
-                                                    <p>
-                                                      Submitted by{" "}
-                                                      {assignQuoteInfo.name}
-                                                    </p>
-                                                    <p>
-                                                      <strong>Price:</strong>{" "}
-                                                      {assignQuoteInfo.currency}{" "}
-                                                      {
-                                                        assignQuoteInfo.quote_price
-                                                      }
-                                                    </p>
-                                                    <p>
-                                                      <strong>
-                                                        Submitted Date:
-                                                      </strong>{" "}
-                                                      {new Date(
-                                                        assignQuoteInfo.user_submitted_date *
-                                                          1000
-                                                      ).toLocaleDateString(
-                                                        "en-GB"
+                                              {quote.final_comments != null && (
+                                                <div>
+                                                  <p>
+                                                    <strong>Final Comments:</strong>{" "}
+                                                    {quote.final_comments}
+                                                  </p>
+                                                </div>
+                                              )}
+                                              {quote.relevant_file &&
+                                                quote.relevant_file.length > 0 && (
+                                                  <div>
+                                                    <strong>Relevant Files:</strong>
+                                                    <div className="space-y-2 mt-2">
+                                                      {quote.relevant_file.map(
+                                                        (file, fileIndex) => (
+                                                          <div key={fileIndex}>
+                                                            <a
+                                                              href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
+                                                              download
+                                                              target="_blank"
+                                                              className="text-blue-500"
+                                                            >
+                                                              {file.filename}
+                                                            </a>
+                                                          </div>
+                                                        )
                                                       )}
-                                                      {new Date(
-                                                        assignQuoteInfo.user_submitted_date *
-                                                          1000
-                                                      ).toLocaleTimeString(
-                                                        "en-GB",
-                                                        {
-                                                          hour: "2-digit",
-                                                          minute: "2-digit",
-                                                          hour12: true,
-                                                        }
-                                                      )}
-                                                    </p>
-                                                    <p>
-                                                      <strong>
-                                                        Assigned Comments:
-                                                      </strong>{" "}
-                                                      {
-                                                        assignQuoteInfo.admin_comments
-                                                      }
-                                                    </p>
-                                                    <p>
-                                                      <strong>Comments:</strong>{" "}
-                                                      {assignQuoteInfo.user_comments !=
-                                                      ""
-                                                        ? assignQuoteInfo.user_comments
-                                                        : assignQuoteInfo.admin_comments}
-                                                    </p>
-                                                  </>
-                                                )}
-                                                {assignQuoteInfo.status == 1 && (
-                                                  <form
-                                                    name="edit_price_form"
-                                                    id="edit_price_form"
-                                                    className="form-horizontal"
-                                                  >
-                                                    <div className="box-body">
-                                                      <input
-                                                        type="hidden"
-                                                        name="task_id"
-                                                        id="task_id"
-                                                        value={assignQuoteInfo.id}
-                                                      />
-                                                      <input
-                                                        type="hidden"
-                                                        name="quoteid"
-                                                        id="quoteid"
-                                                        value={
-                                                          assignQuoteInfo.quote_id
-                                                        }
-                                                      />
-                                                      <div className="form-group">
-                                                        <label className="col-sm-12 control-label">
-                                                          Quote Price (INR)
-                                                        </label>
-                                                        <div className="col-sm-12">
-                                                          <input
-                                                            type="text"
-                                                            className="form-control"
-                                                            id="quote_price"
-                                                            name="quote_price"
-                                                            value={
-                                                              quotePrice ||
-                                                              assignQuoteInfo?.quote_price ||
-                                                              ""
-                                                            }
-                                                            placeholder="Quote Price"
-                                                            onChange={(e) =>
-                                                              setQuotePrice(
-                                                                e.target.value
-                                                              )
-                                                            }
-                                                          />
-                                                        </div>
-                                                      </div>
-                                                      <div className="form-group">
-                                                        <label className="col-sm-3 control-label">
-                                                          Comments
-                                                        </label>
-                                                        <div className="col-sm-12">
-                                                          <textarea
-                                                            className="form-control"
-                                                            id="user_comments"
-                                                            name="user_comments"
-                                                            value={
-                                                              userComments ||
-                                                              assignQuoteInfo?.user_comments ||
-                                                              assignQuoteInfo?.admin_comments ||
-                                                              ""
-                                                            }
-                                                            onChange={(e) =>
-                                                              setUserComments(
-                                                                e.target.value
-                                                              )
-                                                            }
-                                                          />
-                                                        </div>
-                                                      </div>
                                                     </div>
+                                                  </div>
+                                                )}
 
-                                                    <div className="modal-footer tabb">
-                                                      <span id="load_btn">
-                                                        <button
-                                                          type="button"
-                                                          className="btn"
-                                                          onClick={() =>
-                                                            updatePriceQuote()
-                                                          }
-                                                          disabled={priceLoading}
+                                              {quote.ptp != null && (
+                                                <>
+                                                  <p>
+                                                    <strong>PTP:</strong> {quote.ptp}
+                                                  </p>
+                                                  {quote.ptp_amount &&
+                                                    quote.ptp_amount != 0 && (
+                                                      <p>
+                                                        <strong>PTP Amount:</strong>{" "}
+                                                        {quote.ptp_amount}
+                                                      </p>
+                                                    )}
+                                                  {quote.ptp == "Yes" && (
+                                                    <p>
+                                                      <strong>PTP Comments:</strong>{" "}
+                                                      {quote.ptp_comments}
+                                                    </p>
+                                                  )}
+                                                  {quote.ptp_file != null && (
+                                                    <p>
+                                                      <strong>
+                                                        Attached File :{" "}
+                                                      </strong>
+                                                      <a
+                                                        className="text-blue-500 font-semibold"
+                                                        href={`https://apacvault.com/public/${quote.ptp_file}`}
+                                                        download={quote.ptpfile}
+                                                        target="_blank"
+                                                      >
+                                                        {quote.ptp_file}
+                                                      </a>
+                                                    </p>
+                                                  )}
+                                                </>
+                                              )}
+                                              {quote.demodone != 0 && (
+                                                <>
+                                                  <p className="flex items-center ">
+                                                    {" "}
+                                                    <p className="">
+                                                      {" "}
+                                                      <strong>Demo Id : </strong>{" "}
+                                                      {quote.demo_id}
+                                                    </p>{" "}
+                                                    <span className="badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12">
+                                                      Demo Completed{" "}
+                                                      <CheckCircle2
+                                                        size={12}
+                                                        className="ml-1"
+                                                      />{" "}
+                                                    </span>
+                                                  </p>
+                                                </>
+                                              )}
+                                              {quote.quote_status != 0 &&
+                                                quote.quote_price &&
+                                                quote.plan && (
+                                                  <>
+                                                    {quote.old_plan && (
+                                                      <p className="text-gray-600 my-1">
+                                                        <strong>
+                                                          Quote Price For Old Plan:
+                                                        </strong>{" "}
+                                                        {(() => {
+                                                          const prices =
+                                                            quote.quote_price.split(
+                                                              ","
+                                                            ); // Split quote_price into an array
+                                                          const plans =
+                                                            quote.old_plan.split(","); // Split plan into an array
+                                                          return plans.map(
+                                                            (plan, index) => (
+                                                              <span
+                                                                key={index}
+                                                                className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500"
+                                                              >
+                                                                <strong>
+                                                                  {plan}{" "}
+                                                                </strong>
+                                                                :{" "}
+                                                                {quote.currency ==
+                                                                  "Other"
+                                                                  ? quote.other_currency
+                                                                  : quote.currency}{" "}
+                                                                {prices[index]
+                                                                  ? prices[index]
+                                                                  : 0}
+                                                                {index <
+                                                                  plans.length - 1 &&
+                                                                  ", "}
+                                                                  {quote.mp_price === plan && " (MP Price)"}
+                                                              </span>
+                                                            )
+                                                          );
+                                                        })()}
+                                                      </p>
+                                                    )}
+                                                    {quote.quote_status != 2 && (
+                                                      <p className="my-1">
+                                                        <strong>Quote Price:</strong>{" "}
+                                                        {(() => {
+                                                          const prices =
+                                                            quote.quote_price.split(
+                                                              ","
+                                                            ); // Split quote_price into an array
+                                                          const plans =
+                                                            quote.plan.split(","); // Split plan into an array
+                                                          return plans.map(
+                                                            (plan, index) => (
+                                                              <span
+                                                                key={index}
+                                                                className={`${quote.discount_price !=
+                                                                    null
+                                                                    ? "line-through bg-red-200 p-1 rounded mr-1 f-12"
+                                                                    : ""
+                                                                  }`}
+                                                              >
+                                                                <strong>
+                                                                  {plan}{" "}
+                                                                </strong>
+                                                                :{" "}
+                                                                {quote.currency ==
+                                                                  "Other"
+                                                                  ? quote.other_currency
+                                                                  : quote.currency}{" "}
+                                                                {prices[index]
+                                                                  ? prices[index]
+                                                                  : 0}
+                                                                {index <
+                                                                  plans.length - 1 &&
+                                                                  ", "}
+                                                                  {quote.mp_price === plan && " (MP Price)"}
+                                                              </span>
+                                                            )
+                                                          );
+                                                        })()}
+                                                      </p>
+                                                    )}
+
+                                                    {quote.discount_price && (
+                                                      <p className="my-2">
+                                                        <strong>
+                                                          Discounted Price:
+                                                        </strong>{" "}
+                                                        {(() => {
+                                                          const prices =
+                                                            quote.discount_price.split(
+                                                              ","
+                                                            ); // Split quote_price into an array
+                                                          const plans =
+                                                            quote.plan.split(","); // Split plan into an array
+                                                          return plans.map(
+                                                            (plan, index) => (
+                                                              <span
+                                                                key={index}
+                                                                className="silver px-1 py-1 f-12 rounded mr-1"
+                                                              >
+                                                                <strong>
+                                                                  {plan}{" "}
+                                                                </strong>
+                                                                :{" "}
+                                                                {quote.currency ==
+                                                                  "Other"
+                                                                  ? quote.other_currency
+                                                                  : quote.currency}{" "}
+                                                                {prices[index] ?? 0}
+                                                                {index <
+                                                                  plans.length - 1 &&
+                                                                  ", "}
+                                                                  {quote.mp_price === plan && " (MP Price)"}
+                                                              </span>
+                                                            )
+                                                          );
+                                                        })()}
+                                                      </p>
+                                                    )}
+                                                    {quote.final_price && (
+                                                      <p>
+                                                        <strong>Final Price:</strong>{" "}
+                                                        {(() => {
+                                                          const prices =
+                                                            quote.final_price.split(
+                                                              ","
+                                                            ); // Split quote_price into an array
+                                                          const plans =
+                                                            quote.plan.split(","); // Split plan into an array
+                                                          return plans.map(
+                                                            (plan, index) => (
+                                                              <span
+                                                                key={index}
+                                                                className=" px-1 py-2 rounded mr-1 gold"
+                                                              >
+                                                                <strong>
+                                                                  {plan}{" "}
+                                                                </strong>
+                                                                :{" "}
+                                                                {quote.currency ==
+                                                                  "Other"
+                                                                  ? quote.other_currency
+                                                                  : quote.currency}{" "}
+                                                                {prices[index]}
+                                                                {index <
+                                                                  plans.length - 1 &&
+                                                                  ", "}
+                                                              </span>
+                                                            )
+                                                          );
+                                                        })()}
+                                                      </p>
+                                                    )}
+                                                    <p className="flex items-center">
+                                                      Edit Quote Price
+                                                      {quote.quote_status == 1 &&
+                                                        loopUserObject.id !=
+                                                        "206" && (
+                                                          <button
+                                                            onClick={() => {
+                                                              toggleEditingForm(
+                                                                quote
+                                                              );
+                                                            }}
+                                                            className="flex items-center rounded-full border-2 border-blue-500 mx-2"
+                                                          >
+                                                            <Pencil className="p-1" />
+                                                          </button>
+                                                        )}
+                                                    </p>
+                                                    {quote.user_comments && (
+                                                      <p>
+                                                        <strong
+                                                          style={{
+                                                            textDecoration:
+                                                              "underline",
+                                                          }}
                                                         >
-                                                          Confirm
-                                                        </button>
-                                                      </span>
-                                                    </div>
-                                                  </form>
+                                                          Admin Comments:
+                                                        </strong>{" "}
+                                                        {quote.user_comments}
+                                                      </p>
+                                                    )}
+                                                  </>
                                                 )}
-                                              </>
-                                            )}
-                                        </div>
+                                              {assignQuoteInfo &&
+                                                assignQuoteInfo != false && (
+                                                  <p>
+                                                    <strong>Assigned To:</strong>{" "}
+                                                    {assignQuoteInfo.name}
+                                                  </p>
+                                                )}
 
-                                        <div className="border-bottom row mb-3 mt-0 mx-1">
-                                          {quote.quote_status != 1 &&
-                                            quote.submittedtoadmin == "true" &&
-                                            loopUserObject.id != "206" && (
-                                              <>
-                                                <div className="nav-tabs-custom tabb pt-2 shadow-0">
-                                                  <ul className="nav nav-tabs pb-3">
-                                                    <li className="badge badge-primary f-14 font-weight-500">
-                                                      Submit Price
-                                                    </li>
-                                                  </ul>
-                                                  <div className="tab-content">
-                                                    <div
-                                                      className="tab-pane active"
-                                                      id="tab_2"
-                                                    >
+                                              {assignQuoteInfo &&
+                                                assignQuoteInfo != false && (
+                                                  <>
+                                                    {assignQuoteInfo.status === 0 ? (
+                                                      <>
+                                                        <p>
+                                                          <strong>
+                                                            Assigned To:
+                                                          </strong>{" "}
+                                                          {assignQuoteInfo.name}
+                                                        </p>
+                                                        <p>
+                                                          <strong>
+                                                            Assign Date:
+                                                          </strong>{" "}
+                                                          {
+                                                            assignQuoteInfo.assigned_date
+                                                          }
+                                                        </p>
+                                                        <p>
+                                                          <strong>
+                                                            Admin Comments:
+                                                          </strong>{" "}
+                                                          {
+                                                            assignQuoteInfo.admin_comments
+                                                          }
+                                                        </p>
+                                                      </>
+                                                    ) : (
+                                                      <>
+                                                        <p>
+                                                          Submitted by{" "}
+                                                          {assignQuoteInfo.name}
+                                                        </p>
+                                                        <p>
+                                                          <strong>Price:</strong>{" "}
+                                                          {assignQuoteInfo.currency}{" "}
+                                                          {
+                                                            assignQuoteInfo.quote_price
+                                                          }
+                                                        </p>
+                                                        <p>
+                                                          <strong>
+                                                            Submitted Date:
+                                                          </strong>{" "}
+                                                          {new Date(
+                                                            assignQuoteInfo.user_submitted_date *
+                                                            1000
+                                                          ).toLocaleDateString(
+                                                            "en-GB"
+                                                          )}
+                                                          {new Date(
+                                                            assignQuoteInfo.user_submitted_date *
+                                                            1000
+                                                          ).toLocaleTimeString(
+                                                            "en-GB",
+                                                            {
+                                                              hour: "2-digit",
+                                                              minute: "2-digit",
+                                                              hour12: true,
+                                                            }
+                                                          )}
+                                                        </p>
+                                                        <p>
+                                                          <strong>
+                                                            Assigned Comments:
+                                                          </strong>{" "}
+                                                          {
+                                                            assignQuoteInfo.admin_comments
+                                                          }
+                                                        </p>
+                                                        <p>
+                                                          <strong>Comments:</strong>{" "}
+                                                          {assignQuoteInfo.user_comments !=
+                                                            ""
+                                                            ? assignQuoteInfo.user_comments
+                                                            : assignQuoteInfo.admin_comments}
+                                                        </p>
+                                                      </>
+                                                    )}
+                                                    {assignQuoteInfo.status == 1 && (
                                                       <form
-                                                        method="post"
-                                                        name="submitQuoteForm"
-                                                        id="submitQuoteForm"
+                                                        name="edit_price_form"
+                                                        id="edit_price_form"
                                                         className="form-horizontal"
                                                       >
-                                                        <input
-                                                          type="hidden"
-                                                          name="ref_id"
-                                                          value={quote.assign_id}
-                                                        />
-                                                        <input
-                                                          type="hidden"
-                                                          name="quote_id"
-                                                          value={quote.quoteid}
-                                                        />
-                                                        <div className="box-body p-0">
-                                                          <div className="row">
-                                                            {[
-                                                              "Basic",
-                                                              "Standard",
-                                                              "Advanced",
-                                                            ].map(
-                                                              (plan, index) => (
-                                                                <div
-                                                                  className="form-group col-12"
-                                                                  key={index}
-                                                                >
-                                                                  <label
-                                                                    htmlFor={`amount_${plan}`}
-                                                                    className="control-label"
-                                                                  >
-                                                                    Amount for{" "}
-                                                                    <strong>
-                                                                      {plan} (
-                                                                      {quote.currency ===
-                                                                      "Other"
-                                                                        ? quote.other_currency
-                                                                        : quote.currency}
-                                                                      )
-                                                                    </strong>
-                                                                  </label>
-                                                                  <div className="">
-                                                                    <input
-                                                                      type="text"
-                                                                      name={`amount_${plan}`}
-                                                                      id={`amount_${plan}`}
-                                                                      className="form-control form-conotrol-sm"
-                                                                      value={
-                                                                        amounts[
-                                                                          plan
-                                                                        ] || ""
-                                                                      } // Default to empty if no amount is set
-                                                                      required={
-                                                                        quote.plan &&
-                                                                        quote.plan
-                                                                          .split(
-                                                                            ","
-                                                                          )
-                                                                          .includes(
-                                                                            plan
-                                                                          )
-                                                                      } // Required only if the plan is included in quote.plan
-                                                                      disabled={
-                                                                        !quote.plan ||
-                                                                        !quote.plan
-                                                                          .split(
-                                                                            ","
-                                                                          )
-                                                                          .includes(
-                                                                            plan
-                                                                          )
-                                                                      } // Disable if the plan is not in quote.plan
-                                                                      onChange={(
-                                                                        e
-                                                                      ) =>
-                                                                        handleAmountChange(
-                                                                          e,
-                                                                          plan
-                                                                        )
-                                                                      }
-                                                                    />
-                                                                    <div
-                                                                      className="error"
-                                                                      id={`amountError_${plan}`}
-                                                                    ></div>
-                                                                  </div>
-                                                                </div>
-                                                              )
-                                                            )}
-
-                                                            <div className="form-group col-sm-12">
-                                                              <label
-                                                                htmlFor="comment"
-                                                                className="col-sm-3 control-label"
-                                                              >
-                                                                Comments
-                                                              </label>
-                                                              <div className="">
-                                                                <textarea
-                                                                  name="comment"
-                                                                  id="comment"
-                                                                  placeholder="Comments"
-                                                                  className="form-control form-conotrol-sm"
-                                                                  value={comment}
-                                                                  onChange={(e) =>
-                                                                    setComment(
-                                                                      e.target
-                                                                        .value
-                                                                    )
-                                                                  }
-                                                                ></textarea>
-                                                                <div
-                                                                  className="error"
-                                                                  id="commentError"
-                                                                ></div>
-                                                              </div>
+                                                        <div className="box-body">
+                                                          <input
+                                                            type="hidden"
+                                                            name="task_id"
+                                                            id="task_id"
+                                                            value={assignQuoteInfo.id}
+                                                          />
+                                                          <input
+                                                            type="hidden"
+                                                            name="quoteid"
+                                                            id="quoteid"
+                                                            value={
+                                                              assignQuoteInfo.quote_id
+                                                            }
+                                                          />
+                                                          <div className="form-group">
+                                                            <label className="col-sm-12 control-label">
+                                                              Quote Price (INR)
+                                                            </label>
+                                                            <div className="col-sm-12">
+                                                              <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="quote_price"
+                                                                name="quote_price"
+                                                                value={
+                                                                  quotePrice ||
+                                                                  assignQuoteInfo?.quote_price ||
+                                                                  ""
+                                                                }
+                                                                placeholder="Quote Price"
+                                                                onChange={(e) =>
+                                                                  setQuotePrice(
+                                                                    e.target.value
+                                                                  )
+                                                                }
+                                                              />
+                                                            </div>
+                                                          </div>
+                                                          <div className="form-group">
+                                                            <label className="col-sm-3 control-label">
+                                                              Comments
+                                                            </label>
+                                                            <div className="col-sm-12">
+                                                              <textarea
+                                                                className="form-control"
+                                                                id="user_comments"
+                                                                name="user_comments"
+                                                                value={
+                                                                  userComments ||
+                                                                  assignQuoteInfo?.user_comments ||
+                                                                  assignQuoteInfo?.admin_comments ||
+                                                                  ""
+                                                                }
+                                                                onChange={(e) =>
+                                                                  setUserComments(
+                                                                    e.target.value
+                                                                  )
+                                                                }
+                                                              />
                                                             </div>
                                                           </div>
                                                         </div>
-                                                        <div className="box-footer p-2">
-                                                          <input
-                                                            type="button"
-                                                            name="priceSubmitted"
-                                                            className="btn pull-right btn-success btn-sm"
-                                                            value="Submit"
-                                                            onClick={() =>
-                                                              PriceSubmitValidate(
-                                                                quote.assign_id,
-                                                                quote.quoteid,
-                                                                quote.plan,
-                                                                quote.user_id
-                                                              )
-                                                            }
-                                                            disabled={
-                                                              priceLoading
-                                                            }
-                                                          />
+
+                                                        <div className="modal-footer tabb">
+                                                          <span id="load_btn">
+                                                            <button
+                                                              type="button"
+                                                              className="btn"
+                                                              onClick={() =>
+                                                                updatePriceQuote()
+                                                              }
+                                                              disabled={priceLoading}
+                                                            >
+                                                              Confirm
+                                                            </button>
+                                                          </span>
                                                         </div>
                                                       </form>
+                                                    )}
+                                                  </>
+                                                )}
+                                            </div>
+
+                                            <div className="border-bottom row mb-3 mt-0 mx-1">
+                                              {quote.quote_status != 1 &&
+                                                quote.submittedtoadmin == "true" &&
+                                                loopUserObject.id != "206" && (
+                                                  <>
+                                                    <div className="nav-tabs-custom tabb pt-2 shadow-0">
+                                                      <ul className="nav nav-tabs pb-3">
+                                                        <li className="badge badge-primary f-14 font-weight-500">
+                                                          Submit Price
+                                                        </li>
+                                                      </ul>
+                                                      <div className="tab-content">
+                                                        <div
+                                                          className="tab-pane active"
+                                                          id="tab_2"
+                                                        >
+                                                          <form
+                                                            method="post"
+                                                            name="submitQuoteForm"
+                                                            id="submitQuoteForm"
+                                                            className="form-horizontal"
+                                                          >
+                                                            <input
+                                                              type="hidden"
+                                                              name="ref_id"
+                                                              value={quote.assign_id}
+                                                            />
+                                                            <input
+                                                              type="hidden"
+                                                              name="quote_id"
+                                                              value={quote.quoteid}
+                                                            />
+                                                            <div className="box-body p-0">
+                                                              <div className="row">
+                                                                {[
+                                                                  "Basic",
+                                                                  "Standard",
+                                                                  "Advanced",
+                                                                ].map(
+                                                                  (plan, index) => (
+                                                                    <div
+                                                                      className={` ${scopeTabVisible && !chatTabVisible && !feasTabVisible ? 'col-md-4' : 'col-md-12'} form-group`}
+                                                                      key={index}
+                                                                    >
+                                                                      <label
+                                                                        htmlFor={`amount_${plan}`}
+                                                                        className="control-label"
+                                                                      >
+                                                                        Amount for{" "}
+                                                                        <strong>
+                                                                          {plan} (
+                                                                          {quote.currency ===
+                                                                            "Other"
+                                                                            ? quote.other_currency
+                                                                            : quote.currency}
+                                                                          )
+                                                                        </strong>
+                                                                      </label>
+                                                                      <div className="">
+                                                                        <input
+                                                                          type="text"
+                                                                          name={`amount_${plan}`}
+                                                                          id={`amount_${plan}`}
+                                                                          className="form-control form-conotrol-sm"
+                                                                          value={
+                                                                            amounts[
+                                                                            plan
+                                                                            ] || ""
+                                                                          } // Default to empty if no amount is set
+                                                                          required={
+                                                                            quote.plan &&
+                                                                            quote.plan
+                                                                              .split(
+                                                                                ","
+                                                                              )
+                                                                              .includes(
+                                                                                plan
+                                                                              )
+                                                                          } // Required only if the plan is included in quote.plan
+                                                                          disabled={
+                                                                            !quote.plan ||
+                                                                            !quote.plan
+                                                                              .split(
+                                                                                ","
+                                                                              )
+                                                                              .includes(
+                                                                                plan
+                                                                              )
+                                                                          } // Disable if the plan is not in quote.plan
+                                                                          onChange={(
+                                                                            e
+                                                                          ) =>
+                                                                            handleAmountChange(
+                                                                              e,
+                                                                              plan
+                                                                            )
+                                                                          }
+                                                                        />
+                                                                        <div
+                                                                          className="error"
+                                                                          id={`amountError_${plan}`}
+                                                                        ></div>
+                                                                      </div>
+                                                                      <div className="mt-2">
+                                                                        <input
+                                                                          type="checkbox"
+                                                                          id={`mp_${plan}`}
+                                                                          name={`mp_${plan}`}
+                                                                          checked={selectedMP === plan}
+                                                                          onChange={() => handleMPChange(plan)}
+                                                                        />
+                                                                        <label style={{ fontSize: "10px" }} htmlFor={`mp_${plan}`} className="ml-2 hover:text-blue-500">Mark as MP price</label>
+                                                                      </div>
+                                                                    </div>
+                                                                  )
+                                                                )}
+
+                                                                <div className="form-group col-sm-12">
+                                                                  <label
+                                                                    htmlFor="comment"
+                                                                    className="col-sm-3 control-label"
+                                                                  >
+                                                                    Comments
+                                                                  </label>
+                                                                  <div className="">
+                                                                    <textarea
+                                                                      name="comment"
+                                                                      id="comment"
+                                                                      placeholder="Comments"
+                                                                      className="form-control form-conotrol-sm"
+                                                                      value={comment}
+                                                                      onChange={(e) =>
+                                                                        setComment(
+                                                                          e.target
+                                                                            .value
+                                                                        )
+                                                                      }
+                                                                    ></textarea>
+                                                                    <div
+                                                                      className="error"
+                                                                      id="commentError"
+                                                                    ></div>
+                                                                  </div>
+                                                                </div>
+                                                              </div>
+                                                            </div>
+                                                            <div className="box-footer p-2">
+                                                              <input
+                                                                type="button"
+                                                                name="priceSubmitted"
+                                                                className="btn pull-right btn-success btn-sm"
+                                                                value="Submit"
+                                                                onClick={() =>
+                                                                  PriceSubmitValidate(
+                                                                    quote.assign_id,
+                                                                    quote.quoteid,
+                                                                    quote.plan,
+                                                                    quote.user_id
+                                                                  )
+                                                                }
+                                                                disabled={
+                                                                  priceLoading
+                                                                }
+                                                              />
+                                                            </div>
+                                                          </form>
+                                                        </div>
+                                                      </div>
                                                     </div>
-                                                  </div>
-                                                </div>
-                                              </>
-                                            )}
+                                                  </>
+                                                )}
+                                            </div>
+                                          </div>
+                                          <div className="px-0">
+                                            <MergedHistoryComponentNew
+                                              quoteId={quote.quoteid}
+                                              refId={quote.assign_id}
+                                              onlyFetch="quote"
+                                            />
+                                          </div>
                                         </div>
-                                      </div>
-                                      <div className="px-0">
-                                        <MergedHistoryComponentNew
-                                          quoteId={quote.quoteid}
-                                          refId={quote.assign_id}
-                                          onlyFetch="quote"
-                                        />
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                                </div>
                                 </div>
                               )}
                               {chatTabVisible && (
                                 <div className={`${fullScreenTab == "chat" ? "custom-modal" : colClass} p-0`}>
-                                <div className={`${fullScreenTab == "chat" ? "custom-modal-content" : ""} `}>
-                                  
-                                  <div className={`p-0 `}>
-                                    <Chat
-                                      quoteId={quote.quoteid}
-                                      refId={quote.assign_id}
-                                      status={quote.quote_status}
-                                      submittedToAdmin={quote.submittedtoadmin}
-                                      finalFunction={fetchScopeDetails}
-                                      allDetails={quote}
-                                      finalfunctionforsocket={fetchScopeDetailsForSocket}
-                                      handlefullScreenBtnClick={handlefullScreenBtnClick}
-                                      chatTabVisible={chatTabVisible}
-                                      fullScreenTab={fullScreenTab}
-                                    />
+                                  <div className={`${fullScreenTab == "chat" ? "custom-modal-content" : ""} `}>
+
+                                    <div className={`p-0 `}>
+                                      <Chat
+                                        quoteId={quote.quoteid}
+                                        refId={quote.assign_id}
+                                        status={quote.quote_status}
+                                        submittedToAdmin={quote.submittedtoadmin}
+                                        finalFunction={fetchScopeDetails}
+                                        allDetails={quote}
+                                        finalfunctionforsocket={fetchScopeDetailsForSocket}
+                                        handlefullScreenBtnClick={handlefullScreenBtnClick}
+                                        chatTabVisible={chatTabVisible}
+                                        fullScreenTab={fullScreenTab}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
-                              </div>
                               )}
 
                               {feasTabVisible && quote.isfeasability == 1 && (
                                 <div className={`${fullScreenTab == "feas" ? "custom-modal" : colClass}`}>
-                              <div className={`${fullScreenTab == "feas" ? "custom-modal-content" : ""} `}>
-                                <div className={` pr-0`}>
-                                  <div className="bg-white px-3 pt-3 pb-3">
-                                    <>
-                                      {quote.isfeasability == 1 && (
+                                  <div className={`${fullScreenTab == "feas" ? "custom-modal-content" : ""} `}>
+                                    <div className={` pr-0`}>
+                                      <div className="bg-white px-3 pt-3 pb-3">
                                         <>
-                                          <div className="d-flex justify-between border-bottom pb-2 mb-3 ">
-                                            <h3 class="f-18 ">Feasibility</h3>
-                                            <div className="d-flex justify-between items-center">
-                                              
+                                          {quote.isfeasability == 1 && (
+                                            <>
+                                              <div className="d-flex justify-between border-bottom pb-2 mb-3 ">
+                                                <h3 class="f-18 ">Feasibility</h3>
+                                                <div className="d-flex justify-between items-center">
+
+                                                  {quote.feasability_status ==
+                                                    "Completed" && (
+                                                      <>
+                                                        {loopUserObject.id !=
+                                                          "206" && (
+                                                            <button
+                                                              onClick={() => {
+                                                                toggleFeasCommentsEditingForm(
+                                                                  quote
+                                                                );
+                                                              }}
+                                                              className="btn btn-sm btn-primary flex items-center px-1 mr-1"
+                                                            >
+                                                              <Pencil
+                                                                className=""
+                                                                size={13}
+                                                              />
+                                                            </button>
+                                                          )}
+                                                      </>
+                                                    )}
+                                                  <button className="">
+                                                    {fullScreenTab == "feas" ? (<Minimize2 size={25} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center px-1" />) : (<Expand size={25} onClick={() => { handlefullScreenBtnClick("feas") }} className="btn btn-sm btn-light flex items-center px-1" />)}
+                                                  </button>
+                                                </div>
+                                              </div>
                                               {quote.feasability_status ==
                                                 "Completed" && (
-                                                <>
-                                                  {loopUserObject.id !=
-                                                    "206" && (
-                                                    <button
-                                                      onClick={() => {
-                                                        toggleFeasCommentsEditingForm(
-                                                          quote
-                                                        );
+                                                  <>
+                                                    <p
+                                                      style={{
+                                                        textDecoration: "italic",
                                                       }}
-                                                      className="btn btn-sm btn-primary flex items-center px-1 mr-1"
+                                                      className="italic px-0 border-bottom mb-3 pb-3"
                                                     >
-                                                      <Pencil
-                                                        className=""
-                                                        size={13}
-                                                      />
-                                                    </button>
-                                                  )}
-                                                </>
-                                              )}
-                                              <button className="">
-                                                {fullScreenTab == "feas" ? (<Minimize2 size={25} onClick={()=>{handlefullScreenBtnClick(null)}}  className="btn btn-sm btn-light flex items-center px-1"/>) : (<Expand size={25} onClick={()=>{handlefullScreenBtnClick("feas")}}  className="btn btn-sm btn-light flex items-center px-1"/>)}
-                                              </button>
-                                            </div>
-                                          </div>
-                                          {quote.feasability_status ==
-                                            "Completed" && (
-                                            <>
-                                              <p
-                                                style={{
-                                                  textDecoration: "italic",
-                                                }}
-                                                className="italic px-0 border-bottom mb-3 pb-3"
-                                              >
-                                                <strong>
-                                                  Feasibility Comments:
-                                                </strong>
+                                                      <strong>
+                                                        Feasibility Comments:
+                                                      </strong>
 
-                                                <span
-                                                  className="mt-2"
-                                                  dangerouslySetInnerHTML={{
-                                                    __html:
-                                                      quote.feasability_comments,
-                                                  }}
-                                                />
-                                              </p>
-                                              {quote.feas_file_name && (
-                                                <p className="flex items-center">
-                                                  Feasibility Attachment :{" "}
-                                                  <a
-                                                    href={
-                                                      "https://apacvault.com/public/feasabilityFiles/" +
-                                                      quote.feas_file_name
-                                                    }
-                                                    target="_blank"
-                                                    className="text-blue-600 flex items-center"
-                                                  >
-                                                    <Paperclip size={20} /> View
-                                                    File
-                                                  </a>
-                                                </p>
-                                              )}
+                                                      <span
+                                                        className="mt-2"
+                                                        dangerouslySetInnerHTML={{
+                                                          __html:
+                                                            quote.feasability_comments,
+                                                        }}
+                                                      />
+                                                    </p>
+                                                    {quote.feas_file_name && (
+                                                      <p className="flex items-center">
+                                                        Feasibility Attachment :{" "}
+                                                        <a
+                                                          href={
+                                                            "https://apacvault.com/public/feasabilityFiles/" +
+                                                            quote.feas_file_name
+                                                          }
+                                                          target="_blank"
+                                                          className="text-blue-600 flex items-center"
+                                                        >
+                                                          <Paperclip size={20} /> View
+                                                          File
+                                                        </a>
+                                                      </p>
+                                                    )}
+                                                  </>
+                                                )}
                                             </>
                                           )}
+                                          <MergedHistoryComponentNew
+                                            quoteId={quote.quoteid}
+                                            refId={quote.assign_id}
+                                            onlyFetch="feasibility"
+                                          />
                                         </>
-                                      )}
-                                      <MergedHistoryComponentNew
-                                        quoteId={quote.quoteid}
-                                        refId={quote.assign_id}
-                                        onlyFetch="feasibility"
-                                      />
-                                    </>
+                                      </div>
+                                    </div>
                                   </div>
-                                </div>
-                                </div>
                                 </div>
                               )}
                             </div>
@@ -2032,7 +2045,7 @@ const AskForScopeAdmin = ({
         )}
 
         {commentEditFormOpen && (
-          <EditCommentsComponent quote={commentQuote} plan={commentPlan} comment={commentText} wordCount={commentWordCount} onClose={()=>{setCommentEditFormOpen(false)} } after={fetchScopeDetailsForSocket}/>
+          <EditCommentsComponent quote={commentQuote} plan={commentPlan} comment={commentText} wordCount={commentWordCount} onClose={() => { setCommentEditFormOpen(false) }} after={fetchScopeDetailsForSocket} />
         )}
       </AnimatePresence>
       <Tooltip id="my-tooltip" />

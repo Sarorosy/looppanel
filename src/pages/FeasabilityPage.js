@@ -10,6 +10,7 @@ import QueryDetails from './QueryDetails';
 import FeasabilityQueryDetails from './FeasabilityQueryDetails';
 import { getSocket } from './Socket';
 import { io } from "socket.io-client";
+import UserTableLoading from '../components/UserTableLoading';
 const socket = getSocket();
 
 const FeasabilityPage = ({ onClose, after }) => {
@@ -279,7 +280,7 @@ const FeasabilityPage = ({ onClose, after }) => {
             </div>
 
             {loading ? (
-                <CustomLoader />
+                <UserTableLoading />
             ) : (
                 <div className='bg-white p-4 border-t-2 border-blue-400 rounded container'>
                     <div className="table-scrollable">

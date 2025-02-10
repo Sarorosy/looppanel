@@ -19,6 +19,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import FeasabilityPage from './FeasabilityPage';
 import QueryDetailsTl from './QueryDetailsTl';
 import SelectUsers from './SelectUsers';
+import TableLoader from '../components/TableLoader';
 
 const ManageTlQuery = ({ onClose }) => {
     const [quotes, setQuotes] = useState([]);
@@ -598,7 +599,7 @@ const ManageTlQuery = ({ onClose }) => {
             </div>
 
             {loading ? (
-                <CustomLoader />
+                <TableLoader />
             ) : (
                 <div className='bg-white p-4 border-t-2 border-blue-400 rounded'>
                     <div className="table-scrollable">

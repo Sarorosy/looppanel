@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCcw, X } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import TransferDetailsModal from './TransferDetailsModal';
+import UserTableLoading from '../components/UserTableLoading';
 
 
 
@@ -174,7 +175,7 @@ const TransferRequestsPage = ({ onClose, after,userIdDefined }) => {
             </div>
 
             {loading ? (
-                <CustomLoader />
+                <UserTableLoading />
             ) : (
                 <div className='bg-white p-4 border-t-2 border-blue-400 rounded container'>
                     <div className="table-scrollable">
