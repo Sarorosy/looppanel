@@ -367,7 +367,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
                                                 {quote.word_counts && quote.word_counts != null && (
                                                     <div>
-                                                        <p className="mb-2"><strong style={{ textDecoration: "underline" }}>Word Counts:</strong></p>
+                                                        <p className="mb-2"><strong style={{ textDecoration: "underline" }}>Word Count:</strong></p>
                                                         <div className="row" style={{
                                                             wordWrap: "break-word",
                                                             overflowWrap: "break-word",

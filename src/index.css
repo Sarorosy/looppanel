@@ -670,3 +670,11 @@ focus-outline-none:focus:not(:focus-visible) {
   border: 2px solid #27679b;
   color: #27679b;
 }
+.select2-container {
+  width: 100% !important;
+}
+
+
+.btn{
+  box-shadow: none !important;
+}

@@ -558,7 +558,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
 
                                                                     {quote.word_counts && quote.word_counts != null && (
                                                                         <div>
-                                                                            <p className="mb-2"><strong style={{ textDecoration: "underline" }}>Word Counts:</strong></p>
+                                                                            <p className="mb-2"><strong style={{ textDecoration: "underline" }}>Word Count:</strong></p>
                                                                             <div className="row" style={{
                                                                                 wordWrap: "break-word",
                                                                                 overflowWrap: "break-word",
@@ -594,227 +594,229 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                             )}
 
 
-                                                            {quote.comments && quote.comments != "" && quote.comments != null && (
-                                                                <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
-                                                            )}
+                                                            <div className='space-y-4'>
+                                                                {quote.comments && quote.comments != "" && quote.comments != null && (
+                                                                    <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                                )}
 
-                                                            {quote.final_comments != null && (
-                                                                <div >
-                                                                    <p><strong>Final Comments:</strong> {quote.final_comments}</p>
-                                                                </div>
-                                                            )}
-                                                            <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
-                                                            {quote.relevant_file && quote.relevant_file.length > 0 && (
-                                                                <div>
-                                                                    <strong>Relevant Files:</strong>
-                                                                    <div className="space-y-2 mt-2">
-                                                                        {quote.relevant_file.map((file, fileIndex) => (
-                                                                            <div key={fileIndex}>
-                                                                                <a
-                                                                                    href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
-                                                                                    download
-                                                                                    target='_blank'
-                                                                                    className="text-blue-500"
-                                                                                >
-                                                                                    {file.filename}
-                                                                                </a>
-                                                                            </div>
-                                                                        ))}
+                                                                {quote.final_comments != null && (
+                                                                    <div >
+                                                                        <p><strong>Final Comments:</strong> {quote.final_comments}</p>
                                                                     </div>
-                                                                </div>
-                                                            )}
-
-
-                                                            {quote.ptp != null && (
-                                                                <>
-                                                                    <p><strong>PTP:</strong> {quote.ptp}</p>
-                                                                    {quote.ptp_amount && quote.ptp_amount != 0 && (
-                                                                        <p><strong>PTP Amount:</strong> {quote.ptp_amount}</p>
-                                                                    )}
-                                                                    {quote.ptp == "Yes" && (
-                                                                        <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
-                                                                    )}
-                                                                    {quote.ptp_file != null && (
-                                                                        <p><strong>Attached File : </strong><a className='text-blue-500 font-semibold' href={`https://apacvault.com/public/${quote.ptp_file}`} download={quote.ptpfile} target='_blank'>{quote.ptp_file}</a></p>
-                                                                    )}
-                                                                </>
-                                                            )}
-                                                            {quote.demodone != 0 && (
-                                                                <>
-                                                                    <p className='flex items-center '>  <p className=''> <strong>Demo Id : </strong> {quote.demo_id}</p> <span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={12} className='ml-1' /> </span></p>
-                                                                </>
-                                                            )}
-                                                            {quote.quote_status != 0 && quote.quote_price && quote.plan && (
-                                                                <>
-                                                                    {quote.old_plan && (
-                                                                        <p className='text-gray-600'>
-                                                                            <strong>Quote Price For Old Plan:</strong>{' '}
-                                                                            {(() => {
-                                                                                const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                                const plans = quote.old_plan.split(','); // Split plan into an array
-                                                                                return plans.map((plan, index) => (
-                                                                                    <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                        {index < plans.length - 1 && ', '}
-                                                                                        {quote.mp_price === plan && " (MP Price)"}
-                                                                                    </span>
-                                                                                ));
-                                                                            })()}
-                                                                        </p>
-
-                                                                    )}
-                                                                    {quote.quote_status != 2 && (
-                                                                        <p>
-                                                                            <strong>Quote Price:</strong>{' '}
-                                                                            {(() => {
-                                                                                const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                                const plans = quote.plan.split(','); // Split plan into an array
-                                                                                return plans.map((plan, index) => (
-                                                                                    <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                        {index < plans.length - 1 && ', '}
-                                                                                        {quote.mp_price === plan && " (MP Price)"}
-                                                                                    </span>
-                                                                                ));
-                                                                            })()}
-                                                                        </p>
-                                                                    )}
-                                                                    {quote.discount_price && (
-                                                                        <p>
-                                                                            <strong>Discounted Price:</strong>{' '}
-                                                                            {(() => {
-                                                                                const prices = quote.discount_price.split(','); // Split quote_price into an array
-                                                                                const plans = quote.plan.split(','); // Split plan into an array
-                                                                                return plans.map((plan, index) => (
-                                                                                    <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
-                                                                                        {index < plans.length - 1 && ', '}
-                                                                                        {quote.mp_price === plan && " (MP Price)"}
-                                                                                    </span>
-                                                                                ));
-                                                                            })()}
-                                                                        </p>
-                                                                    )}
-                                                                    {quote.final_price && (
-                                                                        <p >
-                                                                            <strong>Final Price:</strong>{' '}
-                                                                            {(() => {
-                                                                                const prices = quote.final_price.split(','); // Split quote_price into an array
-                                                                                const plans = quote.plan.split(','); // Split plan into an array
-                                                                                return plans.map((plan, index) => (
-                                                                                    <span key={index} className=' px-1 py-2 rounded mr-1 gold'>
-                                                                                        <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
-                                                                                        {index < plans.length - 1 && ', '}
-                                                                                        {quote.mp_price === plan && " (MP Price)"}
-                                                                                    </span>
-                                                                                ));
-                                                                            })()}
-                                                                        </p>
-                                                                    )}
-                                                                    {quote.user_comments && (
-                                                                        <p><strong style={{ textDecoration: "underline" }}>Admin Comments:</strong> {quote.user_comments}</p>
-                                                                    )}
-                                                                </>
-                                                            )}
-                                                            {assignQuoteInfo && assignQuoteInfo != false && (
-                                                                <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
-                                                            )}
-
-                                                            {assignQuoteInfo && assignQuoteInfo != false && (
-                                                                <>
-                                                                    {assignQuoteInfo.status === 0 ? (
-                                                                        <>
-                                                                            <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
-                                                                            <p><strong>Assign Date:</strong> {assignQuoteInfo.assigned_date}</p>
-                                                                            <p><strong>Admin Comments:</strong> {assignQuoteInfo.admin_comments}</p>
-                                                                        </>
-                                                                    ) : (
-                                                                        <>
-                                                                            <p>Submitted by {assignQuoteInfo.name}</p>
-                                                                            <p><strong>Price:</strong> {assignQuoteInfo.currency} {assignQuoteInfo.quote_price}</p>
-                                                                            <p><strong>Submitted Date:</strong> {new Date(assignQuoteInfo.user_submitted_date * 1000).toLocaleDateString('en-GB')}
-                                                                                {new Date(assignQuoteInfo.user_submitted_date * 1000).toLocaleTimeString('en-GB', {
-                                                                                    hour: '2-digit',
-                                                                                    minute: '2-digit',
-                                                                                    hour12: true,
-                                                                                })}</p>
-                                                                            <p><strong>Assigned Comments:</strong> {assignQuoteInfo.admin_comments}</p>
-                                                                            <p><strong>Comments:</strong> {assignQuoteInfo.user_comments != "" ? assignQuoteInfo.user_comments : assignQuoteInfo.admin_comments}</p>
-                                                                        </>
-                                                                    )
-                                                                    }
-                                                                    {assignQuoteInfo.status == 1 && (
-
-                                                                        <form name="edit_price_form" id="edit_price_form" className="form-horizontal">
-                                                                            <div className="box-body">
-                                                                                <input type="hidden" name="task_id" id="task_id" value={assignQuoteInfo.id} />
-                                                                                <input type="hidden" name="quoteid" id="quoteid" value={assignQuoteInfo.quote_id} />
-                                                                                <div className="form-group">
-                                                                                    <label className="col-sm-3 control-label">Quote Price (INR)</label>
-                                                                                    <div className="col-sm-12">
-                                                                                        <input
-                                                                                            type="text"
-                                                                                            className="form-control"
-                                                                                            id="quote_price"
-                                                                                            name="quote_price"
-                                                                                            value={quotePrice || assignQuoteInfo?.quote_price || ''}
-                                                                                            placeholder="Quote Price"
-                                                                                            onChange={(e) => setQuotePrice(e.target.value)}
-                                                                                        />
-                                                                                    </div>
-                                                                                </div>
-                                                                                <div className="form-group">
-                                                                                    <label className="col-sm-3 control-label">Comments</label>
-                                                                                    <div className="col-sm-12">
-                                                                                        <textarea
-                                                                                            className="form-control"
-                                                                                            id="user_comments"
-                                                                                            name="user_comments"
-                                                                                            value={userComments || assignQuoteInfo?.user_comments || assignQuoteInfo?.admin_comments || ''}
-                                                                                            onChange={(e) => setUserComments(e.target.value)}
-                                                                                        />
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            <div className="modal-footer tabb">
-                                                                                <span id="load_btn">
-                                                                                    <button
-                                                                                        type="button"
-                                                                                        className="btn"
-                                                                                        onClick={() => updatePriceQuote()}
-                                                                                        disabled={priceLoading}
+                                                                )}
+                                                                <p><strong>Created Date:</strong> {new Date(quote.created_date * 1000).toLocaleDateString('en-GB')}</p>
+                                                                {quote.relevant_file && quote.relevant_file.length > 0 && (
+                                                                    <div>
+                                                                        <strong>Relevant Files:</strong>
+                                                                        <div className="space-y-2 mt-2">
+                                                                            {quote.relevant_file.map((file, fileIndex) => (
+                                                                                <div key={fileIndex}>
+                                                                                    <a
+                                                                                        href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
+                                                                                        download
+                                                                                        target='_blank'
+                                                                                        className="text-blue-500"
                                                                                     >
-                                                                                        Confirm
-                                                                                    </button>
-                                                                                </span>
-                                                                            </div>
-                                                                        </form>
-                                                                    )}
-                                                                </>
-                                                            )}
-
-                                                            {quote.isfeasability == 1 && (
-                                                                <>
+                                                                                        {file.filename}
+                                                                                    </a>
+                                                                                </div>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
 
 
-                                                                    {quote.feasability_status == "Completed" && (
-                                                                        <>
-                                                                            <p style={{ textDecoration: "italic" }} className='italic'>
-                                                                                Feasibility Comments:
-                                                                                <span
-                                                                                    className='mt-2'
-                                                                                    dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
-                                                                                />
+                                                                {quote.ptp != null && (
+                                                                    <>
+                                                                        <p><strong>PTP:</strong> {quote.ptp}</p>
+                                                                        {quote.ptp_amount && quote.ptp_amount != 0 && (
+                                                                            <p><strong>PTP Amount:</strong> {quote.ptp_amount}</p>
+                                                                        )}
+                                                                        {quote.ptp == "Yes" && (
+                                                                            <p><strong >PTP Comments:</strong> {quote.ptp_comments}</p>
+                                                                        )}
+                                                                        {quote.ptp_file != null && (
+                                                                            <p><strong>Attached File : </strong><a className='text-blue-500 font-semibold' href={`https://apacvault.com/public/${quote.ptp_file}`} download={quote.ptpfile} target='_blank'>{quote.ptp_file}</a></p>
+                                                                        )}
+                                                                    </>
+                                                                )}
+                                                                {quote.demodone != 0 && (
+                                                                    <>
+                                                                        <p className='flex items-center '>  <p className=''> <strong>Demo Id : </strong> {quote.demo_id}</p> <span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={12} className='ml-1' /> </span></p>
+                                                                    </>
+                                                                )}
+                                                                {quote.quote_status != 0 && quote.quote_price && quote.plan && (
+                                                                    <>
+                                                                        {quote.old_plan && (
+                                                                            <p className='text-gray-600'>
+                                                                                <strong>Quote Price For Old Plan:</strong>{' '}
+                                                                                {(() => {
+                                                                                    const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                    const plans = quote.old_plan.split(','); // Split plan into an array
+                                                                                    return plans.map((plan, index) => (
+                                                                                        <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500 f-12 mb-2 d-inline-block">
+                                                                                            <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                            {index < plans.length - 1 && ', '}
+                                                                                            {quote.mp_price === plan && " (MP Price)"}
+                                                                                        </span>
+                                                                                    ));
+                                                                                })()}
                                                                             </p>
-                                                                            {quote.feas_file_name && (
-                                                                                <p className='flex items-center'>Feasibility Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
-                                                                            )}
-                                                                        </>
-                                                                    )}
 
-                                                                </>
-                                                            )}
+                                                                        )}
+                                                                        {quote.quote_status != 2 && (
+                                                                            <p>
+                                                                                <strong>Quote Price:</strong>{' '}
+                                                                                {(() => {
+                                                                                    const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                    const plans = quote.plan.split(','); // Split plan into an array
+                                                                                    return plans.map((plan, index) => (
+                                                                                        <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
+                                                                                            <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                            {index < plans.length - 1 && ', '}
+                                                                                            {quote.mp_price === plan && " (MP Price)"}
+                                                                                        </span>
+                                                                                    ));
+                                                                                })()}
+                                                                            </p>
+                                                                        )}
+                                                                        {quote.discount_price && (
+                                                                            <p>
+                                                                                <strong>Discounted Price:</strong>{' '}
+                                                                                {(() => {
+                                                                                    const prices = quote.discount_price.split(','); // Split quote_price into an array
+                                                                                    const plans = quote.plan.split(','); // Split plan into an array
+                                                                                    return plans.map((plan, index) => (
+                                                                                        <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
+                                                                                            <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
+                                                                                            {index < plans.length - 1 && ', '}
+                                                                                            {quote.mp_price === plan && " (MP Price)"}
+                                                                                        </span>
+                                                                                    ));
+                                                                                })()}
+                                                                            </p>
+                                                                        )}
+                                                                        {quote.final_price && (
+                                                                            <p >
+                                                                                <strong>Final Price:</strong>{' '}
+                                                                                {(() => {
+                                                                                    const prices = quote.final_price.split(','); // Split quote_price into an array
+                                                                                    const plans = quote.plan.split(','); // Split plan into an array
+                                                                                    return plans.map((plan, index) => (
+                                                                                        <span key={index} className=' px-1 py-2 rounded mr-1 gold'>
+                                                                                            <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                            {index < plans.length - 1 && ', '}
+                                                                                            {quote.mp_price === plan && " (MP Price)"}
+                                                                                        </span>
+                                                                                    ));
+                                                                                })()}
+                                                                            </p>
+                                                                        )}
+                                                                        {quote.user_comments && (
+                                                                            <p><strong style={{ textDecoration: "underline" }}>Admin Comments:</strong> {quote.user_comments}</p>
+                                                                        )}
+                                                                    </>
+                                                                )}
+                                                                {assignQuoteInfo && assignQuoteInfo != false && (
+                                                                    <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
+                                                                )}
+
+                                                                {assignQuoteInfo && assignQuoteInfo != false && (
+                                                                    <>
+                                                                        {assignQuoteInfo.status === 0 ? (
+                                                                            <>
+                                                                                <p><strong>Assigned To:</strong> {assignQuoteInfo.name}</p>
+                                                                                <p><strong>Assign Date:</strong> {assignQuoteInfo.assigned_date}</p>
+                                                                                <p><strong>Admin Comments:</strong> {assignQuoteInfo.admin_comments}</p>
+                                                                            </>
+                                                                        ) : (
+                                                                            <>
+                                                                                <p>Submitted by {assignQuoteInfo.name}</p>
+                                                                                <p><strong>Price:</strong> {assignQuoteInfo.currency} {assignQuoteInfo.quote_price}</p>
+                                                                                <p><strong>Submitted Date:</strong> {new Date(assignQuoteInfo.user_submitted_date * 1000).toLocaleDateString('en-GB')}
+                                                                                    {new Date(assignQuoteInfo.user_submitted_date * 1000).toLocaleTimeString('en-GB', {
+                                                                                        hour: '2-digit',
+                                                                                        minute: '2-digit',
+                                                                                        hour12: true,
+                                                                                    })}</p>
+                                                                                <p><strong>Assigned Comments:</strong> {assignQuoteInfo.admin_comments}</p>
+                                                                                <p><strong>Comments:</strong> {assignQuoteInfo.user_comments != "" ? assignQuoteInfo.user_comments : assignQuoteInfo.admin_comments}</p>
+                                                                            </>
+                                                                        )
+                                                                        }
+                                                                        {assignQuoteInfo.status == 1 && (
+
+                                                                            <form name="edit_price_form" id="edit_price_form" className="form-horizontal">
+                                                                                <div className="box-body">
+                                                                                    <input type="hidden" name="task_id" id="task_id" value={assignQuoteInfo.id} />
+                                                                                    <input type="hidden" name="quoteid" id="quoteid" value={assignQuoteInfo.quote_id} />
+                                                                                    <div className="form-group">
+                                                                                        <label className="col-sm-3 control-label">Quote Price (INR)</label>
+                                                                                        <div className="col-sm-12">
+                                                                                            <input
+                                                                                                type="text"
+                                                                                                className="form-control"
+                                                                                                id="quote_price"
+                                                                                                name="quote_price"
+                                                                                                value={quotePrice || assignQuoteInfo?.quote_price || ''}
+                                                                                                placeholder="Quote Price"
+                                                                                                onChange={(e) => setQuotePrice(e.target.value)}
+                                                                                            />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div className="form-group">
+                                                                                        <label className="col-sm-3 control-label">Comments</label>
+                                                                                        <div className="col-sm-12">
+                                                                                            <textarea
+                                                                                                className="form-control"
+                                                                                                id="user_comments"
+                                                                                                name="user_comments"
+                                                                                                value={userComments || assignQuoteInfo?.user_comments || assignQuoteInfo?.admin_comments || ''}
+                                                                                                onChange={(e) => setUserComments(e.target.value)}
+                                                                                            />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <div className="modal-footer tabb">
+                                                                                    <span id="load_btn">
+                                                                                        <button
+                                                                                            type="button"
+                                                                                            className="btn"
+                                                                                            onClick={() => updatePriceQuote()}
+                                                                                            disabled={priceLoading}
+                                                                                        >
+                                                                                            Confirm
+                                                                                        </button>
+                                                                                    </span>
+                                                                                </div>
+                                                                            </form>
+                                                                        )}
+                                                                    </>
+                                                                )}
+
+                                                                {quote.isfeasability == 1 && (
+                                                                    <>
+
+
+                                                                        {quote.feasability_status == "Completed" && (
+                                                                            <>
+                                                                                <p style={{ textDecoration: "italic" }} className='italic'>
+                                                                                    Feasibility Comments:
+                                                                                    <span
+                                                                                        className='mt-2'
+                                                                                        dangerouslySetInnerHTML={{ __html: quote.feasability_comments }}
+                                                                                    />
+                                                                                </p>
+                                                                                {quote.feas_file_name && (
+                                                                                    <p className='flex items-center'>Feasibility Attachment : <a href={"https://apacvault.com/public/feasabilityFiles/" + quote.feas_file_name} target='_blank' className='text-blue-600 flex items-center'><Paperclip size={20} /> View File</a></p>
+                                                                                )}
+                                                                            </>
+                                                                        )}
+
+                                                                    </>
+                                                                )}
+                                                            </div>
 
                                                         </div>
                                                         <Chat quoteId={quote.quoteid} refId={quote.assign_id} status={quote.quote_status} submittedToAdmin={quote.submittedtoadmin} finalFunction={fetchScopeDetails} allDetails={quote} />
