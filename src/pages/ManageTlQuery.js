@@ -629,6 +629,7 @@ const ManageTlQuery = ({ onClose }) => {
                         queryId={selectedQuery.ref_id}
                         after={() => { fetchQuotes(false) }}
                         tlType={loopuserObject.tl_type}
+                        tagAccess = {loopuserObject.scopetagaccess}
                     />
 
                 )}

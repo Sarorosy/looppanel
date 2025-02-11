@@ -21,7 +21,7 @@ import { getSocket } from './Socket';
 import ReactTooltip, { Tooltip } from 'react-tooltip'
 import MergedHistoryComponentNew from "./MergedHistoryComponentNew";
 
-const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName, tlType }) => {
+const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName, tlType , tagAccess}) => {
     const socket = getSocket();
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -607,7 +607,7 @@ const getVisibleTabCount = () => {
                                 ) : null}
 
                                 <button
-                                disabled={tlType && tlType == 2}
+                                disabled={tlType && tlType == 2 && tagAccess != 1}
                                 onClick={() => {
                                     toggleHashEditForm(
                                     quote.quoteid,
@@ -619,7 +619,7 @@ const getVisibleTabCount = () => {
                                 <Hash size={14} />
                                 </button>
                                 <button
-                                disabled={tlType && tlType == 2}
+                                disabled={tlType && tlType == 2 }
                                 onClick={() => {
                                     toggleFollowersForm(quote.quoteid, thisUserId);
                                 }}
