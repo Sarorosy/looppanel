@@ -490,7 +490,7 @@ const ManageTlQuery = ({ onClose }) => {
                                 ))}
                             </select>
                         </div>
-                        <div className="col-2 mb-3">
+                        <div className="col-2 mb-3" style={{ display: (currentTlEmail == "balakumar.v@dissertationindia.net" || currentTlEmail == "rc.tech.3@dissertationindia.net") ? "none" : "" }}>
                             <select
                                 id="service_name"
                                 className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control form-control-sm"
