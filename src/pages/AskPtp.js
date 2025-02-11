@@ -100,8 +100,8 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
     };
 
     return (
-        <div className='border-top pt-3'>
-            <button onClick={() => setShowForm(!showForm)} className="btn btn-info btn-sm ">
+        <div className=''>
+            <button onClick={() => setShowForm(!showForm)} className="btn btn-info btn-sm f-12">
                 Ask Discount
             </button>
 
@@ -115,21 +115,21 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                         className="mt-2 p-3 border border-gray-300 rounded bg-light"
                     >
                         <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
+                            <div className="mb-3">
                                 <div className="flex items-center space-x-2">
                                     <input
                                         type="checkbox"
                                         id="ptp"
                                         checked={ptp === 'Yes'}
                                         onChange={(e) => setPtp(e.target.checked ? 'Yes' : 'No')}
-                                        className="form-checkbox h-5 w-5 text-blue-600"
+                                        className="form-checkbox text-blue-600 h-2 w-2"
                                     />
-                                    <label htmlFor="ptp" className="text-sm font-semibold mb-0">PTP Client</label>
+                                    <label htmlFor="ptp" className="font-semibold mb-0">PTP Client</label>
                                 </div>
                             </div>
-                            <div className='w-full flex items-start space-x-2'>
-                                <div className="mb-4 relative">
-                                    <label htmlFor="ptpamount" className="block text-sm font-semibold">PTP Amount</label>
+                            <div className=''>
+                                <div className="mb-3 relative">
+                                    <label htmlFor="ptpamount" className="block font-semibold">PTP Amount</label>
                                     <div className="flex items-center">
                                         <span className="absolute left-2 text-gray-500">{scopeDetails.currency}</span>
                                         <input
@@ -137,43 +137,43 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                                             type="number"
                                             value={ptpAmount}
                                             onChange={(e) => setPtpAmount(e.target.value)}
-                                            className="w-full pl-10  border border-gray-300 rounded no-arrows form-control"
+                                            className="w-full pl-10  border border-gray-300 rounded no-arrows form-control form-control-sm"
                                         />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mb-4">
-                                <label className="block text-sm font-semibold ">Plans</label>
+                            <div className="mb-3">
+                                <label className="block font-semibold ">Plans</label>
                                 <div className="mt-2 flex flex-wrap">
                                     {['Basic', 'Standard', 'Advanced'].map((plan, index) => (
-                                        <div key={index} className="flex items-center mb-2 mr-5">
+                                        <div key={index} className="flex items-center mb-2 mr-4">
                                             <input
                                                 type="checkbox"
                                                 id={`plan-${plan}`}
                                                 value={plan}
                                                 checked={selectedPlans.includes(plan)}
                                                 onChange={() => handleCheckboxChange(plan)}
-                                                className="form-checkbox h-4 w-4 border-gray-300 rounded"
+                                                className="form-checkbox h-2 w-2 border-gray-300 rounded"
                                             />
-                                            <label htmlFor={`plan-${plan}`} className="ml-2 text-sm font-medium mb-0">{plan}</label>
+                                            <label htmlFor={`plan-${plan}`} className="ml-1 font-medium mb-0">{plan}</label>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="mb-4">
-                                <label htmlFor="ptp_comments" className="block text-sm font-semibold">Comments</label>
+                            <div className="mb-3">
+                                <label htmlFor="ptp_comments" className="block font-semibold">Comments</label>
                                 <textarea
                                     id="ptp_comments"
                                     name="ptp_comments"
                                     value={ptpComments}
                                     onChange={(e) => setPtpComments(e.target.value)}
                                     style={{ resize: 'none' }}
-                                    className="w-full p-2 border border-gray-300 rounded form-control"
+                                    className="w-full p-2 border border-gray-300 rounded form-control form-control-sm"
                                 />
                             </div>
-                            <div className="mb-4">
-                                <label htmlFor="ptp_file" className="block text-sm font-semibold">Upload File</label>
+                            <div className="mb-3">
+                                <label htmlFor="ptp_file" className="block font-semibold">Upload File</label>
                                 <input
                                     type="file"
                                     id="ptp_file"
@@ -182,7 +182,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                                 />
                             </div>
                             <div className='text-right'>
-                                <button type="submit" disabled={ptploading} className="btn btn-primary btn-sm ">
+                                <button type="submit" disabled={ptploading} className="btn btn-primary btn-sm f-12">
                                     {ptploading ? "Submitting..." : "Submit"}
                                 </button>
                             </div>

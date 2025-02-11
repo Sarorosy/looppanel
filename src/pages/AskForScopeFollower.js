@@ -418,17 +418,18 @@ const getVisibleTabCount = () => {
     return (
         <div className=" h-full bg-gray-100 z-50 overflow-y-auto mt-2 rounded w-full">
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
-                <h2 className="text-xl font-semibold " >Ask For Scope </h2>
+                <h2 className="text-sx font-semibold " >Ask For Scope </h2>
                 <div className='flex items-center'>
-
-                    <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
+                    <button onClick={fetchScopeDetails} className="btn btn-dark btn-sm">
+                    <RefreshCcw size={15} className="cursor-pointer" />
+                    </button>
                 </div>
             </div>
 
             {loading ? (
                 <ScopeLoader /> // A loader component when data is being fetched
             ) : (
-                <div className="bg-white p-6 m-2 shadow rounded-md space-y-4">
+                <div className="bg-white p-3 space-y-4">
                     {errorMessage && <p className="text-red-600">{errorMessage}</p>}
 
                     {scopeDetails && scopeDetails.length > 0 ? (
@@ -454,7 +455,7 @@ const getVisibleTabCount = () => {
                                             <tr
                                                 className="cursor-pointer hover:bg-gray-50"
                                             >
-                                                <td className="border px-2 py-2 ">
+                                                <td className="border px-2 py-2 " style={{ fontSize: "11px" }}>
                                                     <p className='flex items-center line-h-in'>
                                                         {quote.assign_id}
                                                         {quote.ptp == "Yes" && (
@@ -464,7 +465,7 @@ const getVisibleTabCount = () => {
                                                                     backgroundColor: '#2B9758FF', // Green color for PTP
                                                                     clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
                                                                     color: '#ffffff',
-                                                                    fontSize: '12px', // Increased font size for better visibility
+                                                                    fontSize: '11px', // Increased font size for better visibility
                                                                     fontWeight: 'bold',
                                                                     lineHeight: '1.3', // Increased line height to make it visually balanced
                                                                 }}
@@ -544,7 +545,7 @@ const getVisibleTabCount = () => {
                                                         <div className="">
                                                             <button
                                                             onClick={() => handleTabButtonClick("scope")}
-                                                            className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${
+                                                            className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${
                                                                 scopeTabVisible
                                                                 ? "btn-info focus-outline-none"
                                                                 : "btn-light"
@@ -554,7 +555,7 @@ const getVisibleTabCount = () => {
                                                             </button>
                                                             <button
                                                             onClick={() => handleTabButtonClick("chat")}
-                                                            className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${
+                                                            className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${
                                                                 chatTabVisible
                                                                 ? "btn-info focus-outline-none"
                                                                 : "btn-light"
@@ -565,7 +566,7 @@ const getVisibleTabCount = () => {
                                                             <button
                                                             disabled={quote.isfeasability == 0}
                                                             onClick={() => handleTabButtonClick("feas")}
-                                                            className={`px-2 py-1 mr-1 text-sm inline-flex items-center ${
+                                                            className={`px-2 py-1 mr-1 f-12 inline-flex items-center ${
                                                                 feasTabVisible
                                                                 ? "btn-info focus-outline-none"
                                                                 : "btn-light"
@@ -575,23 +576,20 @@ const getVisibleTabCount = () => {
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    <div className="mx-3 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
+                                                    <div className="mx-2 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row">
                                                     {scopeTabVisible && (
                                                         <div className={`${fullScreenTab == "scope" ? "custom-modal" : colClass}`}>
                                                         <div className={`${fullScreenTab == "scope" ? "custom-modal-content" : ""}`}>
                                                             <div className={`  pl-0`}>
-                                                            <div className="bg-white p-3">
-                                                                <div className="pb-2 mb-3 flex items-center justify-between">
-                                                                <h3 className="f-18">Scope Details</h3>
-                                                                <div>
-                                                                    <button className=""
-                                                                    >
-                                                                    {fullScreenTab == "scope" ? (<Minimize2 size={25} onClick={()=>{handlefullScreenBtnClick(null)}} className="btn btn-sm btn-light flex items-center px-1"/> ) : (<Expand size={25} onClick={()=>{handlefullScreenBtnClick("scope")}} className="btn btn-sm btn-light flex items-center px-1"/>)}
-                                                                    </button>
-                                                                </div>
-                                                                </div>
+                                                            <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                                                <h3 className=""><strong>Scope Details</strong></h3>
+                                                                <button className="">
+                                                                    {fullScreenTab == "scope" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                                                </button>
+                                                            </div>
+                                                            <div className="bg-white">
                                                                 <div className="overscroll-modal">
-                                                                <div className="text-sm px-0">
+                                                                <div className="px-0">
                                                                     <div className="row">
                                                                         <div className='col-md-12'>
                                                                         <p className='mb-3'>
@@ -616,7 +614,18 @@ const getVisibleTabCount = () => {
                                                                             )}
 
                                                                             {quote.edited == 1 && (
-                                                                                <span className="text-gray-600 bg-gray-200 rounded-full text-sm ml-2" style={{ fontSize: "11px", padding: "1px 6px" }}>Edited</span>
+                                                                                <span
+                                                                                className="edited-badge ml-2"
+                                                                                style={{
+                                                                                  fontSize: "11px",
+                                                                                  padding: "2px 8px",
+                                                                                  backgroundColor: "#f0f0f0",
+                                                                                  color: "#666",
+                                                                                  borderRadius: "5px",
+                                                                                }}
+                                                                              >
+                                                                                Edited
+                                                                              </span>
                                                                             )}
                                                                         </p>
 
@@ -626,12 +635,20 @@ const getVisibleTabCount = () => {
                                                                                 <strong>Tags</strong>
                                                                                 </div>
                                                                                 {quote.tag_names.split(',').map((tag, index) => (
-                                                                                    <span
-                                                                                        key={index}
-                                                                                        className="text-blue-500 p-1 rounded-full text-sm font-medium inline-block ml-1"
-                                                                                    >
-                                                                                        #{tag.trim()}
-                                                                                    </span>
+                                                                                    <div
+                                                                                    key={index}
+                                                                                    className="tag-badge mr-1 d-inline"
+                                                                                    style={{
+                                                                                      padding: "3px 5px",
+                                                                                      borderRadius: "4px",
+                                                                                      backgroundColor:
+                                                                                        "#007bff",
+                                                                                      color: "#fff",
+                                                                                      fontSize: "10px",
+                                                                                    }}
+                                                                                  >
+                                                                                    # {tag.trim()}
+                                                                                  </div>
                                                                                 ))}
                                                                             </p>
                                                                         )}
@@ -657,16 +674,16 @@ const getVisibleTabCount = () => {
                                                                     </div>
                                                                     <div className="row">
                                                                     <div className="col-md-12">
-                                                                    <h3 className="f-18 mb-2 font-weight-bold">
-                                                                        Plan Description
-                                                                    </h3>
+                                                                    <p className=" mb-2">
+                                                                        <strong>Plan Description</strong>
+                                                                    </p>
                                                                     </div>
                                                                     {quote.plan_comments && typeof quote.plan_comments === "string" && quote.plan && (
                                                                         Object.entries(JSON.parse(quote.plan_comments))
                                                                         .filter(([plan]) => quote.plan.split(',').includes(plan)) // Filter based on the updated plan list
                                                                         .map(([plan, comment], index) => (
                                                                             <div key={index} className={planColClass}>
-                                                                            <div className="border p-3 mb-2">
+                                                                            <div className="border p-2 mb-3">
                                                                                 <p>
                                                                                 <strong>{plan}</strong>
                                                                                 </p>
@@ -885,27 +902,27 @@ const getVisibleTabCount = () => {
                                                         <div className={`${fullScreenTab == "feas" ? "custom-modal" : colClass}`}>
                                                         <div className={`${fullScreenTab == "feas" ? "custom-modal-content" : ""}`}>
                                                             <div className={` pr-0`}>
-                                                            <div className="bg-white px-3 pt-3 pb-3">
+                                                            <div className="bg-white">
                                                                 <>
                                                                 {quote.isfeasability == 1 && (
                                                                     <>
-                                                                    <div className="d-flex justify-between border-bottom pb-2 mb-3 ">
-                                                                        <h3 class="f-18 ">Feasibility</h3>
-                                                                        <div className="d-flex justify-between items-center">
-                                                                        
-                                                                        <button className="">
-                                                                            {fullScreenTab == "feas" ? (<Minimize2 size={25} onClick={()=>{handlefullScreenBtnClick(null)}}  className="btn btn-sm btn-light flex items-center px-1"/>) : (<Expand size={25} onClick={()=>{handlefullScreenBtnClick("feas")}}  className="btn btn-sm btn-light flex items-center px-1"/>)}
-                                                                        </button>
+                                                                    <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                                                        <h3 className=""><strong>Feasibility</strong></h3>
+                                                                        <div className='flex items-center'>
+                                                                                <button className="">
+                                                                                {fullScreenTab == "feas" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("feas") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                                                                </button>
                                                                         </div>
                                                                     </div>
                                                                     {quote.feasability_status ==
                                                                         "Completed" && (
                                                                         <>
+                                                                        <div className='px-3 pt-3 pb-0'> 
                                                                         <p
                                                                             style={{
                                                                             textDecoration: "italic",
                                                                             }}
-                                                                            className="italic px-0 border-bottom mb-3 pb-3"
+                                                                            className="italic px-0 f-12"
                                                                         >
                                                                             <strong>
                                                                             Feasibility Comments:
@@ -920,30 +937,32 @@ const getVisibleTabCount = () => {
                                                                             />
                                                                         </p>
                                                                         {quote.feas_file_name && (
-                                                                            <p className="flex items-center">
-                                                                            Feasibility Attachment :{" "}
+                                                                            <p className="flex items-center f-12 mt-2">
+                                                                            Feasibility Attachment : {" "}
                                                                             <a
                                                                                 href={
                                                                                 "https://apacvault.com/public/feasabilityFiles/" +
                                                                                 quote.feas_file_name
                                                                                 }
                                                                                 target="_blank"
-                                                                                className="text-blue-600 flex items-center"
+                                                                                className="text-blue-600 flex items-center ml-2"
                                                                             >
-                                                                                <Paperclip size={20} /> View
-                                                                                File
+                                                                                <Paperclip size={13} /> View File
                                                                             </a>
                                                                             </p>
                                                                         )}
+                                                                        </div>
                                                                         </>
                                                                     )}
                                                                     </>
                                                                 )}
-                                                                <MergedHistoryComponentNew
-                                                                    quoteId={quote.quoteid}
-                                                                    refId={quote.assign_id}
-                                                                    onlyFetch="feasibility"
-                                                                />
+                                                                <div className="p-3">
+                                                                    <MergedHistoryComponentNew
+                                                                        quoteId={quote.quoteid}
+                                                                        refId={quote.assign_id}
+                                                                        onlyFetch="feasibility"
+                                                                    />
+                                                                </div>
                                                                 </>
                                                             </div>
                                                             </div>

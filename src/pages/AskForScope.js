@@ -650,13 +650,13 @@ const getVisibleTabCount = () => {
                         {expandedRowIndex == index && (
                           <tr>
                             <td colSpan={7}>
-                              <div className="mx-3 mt-4 mb-0 bg-gray-100 px-3 pt-3 pb-0">
+                              <div className="mx-2 mt-2 mb-0 bg-gray-100 px-3 pt-3 pb-0">
                                 <div className="">
                                   <button
                                     onClick={() =>
                                       handleTabButtonClick("scope")
                                     }
-                                    className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${
+                                    className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${
                                       scopeTabVisible
                                         ? "btn-info focus-outline-none"
                                         : "btn-light"
@@ -677,7 +677,7 @@ const getVisibleTabCount = () => {
                                   </button>
                                   <button
                                     onClick={() => handleTabButtonClick("chat")}
-                                    className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${
+                                    className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${
                                       chatTabVisible
                                         ? "btn-info focus-outline-none"
                                         : "btn-light"
@@ -699,7 +699,7 @@ const getVisibleTabCount = () => {
                                   <button
                                     disabled={quote.isfeasability == 0}
                                     onClick={() => handleTabButtonClick("feas")}
-                                    className={`px-2 py-1 mr-1 text-sm inline-flex items-center ${
+                                    className={`px-2 py-1 mr-1 f-12 inline-flex items-center ${
                                       feasTabVisible
                                         ? "btn-info focus-outline-none"
                                         : "btn-light"
@@ -720,7 +720,7 @@ const getVisibleTabCount = () => {
                                   </button>
                                 </div>
                               </div>
-                              <div className="mx-3 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
+                              <div className="mx-2 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
                                 {scopeTabVisible && (
                                   <div
                                     className={`${
@@ -737,47 +737,23 @@ const getVisibleTabCount = () => {
                                       } `}
                                     >
                                       <div className={`  pl-0`}>
-                                        <div className="bg-white p-3">
-                                          <div className=" pb-2 mb-3 flex items-center justify-between">
-                                            <h3 className="f-18">
-                                              Scope Details
-                                            </h3>
-                                            <div>
+                                          <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                            <h3 className=""><strong>Scope Details</strong></h3>
                                               <button className="">
-                                                {fullScreenTab == "scope" ? (
-                                                  <Minimize2
-                                                    size={25}
-                                                    onClick={() => {
-                                                      handlefullScreenBtnClick(
-                                                        null
-                                                      );
-                                                    }}
-                                                    className="btn btn-sm btn-light flex items-center px-1"
-                                                  />
-                                                ) : (
-                                                  <Expand
-                                                    size={25}
-                                                    onClick={() => {
-                                                      handlefullScreenBtnClick(
-                                                        "scope"
-                                                      );
-                                                    }}
-                                                    className="btn btn-sm btn-light flex items-center px-1"
-                                                  />
-                                                )}
+                                                {fullScreenTab == "scope" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-1" />)}
                                               </button>
-                                            </div>
                                           </div>
+                                        <div className="bg-white">
                                           <div className="overscroll-modal">
-                                            <div className="space-y-4 text-sm px-0">
+                                            <div className="space-y-2 px-0">
                                               <div className="row">
                                                 {/* Ref No Section */}
-                                                <div className="col-md-12 border-bottom">
+                                                <div className="col-md-12">
                                                   <p className=" mb-3">
                                                     <div><strong>Ref No </strong>{" "}</div>
                                                     <div className='flex items-center'>
                                                         <div className='line-h-in'>{quote.assign_id}</div>
-                                                        <div>
+                                                        
                                                             {quote.ptp === "Yes" && (
                                                             <span
                                                                 className="inline-block pl-3 pr-2 py-1 f-10 ml-1" 
@@ -799,27 +775,27 @@ const getVisibleTabCount = () => {
                                                             <span
                                                                 className="ml-2 badge badge-secondary"
                                                                 style={{
-                                                                    fontSize: "11px",
+                                                                    fontSize: "10px",
                                                                 }}
                                                             >
                                                                 Edited
                                                             </span>
                                                             )}
-                                                        </div>
+                                                        
                                                     </div>
                                                   </p>
 
                                                   {quote.tag_names && (
                                                     <p className=' mb-3'>
-                                                      <div><strong>Tags</strong></div>
+                                                      <div className=''><strong>Tags</strong></div>
                                                       {quote.tag_names
                                                         .split(",")
                                                         .map((tag, index) => (
                                                           <span
                                                             key={index}
-                                                            className="badge badge-secondary f-12"
+                                                            className="badge badge-primary f-10 mr-1"
                                                           >
-                                                            #{tag.trim()}
+                                                            # {tag.trim()}
                                                           </span>
                                                         ))}
                                                     </p>
@@ -884,9 +860,9 @@ const getVisibleTabCount = () => {
                                               </div>
                                               <div className="row">
                                                 <div className="col-md-12">
-                                                  <h3 className="f-18 mb-2 font-weight-bold">
-                                                    Plan Description
-                                                  </h3>
+                                                  <p className="mb-2">
+                                                    <strong>Plan Description</strong>
+                                                  </p>
                                                 </div>
                                                 {quote.plan_comments &&
                                                   typeof quote.plan_comments ===
@@ -913,7 +889,7 @@ const getVisibleTabCount = () => {
                                                             planColClass
                                                           }
                                                         >
-                                                          <div className="border p-3 mb-2">
+                                                          <div className="border p-2 mb-3">
                                                             <p className='flex items-center mb-1 justify-content-between'>
                                                               <strong>
                                                                 {plan}
@@ -964,21 +940,16 @@ const getVisibleTabCount = () => {
                                                                       >
                                                                         <p
                                                                           style={{
-                                                                            fontWeight:
-                                                                              "bold",
-                                                                            color:
-                                                                              "#007bff",
-                                                                            backgroundColor:
-                                                                              "#f0f8ff", // Background color for word count text
-                                                                            padding:
-                                                                              "5px", // Padding around the word count text
-                                                                            borderRadius:
-                                                                              "5px", // Rounded corners for the background
-                                                                            border:
-                                                                              "1px solid #40BD5DFF",
+                                                                            fontWeight:"bold",
+                                                                            color:"#007bff",
+                                                                            backgroundColor:"#f0f8ff", 
+                                                                            padding:"5px", 
+                                                                            borderRadius:"5px", 
+                                                                            border:"1px solid #40BD5DFF",
+                                                                            fontSize: "11px",
                                                                           }}
                                                                         >
-                                                                          <p className="mb-1 text-black">
+                                                                          <p className="text-black">
                                                                             <div>
                                                                               Word
                                                                               Counts:
@@ -1022,14 +993,14 @@ const getVisibleTabCount = () => {
                                                       )
                                                     )}
                                               </div>
-                                              <div className="mb-0 row px-2 pb-3 space-y-4">
+                                              <div className="mb-0 mt-0 row px-2 pb-3 space-y-2">
                                                 {quote.comments &&
                                                   quote.comments != "" &&
                                                   quote.comments != null && (
                                                     <p className='mb-2'>
                                                       <strong
                                                         style={{
-                                                            fontSize: "15px",
+                                                            fontSize: "12px",
                                                         }}
                                                       >
                                                         Description
@@ -1501,25 +1472,27 @@ const getVisibleTabCount = () => {
                                       }`}
                                     >
                                       <div className={` pr-0`}>
-                                        <div className="bg-white px-3 pt-3 pb-3">
+                                        <div className="bg-white">
                                           <>
-                                          <div className="d-flex justify-between border-bottom pb-2 mb-3 ">
-                                            <h3 class="f-18 ">Feasibility</h3>
-                                            <div className="d-flex justify-between items-center">
-                                              <button className="">
-                                                {fullScreenTab == "feas" ? (<Minimize2 size={25} onClick={()=>{handlefullScreenBtnClick(null)}}  className="btn btn-sm btn-light flex items-center px-1"/>) : (<Expand size={25} onClick={()=>{handlefullScreenBtnClick("feas")}}  className="btn btn-sm btn-light flex items-center px-1"/>)}
-                                              </button>
+                                          <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                                <h3 className=""><strong>Feasibility</strong></h3>
+                                                <div className='flex items-center'>
+                                                    
+                                                      <button className="">
+                                                        {fullScreenTab == "feas" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("feas") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                                      </button>
+                                                </div>
                                             </div>
-                                          </div>
+                                         
                                             {quote.feasability_status ==
                                               "Completed" && (
                                               <>
-                                              
+                                              <div className="px-3 pt-3 pb-0">
                                                 <p
                                                   style={{
                                                     textDecoration: "italic",
                                                   }}
-                                                  className="italic mb-3"
+                                                  className="italic px-0 f-12"
                                                 >
                                                   <div>
                                                     <strong>
@@ -1550,6 +1523,7 @@ const getVisibleTabCount = () => {
                                                     </a>
                                                   </p>
                                                 )}
+                                                </div>
                                               </>
                                             )}
                                             {historyLoading && <CustomLoader />}
@@ -1610,11 +1584,13 @@ const getVisibleTabCount = () => {
                                                 </div>
                                               </div>
                                             )}
+                                            <div className="p-3">
                                             <MergedHistoryComponentNew
                                               quoteId={quote.quoteid}
                                               refId={quote.assign_id}
                                               onlyFetch="feasibility"
                                             />
+                                            </div>
                                           </>
                                         </div>
                                       </div>

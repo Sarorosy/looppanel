@@ -976,14 +976,12 @@ const AskForScopeAdmin = ({
                                           </button>
                                       </div>
                                       <div className="bg-white">
-                                        
                                         <div className="overscroll-modal">
                                           <div className="space-y-2 px-0">
                                             <div className="row">
                                               {/* Ref No Section */}
-
-                                              <div className="col-md-12 mb-3">
-                                                <p className="">
+                                              <div className="col-md-12">
+                                                <p className="mb-3">
                                                   <div>
                                                     <strong className="mr-2">
                                                       Ref No
@@ -1900,7 +1898,7 @@ const AskForScopeAdmin = ({
                                                         style={{
                                                           textDecoration: "italic",
                                                         }}
-                                                        className="italic px-0  f-12"
+                                                        className="italic px-0 f-12"
                                                       >
                                                         <strong>
                                                           Feasibility Comments:
@@ -1923,10 +1921,9 @@ const AskForScopeAdmin = ({
                                                               quote.feas_file_name
                                                             }
                                                             target="_blank"
-                                                            className="text-blue-600 flex items-center"
+                                                            className="text-blue-600 flex items-center ml-2"
                                                           >
-                                                            <Paperclip size={20} /> View
-                                                            File
+                                                            <Paperclip size={13} /> View File
                                                           </a>
                                                         </p>
                                                       )}

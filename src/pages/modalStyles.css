@@ -14,8 +14,8 @@
   
   .custom-modal-content {
     background-color: white;
-    padding: 20px;
-    border-radius: 8px;
+    /* padding: 20px; */
+    /* border-radius: 8px; */
     width: 90%;
     height: 90%;
     position: relative;
@@ -37,3 +37,7 @@
     color: #000;
   }
   
+
+.custom-modal-content .overscroll-modal {
+    height: 86vh;
+}
