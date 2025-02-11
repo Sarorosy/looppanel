@@ -432,7 +432,7 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
                                                     <td colSpan={7} className="border px-4 py-4 bg-gray-50">
                                                         <div className="space-y-4 text-sm">
                                                             <p className='d-flex align-items-center'>
-                                                                <strong>Ref No.:</strong> {quote.assign_id}
+                                                                <strong>Ref No:</strong> {quote.assign_id}
                                                                 {quote.ptp === "Yes" && (
                                                                     <span
                                                                         className="inline-block pl-3 pr-2 py-1 f-10 ml-1" // Increased padding for more space
@@ -518,7 +518,7 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
 
                                                                     {quote.word_counts && quote.word_counts != null && (
                                                                         <div>
-                                                                            <p className="mb-2"><strong style={{ textDecoration: "underline" }}>Word Counts:</strong></p>
+                                                                            <p className="mb-2"><strong style={{ textDecoration: "underline" }}>Word Count:</strong></p>
                                                                             <div className="row" style={{
                                                                                 wordWrap: "break-word",
                                                                                 overflowWrap: "break-word",
@@ -610,7 +610,7 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
                                                                                 const prices = quote.quote_price.split(','); // Split quote_price into an array
                                                                                 const plans = quote.old_plan.split(','); // Split plan into an array
                                                                                 return plans.map((plan, index) => (
-                                                                                    <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
+                                                                                    <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500 f-12 mb-2 d-inline-block">
                                                                                         <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                                         {index < plans.length - 1 && ', '}
                                                                                         {quote.mp_price === plan && " (MP Price)"}

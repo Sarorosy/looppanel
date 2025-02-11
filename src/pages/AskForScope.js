@@ -884,7 +884,7 @@ const getVisibleTabCount = () => {
                                               </div>
                                               <div className="row">
                                                 <div className="col-md-12">
-                                                  <h3 className="f-18 mb-2">
+                                                  <h3 className="f-18 mb-2 font-weight-bold">
                                                     Plan Description
                                                   </h3>
                                                 </div>
@@ -914,7 +914,7 @@ const getVisibleTabCount = () => {
                                                           }
                                                         >
                                                           <div className="border p-3 mb-2">
-                                                            <p>
+                                                            <p className='flex items-center mb-1 justify-content-between'>
                                                               <strong>
                                                                 {plan}
                                                               </strong>
@@ -1022,7 +1022,7 @@ const getVisibleTabCount = () => {
                                                       )
                                                     )}
                                               </div>
-                                              <div className="mb-0 row px-2 pb-3">
+                                              <div className="mb-0 row px-2 pb-3 space-y-4">
                                                 {quote.comments &&
                                                   quote.comments != "" &&
                                                   quote.comments != null && (

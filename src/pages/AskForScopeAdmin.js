@@ -676,8 +676,8 @@ const AskForScopeAdmin = ({
       <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
         <div className="flex items-center space-x-2">
           <h2 className="text-sx font-semibold ">Ask For Scope </h2>
-          <div className="flex items-center space-x-1 bg-white px-1 rounded text-gray-900" title="Client Name">
-            <CircleUserRound size={18} className="mr-2" />
+          <div className="badge badge-light flex items-center" title="Client Name">
+            <CircleUserRound size={15} className="mr-2" />
             {info.name ?? 'Loading..'}
           </div>
         </div>
@@ -991,20 +991,24 @@ const AskForScopeAdmin = ({
                                                       Ref No
                                                     </strong>
                                                   </div>
-                                                  {quote.assign_id}
-                                                  {quote.ptp === "Yes" && (
-                                                    <span
-                                                      className="ptp-badge ml-2"
-                                                      style={{
-                                                        backgroundColor: "#2B9758FF", // Green for PTP
-                                                        color: "#fff",
-                                                        fontSize: "14px", // Adjusted for better visibility
-                                                        fontWeight: "bold",
-                                                      }}
-                                                    >
-                                                      PTP
-                                                    </span>
-                                                  )}
+                                                  <div className="d-flex align-items-center">
+                                                    <div>{quote.assign_id}</div>
+                                                    <div>
+                                                      {quote.ptp === "Yes" && (
+                                                        <span
+                                                          className="ptp-badge badge badge-success ml-2"
+                                                          style={{
+                                                            backgroundColor: "#2B9758FF", // Green for PTP
+                                                            color: "#fff",
+                                                            fontSize: "11px", // Adjusted for better visibility
+                                                            fontWeight: "bold",
+                                                          }}
+                                                        >
+                                                          PTP
+                                                        </span>
+                                                      )}
+                                                    </div>
+                                                  </div>
                                                   {quote.edited === 1 && (
                                                     <span
                                                       className="edited-badge ml-2"
@@ -1112,9 +1116,9 @@ const AskForScopeAdmin = ({
                                                 )}
                                               </div>
                                             </div>
-                                            <div className="row">
+                                            <div className="row mt-0">
                                               <div className="col-md-12">
-                                                <h3 className="f-18 mb-2">
+                                                <h3 className="f-18 mb-2 font-weight-bold">
                                                   Plan Description
                                                 </h3>
                                               </div>
@@ -1124,9 +1128,9 @@ const AskForScopeAdmin = ({
                                                   .map(([plan, comment], index) => (
                                                     <div key={index} className={planColClass}>
                                                       <div className="border p-3 mb-2">
-                                                        <p className="flex items-center space-x-2 mb-1">
+                                                        <p className="flex items-center mb-1 justify-content-between">
                                                           <strong>{plan}</strong> <button
-                                                            className="peneditbtn p-1  rounded-full"
+                                                            className="btn btn-warning btn-sm"
                                                             onClick={() => handleEditClick(quote, plan, comment)}
                                                           >
                                                             <Pen size={12} />
@@ -1152,7 +1156,7 @@ const AskForScopeAdmin = ({
                                                                     }}
                                                                   >
                                                                     <p className="mb-1 text-black">
-                                                                      <div>Word Counts:</div>
+                                                                      <div>Word Count:</div>
                                                                     </p>
                                                                     {planWordCount}:{" "}
                                                                     <span style={{ color: "#28a745" }}>
@@ -1173,7 +1177,7 @@ const AskForScopeAdmin = ({
                                               )}
                                             </div>
 
-                                            <div className="mb-0 row px-2 pb-3">
+                                            <div className="mb-0 row px-2 pb-3 space-y-4 ">
                                               {quote.comments &&
                                                 quote.comments != "" &&
                                                 quote.comments != null && (
@@ -1282,7 +1286,7 @@ const AskForScopeAdmin = ({
                                                 quote.plan && (
                                                   <>
                                                     {quote.old_plan && (
-                                                      <p className="text-gray-600 my-1">
+                                                      <p className="text-gray-600">
                                                         <strong>
                                                           Quote Price For Old Plan:
                                                         </strong>{" "}
@@ -1297,7 +1301,7 @@ const AskForScopeAdmin = ({
                                                             (plan, index) => (
                                                               <span
                                                                 key={index}
-                                                                className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500"
+                                                                className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500 f-12 mb-2 d-inline-block"
                                                               >
                                                                 <strong>
                                                                   {plan}{" "}
@@ -1434,7 +1438,7 @@ const AskForScopeAdmin = ({
                                                       </p>
                                                     )}
                                                     <p className="flex items-center">
-                                                      Edit Quote Price
+                                                      <span className="font-weight-bold">Edit Quote Price</span>
                                                       {quote.quote_status == 1 &&
                                                         loopUserObject.id !=
                                                         "206" && (
@@ -1650,7 +1654,7 @@ const AskForScopeAdmin = ({
                                                   <>
                                                     <div className="nav-tabs-custom tabb pt-2 shadow-0">
                                                       <ul className="nav nav-tabs pb-3">
-                                                        <li className="badge badge-primary f-14 font-weight-500">
+                                                        <li className="btn btn-primary btn-sm border-0">
                                                           Submit Price
                                                         </li>
                                                       </ul>

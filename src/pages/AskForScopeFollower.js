@@ -657,7 +657,7 @@ const getVisibleTabCount = () => {
                                                                     </div>
                                                                     <div className="row">
                                                                     <div className="col-md-12">
-                                                                    <h3 className="f-18 mb-2">
+                                                                    <h3 className="f-18 mb-2 font-weight-bold">
                                                                         Plan Description
                                                                     </h3>
                                                                     </div>
@@ -690,7 +690,7 @@ const getVisibleTabCount = () => {
                                                                                             }}
                                                                                         >
                                                                                             <p className="mb-1 text-black">
-                                                                                            <div>Word Counts:</div>
+                                                                                            <div>Word Count:</div>
                                                                                             </p>
                                                                                             {planWordCount}:{" "}
                                                                                             <span style={{ color: "#28a745" }}>
@@ -710,7 +710,7 @@ const getVisibleTabCount = () => {
                                                                         ))
                                                                     )}
                                                                     <div className='col-md-12'>
-                                                                        <div className='mb-0 row px-2 pb-3'>
+                                                                        <div className='mb-0 row px-2 pb-3 space-y-4'>
                                                                         {quote.comments && quote.comments != "" && quote.comments != null && (
                                                                             <p className='mb-2'><strong style={{  }} className='mb-2 d-block'>Description</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
                                                                         )}
@@ -768,7 +768,7 @@ const getVisibleTabCount = () => {
                                                                                             const prices = quote.quote_price.split(','); // Split quote_price into an array
                                                                                             const plans = quote.old_plan.split(','); // Split plan into an array
                                                                                             return plans.map((plan, index) => (
-                                                                                                <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
+                                                                                                <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500 f-12 mb-2 d-inline-block">
                                                                                                     <div><strong>{plan} </strong></div> {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                                                     {index < plans.length - 1 && ', '}
                                                                                                     {quote.mp_price === plan && " (MP Price)"}

@@ -92,7 +92,7 @@ const EditCommentsComponent = ({ quote, plan, comment, wordCount, onClose, after
                         modules={modules}
                     />
                 </div>
-                {wordCount && wordCount != null && (
+                {wordCount && wordCount != null ? (
                     <div className="form-group">
                         <label className="control-label">Word Count</label>
                         <input
@@ -103,12 +103,12 @@ const EditCommentsComponent = ({ quote, plan, comment, wordCount, onClose, after
                             min={0}
                         />
                     </div>
-                )}
+                ) : ""}
 
                 <div className="box-footer p-2">
                     <button
                         type="button"
-                        className="btn pull-right btn-success"
+                        className="btn pull-right btn-success btn-sm"
                         onClick={handleSubmit}
                         disabled={loading}
                     >

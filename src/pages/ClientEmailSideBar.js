@@ -306,7 +306,7 @@ const ClientEmailSideBar = ({ refIds, onClose }) => {
                                                                                 const prices = quote.quote_price.split(','); // Split quote_price into an array
                                                                                 const plans = quote.old_plan.split(','); // Split plan into an array
                                                                                 return plans.map((plan, index) => (
-                                                                                    <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500">
+                                                                                    <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500 f-12 mb-2 d-inline-block">
                                                                                         <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                                         {index < plans.length - 1 && ', '}
                                                                                     </span>

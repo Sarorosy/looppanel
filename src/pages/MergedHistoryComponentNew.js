@@ -64,7 +64,7 @@ const MergedHistoryComponentNew = ({ refId, quoteId, onClose, onlyFetch }) => {
     <div className="overflow-y-auto flex flex-col border space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between bg-blue-400 text-white py-1 px-3">
-        <h2 className="f-18 font-semibold">History</h2>
+        <h2 className="f-18 font-semibold">{onlyFetch == 'quote' ? "Quote History" : "Feasibility History"}</h2>
       </div>
 
       {/* Content */}
@@ -76,9 +76,7 @@ const MergedHistoryComponentNew = ({ refId, quoteId, onClose, onlyFetch }) => {
               "w-full"
             } bg-white p-2 px-3 rounded shadow-sm space-y-4`}
           >
-            <h3 className="text-sm font-semibold text-gray-700">
-              Quote History
-            </h3>
+            
             {loading ? (
               <CustomLoader />
             ) : quoteHistoryData.length > 0 ? (
@@ -129,9 +127,7 @@ const MergedHistoryComponentNew = ({ refId, quoteId, onClose, onlyFetch }) => {
         ) : (
           feasibilityHistoryData.length > 0 && (
             <div className="w-full bg-white p-3 rounded shadow-sm">
-              <h3 className="text-sm font-semibold text-gray-700 mb-1">
-                Feasibility History
-              </h3>
+              
               {feasibilityHistoryData.map((item) => (
                 <div
                   key={item.id}

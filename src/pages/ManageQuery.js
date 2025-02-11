@@ -270,7 +270,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
                     setAdminPendingQuotes(adminPending);
                     setFilterSummary('')
-                    let summary = 'Showing results for: ';
+                    let summary = 'Showing results for : ';
                     const appliedFilters = [];
 
                     if (refID) appliedFilters.push(`Ref ID: ${refID}`);
@@ -302,6 +302,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 setUsers(data.users);
                 setPendingFeasRequestCount(data.pendingFeasRequestCount);
                 setPendingTransRequestCount(data.pendingTransferRequestCount ?? 0);
+                resetFiltersWithoutApiCall();
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
@@ -826,6 +827,27 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         }
     };
 
+    const resetFiltersWithoutApiCall = async () => {
+        // Reset filter states
+        setRefId('');
+        setScopeId('');
+        setKeyword('');
+        setStatus('');
+        setFeasStatus('');
+        setStartDate('');
+        setEndDate('');
+        setSelectedUser('');  // Reset selected user
+        setSelectedService('');  // Reset selected service
+        setSelectedSubjectArea('');
+        setSelectedTags([]);  // Reset selected tags
+
+        // Reset the select elements and trigger change
+        $(selectUserRef.current).val(null).trigger('change');
+        $(selectServiceRef.current).val(null).trigger('change');
+        $(tagsRef.current).val([]).trigger('change');
+
+    };
+
 
 
     return (
@@ -833,14 +855,14 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
             {/* Filter Section */}
             <div className=" mb-3 bg-white px-3 py-3 rounded ">
-                <div className='flex justify-between  mb-4'>
+                <div className='flex justify-between mb-1'>
                     <div className='flex items-center space-x-2'>
                         <h1 className='text-xl font-bold'>All Quote List</h1>
                         <button
                             onClick={() => setShowFilterDiv(!showFilterDiv)}
-                            className="flex items-center gap-2 px-2 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-md transition duration-300"
+                            className="btn btn-primary btn-sm"
                         >
-                            <FilterIcon size={18} />
+                            <FilterIcon size={15} />
                         </button>
 
                     </div>
@@ -851,7 +873,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 Queries
                             </button>
                         )}
-                        <button onClick={handleExport} className="bg-blue-400 text-white text-sm mr-2  px-2 py-1 rounded">
+                        <button onClick={handleExport} className="bg-blue-400 text-white text-sm mr-2  px-2 py-1 rounded hover:bg-blue-500">
                             Export as XLS
                         </button>
 
@@ -871,7 +893,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         </button>
                     </div>
                 </div>
-                <div className={`${showFilterDiv ? 'hidden' : 'flex'} items-end space-x-2`}>
+                <div className={`${showFilterDiv ? 'hidden' : 'flex'} items-end space-x-2 border py-3 mt-3 px-3 bg-light`}>
                     <div className="row">
                         <div className="col-2 mb-3">
                             <input
@@ -926,7 +948,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         <div className="col-2 mb-3">
                             <select
                                 id="subject_area"
-                                className=" px-3 py-1 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control form-control-sm"
+                                className="form-control form-control-sm"
                                 value={selectedSubjectArea}
                                 onChange={(e) => setSelectedSubjectArea(e.target.value)}
                             >
@@ -1182,14 +1204,14 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 <TableLoader />
             ) : (
                 <div className="bg-white p-4 border-t-2 border-blue-400 rounded">
-                    {filterSummary && <p className="text-gray-600 text-sm my-2 font-semibold">{filterSummary}</p>}
+                    {filterSummary && <p className="text-gray-600 text-sm mb-3 font-semibold">{filterSummary}</p>}
 
                     {/* Tab Buttons */}
                     <div className="mb-4">
                         <div className="flex space-x-4" >
                             <button
                                 onClick={() => handleTabClick('all')}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'all'
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'all'
                                     ? 'bg-blue-500 text-white border border-blue-600'
                                     : 'bg-white text-gray-700 border border-gray-300 hover:bg-blue-50'
                                     }`}
@@ -1198,7 +1220,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             </button>
                             <button
                                 onClick={() => handleTabClick('pendingUser')}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'pendingUser'
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'pendingUser'
                                     ? 'bg-blue-500 text-white border border-blue-600'
                                     : 'bg-white text-gray-700 border border-gray-300 hover:bg-blue-50'
                                     }`}
@@ -1207,7 +1229,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             </button>
                             <button
                                 onClick={() => handleTabClick('pendingAdmin')}
-                                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'pendingAdmin'
+                                className={`px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200 ease-in-out ${activeTab === 'pendingAdmin'
                                     ? 'bg-blue-500 text-white border border-blue-600'
                                     : 'bg-white text-gray-700 border border-gray-300 hover:bg-blue-50'
                                     }`}
