@@ -969,10 +969,10 @@ const AskForScopeAdmin = ({
                                 <div className={`${fullScreenTab == "scope" ? "custom-modal" : colClass}`}>
                                   <div className={`${fullScreenTab == "scope" ? "custom-modal-content" : ""}`}>
                                     <div className={`  pl-0`}>
-                                      <div className="py-2 px-3 flex items-center justify-between bg-blue-400 text-white">
+                                      <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
                                         <h3 className=""><strong>Scope Details</strong></h3>
                                           <button className="">
-                                            {fullScreenTab == "scope" ? (<Minimize2 size={20} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-0" />) : (<Expand size={15} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-0" />)}
+                                            {fullScreenTab == "scope" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-1" />)}
                                           </button>
                                       </div>
                                       <div className="bg-white">
@@ -1153,9 +1153,10 @@ const AskForScopeAdmin = ({
                                                                       padding: "5px", // Padding around the word count text
                                                                       borderRadius: "5px", // Rounded corners for the background
                                                                       border: "1px solid #40BD5DFF",
+                                                                      fontSize: "11px",
                                                                     }}
                                                                   >
-                                                                    <p className="mb-1 text-black">
+                                                                    <p className="text-black">
                                                                       <div>Word Count:</div>
                                                                     </p>
                                                                     {planWordCount}:{" "}
@@ -1652,12 +1653,12 @@ const AskForScopeAdmin = ({
                                                 loopUserObject.id != "206" && (
                                                   <>
                                                     <div className="nav-tabs-custom tabb p-3 shadow-0">
-                                                      <ul className="nav nav-tabs pb-3 p-0">
+                                                      <ul className="nav nav-tabs pb-2 p-0">
                                                         <li className="btn btn-primary btn-sm border-0 f-12">
                                                           Submit Price
                                                         </li>
                                                       </ul>
-                                                      <div className="tab-content p-0 mt-3">
+                                                      <div className="tab-content p-0 mt-2">
                                                         <div
                                                           className="tab-pane active"
                                                           id="tab_2"
@@ -1690,20 +1691,33 @@ const AskForScopeAdmin = ({
                                                                       className={` ${scopeTabVisible && !chatTabVisible && !feasTabVisible ? 'col-md-4' : 'col-md-12'} form-group`}
                                                                       key={index}
                                                                     >
+                                                                     <div className="flex justify-between items-center mb-2">
                                                                       <label
-                                                                        htmlFor={`amount_${plan}`}
-                                                                        className="control-label"
-                                                                      >
-                                                                        Amount for{" "}
-                                                                        <strong>
-                                                                          {plan} (
-                                                                          {quote.currency ===
-                                                                            "Other"
-                                                                            ? quote.other_currency
-                                                                            : quote.currency}
-                                                                          )
-                                                                        </strong>
-                                                                      </label>
+                                                                          htmlFor={`amount_${plan}`}
+                                                                          className="control-label mb-0"
+                                                                        >
+                                                                          Amount for{" "}
+                                                                          <strong>
+                                                                            {plan} (
+                                                                            {quote.currency ===
+                                                                              "Other"
+                                                                              ? quote.other_currency
+                                                                              : quote.currency}
+                                                                            )
+                                                                          </strong>
+                                                                        </label>
+                                                                        <div className="flex items-center">
+                                                                          <input
+                                                                            type="checkbox"
+                                                                            className="h-1 w-1"
+                                                                            id={`mp_${plan}`}
+                                                                            name={`mp_${plan}`}
+                                                                            checked={selectedMP === plan}
+                                                                            onChange={() => handleMPChange(plan)}
+                                                                          />
+                                                                          <label style={{ fontSize: "10px" }} htmlFor={`mp_${plan}`} className="ml-1 mb-0">Mark as MP Price</label>
+                                                                        </div>
+                                                                    </div>
                                                                       <div className="">
                                                                         <input
                                                                           type="text"
@@ -1749,28 +1763,14 @@ const AskForScopeAdmin = ({
                                                                           id={`amountError_${plan}`}
                                                                         ></div>
                                                                       </div>
-                                                                      <div className="mt-2">
-                                                                        <input
-                                                                          type="checkbox"
-                                                                          id={`mp_${plan}`}
-                                                                          name={`mp_${plan}`}
-                                                                          checked={selectedMP === plan}
-                                                                          onChange={() => handleMPChange(plan)}
-                                                                        />
-                                                                        <label style={{ fontSize: "10px" }} htmlFor={`mp_${plan}`} className="ml-2 hover:text-blue-500">Mark as MP price</label>
-                                                                      </div>
+                                                                      
                                                                     </div>
                                                                   )
                                                                 )}
 
                                                                 <div className="form-group col-sm-12">
-                                                                  <label
-                                                                    htmlFor="comment"
-                                                                    className="control-label"
-                                                                  >
-                                                                    Comments
-                                                                  </label>
-                                                                  <div className="">
+                                                                  
+                                                                  <div className="mt-2">
                                                                     <textarea
                                                                       name="comment"
                                                                       id="comment"
@@ -1792,7 +1792,7 @@ const AskForScopeAdmin = ({
                                                                 </div>
                                                               </div>
                                                             </div>
-                                                            <div className="box-footer pt-3 px-0 pb-0">
+                                                            <div className="">
                                                               <input
                                                                 type="button"
                                                                 name="priceSubmitted"
@@ -1858,86 +1858,90 @@ const AskForScopeAdmin = ({
                                 <div className={`${fullScreenTab == "feas" ? "custom-modal" : colClass}`}>
                                   <div className={`${fullScreenTab == "feas" ? "custom-modal-content" : ""} `}>
                                     <div className={` pr-0`}>
-                                      <div className="bg-white px-3 pt-3 pb-3">
+                                      <div className="bg-white">
                                         <>
                                           {quote.isfeasability == 1 && (
                                             <>
-                                              <div className="d-flex justify-between border-bottom pb-2 mb-3 ">
-                                                <h3 class="f-18 ">Feasibility</h3>
-                                                <div className="d-flex justify-between items-center">
-
-                                                  {quote.feasability_status ==
-                                                    "Completed" && (
-                                                      <>
-                                                        {loopUserObject.id !=
-                                                          "206" && (
-                                                            <button
-                                                              onClick={() => {
-                                                                toggleFeasCommentsEditingForm(
-                                                                  quote
-                                                                );
-                                                              }}
-                                                              className="btn btn-sm btn-primary flex items-center px-1 mr-1"
-                                                            >
-                                                              <Pencil
-                                                                className=""
-                                                                size={13}
-                                                              />
-                                                            </button>
-                                                          )}
-                                                      </>
-                                                    )}
-                                                  <button className="">
-                                                    {fullScreenTab == "feas" ? (<Minimize2 size={25} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center px-1" />) : (<Expand size={25} onClick={() => { handlefullScreenBtnClick("feas") }} className="btn btn-sm btn-light flex items-center px-1" />)}
-                                                  </button>
+                                            <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                                <h3 className=""><strong>Feasibility</strong></h3>
+                                                <div className='flex items-center'>
+                                                    {quote.feasability_status ==
+                                                        "Completed" && (
+                                                          <>
+                                                            {loopUserObject.id !=
+                                                              "206" && (
+                                                                <button
+                                                                  onClick={() => {
+                                                                    toggleFeasCommentsEditingForm(
+                                                                      quote
+                                                                    );
+                                                                  }}
+                                                                  className="btn btn-sm btn-primary flex items-center p-1 mr-2"
+                                                                >
+                                                                  <Pencil
+                                                                    className=""
+                                                                    size={12}
+                                                                  />
+                                                                </button>
+                                                              )}
+                                                          </>
+                                                        )}
+                                                      <button className="">
+                                                        {fullScreenTab == "feas" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("feas") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                                      </button>
                                                 </div>
-                                              </div>
-                                              {quote.feasability_status ==
-                                                "Completed" && (
-                                                  <>
-                                                    <p
-                                                      style={{
-                                                        textDecoration: "italic",
-                                                      }}
-                                                      className="italic px-0 border-bottom mb-3 pb-3"
-                                                    >
-                                                      <strong>
-                                                        Feasibility Comments:
-                                                      </strong>
-
-                                                      <span
-                                                        className="mt-2"
-                                                        dangerouslySetInnerHTML={{
-                                                          __html:
-                                                            quote.feasability_comments,
+                                            </div>
+                                              
+                                                {quote.feasability_status ==
+                                                  "Completed" && (
+                                                    <>
+                                                    <div className="px-3 pt-3 pb-0">
+                                                      <p
+                                                        style={{
+                                                          textDecoration: "italic",
                                                         }}
-                                                      />
-                                                    </p>
-                                                    {quote.feas_file_name && (
-                                                      <p className="flex items-center">
-                                                        Feasibility Attachment :{" "}
-                                                        <a
-                                                          href={
-                                                            "https://apacvault.com/public/feasabilityFiles/" +
-                                                            quote.feas_file_name
-                                                          }
-                                                          target="_blank"
-                                                          className="text-blue-600 flex items-center"
-                                                        >
-                                                          <Paperclip size={20} /> View
-                                                          File
-                                                        </a>
+                                                        className="italic px-0  f-12"
+                                                      >
+                                                        <strong>
+                                                          Feasibility Comments:
+                                                        </strong>
+
+                                                        <span
+                                                          className="mt-2"
+                                                          dangerouslySetInnerHTML={{
+                                                            __html:
+                                                              quote.feasability_comments,
+                                                          }}
+                                                        />
                                                       </p>
-                                                    )}
-                                                  </>
-                                                )}
+                                                      {quote.feas_file_name && (
+                                                        <p className="flex items-center">
+                                                          Feasibility Attachment :{" "}
+                                                          <a
+                                                            href={
+                                                              "https://apacvault.com/public/feasabilityFiles/" +
+                                                              quote.feas_file_name
+                                                            }
+                                                            target="_blank"
+                                                            className="text-blue-600 flex items-center"
+                                                          >
+                                                            <Paperclip size={20} /> View
+                                                            File
+                                                          </a>
+                                                        </p>
+                                                      )}
+                                                      </div>
+                                                    </>
+                                                  )}
                                             </>
                                           )}
+                                          <div className="p-3">
                                           <MergedHistoryComponentNew
                                             quoteId={quote.quoteid}
                                             refId={quote.assign_id}
                                             onlyFetch="feasibility"
                                           />
+                                          </div>
                                         </>
                                       </div>
                                     </div>

@@ -167,47 +167,37 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
 
     return (
         
-        <div className="px-3 pt-3 bg-white pb-4 w-full">
-            <div className="py-2 px-3 flex items-center justify-between bg-blue-400 text-white">
-            <h3 className=""><strong>Scope Details</strong></h3>
-                <button className="">
-                {fullScreenTab == "scope" ? (<Minimize2 size={20} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-0" />) : (<Expand size={15} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-0" />)}
-                </button>
-            </div>
-            <div className='flex items-center justify-between border-bottom mb-0 pb-2'>
-                <h3 class="f-18 mb-0">Communication Hub</h3>
-                {/* <h3 className="text-lg font-semibold">Communication Hub</h3> */}
+        <div className="bg-white w-full">
+            <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                <h3 className=""><strong>Communication Hub</strong></h3>
                 <div className='flex items-center'>
-                    <button className='bg-gray-300 p-1 rounded mr-1' onClick={fetchMessages}>
-                        <RefreshCcw size={15} />
+                    <button className='btn btn-light btn-sm flex items-center p-1 mr-2' onClick={fetchMessages}>
+                        <RefreshCcw size={10} />
                     </button>
-                    
-                        <button className="" 
-                        >
-                            {fullScreenTab == "chat" ? (<Minimize2 size={25} onClick={()=>{handlefullScreenBtnClick(null)}}  className="btn btn-sm btn-light flex items-center px-1"/>) : (<Expand size={25} onClick={()=>{handlefullScreenBtnClick("chat")}}  className="btn btn-sm btn-light flex items-center px-1"/>)}
-                            
-                        </button>
-                    
+                    <button className="" >
+                        {fullScreenTab == "chat" ? (<Minimize2 size={23} onClick={()=>{handlefullScreenBtnClick(null)}}  className="btn btn-sm btn-danger flex items-center p-1"/>) : (<Expand size={20} onClick={()=>{handlefullScreenBtnClick("chat")}}  className="btn btn-sm btn-light flex items-center p-1"/>)}
+                    </button>
                 </div>
             </div>
+           
 
-            {loadingMessages ? (
-                <p><CustomLoader /></p>
-            ) : (
-                messages && messages !== "" && messages !== null && (
-                    <div
-                        className="mt-4 space-y-2 max-h-56 overflow-y-auto chats pr-3 pl-3 pb-0 pt-2"
-                        id="chatContainer"
-                        ref={chatContainerRef}
-                        dangerouslySetInnerHTML={{ __html: messages }}
-                    />
-                )
-            )}
+            
 
-            <div className="mt-3 px-0">
-
+            <div className="p-3">
+                {loadingMessages ? (
+                    <p><CustomLoader /></p>
+                ) : (
+                    messages && messages !== "" && messages !== null && (
+                        <div
+                            className="mb-2 space-y-2 max-h-56 overflow-y-auto chats pr-3 pl-3 pb-0 pt-2"
+                            id="chatContainer"
+                            ref={chatContainerRef}
+                            dangerouslySetInnerHTML={{ __html: messages }}
+                        />
+                    )
+                )}
                 
-                <div className="space-x-2">
+                <div className="">
                     <textarea
                         placeholder="Type your message"
                         className="w-full text-gray-700 bg-white px-3 resize-none py-1 rounded focus:outline-none border"
@@ -217,19 +207,19 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                         disabled={tlType && tlType == 2}
                     ></textarea>
 
-                    <div className='flex items-center justify-between'>
+                    <div className='flex items-center justify-between mt-2'>
                         <div>
                             {/* Input Section */}
                             {((loopUserObject.fld_email == 'puneet@redmarkediting.com' ||
                                 loopUserObject.fld_email == 'clientsupport@chankyaresearch.net') && status == 0 && submittedToAdmin == "true") ? (
-                                <div className="flex items-end space-x-2">
+                                <div className="flex items-center">
                                     <label className='mb-0' for="markStatus" style={{ fontSize: "11px" }}>Mark as pending at user</label>
                                     <input
                                         type="checkbox"
                                         id="markStatus"
                                         checked={markStatus}
                                         onChange={(e) => setMarkStatus(e.target.checked)}
-                                        className="form-checkbox h-4 w-4 text-blue-600"
+                                        className="form-checkbox text-blue-600 w-1 h-1 ml-1"
                                         title="This will change status to Pending at user"
                                     />
 

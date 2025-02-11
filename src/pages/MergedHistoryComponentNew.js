@@ -63,8 +63,8 @@ const MergedHistoryComponentNew = ({ refId, quoteId, onClose, onlyFetch }) => {
   return (
     <div className="overflow-y-auto flex flex-col border space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between bg-blue-400 text-white py-1 px-3">
-        <h2 className="f-18 font-semibold">{onlyFetch == 'quote' ? "Quote History" : "Feasibility History"}</h2>
+      <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-2">
+        <h2 className="f-12 font-semibold">{onlyFetch == 'quote' ? "Quote History" : "Feasibility History"}</h2>
       </div>
 
       {/* Content */}
@@ -74,7 +74,7 @@ const MergedHistoryComponentNew = ({ refId, quoteId, onClose, onlyFetch }) => {
           <div
             className={`${
               "w-full"
-            } bg-white p-2 px-3 rounded shadow-sm space-y-4`}
+            } bg-white p-2 px-2 rounded shadow-sm space-y-4`}
           >
             
             {loading ? (
@@ -84,7 +84,7 @@ const MergedHistoryComponentNew = ({ refId, quoteId, onClose, onlyFetch }) => {
                 <div
                   key={item.id}
                   className=" text-gray-600 mt-1"
-                  style={{ fontSize: "11px" }}
+                  style={{ fontSize: "12px" }}
                 >
                   <p>
                     <strong>
@@ -126,7 +126,7 @@ const MergedHistoryComponentNew = ({ refId, quoteId, onClose, onlyFetch }) => {
           <CustomLoader />
         ) : (
           feasibilityHistoryData.length > 0 && (
-            <div className="w-full bg-white p-3 rounded shadow-sm">
+            <div className="w-full bg-white p-2 rounded shadow-sm">
               
               {feasibilityHistoryData.map((item) => (
                 <div

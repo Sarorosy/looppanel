@@ -12,7 +12,7 @@ import AskForScope from './AskForScope';
 import QueryLoader from './QueryLoader';
 
 
-const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
+const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType, tagAccess }) => {
     const [teamName, setTeamName] = useState('');
     const [managers, setManagers] = useState([]);
     const [selectedManagers, setSelectedManagers] = useState([]);
@@ -139,7 +139,7 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType }) => {
 
 
             <div className=' flex items-start justify-between space-x-1 pnav text-black'>
-                <AskForScope queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} tlType={tlType}/>
+                <AskForScope queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} tlType={tlType} tagAccess={tagAccess}/>
                 {detailsTabVisible && (
                 <div className='col-md-3'>
                     {loading ? (
