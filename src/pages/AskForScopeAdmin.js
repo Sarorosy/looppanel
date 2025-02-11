@@ -932,11 +932,11 @@ const AskForScopeAdmin = ({
                       {expandedRowIndex == index && (
                         <tr>
                           <td colSpan={7}>
-                            <div className="mx-3 mt-4 mb-0 bg-gray-100 px-3 pt-3 pb-0">
+                            <div className="mx-2 mt-2 mb-0 bg-gray-100 px-3 pt-3 pb-0">
                               <div className="">
                                 <button
                                   onClick={() => handleTabButtonClick("scope")}
-                                  className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${scopeTabVisible
+                                  className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${scopeTabVisible
                                       ? "btn-info focus-outline-none"
                                       : "btn-light"
                                     } btn btn-sm  focus:outline-none`}
@@ -945,7 +945,7 @@ const AskForScopeAdmin = ({
                                 </button>
                                 <button
                                   onClick={() => handleTabButtonClick("chat")}
-                                  className={`px-2 py-1 mr-1 inline-flex items-center text-sm ${chatTabVisible
+                                  className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${chatTabVisible
                                       ? "btn-info focus-outline-none"
                                       : "btn-light"
                                     } btn btn-sm`}
@@ -955,7 +955,7 @@ const AskForScopeAdmin = ({
                                 <button
                                   disabled={quote.isfeasability == 0}
                                   onClick={() => handleTabButtonClick("feas")}
-                                  className={`px-2 py-1 mr-1 text-sm inline-flex items-center ${feasTabVisible
+                                  className={`px-2 py-1 mr-1 f-12 inline-flex items-center ${feasTabVisible
                                       ? "btn-info focus-outline-none"
                                       : "btn-light"
                                     } btn btn-sm`}
@@ -964,23 +964,21 @@ const AskForScopeAdmin = ({
                                 </button>
                               </div>
                             </div>
-                            <div className="mx-3 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
+                            <div className="mx-2 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
                               {scopeTabVisible && (
                                 <div className={`${fullScreenTab == "scope" ? "custom-modal" : colClass}`}>
                                   <div className={`${fullScreenTab == "scope" ? "custom-modal-content" : ""}`}>
                                     <div className={`  pl-0`}>
-                                      <div className="bg-white p-3">
-                                        <div className=" border-bottom pb-2 mb-3 flex items-center justify-between">
-                                          <h3 className="f-18">Scope Details</h3>
-                                          <div>
-                                            <button className=""
-                                            >
-                                              {fullScreenTab == "scope" ? (<Minimize2 size={25} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center px-1" />) : (<Expand size={25} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center px-1" />)}
-                                            </button>
-                                          </div>
-                                        </div>
+                                      <div className="py-2 px-3 flex items-center justify-between bg-blue-400 text-white">
+                                        <h3 className=""><strong>Scope Details</strong></h3>
+                                          <button className="">
+                                            {fullScreenTab == "scope" ? (<Minimize2 size={20} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-0" />) : (<Expand size={15} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-0" />)}
+                                          </button>
+                                      </div>
+                                      <div className="bg-white">
+                                        
                                         <div className="overscroll-modal">
-                                          <div className="space-y-4 text-sm px-0">
+                                          <div className="space-y-2 px-0">
                                             <div className="row">
                                               {/* Ref No Section */}
 
@@ -1017,7 +1015,7 @@ const AskForScopeAdmin = ({
                                                         padding: "2px 8px",
                                                         backgroundColor: "#f0f0f0",
                                                         color: "#666",
-                                                        borderRadius: "16px",
+                                                        borderRadius: "5px",
                                                       }}
                                                     >
                                                       Edited
@@ -1031,7 +1029,7 @@ const AskForScopeAdmin = ({
                                                 <div className="col-md-12 mb-3">
                                                   <p>
                                                     <div>
-                                                      <strong className="mb-2 d-block">
+                                                      <strong className="mb-1 d-block">
                                                         Tags
                                                       </strong>
                                                     </div>
@@ -1042,15 +1040,15 @@ const AskForScopeAdmin = ({
                                                           key={index}
                                                           className="tag-badge mr-1 d-inline"
                                                           style={{
-                                                            padding: "5px 10px",
-                                                            borderRadius: "20px",
+                                                            padding: "3px 5px",
+                                                            borderRadius: "4px",
                                                             backgroundColor:
                                                               "#007bff",
                                                             color: "#fff",
-                                                            fontSize: "12px",
+                                                            fontSize: "10px",
                                                           }}
                                                         >
-                                                          #{tag.trim()}
+                                                          # {tag.trim()}
                                                         </div>
                                                       ))}
                                                   </p>
@@ -1106,9 +1104,11 @@ const AskForScopeAdmin = ({
                                                     {quote.subject_area ===
                                                       "Other" && (
                                                         <p className="text-muted">
-                                                          <strong>
-                                                            Other Subject Area:
-                                                          </strong>{" "}
+                                                          <div>
+                                                            <strong>
+                                                              Other Subject Area
+                                                            </strong>{" "}
+                                                          </div>
                                                           {quote.other_subject_area}
                                                         </p>
                                                       )}
@@ -1118,22 +1118,22 @@ const AskForScopeAdmin = ({
                                             </div>
                                             <div className="row mt-0">
                                               <div className="col-md-12">
-                                                <h3 className="f-18 mb-2 font-weight-bold">
-                                                  Plan Description
-                                                </h3>
+                                                <p className=" mb-2">
+                                                  <strong>Plan Description</strong>
+                                                </p>
                                               </div>
                                               {quote.plan_comments && typeof quote.plan_comments === "string" && quote.plan && (
                                                 Object.entries(JSON.parse(quote.plan_comments))
                                                   .filter(([plan]) => quote.plan.split(',').includes(plan)) // Filter based on the updated plan list
                                                   .map(([plan, comment], index) => (
                                                     <div key={index} className={planColClass}>
-                                                      <div className="border p-3 mb-2">
+                                                      <div className="border p-2 mb-3">
                                                         <p className="flex items-center mb-1 justify-content-between">
                                                           <strong>{plan}</strong> <button
-                                                            className="btn btn-warning btn-sm"
+                                                            className="btn btn-warning btn-sm px-1"
                                                             onClick={() => handleEditClick(quote, plan, comment)}
                                                           >
-                                                            <Pen size={12} />
+                                                            <Pen size={8} className="text-white" />
                                                           </button>
                                                         </p>
                                                         <div dangerouslySetInnerHTML={{ __html: comment }} />
@@ -1177,14 +1177,14 @@ const AskForScopeAdmin = ({
                                               )}
                                             </div>
 
-                                            <div className="mb-0 row px-2 pb-3 space-y-4 ">
+                                            <div className="mb-0 mt-0 row px-2 pb-3 space-y-4 ">
                                               {quote.comments &&
                                                 quote.comments != "" &&
                                                 quote.comments != null && (
                                                   <p>
                                                     <strong
                                                       style={{
-                                                        textDecoration: "underline",
+                                                        
                                                       }}
                                                     >
                                                       Description
@@ -1458,8 +1458,7 @@ const AskForScopeAdmin = ({
                                                       <p>
                                                         <strong
                                                           style={{
-                                                            textDecoration:
-                                                              "underline",
+                                                            
                                                           }}
                                                         >
                                                           Admin Comments:
@@ -1647,18 +1646,18 @@ const AskForScopeAdmin = ({
                                                 )}
                                             </div>
 
-                                            <div className="border-bottom row mb-3 mt-0 mx-1">
+                                            <div className="row mt-0 mx-1">
                                               {quote.quote_status != 1 &&
                                                 quote.submittedtoadmin == "true" &&
                                                 loopUserObject.id != "206" && (
                                                   <>
-                                                    <div className="nav-tabs-custom tabb pt-2 shadow-0">
-                                                      <ul className="nav nav-tabs pb-3">
-                                                        <li className="btn btn-primary btn-sm border-0">
+                                                    <div className="nav-tabs-custom tabb p-3 shadow-0">
+                                                      <ul className="nav nav-tabs pb-3 p-0">
+                                                        <li className="btn btn-primary btn-sm border-0 f-12">
                                                           Submit Price
                                                         </li>
                                                       </ul>
-                                                      <div className="tab-content">
+                                                      <div className="tab-content p-0 mt-3">
                                                         <div
                                                           className="tab-pane active"
                                                           id="tab_2"
@@ -1679,7 +1678,7 @@ const AskForScopeAdmin = ({
                                                               name="quote_id"
                                                               value={quote.quoteid}
                                                             />
-                                                            <div className="box-body p-0">
+                                                            <div className="box-body p-0 f-12">
                                                               <div className="row">
                                                                 {[
                                                                   "Basic",
@@ -1767,7 +1766,7 @@ const AskForScopeAdmin = ({
                                                                 <div className="form-group col-sm-12">
                                                                   <label
                                                                     htmlFor="comment"
-                                                                    className="col-sm-3 control-label"
+                                                                    className="control-label"
                                                                   >
                                                                     Comments
                                                                   </label>
@@ -1793,11 +1792,11 @@ const AskForScopeAdmin = ({
                                                                 </div>
                                                               </div>
                                                             </div>
-                                                            <div className="box-footer p-2">
+                                                            <div className="box-footer pt-3 px-0 pb-0">
                                                               <input
                                                                 type="button"
                                                                 name="priceSubmitted"
-                                                                className="btn pull-right btn-success btn-sm"
+                                                                className="btn pull-right btn-success btn-sm f-12"
                                                                 value="Submit"
                                                                 onClick={() =>
                                                                   PriceSubmitValidate(

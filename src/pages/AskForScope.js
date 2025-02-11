@@ -738,7 +738,7 @@ const getVisibleTabCount = () => {
                                     >
                                       <div className={`  pl-0`}>
                                         <div className="bg-white p-3">
-                                          <div className=" border-bottom pb-2 mb-3 flex items-center justify-between">
+                                          <div className=" pb-2 mb-3 flex items-center justify-between">
                                             <h3 className="f-18">
                                               Scope Details
                                             </h3>

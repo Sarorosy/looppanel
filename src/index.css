@@ -660,8 +660,8 @@ focus-outline-none:focus:not(:focus-visible) {
   overflow-y: scroll;
   height: 75vh;
   overflow-x: hidden;
-  margin-right: -5px;
-  padding-right: 10px;
+  padding: 15px;
+  font-size: 12px;
 }
 .line-h-in{
   line-height: initial;
@@ -677,4 +677,21 @@ focus-outline-none:focus:not(:focus-visible) {
 
 .btn{
   box-shadow: none !important;
+}
+
+
+
+
+
+
+
+
+
+.detls-head-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 5px 20px;
 }

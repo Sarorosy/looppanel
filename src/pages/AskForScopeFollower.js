@@ -540,7 +540,7 @@ const getVisibleTabCount = () => {
 
                                                 <tr>
                                                     <td colSpan={7}>
-                                                    <div className="mx-3 mt-3 mb-0 bg-gray-100 px-3 pt-3 pb-0">
+                                                    <div className="mx-2 mt-2 mb-0 bg-gray-100 px-3 pt-3 pb-0">
                                                         <div className="">
                                                             <button
                                                             onClick={() => handleTabButtonClick("scope")}
@@ -581,7 +581,7 @@ const getVisibleTabCount = () => {
                                                         <div className={`${fullScreenTab == "scope" ? "custom-modal-content" : ""}`}>
                                                             <div className={`  pl-0`}>
                                                             <div className="bg-white p-3">
-                                                                <div className=" border-bottom pb-2 mb-3 flex items-center justify-between">
+                                                                <div className="pb-2 mb-3 flex items-center justify-between">
                                                                 <h3 className="f-18">Scope Details</h3>
                                                                 <div>
                                                                     <button className=""

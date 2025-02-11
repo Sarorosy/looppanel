@@ -166,7 +166,14 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
 
 
     return (
+        
         <div className="px-3 pt-3 bg-white pb-4 w-full">
+            <div className="py-2 px-3 flex items-center justify-between bg-blue-400 text-white">
+            <h3 className=""><strong>Scope Details</strong></h3>
+                <button className="">
+                {fullScreenTab == "scope" ? (<Minimize2 size={20} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-0" />) : (<Expand size={15} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-0" />)}
+                </button>
+            </div>
             <div className='flex items-center justify-between border-bottom mb-0 pb-2'>
                 <h3 class="f-18 mb-0">Communication Hub</h3>
                 {/* <h3 className="text-lg font-semibold">Communication Hub</h3> */}
@@ -199,22 +206,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
 
             <div className="mt-3 px-0">
 
-                {/* Input Section */}
-                    {((loopUserObject.fld_email == 'puneet@redmarkediting.com' ||
-                        loopUserObject.fld_email == 'clientsupport@chankyaresearch.net') && status == 0 && submittedToAdmin == "true") ? (
-                        <div className="flex items-center space-x-2 mb-2">
-                            <label className='mb-0' for="markStatus" style={{ fontSize: "15px" }}>Mark as pending at user</label>
-                            <input
-                                type="checkbox"
-                                id="markStatus"
-                                checked={markStatus}
-                                onChange={(e) => setMarkStatus(e.target.checked)}
-                                className="form-checkbox h-4 w-4 text-blue-600"
-                                title="This will change status to Pending at user"
-                            />
-
-                        </div>
-                    ) : null}
+                
                 <div className="space-x-2">
                     <textarea
                         placeholder="Type your message"
@@ -225,28 +217,48 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                         disabled={tlType && tlType == 2}
                     ></textarea>
 
-                    <div className='flex items-end justify-end'>
-                        <div className="flex items-end justify-end ">
-                            <label
-                                htmlFor="fileInput"
-                                className="border border-gray-300 rounded px-2 py-1 bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200 mb-0 mr-2"
-                            >
-                                <Paperclip size={15}/>
-                            </label>
-                            <input
-                                type="file"
-                                id="fileInput"
-                                onChange={handleFileChange}
-                                className="hidden"
-                            />
+                    <div className='flex items-center justify-between'>
+                        <div>
+                            {/* Input Section */}
+                            {((loopUserObject.fld_email == 'puneet@redmarkediting.com' ||
+                                loopUserObject.fld_email == 'clientsupport@chankyaresearch.net') && status == 0 && submittedToAdmin == "true") ? (
+                                <div className="flex items-end space-x-2">
+                                    <label className='mb-0' for="markStatus" style={{ fontSize: "11px" }}>Mark as pending at user</label>
+                                    <input
+                                        type="checkbox"
+                                        id="markStatus"
+                                        checked={markStatus}
+                                        onChange={(e) => setMarkStatus(e.target.checked)}
+                                        className="form-checkbox h-4 w-4 text-blue-600"
+                                        title="This will change status to Pending at user"
+                                    />
+
+                                </div>
+                            ) : null}
                         </div>
-                        <button
-                            onClick={sendMessage}
-                            disabled={buttonDisabled}
-                            className="text-white chatsbut "
-                        >
-                            {buttonDisabled ? "Sending..." : "Send"}
-                        </button>
+                        <div className='flex items-end justify-end'>
+                            <div className="flex items-end justify-end ">
+                                <label
+                                    htmlFor="fileInput"
+                                    className="border border-gray-300 rounded px-2 py-1 bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200 mb-0 mr-2"
+                                >
+                                    <Paperclip size={15}/>
+                                </label>
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    onChange={handleFileChange}
+                                    className="hidden"
+                                />
+                            </div>
+                            <button
+                                onClick={sendMessage}
+                                disabled={buttonDisabled}
+                                className="text-white chatsbut "
+                            >
+                                {buttonDisabled ? "Sending..." : "Send"}
+                            </button>
+                        </div>
                     </div>
                 </div>
                 {fileName && (
