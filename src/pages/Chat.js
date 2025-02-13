@@ -3,15 +3,15 @@ import { toast as toastify, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CustomLoader from '../CustomLoader';
 import { ScaleLoader } from 'react-spinners';
-import { File, Paperclip, RefreshCcw, X, Expand, Minimize2 } from 'lucide-react';
+import { File, Paperclip, RefreshCcw, X, Expand, Minimize2, Download } from 'lucide-react';
 import { Toaster } from 'react-hot-toast';
 import toast from 'react-hot-toast';
 import { io } from "socket.io-client";
 import { getSocket } from './Socket';
+import ChatLoader from '../components/ChatLoader';
 const socket = getSocket();
 
-
-export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,finalfunctionforsocket ,allDetails, tlType, handlefullScreenBtnClick,chatTabVisible, fullScreenTab}) => {
+export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, finalfunctionforsocket, allDetails, tlType, handlefullScreenBtnClick, chatTabVisible, fullScreenTab }) => {
     const [messages, setMessages] = useState('');
     const [newMessage, setNewMessage] = useState('');
     const [loadingMessages, setLoadingMessages] = useState(false);
@@ -19,63 +19,125 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
     const [file, setFile] = useState(null);
     const [fileName, setFileName] = useState("");
     const [markStatus, setMarkStatus] = useState(false);
-
-    
+    const [showUserDropdown, setShowUserDropdown] = useState(false);
+    const [users, setUsers] = useState([]);
+    const [mentionStartPosition, setMentionStartPosition] = useState(0);
 
     const userData = localStorage.getItem('user');
-
-
     const userObject = JSON.parse(userData);
-
     const loopUserData = localStorage.getItem('loopuser');
-
     const chatContainerRef = useRef(null);
-
+    const textareaRef = useRef(null);
     const loopUserObject = JSON.parse(loopUserData);
+    const [mentions, setMentions] = useState([]);
+    const [mentionIds, setMentionIds] = useState([]);
+
+    const [replyingTo, setReplyingTo] = useState(null);
+    const [replyingToMessage, setReplyingToMessage] = useState(null);
+    const [replyText, setReplyText] = useState("");
+    const [replyingOpen, setReplyingOpen] = useState(false);
+
+
+    const handleReplyClick = (messageId, message) => {
+        console.log(messageId)
+        if (replyingTo == messageId) {
+            // If already replying to this message, close the reply box
+            setReplyingTo(null);
+            setReplyingToMessage(null);
+            setReplyingOpen(false);
+        } else {
+            // Open reply box for new message
+            setReplyingTo(messageId);
+            setReplyingToMessage(message);
+            setReplyText(""); // Clear input
+            setReplyingOpen(true);
+        }
+    };
+
+    const handleReplyChange = (e) => {
+        setReplyText(e.target.value);
+    };
+
+    const handleSendReply = async () => {
+        if (replyText.trim() === "") return;
+    
+        console.log("Replying to Message ID:", replyingTo, "Message:", replyText);
+    
+        const formData = new FormData();
+        formData.append("chat_id", replyingTo); // ID of the chat message being replied to
+        formData.append("message", replyText);
+        formData.append("user_id", loopUserObject.id);
+        formData.append("user_type", userObject.user_type);
+    
+        try {
+            const response = await fetch("https://apacvault.com/Webapi/submitReply", {
+                method: "POST",
+                body: formData,
+            });
+    
+            const result = await response.json();
+            if (result.status) {
+                console.log("Reply submitted successfully:", result);
+                // Reset the reply input
+                setReplyingTo(null);
+                setReplyingToMessage(null);
+                setReplyingOpen(false);
+                setReplyText("");
+            } else {
+                console.error("Failed to submit reply:", result.error);
+            }
+        } catch (error) {
+            console.error("Error submitting reply:", error);
+        }finally{
+            fetchMessagesForSocket();
+        }
+    };
     
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
         if (selectedFile) {
             setFile(selectedFile);
-            setFileName(selectedFile.name); // Set the file name
+            setFileName(selectedFile.name);
         }
     };
 
     const fetchMessages = async () => {
         setLoadingMessages(true);
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getquotechatapi', {
+            const response = await fetch('https://apacvault.com/Webapi/getQuoteChatApiNew', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ quote_id: quoteId, user_id: loopUserObject.id })
             });
-            const data = await response.text(); // Expecting an HTML response
-            setMessages(data);
+            const data = await response.json();
+            setMessages(data.data);
+            console.log(data.data);
         } catch (error) {
             console.error('Error fetching messages:', error);
         } finally {
             setLoadingMessages(false);
         }
     };
+
     const fetchMessagesForSocket = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getquotechatapi', {
+            const response = await fetch('https://apacvault.com/Webapi/getQuoteChatApiNew', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ quote_id: quoteId, user_id: loopUserObject.id })
             });
-            const data = await response.text(); // Expecting an HTML response
-            setMessages(data);
+            const data = await response.json();
+            setMessages(data.data);
+            console.log(data.data);
         } catch (error) {
             console.error('Error fetching messages:', error);
-        }
+        } 
     };
-   
 
     const sendMessage = async () => {
         if (!newMessage.trim()) {
@@ -91,6 +153,8 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
         formData.append('user_type', userObject.user_type);
         formData.append('category', userObject.category);
         formData.append('markstatus', markStatus ? '1' : '0');
+        formData.append('mention_ids', mentionIds);
+        formData.append('mention_users', mentions);
         if (file) {
             formData.append('file', file);
         }
@@ -104,16 +168,16 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
             if (response.ok) {
                 setNewMessage('');
                 setFile('');
-                setFile(null); // Clear the file input after sending
+                setFile(null);
                 setFileName('');
                 finalFunction();
                 const user_name = loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name;
-                socket.emit('sendmessage',{
+                socket.emit('sendmessage', {
                     quote_id: quoteId,
-                    ref_id :refId,
+                    ref_id: refId,
                     user_name: user_name,
-                    all_details:allDetails,
-                    user_id:loopUserObject.id
+                    all_details: allDetails,
+                    user_id: loopUserObject.id
                 })
             } else {
                 toast.error('Failed to send message');
@@ -130,24 +194,22 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
         if (quoteId) {
             fetchMessages();
         }
-        if((loopUserObject.id == 1 || loopUserObject.id == 342) && allDetails.status == 0){
+        if ((loopUserObject.id == 1 || loopUserObject.id == 342) && allDetails.status == 0) {
             setMarkStatus(true);
         }
     }, [quoteId]);
 
     useEffect(() => {
-    socket.on('chatresponse', (data) => {
-        if(data.quote_id == quoteId && data.ref_id == refId){
-            
-            fetchMessagesForSocket();
-        }
-    });
+        socket.on('chatresponse', (data) => {
+            if (data.quote_id == quoteId && data.ref_id == refId) {
+                fetchMessagesForSocket();
+            }
+        });
 
-    return () => {
-        socket.off('chatresponse');  // Clean up on component unmount
-    };
-}, []);
-
+        return () => {
+            socket.off('chatresponse');
+        };
+    }, []);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -160,13 +222,121 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
         setFileName("");
     };
 
-    // Scroll to bottom when messages update
-    https://looppanel.vercel.app/mandeep.tamang%40dissertationindia.net/4dd88559e7c33602bf469723afee58a41018a37d2e0b6c8eb8eaceb86e1d6848
+    const handleTextareaChange = (e) => {
+        const value = e.target.value;
+        setNewMessage(value);
 
+        const cursorPosition = e.target.selectionStart;
+        const textBeforeCursor = value.substring(0, cursorPosition);
+
+        if (textBeforeCursor.endsWith('@')) { // Detect '@' at the end
+            setShowUserDropdown(true);
+            setMentionStartPosition(cursorPosition);
+        } else {
+            setShowUserDropdown(false);
+        }
+
+        const mentionMatches = value.match(/@(\w+)/g) || [];
+        const extractedMentions = mentionMatches.map(mention => mention.substring(1)); // Remove '@'
+
+        // Filter mentions based on valid users
+        const validMentions = extractedMentions.filter(username =>
+            users.some(user => user.name === username)
+        );
+
+        const validMentionIds = validMentions.map(username => {
+            const matchedUser = users.find(user => user.name === username);
+            return matchedUser ? matchedUser.id : null;
+        }).filter(id => id !== null);
+
+        setMentions([...new Set(validMentions)]);
+        setMentionIds([...new Set(validMentionIds)]);
+    };
+
+
+    const handleUserSelect = (selectedUser) => {
+        const messageBeforeMention = newMessage.substring(0, mentionStartPosition - 1); // Remove unnecessary space
+        const messageAfterMention = newMessage.substring(mentionStartPosition);
+
+        let newMessageText = newMessage.trim() === ""
+            ? `@${selectedUser.name}  `
+            : `${messageBeforeMention} @${selectedUser.name} ${messageAfterMention} `;
+
+        setNewMessage(newMessageText);
+        setShowUserDropdown(false);
+        textareaRef.current.focus();
+
+        setMentions((prevMentions) => {
+            const updatedMentions = [...new Set([...prevMentions, `@${selectedUser.name}`])];
+            return updatedMentions;
+        });
+
+        setMentionIds((prevMentionIds) => {
+            const updatedMentionIds = [...new Set([...prevMentionIds, selectedUser.id])];
+            return updatedMentionIds;
+        });
+    };
+
+
+    const fetchUsers = async () => {
+        const { user_id, feasibility_user, followers, isFeasibility } = allDetails;
+
+        // Determine if feasibility_user should be included
+        const feasibilityUser = isFeasibility == 0 ? null : feasibility_user;
+
+        // Construct the user ID array
+        const userIds = [
+            user_id,
+            1,
+            feasibilityUser,
+            ...(followers ? followers.split(',') : [])
+        ].map(id => id ? parseInt(id, 10) : null).filter(id => id !== null && !isNaN(id));
+
+        try {
+            const response = await fetch("https://apacvault.com/Webapi/fetchUsersToMention", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ user_ids: userIds })
+            });
+
+            const data = await response.json();
+            if (data.status === "success" && Array.isArray(data.data)) {
+                // Extract first names for setting users
+                const usersList = data.data.map(user => ({
+                    id: user.id,
+                    name: user.fld_first_name
+                }));
+                setUsers(usersList);
+            } else {
+                console.error("Error fetching users:", data.message);
+                setUsers([]);
+            }
+            return data;
+        } catch (error) {
+            console.error("Error fetching users:", error);
+            return null;
+        }
+    };
+
+    useEffect(() => {
+        console.log("Mentions:", mentions);
+        console.log("mentions:", mentionIds);
+    }, [mentions]);
+
+    useEffect(() => {
+        fetchUsers();
+    }, []);
+
+    const formatMessage = (message) => {
+        return message.replace(/\{\{\{(.*?),(.*?)\}\}\}/g, (match, name, id) => {
+            return `<b style="color:#126dff;cursor:pointer;">${name}</b>`;
+        });
+    };
 
 
     return (
-        
         <div className="bg-white w-full">
             <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
                 <h3 className=""><strong>Communication Hub</strong></h3>
@@ -175,41 +345,137 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                         <RefreshCcw size={10} />
                     </button>
                     <button className="" >
-                        {fullScreenTab == "chat" ? (<Minimize2 size={23} onClick={()=>{handlefullScreenBtnClick(null)}}  className="btn btn-sm btn-danger flex items-center p-1"/>) : (<Expand size={20} onClick={()=>{handlefullScreenBtnClick("chat")}}  className="btn btn-sm btn-light flex items-center p-1"/>)}
+                        {fullScreenTab == "chat" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("chat") }} className="btn btn-sm btn-light flex items-center p-1" />)}
                     </button>
                 </div>
             </div>
-           
-
-            
 
             <div className="p-3">
                 {loadingMessages ? (
-                    <p><CustomLoader /></p>
+                    <p><ChatLoader /></p>
                 ) : (
-                    messages && messages !== "" && messages !== null && (
-                        <div
-                            className="mb-2 space-y-2 max-h-56 overflow-y-auto chats pr-3 pl-3 pb-0 pt-2"
-                            id="chatContainer"
-                            ref={chatContainerRef}
-                            dangerouslySetInnerHTML={{ __html: messages }}
-                        />
+                    messages && messages.length > 0 && (
+                        <div className="chat-container bg-blue-50" id="chatContainer"  ref={chatContainerRef}>
+                            {messages.map((chatVal, index) => {
+                                const isUser = chatVal.sender_id == loopUserObject.id;
+                                return (
+                                    <div key={index} className={`chat-message ${isUser ? 'right' : ''}`}>
+                                        {/* Chat Info */}
+                                        <div className="chat-info">
+                                            <span className="chat-name">
+                                                {chatVal.isdeleted == "1" ? (
+                                                    <span style={{ color: "red", textDecoration: "line-through" }}>
+                                                        {chatVal.deleted_user_name}
+                                                    </span>
+                                                ) : (
+                                                    chatVal.fld_first_name
+                                                )}
+                                            </span>
+                                            <span className="chat-timestamp">
+                                                {new Date(chatVal.date * 1000).toLocaleString()}
+                                            </span>
+                                        </div>
+                    
+                                        {/* Chat Text */}
+                                        <div
+                                            className={`chat-text ${isUser ? 'right' : ''}`}
+                                            dangerouslySetInnerHTML={{ __html: formatMessage(chatVal.message) }}
+                                        />
+                    
+                                        {/* File Attachment */}
+                                        {chatVal.isfile == "1" && (
+                                            <div className="file-container">
+                                                {/* <i className="fa fa-file mr-3"></i> */}
+                                                <p>{chatVal.file_path.split('/').pop()}</p>
+                                                <a href={chatVal.file_path} target="_blank" rel="noopener noreferrer" ><Download size={16}/></a>
+                                            </div>
+                                        )}
+                                        {chatVal.pending_responses && chatVal.pending_responses.length > 0 && (
+                                            <div className="pending-responses text-red-500 flex space-x-1" style={{fontSize:"11px"}} >
+                                                {chatVal.pending_responses.map((response, index) => (
+                                                <p key={index} className='font-semibold'>{response}</p>
+                                                ))} <span className='ml-1'>
+                                                    response pending
+                                                </span>
+                                            </div>
+                                            )}
+
+                    
+                                        {/* Replies */}
+                                        {chatVal.replies && chatVal.replies.length > 0 && (
+                                            <div className="reply-container">
+                                                {chatVal.replies.map((reply, rIndex) => (
+                                                    <div key={rIndex} className={isUser ? "invertlstyle" : ""}>
+                                                        <div className={`${isUser ? 'reply-inverted-l-shape' : 'reply-l-shape'}`}></div>
+                                                        <div className="reply-message">
+                                                            <div className="reply-info">
+                                                                <span className="reply-name">{reply.fld_first_name} {reply.fld_last_name}</span>
+                                                                <span className="reply-timestamp">{new Date(reply.date * 1000).toLocaleString()}</span>
+                                                            </div>
+                                                            <div className="reply-text">{reply.message}</div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                    
+                                        {/* Reply Button */}
+                                        <div className="reply-section">
+                                            <button className="reply-button" onClick={() => handleReplyClick(chatVal.message_id, chatVal.message)}>
+                                                <i className="fa fa-reply"></i>
+                                            </button>
+                                        </div>
+                    
+                                        {/* Reply Box */}
+                                        {replyingTo == chatVal.message_id && replyingOpen && (
+                                            <div className="reply-box">
+                                                <p className="text-gray-500 text-xs italic">
+                                                    Replying to:{" "}
+                                                    <span dangerouslySetInnerHTML={{ __html: formatMessage(replyingToMessage?.substring(0, 60)) + "..." }} />
+                                                </p>
+                                                <textarea
+                                                    placeholder="Write a reply..."
+                                                    value={replyText}
+                                                    onChange={handleReplyChange}
+                                                />
+                                                <button onClick={handleSendReply}>Send Reply</button>
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
                     )
+
                 )}
-                
+
                 <div className="">
                     <textarea
-                        placeholder="Type your message"
+                        ref={textareaRef}
+                        placeholder="Use @ to mention"
                         className="w-full text-gray-700 bg-white px-3 resize-none py-1 rounded focus:outline-none border"
                         value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
+                        onChange={handleTextareaChange}
                         rows={4}
                         disabled={tlType && tlType == 2}
                     ></textarea>
 
+                    {showUserDropdown && (
+                        <div className="mt-2 border border-gray-300 rounded p-2">
+                            {users.map((user, index) => (
+                                <div
+                                    key={index}
+                                    className="cursor-pointer hover:bg-gray-100 p-1"
+                                    onClick={() => handleUserSelect(user)}
+                                >
+                                    {user.name}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
                     <div className='flex items-center justify-between mt-2'>
                         <div>
-                            {/* Input Section */}
                             {((loopUserObject.fld_email == 'puneet@redmarkediting.com' ||
                                 loopUserObject.fld_email == 'clientsupport@chankyaresearch.net') && status == 0 && submittedToAdmin == "true") ? (
                                 <div className="flex items-center">
@@ -219,10 +485,9 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                                         id="markStatus"
                                         checked={markStatus}
                                         onChange={(e) => setMarkStatus(e.target.checked)}
-                                        className="form-checkbox text-blue-600 w-1 h-1 ml-1"
+                                        className="form-checkbox text-blue-600 nw-1 nh-1 ml-1"
                                         title="This will change status to Pending at user"
                                     />
-
                                 </div>
                             ) : null}
                         </div>
@@ -232,7 +497,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                                     htmlFor="fileInput"
                                     className="border border-gray-300 rounded px-2 py-1 bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200 mb-0 mr-2"
                                 >
-                                    <Paperclip size={15}/>
+                                    <Paperclip size={15} />
                                 </label>
                                 <input
                                     type="file"
@@ -259,13 +524,12 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction,f
                                 onClick={clearFile}
                                 className="text-sm text-white bg-red-500 rounded-full p-1 hover:bg-red-600"
                             >
-                                <X size={13}/>
+                                <X size={13} />
                             </button>
                         </div>
                     </div>
                 )}
             </div>
-            
         </div>
     );
 };

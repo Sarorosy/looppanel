@@ -17,6 +17,7 @@ import { getSocket } from './Socket';
 const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }) => {
     const [currencies, setCurrencies] = useState([]);
     const [services, setServices] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
     const [selectedCurrency, setSelectedCurrency] = useState('');
     const [otherCurrency, setOtherCurrency] = useState('');
     const [selectedService, setSelectedService] = useState('');
@@ -37,6 +38,8 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
     const [demodone, setDemodone] = useState('no');
     const [demoId, setDemoId] = useState('');
     const [demoStatus, setDemoStatus] = useState(false);
+    const [tags, setTags] = useState([]);
+    const tagsRef = useRef(null);
     const socket = getSocket();
 
     const modules = {
@@ -89,6 +92,29 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
         }
         setWordCountTexts(updatedWordCountTexts);
     }, [wordCounts]);
+
+    useEffect(() => {
+        // Initialize select2 for Tags
+        $(tagsRef.current).select2({
+            placeholder: "Select Tags",
+            allowClear: true,
+            multiple: true,
+        }).on('change', (e) => {
+            const selectedValues = $(e.target).val();
+            setSelectedTags(selectedValues);
+        });
+
+        
+        $(tagsRef.current).val(selectedTags).trigger('change');
+        
+
+        return () => {
+            // Clean up select2 on component unmount
+            if (tagsRef.current) {
+                $(tagsRef.current).select2('destroy');
+            }
+        };
+    }, [tags]);
 
     const planColors = {
         Basic: 'text-blue-400', // Custom brown color
@@ -201,6 +227,15 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
             toast.error('Error fetching users');
         }
     };
+    const fetchTags = async () => {
+        try {
+            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const data = await response.json();
+            if (data.status) setTags(data.data || []);
+        } catch (error) {
+            toast.error('Failed to fetch tags.');
+        }
+    };
 
     const handleFileChange = (id, event) => {
         const updatedFiles = files.map((item) =>
@@ -248,6 +283,12 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
             setSubmitting(false);
             return;
         }
+        if (isfeasability == 0 && selectedTags.length == 0) {
+            toast.error('Please select atleast one Tag!');
+            setSubmitting(false);
+            return;
+        }
+
         if (selectedSubjectArea == "Other" && !otherSubjectArea) {
             toast.error('Please enter other subject area name!');
             setSubmitting(false);
@@ -312,6 +353,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
         formData.append('category', userObject.category);
         formData.append('demo_done', demodone);
         formData.append('demo_id', demoId);
+        formData.append('tags', selectedTags);
         files.forEach((item, index) => {
             if (item.file) {
                 formData.append(`quote_upload_file[${index}]`, item.file);
@@ -347,6 +389,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
         fetchCurrencies();
         fetchServices();
         fetchUsers();
+        fetchTags();
     }, []);
 
     useEffect(() => {
@@ -793,6 +836,25 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                                 ))}
                             </select>
                         </div>
+                        <div className='w-full '>
+                                {/* Tags */}
+                                <label>Tags</label>
+                                <select
+                                    name="tags"
+                                    id="tags"
+                                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control select2-hidden-accessible"
+                                    multiple
+                                    value={selectedTags}
+                                    ref={tagsRef}
+                                >
+                                    <option value="">Select Tags</option>
+                                    {tags.map((tag) => (
+                                        <option key={tag.id} value={tag.id}>
+                                            {tag.tag_name}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
 
                         <div className=" flex w-full mt-4" style={{ display: `${demoStatus ? 'none' : 'block'}` }}>
                             <div className="flex items-center">

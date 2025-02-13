@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ScaleLoader from 'react-spinners/ScaleLoader';
 import loader from './loader.gif';
 import { InfinitySpin } from 'react-loader-spinner';
-const CustomLoader = () => {
+const CustomLoader = ({width}) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const CustomLoader = () => {
         // <img src={loader} />
         <InfinitySpin
         visible={true}
-        width="200"
+        width={width && width != "" ? width : "200"}
         color="#f36730"
         ariaLabel="infinity-spin-loading"
         

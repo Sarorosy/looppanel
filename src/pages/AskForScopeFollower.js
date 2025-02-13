@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, Pencil } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, Pencil, CheckCircle, XCircle } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -652,6 +652,46 @@ const getVisibleTabCount = () => {
                                                                                 ))}
                                                                             </p>
                                                                         )}
+                                                                        {quote.ptp != null && (
+                                                                          <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
+                                                                            <h3 className="text-md font-semibold mb-2 text-gray-700">PTP Details</h3>
+                                                                            <div className="space-y-1 text-sm text-gray-600">
+                                                                              <p className="flex items-center gap-1">
+                                                                                <strong>PTP:</strong>
+                                                                                {quote.ptp === "Yes" ? (
+                                                                                  <CheckCircle className="text-green-500 w-4 h-4" />
+                                                                                ) : (
+                                                                                  <XCircle className="text-red-500 w-4 h-4" />
+                                                                                )}
+                                                                              </p>
+                                                                              {quote.ptp_amount && quote.ptp_amount != 0 && (
+                                                                                <p>
+                                                                                  <strong>PTP Amount:</strong> {quote.ptp_amount}
+                                                                                </p>
+                                                                              )}
+                                                                              {quote.ptp === "Yes" && quote.ptp_comments !== "" && (
+                                                                                <p>
+                                                                                  <strong>PTP Comments:</strong> {quote.ptp_comments}
+                                                                                </p>
+                                                                              )}
+                                                                              {quote.ptp_file != null && (
+                                                                                <p className="flex items-center gap-1">
+                                                                                  <strong>Attached File:</strong>
+                                                                                  <Paperclip className="text-blue-500 w-4 h-4" />
+                                                                                  <a
+                                                                                    className="text-blue-500 font-semibold hover:underline"
+                                                                                    href={`https://apacvault.com/public/${quote.ptp_file}`}
+                                                                                    download={quote.ptpfile}
+                                                                                    target="_blank"
+                                                                                    rel="noopener noreferrer"
+                                                                                  >
+                                                                                    {quote.ptp_file}
+                                                                                  </a>
+                                                                                </p>
+                                                                              )}
+                                                                            </div>
+                                                                          </div>
+                                                                        )}
 
                                                                         {quote.service_name && quote.plan && (
                                                                             <>
@@ -757,20 +797,7 @@ const getVisibleTabCount = () => {
                                                                                 </div>
                                                                             </div>
                                                                         )}
-                                                                        {quote.ptp != null && (
-                                                                            <>
-                                                                                <p className='mb-2'><div><strong>PTP</strong></div> {quote.ptp}</p>
-                                                                                {quote.ptp_amount && quote.ptp_amount != 0 && (
-                                                                                    <p className='mb-2'><div><strong>PTP Amount</strong></div> {quote.ptp_amount}</p>
-                                                                                )}
-                                                                                {quote.ptp == "Yes" && (
-                                                                                    <p className='mb-2'><div><strong >PTP Comments</strong></div> {quote.ptp_comments}</p>
-                                                                                )}
-                                                                                {quote.ptp_file != null && (
-                                                                                    <p className='mb-2'><div><strong>Attached File  </strong></div><a className='text-blue-500 font-semibold flex items-center' href={`https://apacvault.com/public/ptpfiles/${quote.ptp_file}`} download={quote.ptpfile} target='_blank'>{quote.ptp_file} <FileDownIcon size={20} /></a></p>
-                                                                                )}
-                                                                            </>
-                                                                        )}
+                                                                        
                                                                         {quote.demodone != 0 && (
                                                                             <>
                                                                                 <p className='flex items-center '><p className='mr-3'> <div><strong>Demo Id  </strong></div> {quote.demo_id}</p><span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> </p>

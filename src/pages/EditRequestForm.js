@@ -448,7 +448,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         >
             <div className="bg-white p-6 shadow rounded-md space-y-4">
                 <div className="flex items-center justify-between bg-blue-400 text-white p-2">
-                    <h2 className="text-xl font-semibold flex items-center">Edit Request Form {loading && (<CustomLoader />)}</h2>
+                    <h2 className="text-xl font-semibold flex items-center">Edit Request Form </h2>
                     <button onClick={onClose} className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500">
                         <X size={15} />
                     </button>

@@ -123,9 +123,9 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType, tagAcces
                 <p className="text-gray-500"></p>
             )} */}
                 <div className="d-flex align-items-center ">
-                    <button onClick={handleDetailsTabBtn} className="btn btn-light btn-sm mr-2 py-0 px-1 flex items-center f-12">
+                    {/* <button onClick={handleDetailsTabBtn} className="btn btn-light btn-sm mr-2 py-0 px-1 flex items-center f-12">
                         Details <ArrowDownNarrowWide size={13} className="ml-1"/>
-                    </button>
+                    </button> */}
                     <button
                         onClick={close}
                         className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"

@@ -3,6 +3,7 @@ import './modalStyles.css';
 import toast from "react-hot-toast";
 import CustomLoader from "../CustomLoader";
 import { Chat } from "./Chat";
+import "react-tooltip/dist/react-tooltip.css";
 import {
   ArrowDown,
   ArrowUp,
@@ -28,6 +29,7 @@ import {
   EyeClosed,
   Pen,
   CircleUserRound,
+  XCircle,
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import AddTags from "./AddTags";
@@ -147,6 +149,38 @@ const AskForScopeAdmin = ({
       setFullScreenTab(null)
     }
   }
+
+  const FollowersList = ({ followerNames }) => {
+    if (!followerNames) return null;
+  
+    const followersArray = followerNames.split(",").map((name) => name.trim());
+  
+    return (
+      <div className="flex gap-2 mt-2">
+        {followersArray.map((fullName, index) => {
+          const initials = fullName
+            .split(" ")
+            .map((word) => word.charAt(0))
+            .join("")
+            .toUpperCase();
+  
+          return (
+            <div key={index}>
+              <div
+                data-tooltip-id={`tooltip-${index}`}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-500 text-white text-sm  cursor-pointer"
+              >
+                {initials}
+              </div>
+              <Tooltip id={`tooltip-${index}`} place="top" effect="solid">
+                {fullName}
+              </Tooltip>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   const handleMPChange = (plan) => {
     setSelectedMP(selectedMP === plan ? "" : plan); // Toggle selection
@@ -932,7 +966,7 @@ const AskForScopeAdmin = ({
                       {expandedRowIndex == index && (
                         <tr>
                           <td colSpan={7}>
-                            <div className="mx-2 mt-2 mb-0 bg-gray-100 px-3 pt-3 pb-0">
+                            <div className="mx-2 mt-2 mb-0 bg-gray-100 px-3 pt-3 pb-0 flex items-center justify-between">
                               <div className="">
                                 <button
                                   onClick={() => handleTabButtonClick("scope")}
@@ -962,6 +996,9 @@ const AskForScopeAdmin = ({
                                 >
                                   Feasibility  {feasTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
                                 </button>
+                              </div>
+                              <div>
+                                <FollowersList followerNames={quote.follower_names} />
                               </div>
                             </div>
                             <div className="mx-2 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
@@ -1052,6 +1089,46 @@ const AskForScopeAdmin = ({
                                                   </p>
                                                 </div>
                                               )}
+                                              {quote.ptp != null && (
+  <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
+    <h3 className="text-md font-semibold mb-2 text-gray-700">PTP Details</h3>
+    <div className="space-y-1 text-sm text-gray-600">
+      <p className="flex items-center gap-1">
+        <strong>PTP:</strong>
+        {quote.ptp === "Yes" ? (
+          <CheckCircle className="text-green-500 w-4 h-4" />
+        ) : (
+          <XCircle className="text-red-500 w-4 h-4" />
+        )}
+      </p>
+      {quote.ptp_amount && quote.ptp_amount != 0 && (
+        <p>
+          <strong>PTP Amount:</strong> {quote.ptp_amount}
+        </p>
+      )}
+      {quote.ptp === "Yes" && quote.ptp_comments !== "" && (
+        <p>
+          <strong>PTP Comments:</strong> {quote.ptp_comments}
+        </p>
+      )}
+      {quote.ptp_file != null && (
+        <p className="flex items-center gap-1">
+          <strong>Attached File:</strong>
+          <Paperclip className="text-blue-500 w-4 h-4" />
+          <a
+            className="text-blue-500 font-semibold hover:underline"
+            href={`https://apacvault.com/public/${quote.ptp_file}`}
+            download={quote.ptpfile}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {quote.ptp_file}
+          </a>
+        </p>
+      )}
+    </div>
+  </div>
+)}
 
                                               {/* Service Required & Plan Section */}
                                               {quote.service_name && quote.plan && (
@@ -1226,41 +1303,8 @@ const AskForScopeAdmin = ({
                                                   </div>
                                                 )}
 
-                                              {quote.ptp != null && (
-                                                <>
-                                                  <p>
-                                                    <strong>PTP:</strong> {quote.ptp}
-                                                  </p>
-                                                  {quote.ptp_amount &&
-                                                    quote.ptp_amount != 0 && (
-                                                      <p>
-                                                        <strong>PTP Amount:</strong>{" "}
-                                                        {quote.ptp_amount}
-                                                      </p>
-                                                    )}
-                                                  {quote.ptp == "Yes" && (
-                                                    <p>
-                                                      <strong>PTP Comments:</strong>{" "}
-                                                      {quote.ptp_comments}
-                                                    </p>
-                                                  )}
-                                                  {quote.ptp_file != null && (
-                                                    <p>
-                                                      <strong>
-                                                        Attached File :{" "}
-                                                      </strong>
-                                                      <a
-                                                        className="text-blue-500 font-semibold"
-                                                        href={`https://apacvault.com/public/${quote.ptp_file}`}
-                                                        download={quote.ptpfile}
-                                                        target="_blank"
-                                                      >
-                                                        {quote.ptp_file}
-                                                      </a>
-                                                    </p>
-                                                  )}
-                                                </>
-                                              )}
+
+
                                               {quote.demodone != 0 && (
                                                 <>
                                                   <p className="flex items-center ">
@@ -1707,7 +1751,7 @@ const AskForScopeAdmin = ({
                                                                         <div className="flex items-center">
                                                                           <input
                                                                             type="checkbox"
-                                                                            className="h-1 w-1"
+                                                                            className="nh-1 nw-1"
                                                                             id={`mp_${plan}`}
                                                                             name={`mp_${plan}`}
                                                                             checked={selectedMP === plan}
