@@ -5,10 +5,13 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
+import { getSocket } from "./Socket";
+
 
 const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
     const [feasibilityComments, setFeasibilityComments] = useState("");
     const [loading, setLoading] = useState(false);
+    const socket = getSocket();
 
     // Fetch feasibility comments when component mounts or quote.id changes
     useEffect(() => {
@@ -56,6 +59,10 @@ const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
             if (response.data.status) {
                 toast.success("Feasibility comments updated successfully!");
                 onClose(); // Close the form after successful submission
+                socket.emit('editedFeasibilityComments', {
+                    quote_id: quote.quoteid,
+                    ref_id: quote.assign_id
+                })
                 after(); // Call after to update the parent component if needed
             } else {
                 toast.error("Failed to update feasibility comments.");
@@ -72,7 +79,7 @@ const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
         <div className="fixed right-0 h-full w-1/2 bg-gray-100 shadow-lg z-50 overflow-y-auto" style={{ top: "-20px" }}>
             <div className="bg-white p-6 shadow rounded-md space-y-4">
                 <div className="flex items-center justify-between bg-blue-400 text-white p-2">
-                    <h2 className="text-xl font-semibold flex items-center">Edit Feasibility Comments {loading && <CustomLoader />}</h2>
+                    <h2 className="text-xl font-semibold flex items-center">Edit Feasibility Comments </h2>
                     <button onClick={onClose} className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500">
                         <X size={15} />
                     </button>

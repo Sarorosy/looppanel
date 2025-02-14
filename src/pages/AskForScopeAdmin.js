@@ -129,6 +129,43 @@ const AskForScopeAdmin = ({
     }
   };
 
+ useEffect(() => {
+    socket.on('tagsUpdated', (data) => {
+      if (data.ref_id == queryId) {
+        fetchScopeDetailsForSocket();
+      }
+    });
+
+    return () => {
+      socket.off('tagsUpdated');  // Clean up on component unmount
+    };
+  }, []);
+
+  useEffect(() => {
+      socket.on('followersUpdated', (data) => {
+        if (data.ref_id == queryId) {
+          fetchScopeDetailsForSocket();
+        }
+      });
+  
+      return () => {
+        socket.off('followersUpdated');  // Clean up on component unmount
+      };
+    }, []);
+
+    useEffect(() => {
+      socket.on('feasibilityCommentsUpdated', (data) => {
+        if (data.ref_id == queryId) {
+          fetchScopeDetailsForSocket();
+        }
+      });
+  
+      return () => {
+        socket.off('feasibilityCommentsUpdated');  // Clean up on component unmount
+      };
+    }, []);
+
+
   const handlefullScreenBtnClick = (tab) => {
     if (tab == "scope") {
       // setChatTabVisible(false);

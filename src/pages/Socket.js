@@ -17,4 +17,4 @@ export const getSocket = () => {
     return socket;
 };
 
-//https://looppanelsocket-qlcd.onrender.com
+//http://localhost:3001

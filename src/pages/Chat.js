@@ -83,6 +83,14 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                 setReplyingToMessage(null);
                 setReplyingOpen(false);
                 setReplyText("");
+                const user_name = loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name;
+                socket.emit('sendmessage', {
+                    quote_id: quoteId,
+                    ref_id: refId,
+                    user_name: user_name,
+                    all_details: allDetails,
+                    user_id: loopUserObject.id
+                })
             } else {
                 console.error("Failed to submit reply:", result.error);
             }

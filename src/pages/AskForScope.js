@@ -306,6 +306,57 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
     };
   }, []);
 
+
+  useEffect(() => {
+    socket.on('tagsUpdated', (data) => {
+      if (data.ref_id == queryId) {
+        fetchScopeDetailsForScoket();
+      }
+    });
+
+    return () => {
+      socket.off('tagsUpdated');  // Clean up on component unmount
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on('followersUpdated', (data) => {
+      if (data.ref_id == queryId) {
+        fetchScopeDetailsForScoket();
+      }
+    });
+
+    return () => {
+      socket.off('followersUpdated');  // Clean up on component unmount
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on('feasibilityCommentsUpdated', (data) => {
+      if (data.ref_id == queryId) {
+        fetchScopeDetailsForScoket();
+      }
+    });
+
+    return () => {
+      socket.off('feasibilityCommentsUpdated');  // Clean up on component unmount
+    };
+  }, []);
+
+
+  useEffect(() => {
+    socket.on('quotePriceUpdated', (data) => {
+      if (data.ref_id == queryId) {
+        fetchScopeDetailsForScoket();
+      }
+    });
+    fetchScopeDetailsForScoket();
+
+    return () => {
+      socket.off('quotePriceUpdated');  // Clean up on component unmount
+    };
+  }, []);
+
   useEffect(() => {
     socket.on('feasabilityDone', (data) => {
       if (data.ref_id == queryId) {

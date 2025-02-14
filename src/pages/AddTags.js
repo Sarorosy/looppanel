@@ -9,6 +9,8 @@ import $ from 'jquery';
 import 'select2/dist/css/select2.min.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
+import { getSocket } from "./Socket";
+
 
 const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
     const [formData, setFormData] = useState({
@@ -23,6 +25,7 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
     const [submitting, setSubmitting] = useState(false);
     const [loading, setLoading] = useState(false);
     const userData = localStorage.getItem('loopuser');
+    const socket = getSocket();
 
     const userObject = JSON.parse(userData);
 
@@ -103,7 +106,15 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
             if (data.status) {
                 toast.success('Request updated successfully.');
                 after();
+                const user_name = userObject.fld_first_name + " " + userObject.fld_last_name;
+                socket.emit('addedTags', {
+                    quote_id: quoteId,
+                    ref_id: refId,
+                    user_name: user_name
+                })
+                
                 onClose();
+                
             } else {
                 toast.error('Failed to update request.');
             }

@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCcw, X } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import QueryDetailsFollowing from './QueryDetailsFollowing';
-
+import { getSocket } from "./Socket";
 
 const FollowingPage = ({ onClose, after }) => {
     const [quoteSummary, setQuoteSummary] = useState([]);
@@ -19,7 +19,7 @@ const FollowingPage = ({ onClose, after }) => {
     const [selectedQuery, setSelectedQuery] = useState('');
     const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-
+    const socket = getSocket();
     const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
@@ -60,6 +60,47 @@ const FollowingPage = ({ onClose, after }) => {
             }
         }
     };
+    const fetchQuoteSummaryforSocket = async () => {
+       
+
+        let hasResponse = false;
+        try {
+            const response = await fetch(
+                'https://apacvault.com/Webapi/getFollowingTasks',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify({ user_id: userObject.id, }),
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            console.log(data)
+            if (data.status) {
+                setQuoteSummary(data.data); // Update the quotes state
+                setPendingCount(data.pending_count);
+                setApprovedCount(data.approved_count);
+                setDiscountCount(data.discount_count);
+            } else {
+                console.error('Failed to fetch Details:', data.message);
+            }
+            hasResponse = true;
+        } catch (error) {
+            console.error('Error fetching details:', error);
+        } 
+    };
+
+    useEffect(() => {
+        socket.on('followersUpdated', (data) => {
+            fetchQuoteSummaryforSocket();
+        });
+    
+        return () => {
+          socket.off('followersUpdated');  // Clean up on component unmount
+        };
+      }, []);
 
     const toggleDetailsPage = () => {
         setIsDetailsOpen(!isDetailsOpen);

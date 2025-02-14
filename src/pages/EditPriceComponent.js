@@ -5,12 +5,15 @@ import CustomLoader from '../CustomLoader';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { getSocket } from "./Socket";
+
 
 const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose, after }) => {
     const [amounts, setAmounts] = useState({});
     const [comment, setComment] = useState("");
     const [loading, setLoading] = useState(false);
     const [fieldToUpdate, setFieldToUpdate] = useState('price');
+    const socket = getSocket();
 
     // Fetch price details when component mounts or quote.id changes
     useEffect(() => {
@@ -75,7 +78,7 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
                     } else {
                         toast.error("Failed to fetch price details.");
                     }
-
+                    
 
                 } catch (error) {
                     toast.error("Error fetching price details.");
@@ -120,6 +123,10 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
             const response = await axios.post('https://apacvault.com/Webapi/updatePriceQuote', dataToSubmit);
             if (response.data.status) {
                 toast.success("Price updated successfully!");
+                socket.emit("quotePriceEdited", {
+                    quote_id: quote.quoteid,
+                    ref_id: quote.assign_id,
+                  });
                 onClose(); // Close the form after successful submission
                 after();
             } else {
@@ -144,7 +151,7 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
         >
             <div className="bg-white p-6 shadow rounded-md space-y-4">
                 <div className="flex items-center justify-between bg-blue-400 text-white p-2">
-                    <h2 className="text-xl font-semibold flex items-center">Edit Request Form {loading && (<CustomLoader />)}</h2>
+                    <h2 className="text-xl font-semibold flex items-center">Edit Request Form</h2>
                     <button onClick={onClose} className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500">
                         <X size={15} />
                     </button>
