@@ -294,6 +294,19 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
   }, []);
 
   useEffect(() => {
+    socket.on('planCommentsEdited', (data) => {
+      if (data.ref_id == queryId) {
+
+        fetchScopeDetailsForScoket();
+      }
+    });
+
+    return () => {
+      socket.off('planCommentsEdited');  // Clean up on component unmount
+    };
+  }, []);
+
+  useEffect(() => {
     socket.on('feasabilityDone', (data) => {
       if (data.ref_id == queryId) {
 

@@ -1107,7 +1107,7 @@ const AskForScopeAdmin = ({
         </p>
       )}
       {quote.ptp === "Yes" && quote.ptp_comments !== "" && (
-        <p>
+        <p >
           <strong>PTP Comments:</strong> {quote.ptp_comments}
         </p>
       )}

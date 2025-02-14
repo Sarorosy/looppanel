@@ -254,6 +254,19 @@ const getVisibleTabCount = () => {
         };
     }, []);
 
+    useEffect(() => {
+        socket.on('planCommentsEdited', (data) => {
+          if (data.ref_id == queryId) {
+    
+            fetchScopeDetailsForSocket();
+          }
+        });
+    
+        return () => {
+          socket.off('planCommentsEdited');  // Clean up on component unmount
+        };
+      }, []);
+
 
     useEffect(() => {
         if (queryId) {

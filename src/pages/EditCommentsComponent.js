@@ -6,12 +6,13 @@ import axios from 'axios';
 import { X } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import { motion } from 'framer-motion';
-
+import { getSocket } from "./Socket";
 
 const EditCommentsComponent = ({ quote, plan, comment, wordCount, onClose, after }) => {
     const [editedComment, setEditedComment] = useState(comment || "");
     const [editedWordCount, setEditedWordCount] = useState(wordCount);
     const [loading, setLoading] = useState(false);
+    const socket = getSocket();
 
     const loopuserData = localStorage.getItem("loopuser");
   const loopUserObject = JSON.parse(loopuserData);
@@ -52,6 +53,10 @@ const EditCommentsComponent = ({ quote, plan, comment, wordCount, onClose, after
             if (response.data.status) {
                 toast.success("Comment updated successfully!");
                 onClose(); // Close the form after successful submission
+                socket.emit("commentsEdited", {
+                    quote_id: quote.quoteid,
+                    ref_id: quote.assign_id,
+                  });
                 after(); // Call after to update the parent component if needed
             } else {
                 toast.error("Failed to update comment.");
