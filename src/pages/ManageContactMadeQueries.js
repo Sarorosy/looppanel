@@ -146,16 +146,16 @@ const ManageContactMadeQueries = ({ notification }) => {
         setLoading(true);
 
         let hasResponse = false;
-        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite }
+        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite, user_type: userObject.user_type, team_id :userObject.team_id }
 
         if (nopayload) {
             // If nopayload is true, send an empty payload
-            payload = { loop_user_id: loopuserId, user_id: userId, };
+            payload = { loop_user_id: loopuserId, user_id: userId,user_type: userObject.user_type, team_id :userObject.team_id };
         }
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/loadcontactmadequeries',
+                'https://apacvault.com/Webapi/loadcontactmadequeriesNew',
                 {
                     method: 'POST', // Use POST method
                     headers: {
