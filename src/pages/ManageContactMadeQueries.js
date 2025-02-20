@@ -42,6 +42,7 @@ const ManageContactMadeQueries = ({ notification }) => {
     const [feasPageOpen, setFeasPageOpen] = useState(false);
     const [tlPageOpen, setTlPageOpen] = useState(false);
     const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0)
+    const [followupCount, setFollowupCount] = useState(0)
     const navigate = useNavigate();
 
     const userData = localStorage.getItem('user');
@@ -168,7 +169,8 @@ const ManageContactMadeQueries = ({ notification }) => {
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
                 setQuotes(data.data); // Update the quotes state
-                setPendingFeasRequestCount(data.pendingFeasRequestCount ? data.pendingFeasRequestCount : 0)
+                setPendingFeasRequestCount(data.pendingFeasRequestCount ? data.pendingFeasRequestCount : 0);
+                setFollowupCount(data.followingCount ? data.followingCount : 0);
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
@@ -445,9 +447,12 @@ const ManageContactMadeQueries = ({ notification }) => {
                             <ListIcon size={12} />
                             Summary
                         </button>
-                        <button className="bg-gray-200 flex items-center" onClick={handleFollowingButtonClick} title='View Following Quotations'>
+                        <button className="bg-gray-200 flex items-center relative" onClick={handleFollowingButtonClick} title='View Following Quotations'>
                             <UserCheck size={12} />
                             Following
+                            <span style={{ top: "-15px", right: "-10px" }} className="absolute inline-flex items-center justify-center px-2 py-1 text-xs font-semibold text-white bg-red-600 rounded-full">
+                                {followupCount}
+                            </span>
                         </button>
                         {loopuserObject.tl == 1 && (
                             <button className="bg-gray-200 flex items-center relative" onClick={handleTlButtonClick} title='All Users Request'>
