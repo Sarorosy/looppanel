@@ -915,3 +915,21 @@ focus-outline-none:focus:not(:focus-visible) {
   border-radius: 4px;
   line-height: normal;
 }
+
+.mentions-input__input{
+  margin-top: -6px !important;
+  border: none !important;
+
+}
+.mentions-input__input:focus{
+  border: none !important;
+}
+.mentions-input__highlighter:focus{
+  border: none !important;
+}
+.mentions-input__highlighter{
+  border: none !important;
+}
+.mentions-input__highlighter{
+  border: none !important;
+}

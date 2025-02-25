@@ -41,6 +41,8 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
     const [replyingOpen, setReplyingOpen] = useState(false);
     const [filteredUsers, setFilteredUsers] = useState([]);
 
+    const [selectedUsers, setSelectedUsers] = useState(new Set());
+
     const handleReplyClick = (messageId, message) => {
         console.log(messageId)
         if (replyingTo == messageId) {
@@ -543,6 +545,10 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                         value={newMessage}
                         onChange={(event, newValue, newPlainTextValue, mentions) => {
                             setNewMessage(newValue);
+                            const newSelectedUsers = new Set([...selectedUsers]);
+                            mentions.forEach(mention => newSelectedUsers.add(mention.id));
+                            setSelectedUsers(newSelectedUsers);
+                            
                             setMentions(mentions.map(mention => `@${mention.display}`));
                             setMentionIds(mentions.map(mention => mention.id));
                         }}
@@ -554,11 +560,12 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                 fontSize: 14,
                                 minHeight: 100,
                                 border: '1px solid #ccc',
-                                borderRadius: 4
+                                borderRadius: 4,
                             },
                             input: {
                                 margin: 0,
-                                padding: 8,
+                                padding: '8px 3px',
+                                outline: 'none',
                             },
                             suggestions: {
                                 list: {
@@ -567,7 +574,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                     fontSize: 14,
                                     boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                                     marginLeft: 25,
-                                    marginTop: 10,
+                                    marginTop: 16,
                                     position: 'absolute',
                                     zIndex: 1000
                                 },
@@ -575,27 +582,30 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                     padding: '5px 15px',
                                     borderBottom: '1px solid rgba(0,0,0,0.15)',
                                     '&focused': {
-                                        backgroundColor: '#CAE5FF'
+                                        backgroundColor: '#CAE5FF',
+                                        outline: 'none'
                                     }
                                 }
+                            },
+                            highlighter: {
+                                overflow: 'hidden',
+                                outline: 'none'
                             }
                         }}
                     >
                         <Mention
                             trigger="@"
-                            data={users.map(user => ({ id: user.id, display: user.name }))}
+                            data={users.filter(user => !selectedUsers.has(user.id)).map(user => ({ id: user.id, display: user.name }))}
                             renderSuggestion={(suggestion, search, highlightedDisplay, index, focused) => (
                                 <div className={`user-suggestion ${focused ? 'focused' : ''}`}>
                                     {suggestion.display}
                                 </div>
                             )}
                             style={{
-                                backgroundColor: '#CAE5FF',
-                                padding: '1px 2px',
-                                borderRadius: '4px',
-                                display: 'inline-block',
-                                lineHeight: '1.5',
-                                marginTop: '4px',
+                                backgroundColor: '#DAF0FAFF',
+                                color: '#0057B300',
+                                marginTop: '-6px',
+                                
                             }}
                         />
                     </MentionsInput>
