@@ -746,7 +746,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                             </button>
                             <button
                               onClick={() => {
-                                const url = `http://localhost:3000/askforscope/viewdetails/${quote.assign_id}/${quote.quoteid}`;
+                                const url = `https://apacvault.com/askforscope/viewdetails/${quote.assign_id}/${quote.quoteid}`;
                                 navigator.clipboard
                                   .writeText(url)
                                   .then(() => {
