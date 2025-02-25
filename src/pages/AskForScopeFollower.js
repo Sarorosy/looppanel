@@ -731,7 +731,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                                     hour: 'numeric',
                                                                                                                     minute: '2-digit',
                                                                                                                     hour12: true
-                                                                                                                }).replace(',', ',').toLowerCase()}
+                                                                                                                }).replace(',', ',')}
                                                                                                             </p>
                                                                                                         )}
                                                                                                     </div>
@@ -764,7 +764,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                                     <Paperclip className="text-blue-500 w-4 h-4" />
                                                                                                                     <a
                                                                                                                         className="text-blue-500 font-semibold hover:underline"
-                                                                                                                        href={`https://apacvault.com/public/${quote.ptp_file}`}
+                                                                                                                        href={`https://apacvault.com/public/ptpfiles/${quote.ptp_file}`}
                                                                                                                         download={quote.ptpfile}
                                                                                                                         target="_blank"
                                                                                                                         rel="noopener noreferrer"
@@ -855,7 +855,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                                             hour: 'numeric',
                                                                                                                             minute: '2-digit',
                                                                                                                             hour12: true
-                                                                                                                        }).replace(',', ',').toLowerCase()}
+                                                                                                                        }).replace(',', ',')}
                                                                                                                     </p>
                                                                                                                 )}
                                                                                                                 {plan === "Standard" && quote.standard_edited_time && (
@@ -867,7 +867,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                                             hour: 'numeric',
                                                                                                                             minute: '2-digit',
                                                                                                                             hour12: true
-                                                                                                                        }).replace(',', ',').toLowerCase()}
+                                                                                                                        }).replace(',', ',')}
                                                                                                                     </p>
                                                                                                                 )}
                                                                                                                 {plan === "Advanced" && quote.advanced_edited_time && (
@@ -879,7 +879,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                                             hour: 'numeric',
                                                                                                                             minute: '2-digit',
                                                                                                                             hour12: true
-                                                                                                                        }).replace(',', ',').toLowerCase()}
+                                                                                                                        }).replace(',', ',')}
                                                                                                                     </p>
                                                                                                                 )}
                                                                                                             </div>

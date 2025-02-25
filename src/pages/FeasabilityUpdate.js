@@ -330,7 +330,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                             hour: 'numeric',
                                                             minute: '2-digit',
                                                             hour12: true
-                                                        }).replace(',', ',').toLowerCase()}
+                                                        }).replace(',', ',')}
                                                     </p>
                                                 )}
                                             </div>

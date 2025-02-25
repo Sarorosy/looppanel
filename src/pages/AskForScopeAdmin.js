@@ -1216,7 +1216,7 @@ const AskForScopeAdmin = ({
                                                         hour: 'numeric',
                                                         minute: '2-digit',
                                                         hour12: true
-                                                      }).replace(',', ',').toLowerCase()}
+                                                      }).replace(',', ',')}
                                                     </p>
                                                   )}
                                                 </div>
@@ -1451,7 +1451,7 @@ const AskForScopeAdmin = ({
                                                                 hour: 'numeric',
                                                                 minute: '2-digit',
                                                                 hour12: true
-                                                              }).replace(',', ',').toLowerCase()}
+                                                              }).replace(',', ',')}
                                                             </p>
                                                           )}
                                                           {plan === "Standard" && quote.standard_edited_time && (
@@ -1463,7 +1463,7 @@ const AskForScopeAdmin = ({
                                                                 hour: 'numeric',
                                                                 minute: '2-digit',
                                                                 hour12: true
-                                                              }).replace(',', ',').toLowerCase()}
+                                                              }).replace(',', ',')}
                                                             </p>
                                                           )}
                                                           {plan === "Advanced" && quote.advanced_edited_time && (
@@ -1475,7 +1475,7 @@ const AskForScopeAdmin = ({
                                                                 hour: 'numeric',
                                                                 minute: '2-digit',
                                                                 hour12: true
-                                                              }).replace(',', ',').toLowerCase()}
+                                                              }).replace(',', ',')}
                                                             </p>
                                                           )}
                                                         </div>
@@ -1779,7 +1779,7 @@ const AskForScopeAdmin = ({
                                                                 hour: 'numeric',
                                                                 minute: '2-digit',
                                                                 hour12: true
-                                                              }).replace(',', ',').toLowerCase()}
+                                                              }).replace(',', ',')}
                                                             </p>
                                                           </div>
                                                           )}
@@ -2042,7 +2042,7 @@ const AskForScopeAdmin = ({
                                                               hour: 'numeric',
                                                         minute: '2-digit',
                                                         hour12: true
-                                                            }).replace(',', ',').toLowerCase()}
+                                                            }).replace(',', ',')}
                                                           </p>
                                                         </div>
                                                       )}
