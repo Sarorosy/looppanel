@@ -879,3 +879,39 @@ focus-outline-none:focus:not(:focus-visible) {
   background: #fff6df;
   padding: 15px;
 }
+.animate-shake {
+  animation: shake 2.8s cubic-bezier(.36,.07,.19,.97) infinite;
+}
+
+@keyframes shake {
+  0%, 71.43%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  
+  3.57%, 32.14% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  7.14%, 28.57% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  10.71%, 17.86%, 25% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  14.29%, 21.43% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+
+
+.mentions-input .mention {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 6px;
+  background-color: #CAE5FF;
+  border-radius: 4px;
+  line-height: normal;
+}

@@ -9,6 +9,8 @@ import toast from 'react-hot-toast';
 import { io } from "socket.io-client";
 import { getSocket } from './Socket';
 import ChatLoader from '../components/ChatLoader';
+import { MentionsInput, Mention } from 'react-mentions';
+import 'react-quill/dist/quill.snow.css';
 const socket = getSocket();
 
 export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, finalfunctionforsocket, allDetails, tlType, handlefullScreenBtnClick, chatTabVisible, fullScreenTab }) => {
@@ -22,6 +24,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
     const [showUserDropdown, setShowUserDropdown] = useState(false);
     const [users, setUsers] = useState([]);
     const [mentionStartPosition, setMentionStartPosition] = useState(0);
+    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
 
     const userData = localStorage.getItem('user');
     const userObject = JSON.parse(userData);
@@ -36,7 +39,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
     const [replyingToMessage, setReplyingToMessage] = useState(null);
     const [replyText, setReplyText] = useState("");
     const [replyingOpen, setReplyingOpen] = useState(false);
-
+    const [filteredUsers, setFilteredUsers] = useState([]);
 
     const handleReplyClick = (messageId, message) => {
         console.log(messageId)
@@ -60,21 +63,21 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
 
     const handleSendReply = async () => {
         if (replyText.trim() === "") return;
-    
+
         console.log("Replying to Message ID:", replyingTo, "Message:", replyText);
-    
+
         const formData = new FormData();
         formData.append("chat_id", replyingTo); // ID of the chat message being replied to
         formData.append("message", replyText);
         formData.append("user_id", loopUserObject.id);
         formData.append("user_type", userObject.user_type);
-    
+
         try {
             const response = await fetch("https://apacvault.com/Webapi/submitReply", {
                 method: "POST",
                 body: formData,
             });
-    
+
             const result = await response.json();
             if (result.status) {
                 console.log("Reply submitted successfully:", result);
@@ -96,11 +99,11 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             }
         } catch (error) {
             console.error("Error submitting reply:", error);
-        }finally{
+        } finally {
             fetchMessagesForSocket();
         }
     };
-    
+
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -144,7 +147,14 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             console.log(data.data);
         } catch (error) {
             console.error('Error fetching messages:', error);
-        } 
+        }
+    };
+
+    const formatMessageForSending = (message) => {
+        // Replace mentions in the format @[Name](id) with {{{Name,id}}}
+        return message.replace(/@\[([^\]]+)\]\((\d+)\)/g, (match, name, id) => {
+            return `{{{${name},${id}}}}`;
+        });
     };
 
     const sendMessage = async () => {
@@ -153,10 +163,12 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             return;
         }
 
+        const formattedMessage = formatMessageForSending(newMessage);
+
         const formData = new FormData();
         formData.append('ref_id', refId);
         formData.append('quote_id', quoteId);
-        formData.append('message', newMessage);
+        formData.append('message', formattedMessage); // Using formatted message
         formData.append('user_id', loopUserObject.id);
         formData.append('user_type', userObject.user_type);
         formData.append('category', userObject.category);
@@ -231,23 +243,45 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
     };
 
     const handleTextareaChange = (e) => {
-        const value = e.target.value;
-        setNewMessage(value);
+        // Remove HTML tags from the value
+        const value = e.target.value.replace(/<\/?[^>]+(>|$)/g, "");
+        setNewMessage(e.target.value); // Keep the formatted value in state
 
         const cursorPosition = e.target.selectionStart;
         const textBeforeCursor = value.substring(0, cursorPosition);
+        const atMatch = textBeforeCursor.match(/@(\w*)$/);
 
-        if (textBeforeCursor.endsWith('@')) { // Detect '@' at the end
+        if (atMatch) {
+            // Get cursor position from Quill editor
+            const selection = textareaRef.current.getEditor().getSelection();
+            if (selection) {
+                const bounds = textareaRef.current.getEditor().getBounds(selection.index);
+                const editorBounds = textareaRef.current.getEditor().container.getBoundingClientRect();
+
+                setDropdownPosition({
+                    top: bounds.top + editorBounds.top -60,
+                    left: bounds.left + 25
+                });
+            }
+
             setShowUserDropdown(true);
             setMentionStartPosition(cursorPosition);
+
+            const searchQuery = atMatch[1].toLowerCase();
+            const filteredUsers = users.filter(user =>
+                user.name.toLowerCase().startsWith(searchQuery) ||
+                user.name.toLowerCase().includes(searchQuery)
+            );
+
+            setFilteredUsers(filteredUsers);
         } else {
             setShowUserDropdown(false);
         }
 
+        // Use the plain text value for mention detection
         const mentionMatches = value.match(/@(\w+)/g) || [];
-        const extractedMentions = mentionMatches.map(mention => mention.substring(1)); // Remove '@'
+        const extractedMentions = mentionMatches.map(mention => mention.substring(1));
 
-        // Filter mentions based on valid users
         const validMentions = extractedMentions.filter(username =>
             users.some(user => user.name === username)
         );
@@ -263,16 +297,30 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
 
 
     const handleUserSelect = (selectedUser) => {
-        const messageBeforeMention = newMessage.substring(0, mentionStartPosition - 1); // Remove unnecessary space
-        const messageAfterMention = newMessage.substring(mentionStartPosition);
+        // Only remove <p> tags, preserve other HTML tags
+        const plainValue = newMessage.replace(/<\/?p>/g, '');
+        const cursorPosition = mentionStartPosition;
 
-        let newMessageText = newMessage.trim() === ""
-            ? `@${selectedUser.name}  `
-            : `${messageBeforeMention} @${selectedUser.name} ${messageAfterMention} `;
+        const textBeforeCursor = plainValue.substring(0, cursorPosition);
+        const atMatch = textBeforeCursor.match(/@(\w*)$/);
 
+        if (!atMatch) return;
+
+        const mentionStart = cursorPosition - atMatch[0].length;
+        const messageBeforeMention = plainValue.substring(0, mentionStart);
+        const messageAfterMention = plainValue.substring(cursorPosition);
+
+        // Construct new message without <p> tags
+        const newMessageText = `${messageBeforeMention} <span class="mention" style="background-color: #CAE5FFFF;">@${selectedUser.name}</span> ${messageAfterMention}`;
         setNewMessage(newMessageText);
         setShowUserDropdown(false);
-        textareaRef.current.focus();
+
+        // Set focus and cursor position after React updates the state
+        setTimeout(() => {
+            const editor = textareaRef.current.getEditor();
+            const newPosition = mentionStart + `@${selectedUser.name} `.length;
+            editor.setSelection(newPosition, newPosition);
+        }, 0);
 
         setMentions((prevMentions) => {
             const updatedMentions = [...new Set([...prevMentions, `@${selectedUser.name}`])];
@@ -284,6 +332,9 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             return updatedMentionIds;
         });
     };
+
+
+
 
 
     const fetchUsers = async () => {
@@ -331,7 +382,8 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
     useEffect(() => {
         console.log("Mentions:", mentions);
         console.log("mentions:", mentionIds);
-    }, [mentions]);
+        console.log("newMessage:", newMessage);
+    }, [mentions, mentionIds, newMessage]);
 
     useEffect(() => {
         fetchUsers();
@@ -342,7 +394,36 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             return `<b style="color:#126dff;cursor:pointer;">${name}</b>`;
         });
     };
+    
 
+    const modules = {
+        toolbar: [
+            // ['bold', 'italic', 'underline'],
+            // [{ 'list': 'ordered' }, { 'list': 'bullet' }]
+            // ['link'],
+            // ['clean']
+        ]
+    };
+
+    const formats = [
+        // 'bold', 'italic', 'underline',
+        // 'list', 'bullet',
+        // 'link'
+    ];
+
+    const mentionsStyles = `
+    .mentions-input {
+        width: 100%;
+    }
+
+    .user-suggestion {
+        padding: 5px 15px;
+    }
+
+    .user-suggestion.focused {
+        background-color: #CAE5FF;
+    }
+    `;
 
     return (
         <div className="bg-white w-full">
@@ -363,7 +444,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                     <p><ChatLoader /></p>
                 ) : (
                     messages && messages.length > 0 && (
-                        <div className="chat-container bg-blue-50" id="chatContainer"  ref={chatContainerRef}>
+                        <div className="chat-container bg-blue-50" id="chatContainer" ref={chatContainerRef}>
                             {messages.map((chatVal, index) => {
                                 const isUser = chatVal.sender_id == loopUserObject.id;
                                 return (
@@ -383,32 +464,32 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                                 {new Date(chatVal.date * 1000).toLocaleString()}
                                             </span>
                                         </div>
-                    
+
                                         {/* Chat Text */}
                                         <div
                                             className={`chat-text ${isUser ? 'right' : ''}`}
                                             dangerouslySetInnerHTML={{ __html: formatMessage(chatVal.message) }}
                                         />
-                    
+
                                         {/* File Attachment */}
                                         {chatVal.isfile == "1" && (
                                             <div className="file-container">
                                                 {/* <i className="fa fa-file mr-3"></i> */}
                                                 <p>{chatVal.file_path.split('/').pop()}</p>
-                                                <a href={chatVal.file_path} target="_blank" rel="noopener noreferrer" ><Download size={16}/></a>
+                                                <a href={chatVal.file_path} target="_blank" rel="noopener noreferrer" ><Download size={16} /></a>
                                             </div>
                                         )}
                                         {chatVal.pending_responses && chatVal.pending_responses.length > 0 && (
-                                            <div className="pending-responses text-red-500 flex space-x-1" style={{fontSize:"11px"}} >
+                                            <div className="pending-responses text-red-500 flex space-x-1" style={{ fontSize: "11px" }} >
                                                 {chatVal.pending_responses.map((response, index) => (
-                                                <p key={index} className='font-semibold'>{response}</p>
+                                                    <p key={index} className='font-semibold'>{response}</p>
                                                 ))} <span className='ml-1'>
                                                     response pending
                                                 </span>
                                             </div>
-                                            )}
+                                        )}
 
-                    
+
                                         {/* Replies */}
                                         {chatVal.replies && chatVal.replies.length > 0 && (
                                             <div className="reply-container">
@@ -426,14 +507,14 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                                 ))}
                                             </div>
                                         )}
-                    
+
                                         {/* Reply Button */}
                                         <div className="reply-section">
                                             <button className="reply-button" onClick={() => handleReplyClick(chatVal.message_id, chatVal.message)}>
                                                 <i className="fa fa-reply"></i>
                                             </button>
                                         </div>
-                    
+
                                         {/* Reply Box */}
                                         {replyingTo == chatVal.message_id && replyingOpen && (
                                             <div className="reply-box">
@@ -458,29 +539,62 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                 )}
 
                 <div className="">
-                    <textarea
-                        ref={textareaRef}
-                        placeholder="Use @ to mention"
-                        className="w-full text-gray-700 bg-white px-3 resize-none py-1 rounded focus:outline-none border"
+                    <MentionsInput
                         value={newMessage}
-                        onChange={handleTextareaChange}
-                        rows={4}
-                        disabled={tlType && tlType == 2}
-                    ></textarea>
-
-                    {showUserDropdown && (
-                        <div className="mt-2 border border-gray-300 rounded p-2">
-                            {users.map((user, index) => (
-                                <div
-                                    key={index}
-                                    className="cursor-pointer hover:bg-gray-100 p-1"
-                                    onClick={() => handleUserSelect(user)}
-                                >
-                                    {user.name}
+                        onChange={(event, newValue, newPlainTextValue, mentions) => {
+                            setNewMessage(newValue);
+                            setMentions(mentions.map(mention => `@${mention.display}`));
+                            setMentionIds(mentions.map(mention => mention.id));
+                        }}
+                        placeholder="Use @ to mention someone"
+                        className="mentions-input"
+                        style={{
+                            control: {
+                                backgroundColor: '#fff',
+                                fontSize: 14,
+                                minHeight: 100,
+                                border: '1px solid #ccc',
+                                borderRadius: 4
+                            },
+                            input: {
+                                margin: 0,
+                                padding: 8,
+                            },
+                            suggestions: {
+                                list: {
+                                    backgroundColor: 'white',
+                                    border: '1px solid rgba(0,0,0,0.15)',
+                                    fontSize: 14,
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                                },
+                                item: {
+                                    padding: '5px 15px',
+                                    borderBottom: '1px solid rgba(0,0,0,0.15)',
+                                    '&focused': {
+                                        backgroundColor: '#CAE5FF'
+                                    }
+                                }
+                            }
+                        }}
+                    >
+                        <Mention
+                            trigger="@"
+                            data={users.map(user => ({ id: user.id, display: user.name }))}
+                            renderSuggestion={(suggestion, search, highlightedDisplay, index, focused) => (
+                                <div className={`user-suggestion ${focused ? 'focused' : ''}`}>
+                                    {suggestion.display}
                                 </div>
-                            ))}
-                        </div>
-                    )}
+                            )}
+                            style={{
+                                backgroundColor: '#CAE5FF',
+                                padding: '1px 2px',
+                                borderRadius: '4px',
+                                display: 'inline-block',
+                                lineHeight: '1.5',
+                                marginTop: '4px',
+                            }}
+                        />
+                    </MentionsInput>
 
                     <div className='flex items-center justify-between mt-2'>
                         <div>
@@ -538,6 +652,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                     </div>
                 )}
             </div>
+            <style>{mentionsStyles}</style>
         </div>
     );
 };

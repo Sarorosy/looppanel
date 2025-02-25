@@ -12,6 +12,9 @@ import { onMessage } from 'firebase/messaging';
 import { ToastContainer, toast, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Toaster } from 'react-hot-toast';
+import FollowingPage from './pages/FollowingPage';
+import FeasabilityPage from './pages/FeasabilityPage';
+import { ScanFace } from 'lucide-react';
 // basename="/askforscope"
 
 
@@ -106,13 +109,81 @@ function App() {
 
   const ViewDetails = () => {
     const { ref_id, quote_id } = useParams();
-
+    const [quoteDetails, setQuoteDetails] = useState(null);
+    const [loading, setLoading] = useState(false);
+  
+    useEffect(() => {
+      const fetchUserType = async () => {
+        try {
+          setLoading(true);
+          const response = await fetch("https://apacvault.com/Webapi/getusersforscope",{
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ref_id: ref_id,
+              quote_id: quote_id,
+            }),
+          });
+          const data = await response.json();
+          if(data.status){
+            setQuoteDetails(data.data); // Adjust based on API response structure
+          }else{
+            return <div>You are not authorized to access this Quote</div>;
+          }
+        } catch (error) {
+          console.error("Error fetching user type:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchUserType();
+    }, []);
+  
+    if (loading) return <div className="min-h-80 animate-pulse flex items-center justify-center bg-gray-200">
+      
+      </div>;
+  
+    if (!quoteDetails) {
+      return <div className="min-h-80 flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <h2 className="text-4xl font-bold text-gray-800 mb-4">Oops!</h2>
+        <div className='flex items-center justify-center'>
+        <ScanFace size={40} className="text-red-600 mr-2 animate-shake" />
+        <p className="text-xl text-gray-600 ">
+          Umm... Looks like you don't have access to this quote
+        </p>
+        </div>
+      </div>
+    </div>;
+    }
+    
     if (userObject && (userObject.id == 1 || userObject.id == 342 || userObject.scopeadmin == 1)) {
       return <ManageQuery sharelinkrefid={ref_id} sharelinkquoteid={quote_id} />;
-    } else {
-      return <Navigate to="/query" replace />;
+    } else if(userObject && userObject.id == quoteDetails.user_id) {
+      return <ManageContactMadeQueries notification={requestPermission} sharelinkrefid={ref_id} sharelinkquoteid={quote_id} />;
+    }else if(userObject && quoteDetails.followers.includes(userObject.id)) {
+      return <FollowingPage sharelinkrefid={ref_id} sharelinkquoteid={quote_id} />;
+    }else if(userObject && quoteDetails.isfeasability == 1 && quoteDetails.feasability_status == "Pending"  && quoteDetails.feasability_user == userObject.id) {
+      return <FeasabilityPage sharelinkrefid={ref_id} sharelinkquoteid={quote_id} />;
+    }else{
+      return <div className="min-h-80 flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <h2 className="text-4xl font-bold text-gray-800 mb-4">Oops!</h2>
+        <div className='flex items-center justify-center'>
+        <ScanFace size={40} className="text-red-600 mr-2 animate-shake" />
+        <p className="text-xl text-gray-600 ">
+          Umm... Looks like you don't have access to this quote
+        </p>
+        </div>
+      </div>
+    </div>;
     }
   };
+  
+  
 
   return (
     <Router basename="/askforscope">

@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, Pencil, CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, Pencil, CheckCircle, XCircle, Share2 } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -60,81 +60,81 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
     const [userIdForTag, setUserIdForTag] = useState('');
 
 
-const [scopeTabVisible, setScopeTabVisible] = useState(true);
-  const [chatTabVisible, setChatTabVisible] = useState(true);
-  const [feasTabVisible, setFeasTabVisible] = useState(false);
-  const [fullScreenTab, setFullScreenTab] = useState(null);
-  const closeModal = () => {
-    setChatTabVisible(false);
-  };
-  const handleTabButtonClick = (tab) => {
-    if (tab == "scope") {
-      setScopeTabVisible(true);
-      setFullScreenTab(null)
-    } else if (tab == "chat") {
-      setChatTabVisible(!chatTabVisible);
-      setFullScreenTab(null)
-    } else if (tab == "feas") {
-      setFeasTabVisible(!feasTabVisible);
-      setFullScreenTab(null)
+    const [scopeTabVisible, setScopeTabVisible] = useState(true);
+    const [chatTabVisible, setChatTabVisible] = useState(true);
+    const [feasTabVisible, setFeasTabVisible] = useState(false);
+    const [fullScreenTab, setFullScreenTab] = useState(null);
+    const closeModal = () => {
+        setChatTabVisible(false);
+    };
+    const handleTabButtonClick = (tab) => {
+        if (tab == "scope") {
+            setScopeTabVisible(true);
+            setFullScreenTab(null)
+        } else if (tab == "chat") {
+            setChatTabVisible(!chatTabVisible);
+            setFullScreenTab(null)
+        } else if (tab == "feas") {
+            setFeasTabVisible(!feasTabVisible);
+            setFullScreenTab(null)
+        }
+    };
+
+    const handlefullScreenBtnClick = (tab) => {
+        if (tab == "scope") {
+            // setChatTabVisible(false);
+            // setFeasTabVisible(false);
+            // setScopeTabVisible(true);
+            setFullScreenTab("scope")
+        } else if (tab == "chat") {
+            // setChatTabVisible(true);
+            // setFeasTabVisible(false);
+            // setScopeTabVisible(false);
+            setFullScreenTab("chat")
+        } else if (tab == "feas") {
+            // setChatTabVisible(false);
+            // setFeasTabVisible(true);
+            // setScopeTabVisible(false);
+            setFullScreenTab("feas")
+        } else {
+            setFullScreenTab(null)
+        }
     }
-  };
+    const getVisibleTabCount = () => {
+        let visibleCount = 0;
+        if (scopeTabVisible) visibleCount++;
+        if (chatTabVisible) visibleCount++;
+        if (feasTabVisible) visibleCount++;
+        return visibleCount;
+    };
 
-  const handlefullScreenBtnClick = (tab) =>{
-      if(tab == "scope"){
-        // setChatTabVisible(false);
-        // setFeasTabVisible(false);
-        // setScopeTabVisible(true);
-        setFullScreenTab("scope")
-      }else if(tab == "chat"){
-        // setChatTabVisible(true);
-        // setFeasTabVisible(false);
-        // setScopeTabVisible(false);
-        setFullScreenTab("chat")
-      }else if(tab =="feas"){
-        // setChatTabVisible(false);
-        // setFeasTabVisible(true);
-        // setScopeTabVisible(false);
-        setFullScreenTab("feas")
-      }else{
-        setFullScreenTab(null)
-      }
-  }
-const getVisibleTabCount = () => {
-    let visibleCount = 0;
-    if (scopeTabVisible) visibleCount++;
-    if (chatTabVisible) visibleCount++;
-    if (feasTabVisible) visibleCount++;
-    return visibleCount;
-  };
+    // Determine the colClass based on the number of visible tabs
+    const colClass = useMemo(() => {
+        const visibleTabs = getVisibleTabCount();
+        if (visibleTabs === 1) {
+            return "col-md-12";
+        } else if (visibleTabs === 2) {
+            return "col-md-6";
+        } else {
+            return "col-md-4";
+        }
+    }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
 
-  // Determine the colClass based on the number of visible tabs
-  const colClass = useMemo(() => {
-    const visibleTabs = getVisibleTabCount();
-    if (visibleTabs === 1) {
-      return "col-md-12";
-    } else if (visibleTabs === 2) {
-      return "col-md-6";
-    } else {
-      return "col-md-4";
+    const planColClass = useMemo(() => {
+        const visibleTabs = getVisibleTabCount();
+        if (visibleTabs === 1) {
+            return "col-md-4";
+        } else if (visibleTabs === 2) {
+            return "col-md-6";
+        } else {
+            return "col-md-12";
+        }
+    }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
+
+    function capitalizeFirstLetter(str) {
+        if (typeof str !== 'string') return str;
+        return str.charAt(0).toUpperCase() + str.slice(1);
     }
-  }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
-
-  const planColClass = useMemo(() => {
-    const visibleTabs = getVisibleTabCount();
-    if (visibleTabs === 1) {
-      return "col-md-4";
-    } else if (visibleTabs === 2) {
-      return "col-md-6";
-    } else {
-      return "col-md-12";
-    }
-  }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
-
-  function capitalizeFirstLetter(str) {
-    if (typeof str !== 'string') return str;
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
 
 
 
@@ -256,16 +256,16 @@ const getVisibleTabCount = () => {
 
     useEffect(() => {
         socket.on('planCommentsEdited', (data) => {
-          if (data.ref_id == queryId) {
-    
-            fetchScopeDetailsForSocket();
-          }
+            if (data.ref_id == queryId) {
+
+                fetchScopeDetailsForSocket();
+            }
         });
-    
+
         return () => {
-          socket.off('planCommentsEdited');  // Clean up on component unmount
+            socket.off('planCommentsEdited');  // Clean up on component unmount
         };
-      }, []);
+    }, []);
 
 
     useEffect(() => {
@@ -297,41 +297,41 @@ const getVisibleTabCount = () => {
             socket.off('quotePriceUpdated');  // Clean up on component unmount
         };
     }, []);
-     useEffect(() => {
+    useEffect(() => {
         socket.on('tagsUpdated', (data) => {
-          if (data.ref_id == queryId) {
-            fetchScopeDetailsForSocket();
-          }
-        });
-    
-        return () => {
-          socket.off('tagsUpdated');  // Clean up on component unmount
-        };
-      }, []);
-
-      useEffect(() => {
-          socket.on('followersUpdated', (data) => {
             if (data.ref_id == queryId) {
-              fetchScopeDetailsForSocket();
+                fetchScopeDetailsForSocket();
             }
-          });
-      
-          return () => {
-            socket.off('followersUpdated');  // Clean up on component unmount
-          };
-        }, []);
+        });
 
-        useEffect(() => {
-              socket.on('feasibilityCommentsUpdated', (data) => {
-                if (data.ref_id == queryId) {
-                  fetchScopeDetailsForSocket();
-                }
-              });
-          
-              return () => {
-                socket.off('feasibilityCommentsUpdated');  // Clean up on component unmount
-              };
-            }, []);
+        return () => {
+            socket.off('tagsUpdated');  // Clean up on component unmount
+        };
+    }, []);
+
+    useEffect(() => {
+        socket.on('followersUpdated', (data) => {
+            if (data.ref_id == queryId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('followersUpdated');  // Clean up on component unmount
+        };
+    }, []);
+
+    useEffect(() => {
+        socket.on('feasibilityCommentsUpdated', (data) => {
+            if (data.ref_id == queryId) {
+                fetchScopeDetailsForSocket();
+            }
+        });
+
+        return () => {
+            socket.off('feasibilityCommentsUpdated');  // Clean up on component unmount
+        };
+    }, []);
 
     useEffect(() => {
         socket.on('discountReceived', (data) => {
@@ -473,15 +473,16 @@ const getVisibleTabCount = () => {
     const numberToWords = (num) => {
         const toWords = require("number-to-words");
         return toWords.toWords(Number(num));
-      };
+    };
 
     return (
         <div className=" h-full bg-gray-100 z-50 overflow-y-auto mt-2 rounded w-full">
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-sx font-semibold " >Ask For Scope </h2>
                 <div className='flex items-center'>
+                    
                     <button onClick={fetchScopeDetails} className="btn btn-dark btn-sm">
-                    <RefreshCcw size={15} className="cursor-pointer" />
+                        <RefreshCcw size={15} className="cursor-pointer" />
                     </button>
                 </div>
             </div>
@@ -538,8 +539,8 @@ const getVisibleTabCount = () => {
                                                         )}
                                                         {quote.ownership_transferred == 1 && (
                                                             <div className="relative group">
-                                                                <ArrowLeftRight size={24} className="text-yellow-600 bg-yellow-300 border-2 border-yellow-600 p-1 rounded-full ml-1" data-tooltip-id="my-tooltip" data-tooltip-content={ `Ownership transferred from ${quote.old_user_name}`} />
-                                                                
+                                                                <ArrowLeftRight size={24} className="text-yellow-600 bg-yellow-300 border-2 border-yellow-600 p-1 rounded-full ml-1" data-tooltip-id="my-tooltip" data-tooltip-content={`Ownership transferred from ${quote.old_user_name}`} />
+
                                                             </div>
                                                         )}
 
@@ -592,7 +593,22 @@ const getVisibleTabCount = () => {
                                                     >
                                                         {expandedRowIndex == index ? <ArrowUp size={14} className='text-white' /> : <ArrowDown size={20} className='text-white' />}
                                                     </button>
-
+                                                    <button
+                                                        onClick={() => {
+                                                            const url = `http://localhost:3000/askforscope/viewdetails/${quote.assign_id}/${quote.quoteid}`;
+                                                            navigator.clipboard
+                                                                .writeText(url)
+                                                                .then(() => {
+                                                                    toast.success("URL copied to clipboard!");
+                                                                })
+                                                                .catch((err) => {
+                                                                    console.error("Failed to copy URL:", err);
+                                                                });
+                                                        }}
+                                                        className="flex items-center justify-center btn btn-success btn-sm mr-3"
+                                                    >
+                                                        <Share2 size={14} className="" />
+                                                    </button>
 
                                                 </td>
                                             </tr>
@@ -601,461 +617,458 @@ const getVisibleTabCount = () => {
 
                                                 <tr>
                                                     <td colSpan={7}>
-                                                    <div className="mx-2 mt-2 mb-0 bg-gray-100 px-3 pt-3 pb-0">
-                                                        <div className="">
-                                                            <button
-                                                            onClick={() => handleTabButtonClick("scope")}
-                                                            className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${
-                                                                scopeTabVisible
-                                                                ? "btn-info focus-outline-none"
-                                                                : "btn-light"
-                                                            } btn btn-sm  focus:outline-none`}
-                                                            >
-                                                            Scope Details {scopeTabVisible ? <Eye size={20} className="badge badge-dark ml-2"/> : <EyeClosed size={20} className="badge badge-dark ml-2"/>} 
-                                                            </button>
-                                                            <button
-                                                            onClick={() => handleTabButtonClick("chat")}
-                                                            className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${
-                                                                chatTabVisible
-                                                                ? "btn-info focus-outline-none"
-                                                                : "btn-light"
-                                                            } btn btn-sm`}
-                                                            >
-                                                            Communication Hub {chatTabVisible ? <Eye size={20} className="badge badge-dark ml-2"/>  : <EyeClosed size={20} className="badge badge-dark ml-2"/> }
-                                                            </button>
-                                                            <button
-                                                            disabled={quote.isfeasability == 0}
-                                                            onClick={() => handleTabButtonClick("feas")}
-                                                            className={`px-2 py-1 mr-1 f-12 inline-flex items-center ${
-                                                                feasTabVisible
-                                                                ? "btn-info focus-outline-none"
-                                                                : "btn-light"
-                                                            } btn btn-sm`}
-                                                            >
-                                                            Feasibility  {feasTabVisible ? <Eye size={20} className="badge badge-dark ml-2"/>  : <EyeClosed size={20} className="badge badge-dark ml-2"/> }
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <div className="mx-2 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row">
-                                                    {scopeTabVisible && (
-                                                        <div className={`${fullScreenTab == "scope" ? "custom-modal" : colClass}`}>
-                                                        <div className={`${fullScreenTab == "scope" ? "custom-modal-content" : ""}`}>
-                                                            <div className={`  pl-0`}>
-                                                            <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
-                                                                <h3 className=""><strong>Scope Details</strong></h3>
-                                                                <button className="">
-                                                                    {fullScreenTab == "scope" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                                        <div className="mx-2 mt-2 mb-0 bg-gray-100 px-3 pt-3 pb-0">
+                                                            <div className="">
+                                                                <button
+                                                                    onClick={() => handleTabButtonClick("scope")}
+                                                                    className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${scopeTabVisible
+                                                                            ? "btn-info focus-outline-none"
+                                                                            : "btn-light"
+                                                                        } btn btn-sm  focus:outline-none`}
+                                                                >
+                                                                    Scope Details {scopeTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleTabButtonClick("chat")}
+                                                                    className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${chatTabVisible
+                                                                            ? "btn-info focus-outline-none"
+                                                                            : "btn-light"
+                                                                        } btn btn-sm`}
+                                                                >
+                                                                    Communication Hub {chatTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
+                                                                </button>
+                                                                <button
+                                                                    disabled={quote.isfeasability == 0}
+                                                                    onClick={() => handleTabButtonClick("feas")}
+                                                                    className={`px-2 py-1 mr-1 f-12 inline-flex items-center ${feasTabVisible
+                                                                            ? "btn-info focus-outline-none"
+                                                                            : "btn-light"
+                                                                        } btn btn-sm`}
+                                                                >
+                                                                    Feasibility  {feasTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
                                                                 </button>
                                                             </div>
-                                                            <div className="bg-white">
-                                                                <div className="overscroll-modal">
-                                                                <div className="px-0">
-                                                                    <div className="row">
-                                                                        <div className='col-md-12'>
-                                                                        <p className='mb-3'>
-                                                                            <div>
-                                                                            <strong>Ref No</strong>
-                                                                            </div> 
-                                                                            {quote.assign_id}
-                                                                            {quote.ptp === "Yes" && (
-                                                                                <span
-                                                                                    className="inline-block pl-3 pr-2 py-1 f-10 ml-1" // Increased padding for more space
-                                                                                    style={{
-                                                                                        backgroundColor: '#2B9758FF', // Green color for PTP
-                                                                                        clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
-                                                                                        color: '#ffffff',
-                                                                                        fontSize: '14px', // Increased font size for better visibility
-                                                                                        fontWeight: 'bold',
-                                                                                        lineHeight: '1.5', // Increased line height to make it visually balanced
-                                                                                    }}
-                                                                                >
-                                                                                    PTP
-                                                                                </span>
-                                                                            )}
-
-                                                                            {quote.edited == 1 && (
-                                                                                <span
-                                                                                className="edited-badge ml-2"
-                                                                                style={{
-                                                                                  fontSize: "11px",
-                                                                                  padding: "2px 8px",
-                                                                                  backgroundColor: "#f0f0f0",
-                                                                                  color: "#666",
-                                                                                  borderRadius: "5px",
-                                                                                }}
-                                                                              >
-                                                                                Edited
-                                                                              </span>
-                                                                            )}
-                                                                        </p>
-
-                                                                        {quote.tag_names && (
-                                                                            <p className='mb-3'>
-                                                                                <div>
-                                                                                <strong>Tags</strong>
-                                                                                </div>
-                                                                                {quote.tag_names.split(',').map((tag, index) => (
-                                                                                    <div
-                                                                                    key={index}
-                                                                                    className="tag-badge mr-1 d-inline"
-                                                                                    style={{
-                                                                                      padding: "3px 5px",
-                                                                                      borderRadius: "4px",
-                                                                                      backgroundColor:
-                                                                                        "#007bff",
-                                                                                      color: "#fff",
-                                                                                      fontSize: "10px",
-                                                                                    }}
-                                                                                  >
-                                                                                    # {tag.trim()}
-                                                                                  </div>
-                                                                                ))}
-                                                                            </p>
-                                                                        )}
-                                                                        {quote.ptp != null && (
-                                                                          <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
-                                                                            <h3 className="text-md font-semibold mb-2 text-gray-700">PTP Details</h3>
-                                                                            <div className="space-y-1 text-sm text-gray-600">
-                                                                              <p className="flex items-center gap-1">
-                                                                                <strong>PTP:</strong>
-                                                                                {quote.ptp === "Yes" ? (
-                                                                                  <CheckCircle className="text-green-500 w-4 h-4" />
-                                                                                ) : (
-                                                                                  <XCircle className="text-red-500 w-4 h-4" />
-                                                                                )}
-                                                                              </p>
-                                                                              {quote.ptp_amount && quote.ptp_amount != 0 && (
-                                                                                <p>
-                                                                                  <strong>PTP Amount:</strong> {quote.ptp_amount}
-                                                                                </p>
-                                                                              )}
-                                                                              {quote.ptp === "Yes" && quote.ptp_comments !== "" && (
-                                                                                <p>
-                                                                                  <strong>PTP Comments:</strong> {quote.ptp_comments}
-                                                                                </p>
-                                                                              )}
-                                                                              {quote.ptp_file != null && (
-                                                                                <p className="flex items-center gap-1">
-                                                                                  <strong>Attached File:</strong>
-                                                                                  <Paperclip className="text-blue-500 w-4 h-4" />
-                                                                                  <a
-                                                                                    className="text-blue-500 font-semibold hover:underline"
-                                                                                    href={`https://apacvault.com/public/${quote.ptp_file}`}
-                                                                                    download={quote.ptpfile}
-                                                                                    target="_blank"
-                                                                                    rel="noopener noreferrer"
-                                                                                  >
-                                                                                    {quote.ptp_file}
-                                                                                  </a>
-                                                                                </p>
-                                                                              )}
-                                                                            </div>
-                                                                          </div>
-                                                                        )}
-
-                                                                        {quote.service_name && quote.plan && (
-                                                                            <>
-                                                                                <p className='mb-3'><div><strong>Service Required</strong> </div>{quote.service_name}</p>
-                                                                                {quote.old_plan && (
-                                                                                    <p className='text-gray-500'><div><strong>Old Plan</strong></div> {quote.old_plan}</p>
-                                                                                )}
-                                                                                <p className='mb-3'><strong>Plan:</strong> {quote.plan}</p>
-                                                                            </>
-                                                                        )}
-                                                                        {quote.subject_area && (
-                                                                            <>
-                                                                                <p className='mb-3'><div><strong>Subject Area</strong></div> {quote.subject_area}</p>
-                                                                                {quote.subject_area == "Other" && (
-                                                                                    <p className='text-gray-500 mb-3'><strong>Other Subject Area name</strong> {quote.other_subject_area}</p>
-                                                                                )}
-                                                                            </>
-                                                                        )}
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="row">
-                                                                    <div className="col-md-12">
-                                                                    <p className=" mb-2">
-                                                                        <strong>Plan Description</strong>
-                                                                    </p>
-                                                                    </div>
-                                                                    {quote.plan_comments && typeof quote.plan_comments === "string" && quote.plan && (
-                                                                        Object.entries(JSON.parse(quote.plan_comments))
-                                                                        .filter(([plan]) => quote.plan.split(',').includes(plan)) // Filter based on the updated plan list
-                                                                        .map(([plan, comment], index) => (
-                                                                            <div key={index} className={planColClass}>
-                                                                            <div className="border p-2 mb-3">
-                                                                                <p>
-                                                                                <strong>{plan}</strong>
-                                                                                </p>
-                                                                                <div dangerouslySetInnerHTML={{ __html: comment }} />
-                                                                                
-                                                                                {/* Word Count Section */}
-                                                                                {quote.word_counts && typeof quote.word_counts === "string" && (
-                                                                                Object.entries(JSON.parse(quote.word_counts))
-                                                                                    .filter(([planWordCount]) => quote.plan.split(',').includes(planWordCount)) // Filter word count based on the plan list
-                                                                                    .map(([planWordCount, wordcount], wcIndex) => (
-                                                                                    plan === planWordCount && (
-                                                                                        <div key={wcIndex} className=" mt-2">
-                                                                                        <p
-                                                                                            style={{
-                                                                                            fontWeight: "bold",
-                                                                                            color: "#007bff",
-                                                                                            backgroundColor: "#f0f8ff", // Background color for word count text
-                                                                                            padding: "5px", // Padding around the word count text
-                                                                                            borderRadius: "5px", // Rounded corners for the background
-                                                                                            border: "1px solid #40BD5DFF",
-                                                                                            }}
-                                                                                        >
-                                                                                            <p className="mb-1 text-black">
-                                                                                            <div>Word Count:</div>
-                                                                                            </p>
-                                                                                            {planWordCount}:{" "}
-                                                                                            <span style={{ color: "#28a745" }}>
-                                                                                            {wordcount} words
-                                                                                            </span>
-                                                                                            <br />
-                                                                                            <span style={{ color: "gray" }}>
-                                                                                            {capitalizeFirstLetter(numberToWords(wordcount))} words
-                                                                                            </span>
-                                                                                        </p>
-                                                                                        </div>
-                                                                                    )
-                                                                                    ))
-                                                                                )}
-                                                                            </div>
-                                                                            </div>
-                                                                        ))
-                                                                    )}
-                                                                    <div className='col-md-12'>
-                                                                        <div className='mb-0 row px-2 pb-3 space-y-4'>
-                                                                        {quote.comments && quote.comments != "" && quote.comments != null && (
-                                                                            <p className='mb-2'><strong style={{  }} className='mb-2 d-block'>Description</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
-                                                                        )}
-                                                                        {quote.final_comments != null && (
-                                                                            <div>
-                                                                                <p className='mb-2'><div><strong>Final Comments</strong></div> {quote.final_comments}</p>
-                                                                            </div>
-                                                                        )}
-
-                                                                       
-                                                                        {quote.relevant_file && quote.relevant_file.length > 0 && (
-                                                                            <div className='mb-2'>
-                                                                                <div><strong>Relevant Files</strong></div>
-                                                                                <div className="space-y-0 mt-2">
-                                                                                    {quote.relevant_file.map((file, fileIndex) => (
-                                                                                        <div key={fileIndex}>
-                                                                                            <a
-                                                                                                href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
-                                                                                                download
-                                                                                                target='_blank'
-                                                                                                className="text-blue-500"
-                                                                                            >
-                                                                                                {file.filename}
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    ))}
-                                                                                </div>
-                                                                            </div>
-                                                                        )}
-                                                                        
-                                                                        {quote.demodone != 0 && (
-                                                                            <>
-                                                                                <p className='flex items-center '><p className='mr-3'> <div><strong>Demo Id  </strong></div> {quote.demo_id}</p><span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> </p>
-                                                                            </>
-                                                                        )}
-                                                                        {quote.quote_status != 0 && quote.quote_price && quote.plan && (
-                                                                            <>
-                                                                                {quote.old_plan && (
-                                                                                    <p className='text-gray-600 mb-2'>
-                                                                                        <div><strong>Quote Price For Old Plan</strong></div>{' '}
-                                                                                        {(() => {
-                                                                                            const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                                            const plans = quote.old_plan.split(','); // Split plan into an array
-                                                                                            return plans.map((plan, index) => (
-                                                                                                <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500 f-12 mb-2 d-inline-block">
-                                                                                                    <div><strong>{plan} </strong></div> {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                                    {index < plans.length - 1 && ', '}
-                                                                                                    {quote.mp_price === plan && " (MP Price)"}
-                                                                                                </span>
-                                                                                            ));
-                                                                                        })()}
-                                                                                    </p>
-
-                                                                                )}
-                                                                                {quote.quote_status != 2 && (
-                                                                                    <p className='mb-2'>
-                                                                                        <div><strong>Quote Price</strong></div>{' '}
-                                                                                        {(() => {
-                                                                                            const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                                            const plans = quote.plan.split(','); // Split plan into an array
-                                                                                            return plans.map((plan, index) => (
-                                                                                                <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
-                                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                                    {index < plans.length - 1 && ', '}
-                                                                                                    {quote.mp_price === plan && " (MP Price)"}
-                                                                                                </span>
-                                                                                            ));
-                                                                                        })()}
-                                                                                    </p>
-                                                                                )}
-
-                                                                                {quote.discount_price && (
-                                                                                    <p>
-                                                                                        <div><strong>Discounted Price</strong></div>{' '}
-                                                                                        {(() => {
-                                                                                            const prices = quote.discount_price.split(','); // Split quote_price into an array
-                                                                                            const plans = quote.plan.split(','); // Split plan into an array
-                                                                                            return plans.map((plan, index) => (
-                                                                                                <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
-                                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
-                                                                                                    {index < plans.length - 1 && ', '}
-                                                                                                    {quote.mp_price === plan && " (MP Price)"}
-                                                                                                </span>
-                                                                                            ));
-                                                                                        })()}
-                                                                                    </p>
-                                                                                )}
-                                                                                {quote.final_price && (
-                                                                                    <p >
-                                                                                        <div><strong>Final Price</strong></div>{' '}
-                                                                                        {(() => {
-                                                                                            const prices = quote.final_price.split(','); // Split quote_price into an array
-                                                                                            const plans = quote.plan.split(','); // Split plan into an array
-                                                                                            return plans.map((plan, index) => (
-                                                                                                <span key={index} className=' px-1 py-2 rounded mr-1 gold'>
-                                                                                                    <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
-                                                                                                    {index < plans.length - 1 && ', '}
-                                                                                                    {quote.mp_price === plan && " (MP Price)"}
-                                                                                                </span>
-                                                                                            ));
-                                                                                        })()}
-                                                                                    </p>
-                                                                                )}
-                                                                                {quote.user_comments && (
-                                                                                    <p><div><strong style={{ textDecoration: "underline" }}>Admin Comments</strong></div> {quote.user_comments}</p>
-                                                                                )}
-                                                                            </>
-                                                                        )}
-
-
-                                                                        {assignQuoteInfo && assignQuoteInfo != false && (
-                                                                            <p><div><strong>Assigned To</strong></div> {assignQuoteInfo.name}</p>
-                                                                        )}
-                                                                        </div>
-
-
-
-                                                                
-                                                                        </div>
-                                                                    </div>
-
-                                                                </div>
-                                                                <div className="px-0">
-                                                                    <MergedHistoryComponentNew
-                                                                    quoteId={quote.quoteid}
-                                                                    refId={quote.assign_id}
-                                                                    onlyFetch="quote"
-                                                                    />
-                                                                </div>
-                                                                </div>
-                                                            </div>
                                                         </div>
-                                                        </div>
-                                                    </div>
-                                                    )}
-
-                                                    {chatTabVisible && (
-                                                        <div className={`${fullScreenTab == "chat" ? "custom-modal" : colClass} p-0`}>
-                                                            <div className={`${fullScreenTab == "chat" ? "custom-modal-content" : ""}`}>
-                                                                
-                                                                <div className={`p-0 `}>
-                                                                <Chat
-                                                                    quoteId={quote.quoteid}
-                                                                    refId={quote.assign_id}
-                                                                    status={quote.quote_status}
-                                                                    submittedToAdmin={quote.submittedtoadmin}
-                                                                    finalFunction={fetchScopeDetails}
-                                                                    allDetails={quote}
-                                                                    finalfunctionforsocket={fetchScopeDetailsForSocket}
-                                                                    handlefullScreenBtnClick={handlefullScreenBtnClick}
-                                                                    chatTabVisible={chatTabVisible}
-                                                                    fullScreenTab={fullScreenTab}
-                                                                />
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                    {feasTabVisible && quote.isfeasability == 1 && (
-                                                        <div className={`${fullScreenTab == "feas" ? "custom-modal" : colClass}`}>
-                                                        <div className={`${fullScreenTab == "feas" ? "custom-modal-content" : ""}`}>
-                                                            <div className={` pr-0`}>
-                                                            <div className="bg-white">
-                                                                <>
-                                                                {quote.isfeasability == 1 && (
-                                                                    <>
-                                                                    <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
-                                                                        <h3 className=""><strong>Feasibility</strong></h3>
-                                                                        <div className='flex items-center'>
+                                                        <div className="mx-2 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row">
+                                                            {scopeTabVisible && (
+                                                                <div className={`${fullScreenTab == "scope" ? "custom-modal" : colClass}`}>
+                                                                    <div className={`${fullScreenTab == "scope" ? "custom-modal-content" : ""}`}>
+                                                                        <div className={`  pl-0`}>
+                                                                            <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                                                                <h3 className=""><strong>Scope Details</strong></h3>
                                                                                 <button className="">
-                                                                                {fullScreenTab == "feas" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("feas") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                                                                    {fullScreenTab == "scope" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-1" />)}
                                                                                 </button>
+                                                                            </div>
+                                                                            <div className="bg-white">
+                                                                                <div className="overscroll-modal">
+                                                                                    <div className="px-0">
+                                                                                        <div className="row">
+                                                                                            <div className='col-md-12'>
+                                                                                                <p className='mb-3'>
+                                                                                                    <div>
+                                                                                                        <strong>Ref No</strong>
+                                                                                                    </div>
+                                                                                                    {quote.assign_id}
+                                                                                                    {quote.ptp === "Yes" && (
+                                                                                                        <span
+                                                                                                            className="inline-block pl-3 pr-2 py-1 f-10 ml-1" // Increased padding for more space
+                                                                                                            style={{
+                                                                                                                backgroundColor: '#2B9758FF', // Green color for PTP
+                                                                                                                clipPath: 'polygon(25% 0%, 100% 0, 100% 99%, 25% 100%, 0% 50%)',
+                                                                                                                color: '#ffffff',
+                                                                                                                fontSize: '14px', // Increased font size for better visibility
+                                                                                                                fontWeight: 'bold',
+                                                                                                                lineHeight: '1.5', // Increased line height to make it visually balanced
+                                                                                                            }}
+                                                                                                        >
+                                                                                                            PTP
+                                                                                                        </span>
+                                                                                                    )}
+
+                                                                                                    {quote.edited == 1 && (
+                                                                                                        <span
+                                                                                                            className="edited-badge ml-2"
+                                                                                                            style={{
+                                                                                                                fontSize: "11px",
+                                                                                                                padding: "2px 8px",
+                                                                                                                backgroundColor: "#f0f0f0",
+                                                                                                                color: "#666",
+                                                                                                                borderRadius: "5px",
+                                                                                                            }}
+                                                                                                        >
+                                                                                                            Edited
+                                                                                                        </span>
+                                                                                                    )}
+                                                                                                </p>
+
+                                                                                                {quote.tag_names && (
+                                                                                                    <p className='mb-3'>
+                                                                                                        <div>
+                                                                                                            <strong>Tags</strong>
+                                                                                                        </div>
+                                                                                                        {quote.tag_names.split(',').map((tag, index) => (
+                                                                                                            <div
+                                                                                                                key={index}
+                                                                                                                className="tag-badge mr-1 d-inline"
+                                                                                                                style={{
+                                                                                                                    padding: "3px 5px",
+                                                                                                                    borderRadius: "4px",
+                                                                                                                    backgroundColor:
+                                                                                                                        "#007bff",
+                                                                                                                    color: "#fff",
+                                                                                                                    fontSize: "10px",
+                                                                                                                }}
+                                                                                                            >
+                                                                                                                # {tag.trim()}
+                                                                                                            </div>
+                                                                                                        ))}
+                                                                                                    </p>
+                                                                                                )}
+                                                                                                {quote.ptp != null && (
+                                                                                                    <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
+                                                                                                        <h3 className="text-md font-semibold mb-2 text-gray-700">PTP Details</h3>
+                                                                                                        <div className="space-y-1 text-sm text-gray-600">
+                                                                                                            <p className="flex items-center gap-1">
+                                                                                                                <strong>PTP:</strong>
+                                                                                                                {quote.ptp === "Yes" ? (
+                                                                                                                    <CheckCircle className="text-green-500 w-4 h-4" />
+                                                                                                                ) : (
+                                                                                                                    <XCircle className="text-red-500 w-4 h-4" />
+                                                                                                                )}
+                                                                                                            </p>
+                                                                                                            {quote.ptp_amount && quote.ptp_amount != 0 && (
+                                                                                                                <p>
+                                                                                                                    <strong>PTP Amount:</strong> {quote.ptp_amount}
+                                                                                                                </p>
+                                                                                                            )}
+                                                                                                            {quote.ptp === "Yes" && quote.ptp_comments !== "" && (
+                                                                                                                <p>
+                                                                                                                    <strong>PTP Comments:</strong> {quote.ptp_comments}
+                                                                                                                </p>
+                                                                                                            )}
+                                                                                                            {quote.ptp_file != null && (
+                                                                                                                <p className="flex items-center gap-1">
+                                                                                                                    <strong>Attached File:</strong>
+                                                                                                                    <Paperclip className="text-blue-500 w-4 h-4" />
+                                                                                                                    <a
+                                                                                                                        className="text-blue-500 font-semibold hover:underline"
+                                                                                                                        href={`https://apacvault.com/public/${quote.ptp_file}`}
+                                                                                                                        download={quote.ptpfile}
+                                                                                                                        target="_blank"
+                                                                                                                        rel="noopener noreferrer"
+                                                                                                                    >
+                                                                                                                        {quote.ptp_file}
+                                                                                                                    </a>
+                                                                                                                </p>
+                                                                                                            )}
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                )}
+
+                                                                                                {quote.service_name && quote.plan && (
+                                                                                                    <>
+                                                                                                        <p className='mb-3'><div><strong>Service Required</strong> </div>{quote.service_name}</p>
+                                                                                                        {quote.old_plan && (
+                                                                                                            <p className='text-gray-500'><div><strong>Old Plan</strong></div> {quote.old_plan}</p>
+                                                                                                        )}
+                                                                                                        <p className='mb-3'><strong>Plan:</strong> {quote.plan}</p>
+                                                                                                    </>
+                                                                                                )}
+                                                                                                {quote.subject_area && (
+                                                                                                    <>
+                                                                                                        <p className='mb-3'><div><strong>Subject Area</strong></div> {quote.subject_area}</p>
+                                                                                                        {quote.subject_area == "Other" && (
+                                                                                                            <p className='text-gray-500 mb-3'><strong>Other Subject Area name</strong> {quote.other_subject_area}</p>
+                                                                                                        )}
+                                                                                                    </>
+                                                                                                )}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        <div className="row">
+                                                                                            <div className="col-md-12">
+                                                                                                <p className=" mb-2">
+                                                                                                    <strong>Plan Description</strong>
+                                                                                                </p>
+                                                                                            </div>
+                                                                                            {quote.plan_comments && typeof quote.plan_comments === "string" && quote.plan && (
+                                                                                                Object.entries(JSON.parse(quote.plan_comments))
+                                                                                                    .filter(([plan]) => quote.plan.split(',').includes(plan)) // Filter based on the updated plan list
+                                                                                                    .map(([plan, comment], index) => (
+                                                                                                        <div key={index} className={planColClass}>
+                                                                                                            <div className="border p-2 mb-3">
+                                                                                                                <p>
+                                                                                                                    <strong>{plan}</strong>
+                                                                                                                </p>
+                                                                                                                <div dangerouslySetInnerHTML={{ __html: comment }} />
+
+                                                                                                                {/* Word Count Section */}
+                                                                                                                {quote.word_counts && typeof quote.word_counts === "string" && (
+                                                                                                                    Object.entries(JSON.parse(quote.word_counts))
+                                                                                                                        .filter(([planWordCount]) => quote.plan.split(',').includes(planWordCount)) // Filter word count based on the plan list
+                                                                                                                        .map(([planWordCount, wordcount], wcIndex) => (
+                                                                                                                            plan === planWordCount && (
+                                                                                                                                <div key={wcIndex} className=" mt-2">
+                                                                                                                                    <p
+                                                                                                                                        style={{
+                                                                                                                                            fontWeight: "bold",
+                                                                                                                                            color: "#007bff",
+                                                                                                                                            backgroundColor: "#f0f8ff", // Background color for word count text
+                                                                                                                                            padding: "5px", // Padding around the word count text
+                                                                                                                                            borderRadius: "5px", // Rounded corners for the background
+                                                                                                                                            border: "1px solid #40BD5DFF",
+                                                                                                                                        }}
+                                                                                                                                    >
+                                                                                                                                        <p className="mb-1 text-black">
+                                                                                                                                            <div>Word Count:</div>
+                                                                                                                                        </p>
+                                                                                                                                        {planWordCount}:{" "}
+                                                                                                                                        <span style={{ color: "#28a745" }}>
+                                                                                                                                            {wordcount} words
+                                                                                                                                        </span>
+                                                                                                                                        <br />
+                                                                                                                                        <span style={{ color: "gray" }}>
+                                                                                                                                            {capitalizeFirstLetter(numberToWords(wordcount))} words
+                                                                                                                                        </span>
+                                                                                                                                    </p>
+                                                                                                                                </div>
+                                                                                                                            )
+                                                                                                                        ))
+                                                                                                                )}
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    ))
+                                                                                            )}
+                                                                                            <div className='col-md-12'>
+                                                                                                <div className='mb-0 row px-2 pb-3 space-y-4'>
+                                                                                                    {quote.comments && quote.comments != "" && quote.comments != null && (
+                                                                                                        <p className='mb-2'><strong style={{}} className='mb-2 d-block'>Description</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                                                                    )}
+                                                                                                    {quote.final_comments != null && (
+                                                                                                        <div>
+                                                                                                            <p className='mb-2'><div><strong>Final Comments</strong></div> {quote.final_comments}</p>
+                                                                                                        </div>
+                                                                                                    )}
+
+
+                                                                                                    {quote.relevant_file && quote.relevant_file.length > 0 && (
+                                                                                                        <div className='mb-2'>
+                                                                                                            <div><strong>Relevant Files</strong></div>
+                                                                                                            <div className="space-y-0 mt-2">
+                                                                                                                {quote.relevant_file.map((file, fileIndex) => (
+                                                                                                                    <div key={fileIndex}>
+                                                                                                                        <a
+                                                                                                                            href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
+                                                                                                                            download
+                                                                                                                            target='_blank'
+                                                                                                                            className="text-blue-500"
+                                                                                                                        >
+                                                                                                                            {file.filename}
+                                                                                                                        </a>
+                                                                                                                    </div>
+                                                                                                                ))}
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    )}
+
+                                                                                                    {quote.demodone != 0 && (
+                                                                                                        <>
+                                                                                                            <p className='flex items-center '><p className='mr-3'> <div><strong>Demo Id  </strong></div> {quote.demo_id}</p><span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> </p>
+                                                                                                        </>
+                                                                                                    )}
+                                                                                                    {quote.quote_status != 0 && quote.quote_price && quote.plan && (
+                                                                                                        <>
+                                                                                                            {quote.old_plan && (
+                                                                                                                <p className='text-gray-600 mb-2'>
+                                                                                                                    <div><strong>Quote Price For Old Plan</strong></div>{' '}
+                                                                                                                    {(() => {
+                                                                                                                        const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                                                        const plans = quote.old_plan.split(','); // Split plan into an array
+                                                                                                                        return plans.map((plan, index) => (
+                                                                                                                            <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500 f-12 mb-2 d-inline-block">
+                                                                                                                                <div><strong>{plan} </strong></div> {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                                                                {index < plans.length - 1 && ', '}
+                                                                                                                                {quote.mp_price === plan && " (MP Price)"}
+                                                                                                                            </span>
+                                                                                                                        ));
+                                                                                                                    })()}
+                                                                                                                </p>
+
+                                                                                                            )}
+                                                                                                            {quote.quote_status != 2 && (
+                                                                                                                <p className='mb-2'>
+                                                                                                                    <div><strong>Quote Price</strong></div>{' '}
+                                                                                                                    {(() => {
+                                                                                                                        const prices = quote.quote_price.split(','); // Split quote_price into an array
+                                                                                                                        const plans = quote.plan.split(','); // Split plan into an array
+                                                                                                                        return plans.map((plan, index) => (
+                                                                                                                            <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
+                                                                                                                                <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                                                                {index < plans.length - 1 && ', '}
+                                                                                                                                {quote.mp_price === plan && " (MP Price)"}
+                                                                                                                            </span>
+                                                                                                                        ));
+                                                                                                                    })()}
+                                                                                                                </p>
+                                                                                                            )}
+
+                                                                                                            {quote.discount_price && (
+                                                                                                                <p>
+                                                                                                                    <div><strong>Discounted Price</strong></div>{' '}
+                                                                                                                    {(() => {
+                                                                                                                        const prices = quote.discount_price.split(','); // Split quote_price into an array
+                                                                                                                        const plans = quote.plan.split(','); // Split plan into an array
+                                                                                                                        return plans.map((plan, index) => (
+                                                                                                                            <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
+                                                                                                                                <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
+                                                                                                                                {index < plans.length - 1 && ', '}
+                                                                                                                                {quote.mp_price === plan && " (MP Price)"}
+                                                                                                                            </span>
+                                                                                                                        ));
+                                                                                                                    })()}
+                                                                                                                </p>
+                                                                                                            )}
+                                                                                                            {quote.final_price && (
+                                                                                                                <p >
+                                                                                                                    <div><strong>Final Price</strong></div>{' '}
+                                                                                                                    {(() => {
+                                                                                                                        const prices = quote.final_price.split(','); // Split quote_price into an array
+                                                                                                                        const plans = quote.plan.split(','); // Split plan into an array
+                                                                                                                        return plans.map((plan, index) => (
+                                                                                                                            <span key={index} className=' px-1 py-2 rounded mr-1 gold'>
+                                                                                                                                <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                                                                {index < plans.length - 1 && ', '}
+                                                                                                                                {quote.mp_price === plan && " (MP Price)"}
+                                                                                                                            </span>
+                                                                                                                        ));
+                                                                                                                    })()}
+                                                                                                                </p>
+                                                                                                            )}
+                                                                                                            {quote.user_comments && (
+                                                                                                                <p><div><strong style={{ textDecoration: "underline" }}>Admin Comments</strong></div> {quote.user_comments}</p>
+                                                                                                            )}
+                                                                                                        </>
+                                                                                                    )}
+
+
+                                                                                                    {assignQuoteInfo && assignQuoteInfo != false && (
+                                                                                                        <p><div><strong>Assigned To</strong></div> {assignQuoteInfo.name}</p>
+                                                                                                    )}
+                                                                                                </div>
+
+
+
+
+                                                                                            </div>
+                                                                                        </div>
+
+                                                                                    </div>
+                                                                                    <div className="px-0">
+                                                                                        <MergedHistoryComponentNew
+                                                                                            quoteId={quote.quoteid}
+                                                                                            refId={quote.assign_id}
+                                                                                            onlyFetch="quote"
+                                                                                        />
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
-                                                                    {quote.feasability_status ==
-                                                                        "Completed" && (
-                                                                        <>
-                                                                        <div className='px-3 pt-3 pb-0'> 
-                                                                        <p
-                                                                            style={{
-                                                                            textDecoration: "italic",
-                                                                            }}
-                                                                            className="italic px-0 f-12"
-                                                                        >
-                                                                            <strong>
-                                                                            Feasibility Comments:
-                                                                            </strong>
-
-                                                                            <span
-                                                                            className="mt-2"
-                                                                            dangerouslySetInnerHTML={{
-                                                                                __html:
-                                                                                quote.feasability_comments,
-                                                                            }}
-                                                                            />
-                                                                        </p>
-                                                                        {quote.feas_file_name && (
-                                                                            <p className="flex items-center f-12 mt-2">
-                                                                            Feasibility Attachment : {" "}
-                                                                            <a
-                                                                                href={
-                                                                                "https://apacvault.com/public/feasabilityFiles/" +
-                                                                                quote.feas_file_name
-                                                                                }
-                                                                                target="_blank"
-                                                                                className="text-blue-600 flex items-center ml-2"
-                                                                            >
-                                                                                <Paperclip size={13} /> View File
-                                                                            </a>
-                                                                            </p>
-                                                                        )}
-                                                                        </div>
-                                                                        </>
-                                                                    )}
-                                                                    </>
-                                                                )}
-                                                                <div className="p-3">
-                                                                    <MergedHistoryComponentNew
-                                                                        quoteId={quote.quoteid}
-                                                                        refId={quote.assign_id}
-                                                                        onlyFetch="feasibility"
-                                                                    />
                                                                 </div>
-                                                                </>
-                                                            </div>
-                                                            </div>
-                                                            </div>
-                                                            </div>
-                                                        )}
+                                                            )}
+
+                                                            {chatTabVisible && (
+                                                                <div className={`${fullScreenTab == "chat" ? "custom-modal" : colClass} p-0`}>
+                                                                    <div className={`${fullScreenTab == "chat" ? "custom-modal-content" : ""}`}>
+
+                                                                        <div className={`p-0 `}>
+                                                                            <Chat
+                                                                                quoteId={quote.quoteid}
+                                                                                refId={quote.assign_id}
+                                                                                status={quote.quote_status}
+                                                                                submittedToAdmin={quote.submittedtoadmin}
+                                                                                finalFunction={fetchScopeDetails}
+                                                                                allDetails={quote}
+                                                                                finalfunctionforsocket={fetchScopeDetailsForSocket}
+                                                                                handlefullScreenBtnClick={handlefullScreenBtnClick}
+                                                                                chatTabVisible={chatTabVisible}
+                                                                                fullScreenTab={fullScreenTab}
+                                                                            />
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {feasTabVisible && quote.isfeasability == 1 && (
+                                                                <div className={`${fullScreenTab == "feas" ? "custom-modal" : colClass}`}>
+                                                                    <div className={`${fullScreenTab == "feas" ? "custom-modal-content" : ""}`}>
+                                                                        <div className={` pr-0`}>
+                                                                            <div className="bg-white">
+                                                                                <>
+                                                                                    {quote.isfeasability == 1 && (
+                                                                                        <>
+                                                                                            <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                                                                                <h3 className=""><strong>Feasibility</strong></h3>
+                                                                                                <div className='flex items-center'>
+                                                                                                    <button className="">
+                                                                                                        {fullScreenTab == "feas" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("feas") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                                                                                    </button>
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            {quote.feasability_status ==
+                                                                                                "Completed" && (
+                                                                                                    <>
+                                                                                                        <div className='px-3 pt-3 pb-0'>
+                                                                                                            <p
+                                                                                                                style={{
+                                                                                                                    textDecoration: "italic",
+                                                                                                                }}
+                                                                                                                className="italic px-0 f-12"
+                                                                                                            >
+                                                                                                                <strong>
+                                                                                                                    Feasibility Comments:
+                                                                                                                </strong>
+
+                                                                                                                <span
+                                                                                                                    className="mt-2"
+                                                                                                                    dangerouslySetInnerHTML={{
+                                                                                                                        __html:
+                                                                                                                            quote.feasability_comments,
+                                                                                                                    }}
+                                                                                                                />
+                                                                                                            </p>
+                                                                                                            {quote.feas_file_name && (
+                                                                                                                <p className="flex items-center f-12 mt-2">
+                                                                                                                    Feasibility Attachment : {" "}
+                                                                                                                    <a
+                                                                                                                        href={
+                                                                                                                            "https://apacvault.com/public/feasabilityFiles/" +
+                                                                                                                            quote.feas_file_name
+                                                                                                                        }
+                                                                                                                        target="_blank"
+                                                                                                                        className="text-blue-600 flex items-center ml-2"
+                                                                                                                    >
+                                                                                                                        <Paperclip size={13} /> View File
+                                                                                                                    </a>
+                                                                                                                </p>
+                                                                                                            )}
+                                                                                                        </div>
+                                                                                                    </>
+                                                                                                )}
+                                                                                        </>
+                                                                                    )}
+                                                                                    <div className="p-3">
+                                                                                        <MergedHistoryComponentNew
+                                                                                            quoteId={quote.quoteid}
+                                                                                            refId={quote.assign_id}
+                                                                                            onlyFetch="feasibility"
+                                                                                        />
+                                                                                    </div>
+                                                                                </>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -1096,7 +1109,7 @@ const getVisibleTabCount = () => {
 
                 </div>
             )}
-            
+
         </div>
     );
 };

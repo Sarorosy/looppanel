@@ -24,7 +24,7 @@ import { getSocket } from './Socket';
 import { io } from "socket.io-client";
 const socket = getSocket();
 
-const ManageContactMadeQueries = ({ notification }) => {
+const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquoteid }) => {
     const [quotes, setQuotes] = useState([]);
     const [websites, setWebsites] = useState([]);
     const [selectedWebsite, setSelectedWebsite] = useState('');
@@ -36,6 +36,7 @@ const ManageContactMadeQueries = ({ notification }) => {
     const [loading, setLoading] = useState(false);
     const selectUserRef = useRef(null);
     const [selectedQuery, setSelectedQuery] = useState('');
+    const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [summaryOpen, setSummaryOpen] = useState(false);
     const [followingOpen, setFollowingOpen] = useState(false);
@@ -92,6 +93,14 @@ const ManageContactMadeQueries = ({ notification }) => {
     const toggleFeasPage = () => {
         setFeasPageOpen(!feasPageOpen);
     };
+
+    useEffect(() => {
+        if (sharelinkrefid && sharelinkquoteid) {
+            setSelectedQuery(sharelinkrefid);
+            setSelectedQuote(sharelinkquoteid);
+            setIsDetailsOpen(true);
+        }
+    }, [sharelinkrefid, sharelinkquoteid]);
 
     useEffect(() => {
         // Initialize select2 for Select Team
@@ -490,7 +499,7 @@ const ManageContactMadeQueries = ({ notification }) => {
                                 ordering: false,
                                 pageLength: 50,
                                 createdRow: (row, data) => {
-                                    $(row).find('.view-btn').on('click', () => handleViewButtonClick(data));
+                                    $(row).find('.view-btn').on('click', () => handleViewButtonClick(data.assign_id));
                                     $(row).find('.request-access-btn').on('click', () => handleRequestAccessClick(data));
                                 },
                             }}
@@ -506,8 +515,8 @@ const ManageContactMadeQueries = ({ notification }) => {
 
                     <QueryDetails
                         onClose={toggleDetailsPage}
-
-                        queryId={selectedQuery.assign_id}
+                        queryId={selectedQuery}
+                        quotationId={selectedQuote}
                         after={() => { fetchQuotes(false) }}
                     />
 

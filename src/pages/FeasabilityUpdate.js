@@ -6,7 +6,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, ArrowLeftRight, BotOff } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, ArrowLeftRight, BotOff, Share2 } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -70,7 +70,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
     const numberToWords = (num) => {
         const toWords = require("number-to-words");
         return toWords.toWords(Number(num));
-      };
+    };
 
     const fetchScopeDetails = async () => {
         setLoading(true); // Show loading spinner
@@ -262,7 +262,22 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Check Feasibility </h2>
                 <div className='flex items-center justify-between'>
-
+                    <button
+                        onClick={() => {
+                            const url = `http://localhost:3000/askforscope/viewdetails/${queryId}/${quotationId}`;
+                            navigator.clipboard
+                                .writeText(url)
+                                .then(() => {
+                                    toast.success("URL copied to clipboard!");
+                                })
+                                .catch((err) => {
+                                    console.error("Failed to copy URL:", err);
+                                });
+                        }}
+                        className="flex items-center justify-center btn btn-success btn-sm mr-3"
+                    >
+                        <Share2 size={14} className="" />
+                    </button>
                     <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
                 </div>
             </div>
@@ -631,7 +646,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
                 </div>
             )}
-            
+
         </div>
     );
 };

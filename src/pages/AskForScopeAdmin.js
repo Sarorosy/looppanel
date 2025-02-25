@@ -32,6 +32,8 @@ import {
   XCircle,
   Download,
   BadgeDollarSign,
+  Share2,
+
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import AddTags from "./AddTags";
@@ -1002,6 +1004,22 @@ const AskForScopeAdmin = ({
                               >
                                 <UserRoundPlus size={14} className="" />
                               </button>
+                              <button
+                              onClick={() => {
+                                const url = `http://localhost:3000/askforscope/viewdetails/${quote.assign_id}/${quote.quoteid}`;
+                                navigator.clipboard
+                                  .writeText(url)
+                                  .then(() => {
+                                    toast.success("URL copied to clipboard!");
+                                  })
+                                  .catch((err) => {
+                                    console.error("Failed to copy URL:", err);
+                                  });
+                              }}
+                              className="flex items-center justify-center btn btn-success btn-sm mr-1"
+                            >
+                              <Share2 size={14} className="" />
+                            </button>
                             </div>
                           </>
                         </td>

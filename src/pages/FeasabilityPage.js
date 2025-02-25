@@ -11,15 +11,17 @@ import FeasabilityQueryDetails from './FeasabilityQueryDetails';
 import { getSocket } from './Socket';
 import { io } from "socket.io-client";
 import UserTableLoading from '../components/UserTableLoading';
+import { useNavigate } from 'react-router-dom';
 const socket = getSocket();
 
-const FeasabilityPage = ({ onClose, after }) => {
+const FeasabilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid }) => {
     const [quoteSummary, setQuoteSummary] = useState([]);
     const [loading, setLoading] = useState(false);
     const [pendingCount, setPendingCount] = useState(0);
     const [selectedQuery, setSelectedQuery] = useState('');
     const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+    const navigate = useNavigate();
 
     const userData = localStorage.getItem('loopuser');
 
@@ -102,9 +104,20 @@ const FeasabilityPage = ({ onClose, after }) => {
         setIsDetailsOpen(false);
         fetchQuoteSummary();
     }
+    useEffect(() => {
+        if (sharelinkrefid && sharelinkquoteid) {
+            setSelectedQuery(sharelinkrefid);
+            setSelectedQuote(sharelinkquoteid);
+            setIsDetailsOpen(true);
+        }
+    }, [sharelinkrefid, sharelinkquoteid]);
 
     const close = () =>{
-        onClose();
+        if(onClose){
+            onClose();
+        }else{
+            navigate('/assignquery');
+        }
         if(after){
             after();
         }

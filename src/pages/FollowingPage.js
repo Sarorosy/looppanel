@@ -9,8 +9,10 @@ import { RefreshCcw, X } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import QueryDetailsFollowing from './QueryDetailsFollowing';
 import { getSocket } from "./Socket";
+import { useNavigate } from 'react-router-dom';
 
-const FollowingPage = ({ onClose, after }) => {
+
+const FollowingPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid }) => {
     const [quoteSummary, setQuoteSummary] = useState([]);
     const [loading, setLoading] = useState(false);
     const [pendingCount, setPendingCount] = useState(0);
@@ -21,6 +23,7 @@ const FollowingPage = ({ onClose, after }) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const socket = getSocket();
     const userData = localStorage.getItem('loopuser');
+    const navigate = useNavigate();
 
     const userObject = JSON.parse(userData);
 
@@ -109,10 +112,16 @@ const FollowingPage = ({ onClose, after }) => {
     const handleViewBtnClick = (query) => {
         setSelectedQuery(query.ref_id);
         setSelectedQuote(query.id);
-        console.log(selectedQuery)
         setIsDetailsOpen(true);
-        
     };
+
+    useEffect(() => {
+        if (sharelinkrefid && sharelinkquoteid) {
+            setSelectedQuery(sharelinkrefid);
+            setSelectedQuote(sharelinkquoteid);
+            setIsDetailsOpen(true);
+        }
+    }, [sharelinkrefid, sharelinkquoteid]);
 
     // Use DataTable library
     DataTable.use(DT);
@@ -122,7 +131,11 @@ const FollowingPage = ({ onClose, after }) => {
     }, []);
 
     const close = () =>{
-        onClose();
+        if(onClose){
+            onClose();
+        }else{
+            navigate('/assignquery');
+        }
         if(after){after()}
     }
 
@@ -262,7 +275,9 @@ const FollowingPage = ({ onClose, after }) => {
                 {isDetailsOpen && (
 
                     <QueryDetailsFollowing
-                        onClose={toggleDetailsPage}
+                        onClose={() => {
+                            setIsDetailsOpen(!isDetailsOpen);
+                        }}
                         quotationId={selectedQuote}
                         queryId={selectedQuery}
                         after={fetchQuoteSummary}
