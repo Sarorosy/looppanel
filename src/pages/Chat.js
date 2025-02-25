@@ -565,7 +565,11 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                     backgroundColor: 'white',
                                     border: '1px solid rgba(0,0,0,0.15)',
                                     fontSize: 14,
-                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                                    boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                                    marginLeft: 25,
+                                    marginTop: 10,
+                                    position: 'absolute',
+                                    zIndex: 1000
                                 },
                                 item: {
                                     padding: '5px 15px',

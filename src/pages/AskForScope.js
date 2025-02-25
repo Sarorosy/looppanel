@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -593,10 +593,28 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                           </p>
                         </td>
                         <td
-                          className="border px-2 py-2"
+                          className="border px-2 py-2 flex items-center"
                           style={{ fontSize: "11px" }}
                         >
+                          <div className="flex items-center">
                           {quote.quoteid}
+                          <button
+                              onClick={() => {
+                                
+                                navigator.clipboard
+                                  .writeText(quote.quoteid)
+                                  .then(() => {
+                                    toast.success("QuoteID copied to clipboard!");
+                                  })
+                                  .catch((err) => {
+                                    console.error("Failed to copy QuoteID:", err);
+                                  });
+                              }}
+                              className="flex items-center justify-center btn  btn-sm mr-1"
+                            >
+                              <Copy size={14} className="text-blue-600" />
+                            </button>
+                          </div>
                         </td>
                         <td
                           className="border px-2 py-2"

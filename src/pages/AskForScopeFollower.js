@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, Pencil, CheckCircle, XCircle, Share2 } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, Pencil, CheckCircle, XCircle, Share2, Copy } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -480,7 +480,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-sx font-semibold " >Ask For Scope </h2>
                 <div className='flex items-center'>
-                    
+
                     <button onClick={fetchScopeDetails} className="btn btn-dark btn-sm">
                         <RefreshCcw size={15} className="cursor-pointer" />
                     </button>
@@ -546,7 +546,27 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
 
                                                     </p>
                                                 </td>
-                                                <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.quoteid}</td>
+                                                <td className="border px-2 py-2 " style={{ fontSize: "11px" }}>
+                                                    <div className="flex items-center">
+                                                        {quote.quoteid}
+                                                        <button
+                                                            onClick={() => {
+
+                                                                navigator.clipboard
+                                                                    .writeText(quote.quoteid)
+                                                                    .then(() => {
+                                                                        toast.success("QuoteID copied to clipboard!");
+                                                                    })
+                                                                    .catch((err) => {
+                                                                        console.error("Failed to copy QuoteID:", err);
+                                                                    });
+                                                            }}
+                                                            className="flex items-center justify-center btn  btn-sm mr-1"
+                                                        >
+                                                            <Copy size={14} className="text-blue-600" />
+                                                        </button>
+                                                    </div>
+                                                </td>
                                                 <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.currency}</td>
                                                 <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.plan}</td>
                                                 <td className="border px-2 py-2" style={{ fontSize: "11px" }}>{quote.service_name || 'N/A'}</td>
@@ -593,22 +613,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                     >
                                                         {expandedRowIndex == index ? <ArrowUp size={14} className='text-white' /> : <ArrowDown size={20} className='text-white' />}
                                                     </button>
-                                                    <button
-                                                        onClick={() => {
-                                                            const url = `http://localhost:3000/askforscope/viewdetails/${quote.assign_id}/${quote.quoteid}`;
-                                                            navigator.clipboard
-                                                                .writeText(url)
-                                                                .then(() => {
-                                                                    toast.success("URL copied to clipboard!");
-                                                                })
-                                                                .catch((err) => {
-                                                                    console.error("Failed to copy URL:", err);
-                                                                });
-                                                        }}
-                                                        className="flex items-center justify-center btn btn-success btn-sm mr-3"
-                                                    >
-                                                        <Share2 size={14} className="" />
-                                                    </button>
+
 
                                                 </td>
                                             </tr>
@@ -622,8 +627,8 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                 <button
                                                                     onClick={() => handleTabButtonClick("scope")}
                                                                     className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${scopeTabVisible
-                                                                            ? "btn-info focus-outline-none"
-                                                                            : "btn-light"
+                                                                        ? "btn-info focus-outline-none"
+                                                                        : "btn-light"
                                                                         } btn btn-sm  focus:outline-none`}
                                                                 >
                                                                     Scope Details {scopeTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
@@ -631,8 +636,8 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                 <button
                                                                     onClick={() => handleTabButtonClick("chat")}
                                                                     className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${chatTabVisible
-                                                                            ? "btn-info focus-outline-none"
-                                                                            : "btn-light"
+                                                                        ? "btn-info focus-outline-none"
+                                                                        : "btn-light"
                                                                         } btn btn-sm`}
                                                                 >
                                                                     Communication Hub {chatTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
@@ -641,8 +646,8 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                     disabled={quote.isfeasability == 0}
                                                                     onClick={() => handleTabButtonClick("feas")}
                                                                     className={`px-2 py-1 mr-1 f-12 inline-flex items-center ${feasTabVisible
-                                                                            ? "btn-info focus-outline-none"
-                                                                            : "btn-light"
+                                                                        ? "btn-info focus-outline-none"
+                                                                        : "btn-light"
                                                                         } btn btn-sm`}
                                                                 >
                                                                     Feasibility  {feasTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}

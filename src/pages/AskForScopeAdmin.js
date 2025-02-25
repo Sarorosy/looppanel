@@ -33,6 +33,7 @@ import {
   Download,
   BadgeDollarSign,
   Share2,
+  Copy,
 
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
@@ -878,10 +879,28 @@ const AskForScopeAdmin = ({
                           </p>
                         </td>
                         <td
-                          className="border px-2 py-2"
+                          className="border px-2 py-2 "
                           style={{ fontSize: "11px" }}
                         >
+                          <div className="flex items-center">
                           {quote.quoteid}
+                          <button
+                              onClick={() => {
+                                
+                                navigator.clipboard
+                                  .writeText(quote.quoteid)
+                                  .then(() => {
+                                    toast.success("QuoteID copied to clipboard!");
+                                  })
+                                  .catch((err) => {
+                                    console.error("Failed to copy QuoteID:", err);
+                                  });
+                              }}
+                              className="flex items-center justify-center btn  btn-sm mr-1"
+                            >
+                              <Copy size={14} className="text-blue-600" />
+                            </button>
+                          </div>
                         </td>
                         <td
                           className="border px-2 py-2"
@@ -1004,22 +1023,7 @@ const AskForScopeAdmin = ({
                               >
                                 <UserRoundPlus size={14} className="" />
                               </button>
-                              <button
-                              onClick={() => {
-                                const url = `http://localhost:3000/askforscope/viewdetails/${quote.assign_id}/${quote.quoteid}`;
-                                navigator.clipboard
-                                  .writeText(url)
-                                  .then(() => {
-                                    toast.success("URL copied to clipboard!");
-                                  })
-                                  .catch((err) => {
-                                    console.error("Failed to copy URL:", err);
-                                  });
-                              }}
-                              className="flex items-center justify-center btn btn-success btn-sm mr-1"
-                            >
-                              <Share2 size={14} className="" />
-                            </button>
+                              
                             </div>
                           </>
                         </td>
