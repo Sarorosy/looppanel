@@ -933,3 +933,6 @@ focus-outline-none:focus:not(:focus-visible) {
 .mentions-input__highlighter{
   border: none !important;
 }
+.tenpx{
+  font-size: 10px;
+}

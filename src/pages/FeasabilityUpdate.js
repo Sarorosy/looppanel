@@ -262,7 +262,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Check Feasibility </h2>
                 <div className='flex items-center justify-between'>
-                    
+
                     <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
                 </div>
             </div>
@@ -307,17 +307,33 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                             )}
                                         </div>
                                         {quote.tag_names && (
-                                            <p>
-                                                <strong>Tags:</strong>
-                                                {quote.tag_names.split(",").map((tag, index) => (
-                                                    <span
-                                                        key={index}
-                                                        className="text-blue-500 hover:bg-blue-100 hover:text-blue-600 p-1 rounded-full text-sm font-medium inline-block ml-1"
-                                                    >
-                                                        #{tag.trim()}
-                                                    </span>
-                                                ))}
-                                            </p>
+                                            <div className="flex items-end  mb-3">
+                                                <p className=''>
+                                                    <div className=''><strong>Tags</strong></div>
+                                                    {quote.tag_names
+                                                        .split(",")
+                                                        .map((tag, index) => (
+                                                            <span
+                                                                key={index}
+                                                                className="badge badge-primary f-10 mr-1"
+                                                            >
+                                                                # {tag.trim()}
+                                                            </span>
+                                                        ))}
+                                                </p>
+                                                {quote.tags_updated_time && (
+                                                    <p className="text-gray-500 tenpx">
+                                                        {new Date(quote.tags_updated_time).toLocaleDateString('en-US', {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric',
+                                                            hour: 'numeric',
+                                                            minute: '2-digit',
+                                                            hour12: true
+                                                        }).replace(',', ',').toLowerCase()}
+                                                    </p>
+                                                )}
+                                            </div>
                                         )}
                                         <p>
                                             <strong>Currency:</strong> {quote.currency === "Other" ? quote.other_currency : quote.currency}

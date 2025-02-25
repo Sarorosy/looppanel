@@ -597,10 +597,10 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                           style={{ fontSize: "11px" }}
                         >
                           <div className="flex items-center">
-                          {quote.quoteid}
-                          <button
+                            {quote.quoteid}
+                            <button
                               onClick={() => {
-                                
+
                                 navigator.clipboard
                                   .writeText(quote.quoteid)
                                   .then(() => {
@@ -774,8 +774,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                     handleTabButtonClick("scope")
                                   }
                                   className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${scopeTabVisible
-                                      ? "btn-info focus-outline-none"
-                                      : "btn-light"
+                                    ? "btn-info focus-outline-none"
+                                    : "btn-light"
                                     } btn btn-sm  focus:outline-none`}
                                 >
                                   Scope Details{" "}
@@ -794,8 +794,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                 <button
                                   onClick={() => handleTabButtonClick("chat")}
                                   className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${chatTabVisible
-                                      ? "btn-info focus-outline-none"
-                                      : "btn-light"
+                                    ? "btn-info focus-outline-none"
+                                    : "btn-light"
                                     } btn btn-sm`}
                                 >
                                   Communication Hub{" "}
@@ -815,8 +815,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                   disabled={quote.isfeasability == 0}
                                   onClick={() => handleTabButtonClick("feas")}
                                   className={`px-2 py-1 mr-1 f-12 inline-flex items-center ${feasTabVisible
-                                      ? "btn-info focus-outline-none"
-                                      : "btn-light"
+                                    ? "btn-info focus-outline-none"
+                                    : "btn-light"
                                     } btn btn-sm`}
                                 >
                                   Feasibility{" "}
@@ -842,14 +842,14 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                               {scopeTabVisible && (
                                 <div
                                   className={`${fullScreenTab == "scope"
-                                      ? "custom-modal"
-                                      : colClass
+                                    ? "custom-modal"
+                                    : colClass
                                     }`}
                                 >
                                   <div
                                     className={`${fullScreenTab == "scope"
-                                        ? "custom-modal-content"
-                                        : ""
+                                      ? "custom-modal-content"
+                                      : ""
                                       } `}
                                   >
                                     <div className={`  pl-0`}>
@@ -902,19 +902,33 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                 </p>
 
                                                 {quote.tag_names && (
-                                                  <p className=' mb-3'>
-                                                    <div className=''><strong>Tags</strong></div>
-                                                    {quote.tag_names
-                                                      .split(",")
-                                                      .map((tag, index) => (
-                                                        <span
-                                                          key={index}
-                                                          className="badge badge-primary f-10 mr-1"
-                                                        >
-                                                          # {tag.trim()}
-                                                        </span>
-                                                      ))}
-                                                  </p>
+                                                  <div className="flex items-end  mb-3">
+                                                    <p className=''>
+                                                      <div className=''><strong>Tags</strong></div>
+                                                      {quote.tag_names
+                                                        .split(",")
+                                                        .map((tag, index) => (
+                                                          <span
+                                                            key={index}
+                                                            className="badge badge-primary f-10 mr-1"
+                                                          >
+                                                            # {tag.trim()}
+                                                          </span>
+                                                        ))}
+                                                    </p>
+                                                    {quote.tags_updated_time && (
+                                                      <p className="text-gray-500 tenpx">
+                                                        {new Date(quote.tags_updated_time).toLocaleDateString('en-US', {
+                                                          day: 'numeric',
+                                                          month: 'short',
+                                                          year: 'numeric',
+                                                          hour: 'numeric',
+                                                          minute: '2-digit',
+                                                          hour12: true
+                                                        }).replace(',', ',').toLowerCase()}
+                                                      </p>
+                                                    )}
+                                                  </div>
                                                 )}
                                                 {quote.ptp != null && (
                                                   <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
@@ -928,7 +942,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                           <XCircle className="text-red-500 w-4 h-4" />
                                                         )}
                                                       </p>
-                                                      {quote.ptp_amount && quote.ptp_amount != 0 && (
+                                                      {quote.ptp === "Yes" && quote.ptp_amount && quote.ptp_amount != 0 && (
                                                         <p>
                                                           <strong>PTP Amount:</strong> {quote.ptp_amount}
                                                         </p>
@@ -952,6 +966,20 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             {quote.ptp_file}
                                                           </a>
                                                         </p>
+                                                      )}
+                                                      {quote.ptp_time && (
+                                                        <div className='flex items-center justify-end'>
+                                                          <p className='text-gray-500 tenpx'>
+                                                            {new Date(quote.ptp_time).toLocaleDateString('en-US', {
+                                                              day: 'numeric',
+                                                              month: 'short',
+                                                              year: 'numeric',
+                                                              hour: 'numeric',
+                                                              minute: '2-digit',
+                                                              hour12: true
+                                                            }).replace(',', ',').toLowerCase()}
+                                                          </p>
+                                                        </div>
                                                       )}
                                                     </div>
                                                   </div>
@@ -1144,6 +1172,42 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                     </div>
                                                                   )
                                                               )}
+                                                          {plan === "Basic" && quote.basic_edited_time && (
+                                                            <p className="text-gray-500 mt-2 tenpx">
+                                                              {new Date(quote.basic_edited_time).toLocaleDateString('en-US', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                hour12: true
+                                                              }).replace(',', ',').toLowerCase()}
+                                                            </p>
+                                                          )}
+                                                          {plan === "Standard" && quote.standard_edited_time && (
+                                                            <p className="text-gray-500 mt-2 tenpx">
+                                                              {new Date(quote.standard_edited_time).toLocaleDateString('en-US', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                hour12: true
+                                                              }).replace(',', ',').toLowerCase()}
+                                                            </p>
+                                                          )}
+                                                          {plan === "Advanced" && quote.advanced_edited_time && (
+                                                            <p className="text-gray-500 mt-2 tenpx">
+                                                              {new Date(quote.advanced_edited_time).toLocaleDateString('en-US', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                hour12: true
+                                                              }).replace(',', ',').toLowerCase()}
+                                                            </p>
+                                                          )}
                                                         </div>
                                                       </div>
                                                     )
@@ -1208,7 +1272,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                     </div>
                                                   </div>
                                                 )}
-                                              
+
                                               {quote.demodone != 0 && (
                                                 <>
                                                   <p className="mb-3">
@@ -1235,9 +1299,9 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                               {quote.quote_status != 0 &&
                                                 quote.quote_price &&
                                                 quote.plan && (
-                                                  <>
+                                                  <div className="my-2 rounded border p-2">
                                                     {quote.old_plan && (
-                                                      <p className="text-gray-600">
+                                                      <p className="text-gray-600 p-3 rounded border">
                                                         <div>
                                                           <strong>
                                                             Quote Price For Old
@@ -1280,11 +1344,12 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             )
                                                           );
                                                         })()}
+
                                                       </p>
                                                     )}
                                                     {quote.quote_status !=
                                                       2 && (
-                                                        <p className='mb-3'>
+                                                        <p className='my-1 p-3 rounded border'>
                                                           <div>
                                                             <strong className='f-16'>
                                                               Quote Price
@@ -1304,9 +1369,9 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 <span
                                                                   key={index}
                                                                   className={`${quote.discount_price !=
-                                                                      null
-                                                                      ? "line-through bg-red-200 p-1 rounded mr-1 f-12"
-                                                                      : ""
+                                                                    null
+                                                                    ? "line-through bg-red-200 p-1 rounded mr-1 f-12"
+                                                                    : ""
                                                                     }`}
                                                                 >
                                                                   <strong>
@@ -1330,11 +1395,12 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                               )
                                                             );
                                                           })()}
+
                                                         </p>
                                                       )}
 
                                                     {quote.discount_price && (
-                                                      <p className='mb-3'>
+                                                      <p className='mb-3 p-3 rounded border'>
                                                         <div>
                                                           <strong>
                                                             Discounted Price
@@ -1377,7 +1443,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                       </p>
                                                     )}
                                                     {quote.final_price && (
-                                                      <p className='mb-3'>
+                                                      <p className='mb-3 p-3 rounded border'>
                                                         <div>
                                                           <strong>
                                                             Final Price
@@ -1422,7 +1488,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                       </p>
                                                     )}
                                                     {quote.user_comments && (
-                                                      <p className='mb-3'>
+                                                      <p className='mt-3'>
                                                         <div>
                                                           <strong
                                                             style={{
@@ -1434,7 +1500,21 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         {quote.user_comments}
                                                       </p>
                                                     )}
-                                                  </>
+                                                    {quote.quote_time && (
+                                                      <div className='flex items-center justify-end'>
+                                                        <p className='text-gray-500 tenpx'>
+                                                          {new Date(quote.quote_time).toLocaleDateString('en-US', {
+                                                            day: 'numeric',
+                                                            month: 'short',
+                                                            year: 'numeric',
+                                                            hour: 'numeric',
+                                                            minute: '2-digit',
+                                                            hour12: true
+                                                          }).replace(',', ',').toLowerCase()}
+                                                        </p>
+                                                      </div>
+                                                    )}
+                                                  </div>
                                                 )}
 
                                               {assignQuoteInfo &&
@@ -1533,14 +1613,14 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                               {chatTabVisible && (
                                 <div
                                   className={`${fullScreenTab == "chat"
-                                      ? "custom-modal"
-                                      : colClass
+                                    ? "custom-modal"
+                                    : colClass
                                     } p-0`}
                                 >
                                   <div
                                     className={`${fullScreenTab == "chat"
-                                        ? "custom-modal-content"
-                                        : ""
+                                      ? "custom-modal-content"
+                                      : ""
                                       }`}
                                   >
                                     <div className={`p-0 `}>
@@ -1570,14 +1650,14 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                               {feasTabVisible && quote.isfeasability == 1 && (
                                 <div
                                   className={`${fullScreenTab == "feas"
-                                      ? "custom-modal"
-                                      : colClass
+                                    ? "custom-modal"
+                                    : colClass
                                     }`}
                                 >
                                   <div
                                     className={`${fullScreenTab == "feas"
-                                        ? "custom-modal-content"
-                                        : ""
+                                      ? "custom-modal-content"
+                                      : ""
                                       }`}
                                   >
                                     <div className={` pr-0`}>

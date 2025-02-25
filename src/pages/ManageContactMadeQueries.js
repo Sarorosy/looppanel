@@ -68,6 +68,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     };
     const handleViewButtonClick = (query) => {
         setSelectedQuery(query);
+        setSelectedQuote('');
         setIsDetailsOpen(true);
     };
     const handleSummaryButtonClick = (query) => {

@@ -1559,7 +1559,7 @@ const AskForScopeAdmin = ({
                                               {quote.quote_status != 0 &&
                                                 quote.quote_price &&
                                                 quote.plan && (
-                                                  <div className="my-2 rounded border p-2">
+                                                  <>
                                                     {quote.old_plan && (
                                                       <p className="text-gray-600 p-1 rounded border">
                                                         <strong>
@@ -1604,7 +1604,20 @@ const AskForScopeAdmin = ({
                                                             )
                                                           );
                                                         })()}
-                                                        
+                                                        {quote.quote_time && (
+                                                            <div className='flex items-center justify-end'>
+                                                              <p className='text-gray-500 tenpx'>
+                                                              {new Date(quote.quote_time).toLocaleDateString('en-US', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                hour12: true
+                                                              }).replace(',', ',').toLowerCase()}
+                                                            </p>
+                                                          </div>
+                                                          )}
                                                       </p>
                                                     )}
                                                     {quote.quote_status !=
@@ -1655,12 +1668,25 @@ const AskForScopeAdmin = ({
                                                               )
                                                             );
                                                           })()}
-                                                          
+                                                          {quote.quote_time && (
+                                                            <div className='flex items-center justify-end'>
+                                                              <p className='text-gray-500 tenpx'>
+                                                              {new Date(quote.quote_time).toLocaleDateString('en-US', {
+                                                                day: 'numeric',
+                                                                month: 'short',
+                                                                year: 'numeric',
+                                                                hour: 'numeric',
+                                                                minute: '2-digit',
+                                                                hour12: true
+                                                              }).replace(',', ',').toLowerCase()}
+                                                            </p>
+                                                          </div>
+                                                          )}
                                                         </p>
                                                       )}
 
                                                     {quote.discount_price && (
-                                                      <p className="my-1 p-3 rounded border">
+                                                      <p className="my-2">
                                                         <strong>
                                                           Discounted Price:
                                                         </strong>{" "}
@@ -1700,11 +1726,10 @@ const AskForScopeAdmin = ({
                                                             )
                                                           );
                                                         })()}
-                                                        
                                                       </p>
                                                     )}
                                                     {quote.final_price && (
-                                                      <p className="my-1 p-3 rounded border">
+                                                      <p>
                                                         <strong>
                                                           Final Price:
                                                         </strong>{" "}
@@ -1755,35 +1780,21 @@ const AskForScopeAdmin = ({
                                                                 quote
                                                               );
                                                             }}
-                                                            className="btn btn-warning btn-sm px-1 text-white ml-2"
+                                                            className="flex items-center rounded-full border-2 border-blue-500 mx-2"
                                                           >
-                                                            <Pencil size={8} className=" text-white " />
+                                                            <Pencil className="p-1" />
                                                           </button>
                                                         )}
                                                     </p>
                                                     {quote.user_comments && (
-                                                      <p className="mt-2">
+                                                      <p>
                                                         <strong style={{}}>
                                                           Admin Comments:
                                                         </strong>{" "}
                                                         {quote.user_comments}
                                                       </p>
                                                     )}
-                                                    {quote.quote_time && (
-                                                            <div className='flex items-center justify-end'>
-                                                              <p className='text-gray-500 tenpx'>
-                                                              {new Date(quote.quote_time).toLocaleDateString('en-US', {
-                                                                day: 'numeric',
-                                                                month: 'short',
-                                                                year: 'numeric',
-                                                                hour: 'numeric',
-                                                                minute: '2-digit',
-                                                                hour12: true
-                                                              }).replace(',', ',').toLowerCase()}
-                                                            </p>
-                                                          </div>
-                                                          )}
-                                                  </div>
+                                                  </>
                                                 )}
                                               {assignQuoteInfo &&
                                                 assignQuoteInfo != false && (
@@ -2169,13 +2180,7 @@ const AskForScopeAdmin = ({
                                                                             amounts[
                                                                             plan
                                                                             ] ||
-                                                                            (quote.quote_status == 2 ? 
-                                                                              quote.quote_price.split(',')[
-                                                                                plan === 'Basic' ? 0 : 
-                                                                                plan === 'Standard' ? 1 : 2
-                                                                              ] : 
-                                                                              ""
-                                                                            )
+                                                                            ""
                                                                           } // Default to empty if no amount is set
                                                                           required={
                                                                             quote.plan &&

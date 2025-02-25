@@ -708,27 +708,33 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                 </p>
 
                                                                                                 {quote.tag_names && (
-                                                                                                    <p className='mb-3'>
-                                                                                                        <div>
-                                                                                                            <strong>Tags</strong>
-                                                                                                        </div>
-                                                                                                        {quote.tag_names.split(',').map((tag, index) => (
-                                                                                                            <div
-                                                                                                                key={index}
-                                                                                                                className="tag-badge mr-1 d-inline"
-                                                                                                                style={{
-                                                                                                                    padding: "3px 5px",
-                                                                                                                    borderRadius: "4px",
-                                                                                                                    backgroundColor:
-                                                                                                                        "#007bff",
-                                                                                                                    color: "#fff",
-                                                                                                                    fontSize: "10px",
-                                                                                                                }}
-                                                                                                            >
-                                                                                                                # {tag.trim()}
-                                                                                                            </div>
-                                                                                                        ))}
-                                                                                                    </p>
+                                                                                                    <div className="flex items-end  mb-3">
+                                                                                                        <p className=''>
+                                                                                                            <div className=''><strong>Tags</strong></div>
+                                                                                                            {quote.tag_names
+                                                                                                                .split(",")
+                                                                                                                .map((tag, index) => (
+                                                                                                                    <span
+                                                                                                                        key={index}
+                                                                                                                        className="badge badge-primary f-10 mr-1"
+                                                                                                                    >
+                                                                                                                        # {tag.trim()}
+                                                                                                                    </span>
+                                                                                                                ))}
+                                                                                                        </p>
+                                                                                                        {quote.tags_updated_time && (
+                                                                                                            <p className="text-gray-500 tenpx">
+                                                                                                                {new Date(quote.tags_updated_time).toLocaleDateString('en-US', {
+                                                                                                                    day: 'numeric',
+                                                                                                                    month: 'short',
+                                                                                                                    year: 'numeric',
+                                                                                                                    hour: 'numeric',
+                                                                                                                    minute: '2-digit',
+                                                                                                                    hour12: true
+                                                                                                                }).replace(',', ',').toLowerCase()}
+                                                                                                            </p>
+                                                                                                        )}
+                                                                                                    </div>
                                                                                                 )}
                                                                                                 {quote.ptp != null && (
                                                                                                     <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
@@ -839,6 +845,42 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                                                 </div>
                                                                                                                             )
                                                                                                                         ))
+                                                                                                                )}
+                                                                                                                {plan === "Basic" && quote.basic_edited_time && (
+                                                                                                                    <p className="text-gray-500 mt-2 tenpx">
+                                                                                                                        {new Date(quote.basic_edited_time).toLocaleDateString('en-US', {
+                                                                                                                            day: 'numeric',
+                                                                                                                            month: 'short',
+                                                                                                                            year: 'numeric',
+                                                                                                                            hour: 'numeric',
+                                                                                                                            minute: '2-digit',
+                                                                                                                            hour12: true
+                                                                                                                        }).replace(',', ',').toLowerCase()}
+                                                                                                                    </p>
+                                                                                                                )}
+                                                                                                                {plan === "Standard" && quote.standard_edited_time && (
+                                                                                                                    <p className="text-gray-500 mt-2 tenpx">
+                                                                                                                        {new Date(quote.standard_edited_time).toLocaleDateString('en-US', {
+                                                                                                                            day: 'numeric',
+                                                                                                                            month: 'short',
+                                                                                                                            year: 'numeric',
+                                                                                                                            hour: 'numeric',
+                                                                                                                            minute: '2-digit',
+                                                                                                                            hour12: true
+                                                                                                                        }).replace(',', ',').toLowerCase()}
+                                                                                                                    </p>
+                                                                                                                )}
+                                                                                                                {plan === "Advanced" && quote.advanced_edited_time && (
+                                                                                                                    <p className="text-gray-500 mt-2 tenpx">
+                                                                                                                        {new Date(quote.advanced_edited_time).toLocaleDateString('en-US', {
+                                                                                                                            day: 'numeric',
+                                                                                                                            month: 'short',
+                                                                                                                            year: 'numeric',
+                                                                                                                            hour: 'numeric',
+                                                                                                                            minute: '2-digit',
+                                                                                                                            hour12: true
+                                                                                                                        }).replace(',', ',').toLowerCase()}
+                                                                                                                    </p>
                                                                                                                 )}
                                                                                                             </div>
                                                                                                         </div>
