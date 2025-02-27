@@ -1560,12 +1560,13 @@ const AskForScopeAdmin = ({
                                                 quote.quote_price &&
                                                 quote.plan && (
                                                   <div className="my-2 rounded border p-2">
-                                                    {quote.old_plan && (
-                                                      <p className="text-gray-600 p-1 rounded border">
+                                                    {quote.old_plan && quote.plan!= quote.old_plan && (
+                                                      <p className="text-gray-600 p-1 ">
                                                         <strong>
                                                           Quote Price For Old
                                                           Plan:
                                                         </strong>{" "}
+                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
                                                         {(() => {
                                                           const prices =
                                                             quote.quote_price.split(
@@ -1604,15 +1605,16 @@ const AskForScopeAdmin = ({
                                                             )
                                                           );
                                                         })()}
-                                                        
+                                                        </div>
                                                       </p>
                                                     )}
                                                     {quote.quote_status !=
                                                       2 && (
-                                                        <p className="my-1 p-3 rounded border">
+                                                        <p className="my-1 p-2 ">
                                                           <strong>
                                                             Quote Price:
                                                           </strong>{" "}
+                                                          <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
                                                           {(() => {
                                                             const prices =
                                                               quote.quote_price.split(
@@ -1629,7 +1631,7 @@ const AskForScopeAdmin = ({
                                                                   className={`${quote.discount_price !=
                                                                       null
                                                                       ? "line-through bg-red-200 p-1 rounded mr-1 f-12"
-                                                                      : ""
+                                                                      : "bg-red-200 px-1 py-1 rounded mr-1 f-12"
                                                                     }`}
                                                                 >
                                                                   <strong>
@@ -1655,15 +1657,16 @@ const AskForScopeAdmin = ({
                                                               )
                                                             );
                                                           })()}
-                                                          
+                                                          </div>
                                                         </p>
                                                       )}
 
                                                     {quote.discount_price && (
-                                                      <p className="my-1 p-3 rounded border">
+                                                      <p className="my-1 p-2 ">
                                                         <strong>
                                                           Discounted Price:
                                                         </strong>{" "}
+                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
                                                         {(() => {
                                                           const prices =
                                                             quote.discount_price.split(
@@ -1700,14 +1703,15 @@ const AskForScopeAdmin = ({
                                                             )
                                                           );
                                                         })()}
-                                                        
+                                                        </div>
                                                       </p>
                                                     )}
                                                     {quote.final_price && (
-                                                      <p className="my-1 p-3 rounded border">
+                                                      <p className="my-1 p-2 ">
                                                         <strong>
                                                           Final Price:
                                                         </strong>{" "}
+                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
                                                         {(() => {
                                                           const prices =
                                                             quote.final_price.split(
@@ -1721,7 +1725,10 @@ const AskForScopeAdmin = ({
                                                             (plan, index) => (
                                                               <span
                                                                 key={index}
-                                                                className=" px-1 py-2 rounded mr-1 gold"
+                                                                className=" px-1 py-1 rounded mr-1 gold"
+                                                                style={{
+                                                                  fontSize: "12px"
+                                                                }}
                                                               >
                                                                 <strong>
                                                                   {plan}{" "}
@@ -1739,6 +1746,7 @@ const AskForScopeAdmin = ({
                                                             )
                                                           );
                                                         })()}
+                                                        </div>
                                                       </p>
                                                     )}
                                                     <p className="flex items-center">
@@ -2003,8 +2011,7 @@ const AskForScopeAdmin = ({
                                                   <div className="space-y-1 text-gray-600">
 
 
-                                                    {quote.ptp === "Yes" &&
-                                                      quote.ptp_comments !==
+                                                    {quote.ptp_comments !==
                                                       "" && (
                                                         <p>
                                                           <strong>

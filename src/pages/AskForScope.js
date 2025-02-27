@@ -947,7 +947,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                           <strong>PTP Amount:</strong> {quote.ptp_amount}
                                                         </p>
                                                       )}
-                                                      {quote.ptp === "Yes" && quote.ptp_comments !== "" && (
+                                                      { quote.ptp_comments !== "" && (
                                                         <p>
                                                           <strong>PTP Comments:</strong> {quote.ptp_comments}
                                                         </p>
@@ -1300,14 +1300,15 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                 quote.quote_price &&
                                                 quote.plan && (
                                                   <div className="my-2 rounded border p-2">
-                                                    {quote.old_plan && (
-                                                      <p className="text-gray-600 p-3 rounded border">
+                                                    {quote.old_plan && quote.plan != quote.old_plan && (
+                                                      <p className="text-gray-600 p-2 ">
                                                         <div>
                                                           <strong>
                                                             Quote Price For Old
                                                             Plan
                                                           </strong>{" "}
                                                         </div>
+                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
                                                         {(() => {
                                                           const prices =
                                                             quote.quote_price.split(
@@ -1344,17 +1345,18 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             )
                                                           );
                                                         })()}
-
+                                                        </div>
                                                       </p>
                                                     )}
                                                     {quote.quote_status !=
                                                       2 && (
-                                                        <p className='my-1 p-3 rounded border'>
-                                                          <div>
-                                                            <strong className='f-16'>
+                                                        <p className={`my-1 p-2 `}>
+                                                            <div>
+                                                              <strong className='f-16'>
                                                               Quote Price
                                                             </strong>{" "}
                                                           </div>
+                                                          <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
                                                           {(() => {
                                                             const prices =
                                                               quote.quote_price.split(
@@ -1366,9 +1368,10 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                               ); // Split plan into an array
                                                             return plans.map(
                                                               (plan, index) => (
-                                                                <span
-                                                                  key={index}
-                                                                  className={`${quote.discount_price !=
+                                                                
+                                                                  <span
+                                                                    key={index}
+                                                                    className={`${quote.discount_price !=
                                                                     null
                                                                     ? "line-through bg-red-200 p-1 rounded mr-1 f-12"
                                                                     : ""
@@ -1392,20 +1395,23 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                     1 && ", "}
                                                                   {quote.mp_price === plan && " (MP Price)"}
                                                                 </span>
+                                                              
                                                               )
                                                             );
                                                           })()}
+                                                          </div>
 
                                                         </p>
                                                       )}
 
                                                     {quote.discount_price && (
-                                                      <p className='mb-3 p-3 rounded border'>
+                                                      <p className='my-1 p-2 '>
                                                         <div>
                                                           <strong>
                                                             Discounted Price
                                                           </strong>{" "}
                                                         </div>
+                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
                                                         {(() => {
                                                           const prices =
                                                             quote.discount_price.split(
@@ -1440,15 +1446,17 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             )
                                                           );
                                                         })()}
+                                                        </div>
                                                       </p>
                                                     )}
                                                     {quote.final_price && (
-                                                      <p className='mb-3 p-3 rounded border'>
+                                                      <p className='my-1 p-2 '>
                                                         <div>
                                                           <strong>
                                                             Final Price
                                                           </strong>{" "}
                                                         </div>
+                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
                                                         {(() => {
                                                           const prices =
                                                             quote.final_price.split(
@@ -1462,7 +1470,10 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             (plan, index) => (
                                                               <span
                                                                 key={index}
-                                                                className=" px-1 py-2 rounded mr-1 gold"
+                                                                className=" px-1 py-1 rounded mr-1 gold "
+                                                                style={{
+                                                                  fontSize: "12px"
+                                                                }}
                                                               >
                                                                 <strong>
                                                                   {plan}{" "}
@@ -1485,6 +1496,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             )
                                                           );
                                                         })()}
+                                                        </div>
                                                       </p>
                                                     )}
                                                     {quote.user_comments && (
@@ -1536,6 +1548,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                   quote.user_id ==
                                                   thisUserId && (
                                                     <AskPtp
+                                                      
                                                       scopeDetails={quote}
                                                       quoteId={quote.quoteid}
                                                       after={
@@ -1550,6 +1563,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                   "true" &&
                                                   quote.demodone != 1 && (
                                                     <DemoDone
+                                                    
                                                       scopeDetails={quote}
                                                       quoteId={quote.quoteid}
                                                       after={

@@ -100,8 +100,8 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
     };
 
     return (
-        <div className=''>
-            <button onClick={() => setShowForm(!showForm)} className="btn btn-info btn-sm f-12">
+        <div className='my-2'>
+            <button onClick={() => setShowForm(!showForm)} className="btn py-0 px-1 btn-info btn-sm f-12">
                 Ask Discount
             </button>
 
