@@ -1660,7 +1660,7 @@ const AskForScopeAdmin = ({
                                                                 return plans.map((plan, index) => (
                                                                   <span 
                                                                     key={index} 
-                                                                    className={`${quote.discount_price != null ? 'line-through' : ''} bg-red-100 px-2 py-1 rounded mr-2`}
+                                                                    className={`${quote.discount_price != null ? 'line-through' : ''} ruby px-1 py-1 f-12 rounded mr-1`}
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}

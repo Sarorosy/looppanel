@@ -542,6 +542,17 @@ th{
   background-position: left;
 }
 
+.ruby {
+  font-size: 15px;
+  text-transform: uppercase;
+  line-height:1;
+  text-align: center;
+  background: linear-gradient(90deg, rgb(62, 171, 186) 0%, rgb(32, 195, 236) 20%, rgb(62, 140, 186) 39%, rgb(180, 249, 243) 50%, rgb(62, 171, 186) 60%, rgb(32, 205, 236) 80%, rgb(62, 161, 186) 100%);
+  animation: shine 3s infinite;
+  background-size: 200%;
+  background-position: left;
+}
+
 
 
 
