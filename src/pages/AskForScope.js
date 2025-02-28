@@ -1300,218 +1300,106 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                 quote.quote_price &&
                                                 quote.plan && (
                                                   <div className="my-2 rounded border p-2">
-                                                    {quote.old_plan && quote.plan != quote.old_plan && (
-                                                      <p className="text-gray-600 p-2 ">
-                                                        <div>
-                                                          <strong>
-                                                            Quote Price For Old
-                                                            Plan
-                                                          </strong>{" "}
-                                                        </div>
-                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
-                                                        {(() => {
-                                                          const prices =
-                                                            quote.quote_price.split(
-                                                              ","
-                                                            ); // Split quote_price into an array
-                                                          const plans =
-                                                            quote.old_plan.split(
-                                                              ","
-                                                            ); // Split plan into an array
-                                                          return plans.map(
-                                                            (plan, index) => (
-                                                              <span
-                                                                key={index}
-                                                                className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500"
-                                                              >
-                                                                <strong>
-                                                                  {plan}{" "}
-                                                                </strong>
-                                                                :{" "}
-                                                                {quote.currency ==
-                                                                  "Other"
-                                                                  ? quote.other_currency
-                                                                  : quote.currency}{" "}
-                                                                {prices[index]
-                                                                  ? prices[
-                                                                  index
-                                                                  ]
-                                                                  : 0}
-                                                                {index <
-                                                                  plans.length -
-                                                                  1 && ", "}
-                                                                {quote.mp_price === plan && " (MP Price)"}
-                                                              </span>
-                                                            )
-                                                          );
-                                                        })()}
-                                                        </div>
-                                                      </p>
-                                                    )}
-                                                    {quote.quote_status !=
-                                                      2 && (
-                                                        <p className={`my-1 p-2 `}>
-                                                            <div>
-                                                              <strong className='f-16'>
-                                                              Quote Price
-                                                            </strong>{" "}
-                                                          </div>
-                                                          <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
-                                                          {(() => {
-                                                            const prices =
-                                                              quote.quote_price.split(
-                                                                ","
-                                                              ); // Split quote_price into an array
-                                                            const plans =
-                                                              quote.plan.split(
-                                                                ","
-                                                              ); // Split plan into an array
-                                                            return plans.map(
-                                                              (plan, index) => (
-                                                                
-                                                                  <span
-                                                                    key={index}
-                                                                    className={`${quote.discount_price !=
-                                                                    null
-                                                                    ? "line-through bg-red-200 p-1 rounded mr-1 f-12"
-                                                                    : ""
-                                                                    }`}
-                                                                >
-                                                                  <strong>
-                                                                    {plan}{" "}
-                                                                  </strong>
-                                                                  :{" "}
-                                                                  {quote.currency ==
-                                                                    "Other"
-                                                                    ? quote.other_currency
-                                                                    : quote.currency}{" "}
-                                                                  {prices[index]
-                                                                    ? prices[
-                                                                    index
-                                                                    ]
-                                                                    : 0}
-                                                                  {index <
-                                                                    plans.length -
-                                                                    1 && ", "}
-                                                                  {quote.mp_price === plan && " (MP Price)"}
-                                                                </span>
-                                                              
-                                                              )
-                                                            );
-                                                          })()}
-                                                          </div>
+                                                    <table className="w-full border-collapse " style={{fontSize: "12px"}}>
+                                                      <thead>
+                                                        <tr className="bg-gray-50">
+                                                          <th className="border px-3 py-2 text-left">Plan Type</th>
+                                                          <th className="border px-3 py-2 text-left">Price Details</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        {/* Old Plan Price Row */}
+                                                        {quote.old_plan && quote.plan != quote.old_plan && (
+                                                          <tr className="border-b">
+                                                            <td className="border px-1 py-2">
+                                                              <strong>Old Plan Price</strong>
+                                                            </td>
+                                                            <td className="border px-1 py-2">
+                                                              {(() => {
+                                                                const prices = quote.quote_price.split(",");
+                                                                const plans = quote.old_plan.split(",");
+                                                                return plans.map((plan, index) => (
+                                                                  <span key={index} className="line-through bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600">
+                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                  </span>
+                                                                ));
+                                                              })()}
+                                                            </td>
+                                                          </tr>
+                                                        )}
 
+                                                        {/* Current Quote Price Row */}
+                                                        {quote.quote_status != 2 && (
+                                                          <tr className="border-b">
+                                                            <td className="border px-1 py-2">
+                                                              <strong>Quote Price</strong>
+                                                            </td>
+                                                            <td className="border px-1 py-2">
+                                                              {(() => {
+                                                                const prices = quote.quote_price.split(",");
+                                                                const plans = quote.plan.split(",");
+                                                                return plans.map((plan, index) => (
+                                                                  <span 
+                                                                    key={index} 
+                                                                    className={`${quote.discount_price != null ? 'line-through' : ''} bg-red-100 px-2 py-1 rounded mr-2`}
+                                                                  >
+                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                  </span>
+                                                                ));
+                                                              })()}
+                                                            </td>
+                                                          </tr>
+                                                        )}
+
+                                                        {/* Discounted Price Row */}
+                                                        {quote.discount_price && (
+                                                          <tr className="border-b">
+                                                            <td className="border px-1 py-2">
+                                                              <strong>Discounted Price</strong>
+                                                            </td>
+                                                            <td className="border px-1 py-2">
+                                                              {(() => {
+                                                                const prices = quote.discount_price.split(",");
+                                                                const plans = quote.plan.split(",");
+                                                                return plans.map((plan, index) => (
+                                                                  <span key={index} className="silver px-1 py-1 f-12 rounded mr-1">
+                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
+                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                  </span>
+                                                                ));
+                                                              })()}
+                                                            </td>
+                                                          </tr>
+                                                        )}
+
+                                                        {/* Final Price Row */}
+                                                        {quote.final_price && (
+                                                          <tr>
+                                                            <td className="border px-1 py-2">
+                                                              <strong>Final Price</strong>
+                                                            </td>
+                                                            <td className="border px-1 py-2">
+                                                              {(() => {
+                                                                const prices = quote.final_price.split(",");
+                                                                const plans = quote.plan.split(",");
+                                                                return plans.map((plan, index) => (
+                                                                  <span key={index} className="gold px-1 py-1 f-12 rounded mr-1">
+                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                  </span>
+                                                                ));
+                                                              })()}
+                                                            </td>
+                                                          </tr>
+                                                        )}
+                                                      </tbody>
+                                                    </table>
+                                                    {quote.user_comments && (
+                                                        <p className="text-gray-600 text-sm mt-3">
+                                                          <strong>Admin Comments:</strong> {quote.user_comments}
                                                         </p>
                                                       )}
-
-                                                    {quote.discount_price && (
-                                                      <p className='my-1 p-2 '>
-                                                        <div>
-                                                          <strong>
-                                                            Discounted Price
-                                                          </strong>{" "}
-                                                        </div>
-                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
-                                                        {(() => {
-                                                          const prices =
-                                                            quote.discount_price.split(
-                                                              ","
-                                                            ); // Split quote_price into an array
-                                                          const plans =
-                                                            quote.plan.split(
-                                                              ","
-                                                            ); // Split plan into an array
-                                                          return plans.map(
-                                                            (plan, index) => (
-                                                              <span
-                                                                key={index}
-                                                                className="silver px-1 py-1 f-12 rounded mr-1"
-                                                              >
-                                                                <strong>
-                                                                  {plan}{" "}
-                                                                </strong>
-                                                                :{" "}
-                                                                {quote.currency ==
-                                                                  "Other"
-                                                                  ? quote.other_currency
-                                                                  : quote.currency}{" "}
-                                                                {prices[
-                                                                  index
-                                                                ] ?? 0}
-                                                                {index <
-                                                                  plans.length -
-                                                                  1 && ", "}
-                                                                {quote.mp_price === plan && " (MP Price)"}
-                                                              </span>
-                                                            )
-                                                          );
-                                                        })()}
-                                                        </div>
-                                                      </p>
-                                                    )}
-                                                    {quote.final_price && (
-                                                      <p className='my-1 p-2 '>
-                                                        <div>
-                                                          <strong>
-                                                            Final Price
-                                                          </strong>{" "}
-                                                        </div>
-                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
-                                                        {(() => {
-                                                          const prices =
-                                                            quote.final_price.split(
-                                                              ","
-                                                            ); // Split quote_price into an array
-                                                          const plans =
-                                                            quote.plan.split(
-                                                              ","
-                                                            ); // Split plan into an array
-                                                          return plans.map(
-                                                            (plan, index) => (
-                                                              <span
-                                                                key={index}
-                                                                className=" px-1 py-1 rounded mr-1 gold "
-                                                                style={{
-                                                                  fontSize: "12px"
-                                                                }}
-                                                              >
-                                                                <strong>
-                                                                  {plan}{" "}
-                                                                </strong>
-                                                                :{" "}
-                                                                {quote.currency ==
-                                                                  "Other"
-                                                                  ? quote.other_currency
-                                                                  : quote.currency}{" "}
-                                                                {
-                                                                  prices[
-                                                                  index
-                                                                  ]
-                                                                }
-                                                                {index <
-                                                                  plans.length -
-                                                                  1 && ", "}
-                                                                {quote.mp_price === plan && " (MP Price)"}
-                                                              </span>
-                                                            )
-                                                          );
-                                                        })()}
-                                                        </div>
-                                                      </p>
-                                                    )}
-                                                    {quote.user_comments && (
-                                                      <p className='mt-3'>
-                                                        <div>
-                                                          <strong
-                                                            style={{
-                                                            }}
-                                                          >
-                                                            Admin Comments
-                                                          </strong>{" "}
-                                                        </div>
-                                                        {quote.user_comments}
-                                                      </p>
-                                                    )}
                                                     {quote.quote_time && (
                                                       <div className='flex items-center justify-end'>
                                                         <p className='text-gray-500 tenpx'>

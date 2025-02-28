@@ -34,7 +34,6 @@ import {
   BadgeDollarSign,
   Share2,
   Copy,
-
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import AddTags from "./AddTags";
@@ -773,14 +772,16 @@ const AskForScopeAdmin = ({
           )}
           {isFeasabilityCompleted && isFeasabilityCompleted != null && (
             <p
-              className={`cursor-help text-xs flex items-center mx-2 px-2 py-1 rounded ${isFeasabilityCompleted.feasability_status === "Pending"
+              className={`cursor-help text-xs flex items-center mx-2 px-2 py-1 rounded ${
+                isFeasabilityCompleted.feasability_status === "Pending"
                   ? "bg-orange-100 text-orange-500"
                   : "bg-green-100 text-green-600"
-                }`}
-              title={`${isFeasabilityCompleted.feasability_status === "Pending"
+              }`}
+              title={`${
+                isFeasabilityCompleted.feasability_status === "Pending"
                   ? "Feasibility is Pending for his RefId"
                   : "Feasibility has been completed for this RefId"
-                }`}
+              }`}
             >
               Feasibility{" "}
               {isFeasabilityCompleted.feasability_status == "Pending" ? (
@@ -884,14 +885,18 @@ const AskForScopeAdmin = ({
                             {quote.quoteid}
                             <button
                               onClick={() => {
-
                                 navigator.clipboard
                                   .writeText(quote.quoteid)
                                   .then(() => {
-                                    toast.success("QuoteID copied to clipboard!");
+                                    toast.success(
+                                      "QuoteID copied to clipboard!"
+                                    );
                                   })
                                   .catch((err) => {
-                                    console.error("Failed to copy QuoteID:", err);
+                                    console.error(
+                                      "Failed to copy QuoteID:",
+                                      err
+                                    );
                                   });
                               }}
                               className="flex items-center justify-center btn  btn-sm mr-1"
@@ -927,23 +932,23 @@ const AskForScopeAdmin = ({
                               quote.quote_status == 0
                                 ? "text-red-600" // Pending - Red
                                 : quote.quote_status == 1
-                                  ? "text-green-600" // Submitted - Green
-                                  : quote.quote_status == 2
-                                    ? "text-yellow-600" // Discount Requested - Yellow
-                                    : "text-gray-600" // Default - Gray for Unknown
+                                ? "text-green-600" // Submitted - Green
+                                : quote.quote_status == 2
+                                ? "text-yellow-600" // Discount Requested - Yellow
+                                : "text-gray-600" // Default - Gray for Unknown
                             }
                           >
                             {quote.quote_status == 0 &&
-                              quote.submittedtoadmin == "false"
+                            quote.submittedtoadmin == "false"
                               ? "Pending at User"
                               : quote.quote_status == 0 &&
                                 quote.submittedtoadmin == "true"
-                                ? "Pending at Admin"
-                                : quote.quote_status == 1
-                                  ? "Submitted"
-                                  : quote.quote_status == 2
-                                    ? "Discount Requested"
-                                    : "Unknown"}
+                              ? "Pending at Admin"
+                              : quote.quote_status == 1
+                              ? "Submitted"
+                              : quote.quote_status == 2
+                              ? "Discount Requested"
+                              : "Unknown"}
                           </span>
                           {quote.isfeasability == 1 &&
                             quote.feasability_status == "Completed" && (
@@ -1021,7 +1026,6 @@ const AskForScopeAdmin = ({
                               >
                                 <UserRoundPlus size={14} className="" />
                               </button>
-
                             </div>
                           </>
                         </td>
@@ -1035,10 +1039,11 @@ const AskForScopeAdmin = ({
                               <div className="">
                                 <button
                                   onClick={() => handleTabButtonClick("scope")}
-                                  className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${scopeTabVisible
+                                  className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${
+                                    scopeTabVisible
                                       ? "btn-info focus-outline-none"
                                       : "btn-light"
-                                    } btn btn-sm  focus:outline-none`}
+                                  } btn btn-sm  focus:outline-none`}
                                 >
                                   Scope Details{" "}
                                   {scopeTabVisible ? (
@@ -1055,10 +1060,11 @@ const AskForScopeAdmin = ({
                                 </button>
                                 <button
                                   onClick={() => handleTabButtonClick("chat")}
-                                  className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${chatTabVisible
+                                  className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${
+                                    chatTabVisible
                                       ? "btn-info focus-outline-none"
                                       : "btn-light"
-                                    } btn btn-sm`}
+                                  } btn btn-sm`}
                                 >
                                   Communication Hub{" "}
                                   {chatTabVisible ? (
@@ -1076,10 +1082,11 @@ const AskForScopeAdmin = ({
                                 <button
                                   disabled={quote.isfeasability == 0}
                                   onClick={() => handleTabButtonClick("feas")}
-                                  className={`px-2 py-1 mr-1 f-12 inline-flex items-center ${feasTabVisible
+                                  className={`px-2 py-1 mr-1 f-12 inline-flex items-center ${
+                                    feasTabVisible
                                       ? "btn-info focus-outline-none"
                                       : "btn-light"
-                                    } btn btn-sm`}
+                                  } btn btn-sm`}
                                 >
                                   Feasibility{" "}
                                   {feasTabVisible ? (
@@ -1104,16 +1111,18 @@ const AskForScopeAdmin = ({
                             <div className="mx-2 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
                               {scopeTabVisible && (
                                 <div
-                                  className={`${fullScreenTab == "scope"
+                                  className={`${
+                                    fullScreenTab == "scope"
                                       ? "custom-modal"
                                       : colClass
-                                    }`}
+                                  }`}
                                 >
                                   <div
-                                    className={`${fullScreenTab == "scope"
+                                    className={`${
+                                      fullScreenTab == "scope"
                                         ? "custom-modal-content"
                                         : ""
-                                      }`}
+                                    }`}
                                   >
                                     <div className={`  pl-0`}>
                                       <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
@@ -1194,8 +1203,10 @@ const AskForScopeAdmin = ({
                                               {/* Tags Section */}
                                               {quote.tag_names && (
                                                 <div className="flex items-end  mb-3">
-                                                  <p className=''>
-                                                    <div className=''><strong>Tags</strong></div>
+                                                  <p className="">
+                                                    <div className="">
+                                                      <strong>Tags</strong>
+                                                    </div>
                                                     {quote.tag_names
                                                       .split(",")
                                                       .map((tag, index) => (
@@ -1209,19 +1220,25 @@ const AskForScopeAdmin = ({
                                                   </p>
                                                   {quote.tags_updated_time && (
                                                     <p className="text-gray-500 tenpx">
-                                                      {new Date(quote.tags_updated_time).toLocaleDateString('en-US', {
-                                                        day: 'numeric',
-                                                        month: 'short',
-                                                        year: 'numeric',
-                                                        hour: 'numeric',
-                                                        minute: '2-digit',
-                                                        hour12: true
-                                                      }).replace(',', ',')}
+                                                      {new Date(
+                                                        quote.tags_updated_time
+                                                      )
+                                                        .toLocaleDateString(
+                                                          "en-US",
+                                                          {
+                                                            day: "numeric",
+                                                            month: "short",
+                                                            year: "numeric",
+                                                            hour: "numeric",
+                                                            minute: "2-digit",
+                                                            hour12: true,
+                                                          }
+                                                        )
+                                                        .replace(",", ",")}
                                                     </p>
                                                   )}
                                                 </div>
                                               )}
-
 
                                               {/* Service Required & Plan Section */}
                                               {quote.service_name &&
@@ -1276,17 +1293,17 @@ const AskForScopeAdmin = ({
                                                     </p>
                                                     {quote.subject_area ===
                                                       "Other" && (
-                                                        <p className="text-muted">
-                                                          <div>
-                                                            <strong>
-                                                              Other Subject Area
-                                                            </strong>{" "}
-                                                          </div>
-                                                          {
-                                                            quote.other_subject_area
-                                                          }
-                                                        </p>
-                                                      )}
+                                                      <p className="text-muted">
+                                                        <div>
+                                                          <strong>
+                                                            Other Subject Area
+                                                          </strong>{" "}
+                                                        </div>
+                                                        {
+                                                          quote.other_subject_area
+                                                        }
+                                                      </p>
+                                                    )}
                                                   </>
                                                 )}
                                               </div>
@@ -1301,7 +1318,7 @@ const AskForScopeAdmin = ({
                                               </div>
                                               {quote.plan_comments &&
                                                 typeof quote.plan_comments ===
-                                                "string" &&
+                                                  "string" &&
                                                 quote.plan &&
                                                 Object.entries(
                                                   JSON.parse(
@@ -1352,7 +1369,7 @@ const AskForScopeAdmin = ({
                                                           {/* Word Count Section */}
                                                           {quote.word_counts &&
                                                             typeof quote.word_counts ===
-                                                            "string" &&
+                                                              "string" &&
                                                             Object.entries(
                                                               JSON.parse(
                                                                 quote.word_counts
@@ -1377,7 +1394,7 @@ const AskForScopeAdmin = ({
                                                                   wcIndex
                                                                 ) =>
                                                                   plan ===
-                                                                  planWordCount && (
+                                                                    planWordCount && (
                                                                     <div
                                                                       key={
                                                                         wcIndex
@@ -1442,42 +1459,83 @@ const AskForScopeAdmin = ({
                                                                   )
                                                               )}
 
-                                                          {plan === "Basic" && quote.basic_edited_time && (
-                                                            <p className="text-gray-500 mt-2 tenpx">
-                                                              {new Date(quote.basic_edited_time).toLocaleDateString('en-US', {
-                                                                day: 'numeric',
-                                                                month: 'short',
-                                                                year: 'numeric',
-                                                                hour: 'numeric',
-                                                                minute: '2-digit',
-                                                                hour12: true
-                                                              }).replace(',', ',')}
-                                                            </p>
-                                                          )}
-                                                          {plan === "Standard" && quote.standard_edited_time && (
-                                                            <p className="text-gray-500 mt-2 tenpx">
-                                                              {new Date(quote.standard_edited_time).toLocaleDateString('en-US', {
-                                                                day: 'numeric',
-                                                                month: 'short',
-                                                                year: 'numeric',
-                                                                hour: 'numeric',
-                                                                minute: '2-digit',
-                                                                hour12: true
-                                                              }).replace(',', ',')}
-                                                            </p>
-                                                          )}
-                                                          {plan === "Advanced" && quote.advanced_edited_time && (
-                                                            <p className="text-gray-500 mt-2 tenpx">
-                                                              {new Date(quote.advanced_edited_time).toLocaleDateString('en-US', {
-                                                                day: 'numeric',
-                                                                month: 'short',
-                                                                year: 'numeric',
-                                                                hour: 'numeric',
-                                                                minute: '2-digit',
-                                                                hour12: true
-                                                              }).replace(',', ',')}
-                                                            </p>
-                                                          )}
+                                                          {plan === "Basic" &&
+                                                            quote.basic_edited_time && (
+                                                              <p className="text-gray-500 mt-2 tenpx">
+                                                                {new Date(
+                                                                  quote.basic_edited_time
+                                                                )
+                                                                  .toLocaleDateString(
+                                                                    "en-US",
+                                                                    {
+                                                                      day: "numeric",
+                                                                      month:
+                                                                        "short",
+                                                                      year: "numeric",
+                                                                      hour: "numeric",
+                                                                      minute:
+                                                                        "2-digit",
+                                                                      hour12: true,
+                                                                    }
+                                                                  )
+                                                                  .replace(
+                                                                    ",",
+                                                                    ","
+                                                                  )}
+                                                              </p>
+                                                            )}
+                                                          {plan ===
+                                                            "Standard" &&
+                                                            quote.standard_edited_time && (
+                                                              <p className="text-gray-500 mt-2 tenpx">
+                                                                {new Date(
+                                                                  quote.standard_edited_time
+                                                                )
+                                                                  .toLocaleDateString(
+                                                                    "en-US",
+                                                                    {
+                                                                      day: "numeric",
+                                                                      month:
+                                                                        "short",
+                                                                      year: "numeric",
+                                                                      hour: "numeric",
+                                                                      minute:
+                                                                        "2-digit",
+                                                                      hour12: true,
+                                                                    }
+                                                                  )
+                                                                  .replace(
+                                                                    ",",
+                                                                    ","
+                                                                  )}
+                                                              </p>
+                                                            )}
+                                                          {plan ===
+                                                            "Advanced" &&
+                                                            quote.advanced_edited_time && (
+                                                              <p className="text-gray-500 mt-2 tenpx">
+                                                                {new Date(
+                                                                  quote.advanced_edited_time
+                                                                )
+                                                                  .toLocaleDateString(
+                                                                    "en-US",
+                                                                    {
+                                                                      day: "numeric",
+                                                                      month:
+                                                                        "short",
+                                                                      year: "numeric",
+                                                                      hour: "numeric",
+                                                                      minute:
+                                                                        "2-digit",
+                                                                      hour12: true,
+                                                                    }
+                                                                  )
+                                                                  .replace(
+                                                                    ",",
+                                                                    ","
+                                                                  )}
+                                                              </p>
+                                                            )}
                                                         </div>
                                                       </div>
                                                     )
@@ -1511,7 +1569,7 @@ const AskForScopeAdmin = ({
                                               )}
                                               {quote.relevant_file &&
                                                 quote.relevant_file.length >
-                                                0 && (
+                                                  0 && (
                                                   <div>
                                                     <strong>
                                                       Relevant Files:
@@ -1560,237 +1618,135 @@ const AskForScopeAdmin = ({
                                                 quote.quote_price &&
                                                 quote.plan && (
                                                   <div className="my-2 rounded border p-2">
-                                                    {quote.old_plan && quote.plan!= quote.old_plan && (
-                                                      <p className="text-gray-600 p-1 ">
-                                                        <strong>
-                                                          Quote Price For Old
-                                                          Plan:
-                                                        </strong>{" "}
-                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
-                                                        {(() => {
-                                                          const prices =
-                                                            quote.quote_price.split(
-                                                              ","
-                                                            ); // Split quote_price into an array
-                                                          const plans =
-                                                            quote.old_plan.split(
-                                                              ","
-                                                            ); // Split plan into an array
-                                                          return plans.map(
-                                                            (plan, index) => (
-                                                              <span
-                                                                key={index}
-                                                                className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500 f-12 mb-2 d-inline-block"
-                                                              >
-                                                                <strong>
-                                                                  {plan}{" "}
-                                                                </strong>
-                                                                :{" "}
-                                                                {quote.currency ==
-                                                                  "Other"
-                                                                  ? quote.other_currency
-                                                                  : quote.currency}{" "}
-                                                                {prices[index]
-                                                                  ? prices[
-                                                                  index
-                                                                  ]
-                                                                  : 0}
-                                                                {index <
-                                                                  plans.length -
-                                                                  1 && ", "}
-                                                                {quote.mp_price ===
-                                                                  plan &&
-                                                                  " (MP Price)"}
-                                                              </span>
-                                                            )
-                                                          );
-                                                        })()}
-                                                        </div>
-                                                      </p>
-                                                    )}
-                                                    {quote.quote_status !=
-                                                      2 && (
-                                                        <p className="my-1 p-2 ">
-                                                          <strong>
-                                                            Quote Price:
-                                                          </strong>{" "}
-                                                          <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
-                                                          {(() => {
-                                                            const prices =
-                                                              quote.quote_price.split(
-                                                                ","
-                                                              ); // Split quote_price into an array
-                                                            const plans =
-                                                              quote.plan.split(
-                                                                ","
-                                                              ); // Split plan into an array
-                                                            return plans.map(
-                                                              (plan, index) => (
-                                                                <span
-                                                                  key={index}
-                                                                  className={`${quote.discount_price !=
-                                                                      null
-                                                                      ? "line-through bg-red-200 p-1 rounded mr-1 f-12"
-                                                                      : "bg-red-200 px-1 py-1 rounded mr-1 f-12"
-                                                                    }`}
-                                                                >
-                                                                  <strong>
-                                                                    {plan}{" "}
-                                                                  </strong>
-                                                                  :{" "}
-                                                                  {quote.currency ==
-                                                                    "Other"
-                                                                    ? quote.other_currency
-                                                                    : quote.currency}{" "}
-                                                                  {prices[index]
-                                                                    ? prices[
-                                                                    index
-                                                                    ]
-                                                                    : 0}
-                                                                  {index <
-                                                                    plans.length -
-                                                                    1 && ", "}
-                                                                  {quote.mp_price ===
-                                                                    plan &&
-                                                                    " (MP Price)"}
-                                                                </span>
-                                                              )
-                                                            );
-                                                          })()}
-                                                          </div>
+                                                    <table className="w-full border-collapse " style={{fontSize: "12px"}}>
+                                                      <thead>
+                                                        <tr className="bg-gray-50">
+                                                          <th className="border px-3 py-2 text-left">Plan Type</th>
+                                                          <th className="border px-3 py-2 text-left">Price Details</th>
+                                                        </tr>
+                                                      </thead>
+                                                      <tbody>
+                                                        {/* Old Plan Price Row */}
+                                                        {quote.old_plan && quote.plan != quote.old_plan && (
+                                                          <tr className="border-b">
+                                                            <td className="border px-1 py-2">
+                                                              <strong>Old Plan Price</strong>
+                                                            </td>
+                                                            <td className="border px-1 py-2">
+                                                              {(() => {
+                                                                const prices = quote.quote_price.split(",");
+                                                                const plans = quote.old_plan.split(",");
+                                                                return plans.map((plan, index) => (
+                                                                  <span key={index} className="line-through bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600">
+                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                  </span>
+                                                                ));
+                                                              })()}
+                                                            </td>
+                                                          </tr>
+                                                        )}
+
+                                                        {/* Current Quote Price Row */}
+                                                        {quote.quote_status != 2 && (
+                                                          <tr className="border-b">
+                                                            <td className="border px-1 py-2">
+                                                              <strong>Quote Price</strong>
+                                                            </td>
+                                                            <td className="border px-1 py-2">
+                                                              {(() => {
+                                                                const prices = quote.quote_price.split(",");
+                                                                const plans = quote.plan.split(",");
+                                                                return plans.map((plan, index) => (
+                                                                  <span 
+                                                                    key={index} 
+                                                                    className={`${quote.discount_price != null ? 'line-through' : ''} bg-red-100 px-2 py-1 rounded mr-2`}
+                                                                  >
+                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                  </span>
+                                                                ));
+                                                              })()}
+                                                            </td>
+                                                          </tr>
+                                                        )}
+
+                                                        {/* Discounted Price Row */}
+                                                        {quote.discount_price && (
+                                                          <tr className="border-b">
+                                                            <td className="border px-1 py-2">
+                                                              <strong>Discounted Price</strong>
+                                                            </td>
+                                                            <td className="border px-1 py-2">
+                                                              {(() => {
+                                                                const prices = quote.discount_price.split(",");
+                                                                const plans = quote.plan.split(",");
+                                                                return plans.map((plan, index) => (
+                                                                  <span key={index} className="silver px-1 py-1 f-12 rounded mr-1">
+                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
+                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                  </span>
+                                                                ));
+                                                              })()}
+                                                            </td>
+                                                          </tr>
+                                                        )}
+
+                                                        {/* Final Price Row */}
+                                                        {quote.final_price && (
+                                                          <tr>
+                                                            <td className="border px-1 py-2">
+                                                              <strong>Final Price</strong>
+                                                            </td>
+                                                            <td className="border px-1 py-2">
+                                                              {(() => {
+                                                                const prices = quote.final_price.split(",");
+                                                                const plans = quote.plan.split(",");
+                                                                return plans.map((plan, index) => (
+                                                                  <span key={index} className="gold px-1 py-1 f-12 rounded mr-1">
+                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                  </span>
+                                                                ));
+                                                              })()}
+                                                            </td>
+                                                          </tr>
+                                                        )}
+                                                      </tbody>
+                                                    </table>
+
+                                                    {/* Edit Button and Comments Section */}
+                                                    <div className="mt-3">
+                                                      <div className="flex items-center mb-2">
+                                                        <span className="font-weight-bold">Edit Quote Price</span>
+                                                        {quote.quote_status == 1 && loopUserObject.id != "206" && (
+                                                          <button
+                                                            onClick={() => toggleEditingForm(quote)}
+                                                            className="btn btn-warning btn-sm px-1 text-white ml-2"
+                                                          >
+                                                            <Pencil size={8} className="text-white" />
+                                                          </button>
+                                                        )}
+                                                      </div>
+
+                                                      {quote.user_comments && (
+                                                        <p className="text-gray-600 text-sm">
+                                                          <strong>Admin Comments:</strong> {quote.user_comments}
                                                         </p>
                                                       )}
 
-                                                    {quote.discount_price && (
-                                                      <p className="my-1 p-2 ">
-                                                        <strong>
-                                                          Discounted Price:
-                                                        </strong>{" "}
-                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
-                                                        {(() => {
-                                                          const prices =
-                                                            quote.discount_price.split(
-                                                              ","
-                                                            ); // Split quote_price into an array
-                                                          const plans =
-                                                            quote.plan.split(
-                                                              ","
-                                                            ); // Split plan into an array
-                                                          return plans.map(
-                                                            (plan, index) => (
-                                                              <span
-                                                                key={index}
-                                                                className="silver px-1 py-1 f-12 rounded mr-1"
-                                                              >
-                                                                <strong>
-                                                                  {plan}{" "}
-                                                                </strong>
-                                                                :{" "}
-                                                                {quote.currency ==
-                                                                  "Other"
-                                                                  ? quote.other_currency
-                                                                  : quote.currency}{" "}
-                                                                {prices[
-                                                                  index
-                                                                ] ?? 0}
-                                                                {index <
-                                                                  plans.length -
-                                                                  1 && ", "}
-                                                                {quote.mp_price ===
-                                                                  plan &&
-                                                                  " (MP Price)"}
-                                                              </span>
-                                                            )
-                                                          );
-                                                        })()}
-                                                        </div>
-                                                      </p>
-                                                    )}
-                                                    {quote.final_price && (
-                                                      <p className="my-1 p-2 ">
-                                                        <strong>
-                                                          Final Price:
-                                                        </strong>{" "}
-                                                        <div className={`flex ${colClass == "col-md-4" ? "flex-col items-start justify-start space-y-1 " : "items-center "}  w-auto`}>
-                                                        {(() => {
-                                                          const prices =
-                                                            quote.final_price.split(
-                                                              ","
-                                                            ); // Split quote_price into an array
-                                                          const plans =
-                                                            quote.plan.split(
-                                                              ","
-                                                            ); // Split plan into an array
-                                                          return plans.map(
-                                                            (plan, index) => (
-                                                              <span
-                                                                key={index}
-                                                                className=" px-1 py-1 rounded mr-1 gold"
-                                                                style={{
-                                                                  fontSize: "12px"
-                                                                }}
-                                                              >
-                                                                <strong>
-                                                                  {plan}{" "}
-                                                                </strong>
-                                                                :{" "}
-                                                                {quote.currency ==
-                                                                  "Other"
-                                                                  ? quote.other_currency
-                                                                  : quote.currency}{" "}
-                                                                {prices[index]}
-                                                                {index <
-                                                                  plans.length -
-                                                                  1 && ", "}
-                                                              </span>
-                                                            )
-                                                          );
-                                                        })()}
-                                                        </div>
-                                                      </p>
-                                                    )}
-                                                    <p className="flex items-center">
-                                                      <span className="font-weight-bold">
-                                                        Edit Quote Price
-                                                      </span>
-                                                      {quote.quote_status ==
-                                                        1 &&
-                                                        loopUserObject.id !=
-                                                        "206" && (
-                                                          <button
-                                                            onClick={() => {
-                                                              toggleEditingForm(
-                                                                quote
-                                                              );
-                                                            }}
-                                                            className="btn btn-warning btn-sm px-1 text-white ml-2"
-                                                          >
-                                                            <Pencil size={8} className=" text-white " />
-                                                          </button>
-                                                        )}
-                                                    </p>
-                                                    {quote.user_comments && (
-                                                      <p className="mt-2">
-                                                        <strong style={{}}>
-                                                          Admin Comments:
-                                                        </strong>{" "}
-                                                        {quote.user_comments}
-                                                      </p>
-                                                    )}
-                                                    {quote.quote_time && (
-                                                            <div className='flex items-center justify-end'>
-                                                              <p className='text-gray-500 tenpx'>
-                                                              {new Date(quote.quote_time).toLocaleDateString('en-US', {
-                                                                day: 'numeric',
-                                                                month: 'short',
-                                                                year: 'numeric',
-                                                                hour: 'numeric',
-                                                                minute: '2-digit',
-                                                                hour12: true
-                                                              }).replace(',', ',')}
-                                                            </p>
-                                                          </div>
-                                                          )}
+                                                      {quote.quote_time && (
+                                                        <p className="text-gray-500 text-xs text-right mt-2">
+                                                          {new Date(quote.quote_time).toLocaleDateString("en-US", {
+                                                            day: "numeric",
+                                                            month: "short",
+                                                            year: "numeric",
+                                                            hour: "numeric",
+                                                            minute: "2-digit",
+                                                            hour12: true,
+                                                          }).replace(",", ",")}
+                                                        </p>
+                                                      )}
+                                                    </div>
                                                   </div>
                                                 )}
                                               {assignQuoteInfo &&
@@ -1807,7 +1763,7 @@ const AskForScopeAdmin = ({
                                                 assignQuoteInfo != false && (
                                                   <>
                                                     {assignQuoteInfo.status ===
-                                                      0 ? (
+                                                    0 ? (
                                                       <>
                                                         <p>
                                                           <strong>
@@ -1855,13 +1811,13 @@ const AskForScopeAdmin = ({
                                                           </strong>{" "}
                                                           {new Date(
                                                             assignQuoteInfo.user_submitted_date *
-                                                            1000
+                                                              1000
                                                           ).toLocaleDateString(
                                                             "en-GB"
                                                           )}
                                                           {new Date(
                                                             assignQuoteInfo.user_submitted_date *
-                                                            1000
+                                                              1000
                                                           ).toLocaleTimeString(
                                                             "en-GB",
                                                             {
@@ -1884,7 +1840,7 @@ const AskForScopeAdmin = ({
                                                             Comments:
                                                           </strong>{" "}
                                                           {assignQuoteInfo.user_comments !=
-                                                            ""
+                                                          ""
                                                             ? assignQuoteInfo.user_comments
                                                             : assignQuoteInfo.admin_comments}
                                                         </p>
@@ -1892,97 +1848,97 @@ const AskForScopeAdmin = ({
                                                     )}
                                                     {assignQuoteInfo.status ==
                                                       1 && (
-                                                        <form
-                                                          name="edit_price_form"
-                                                          id="edit_price_form"
-                                                          className="form-horizontal"
-                                                        >
-                                                          <div className="box-body">
-                                                            <input
-                                                              type="hidden"
-                                                              name="task_id"
-                                                              id="task_id"
-                                                              value={
-                                                                assignQuoteInfo.id
-                                                              }
-                                                            />
-                                                            <input
-                                                              type="hidden"
-                                                              name="quoteid"
-                                                              id="quoteid"
-                                                              value={
-                                                                assignQuoteInfo.quote_id
-                                                              }
-                                                            />
-                                                            <div className="form-group">
-                                                              <label className="col-sm-12 control-label">
-                                                                Quote Price (INR)
-                                                              </label>
-                                                              <div className="col-sm-12">
-                                                                <input
-                                                                  type="text"
-                                                                  className="form-control"
-                                                                  id="quote_price"
-                                                                  name="quote_price"
-                                                                  value={
-                                                                    quotePrice ||
-                                                                    assignQuoteInfo?.quote_price ||
-                                                                    ""
-                                                                  }
-                                                                  placeholder="Quote Price"
-                                                                  onChange={(e) =>
-                                                                    setQuotePrice(
-                                                                      e.target
-                                                                        .value
-                                                                    )
-                                                                  }
-                                                                />
-                                                              </div>
-                                                            </div>
-                                                            <div className="form-group">
-                                                              <label className="col-sm-3 control-label">
-                                                                Comments
-                                                              </label>
-                                                              <div className="col-sm-12">
-                                                                <textarea
-                                                                  className="form-control"
-                                                                  id="user_comments"
-                                                                  name="user_comments"
-                                                                  value={
-                                                                    userComments ||
-                                                                    assignQuoteInfo?.user_comments ||
-                                                                    assignQuoteInfo?.admin_comments ||
-                                                                    ""
-                                                                  }
-                                                                  onChange={(e) =>
-                                                                    setUserComments(
-                                                                      e.target
-                                                                        .value
-                                                                    )
-                                                                  }
-                                                                />
-                                                              </div>
+                                                      <form
+                                                        name="edit_price_form"
+                                                        id="edit_price_form"
+                                                        className="form-horizontal"
+                                                      >
+                                                        <div className="box-body">
+                                                          <input
+                                                            type="hidden"
+                                                            name="task_id"
+                                                            id="task_id"
+                                                            value={
+                                                              assignQuoteInfo.id
+                                                            }
+                                                          />
+                                                          <input
+                                                            type="hidden"
+                                                            name="quoteid"
+                                                            id="quoteid"
+                                                            value={
+                                                              assignQuoteInfo.quote_id
+                                                            }
+                                                          />
+                                                          <div className="form-group">
+                                                            <label className="col-sm-12 control-label">
+                                                              Quote Price (INR)
+                                                            </label>
+                                                            <div className="col-sm-12">
+                                                              <input
+                                                                type="text"
+                                                                className="form-control"
+                                                                id="quote_price"
+                                                                name="quote_price"
+                                                                value={
+                                                                  quotePrice ||
+                                                                  assignQuoteInfo?.quote_price ||
+                                                                  ""
+                                                                }
+                                                                placeholder="Quote Price"
+                                                                onChange={(e) =>
+                                                                  setQuotePrice(
+                                                                    e.target
+                                                                      .value
+                                                                  )
+                                                                }
+                                                              />
                                                             </div>
                                                           </div>
+                                                          <div className="form-group">
+                                                            <label className="col-sm-3 control-label">
+                                                              Comments
+                                                            </label>
+                                                            <div className="col-sm-12">
+                                                              <textarea
+                                                                className="form-control"
+                                                                id="user_comments"
+                                                                name="user_comments"
+                                                                value={
+                                                                  userComments ||
+                                                                  assignQuoteInfo?.user_comments ||
+                                                                  assignQuoteInfo?.admin_comments ||
+                                                                  ""
+                                                                }
+                                                                onChange={(e) =>
+                                                                  setUserComments(
+                                                                    e.target
+                                                                      .value
+                                                                  )
+                                                                }
+                                                              />
+                                                            </div>
+                                                          </div>
+                                                        </div>
 
-                                                          <div className="modal-footer tabb">
-                                                            <span id="load_btn">
-                                                              <button
-                                                                type="button"
-                                                                className="btn"
-                                                                onClick={() =>
-                                                                  updatePriceQuote()
-                                                                }
-                                                                disabled={
-                                                                  priceLoading
-                                                                }
-                                                              >
-                                                                Confirm
-                                                              </button>
-                                                            </span>
-                                                          </div>
-                                                        </form>
-                                                      )}
+                                                        <div className="modal-footer tabb">
+                                                          <span id="load_btn">
+                                                            <button
+                                                              type="button"
+                                                              className="btn"
+                                                              onClick={() =>
+                                                                updatePriceQuote()
+                                                              }
+                                                              disabled={
+                                                                priceLoading
+                                                              }
+                                                            >
+                                                              Confirm
+                                                            </button>
+                                                          </span>
+                                                        </div>
+                                                      </form>
+                                                    )}
                                                   </>
                                                 )}
                                             </div>
@@ -1991,13 +1947,20 @@ const AskForScopeAdmin = ({
                                                 <div className="ptp-get-amt mb-3">
                                                   <div className="d-flex justify-between align-items-start mb-2">
                                                     <p className="text-sm">
-                                                      <strong>PTP Details</strong>
+                                                      <strong>
+                                                        PTP Details
+                                                      </strong>
                                                     </p>
                                                     <div>
-                                                      {quote.ptp === "Yes" && quote.ptp_amount &&
-                                                        quote.ptp_amount != 0 && (
+                                                      {quote.ptp === "Yes" &&
+                                                        quote.ptp_amount &&
+                                                        quote.ptp_amount !=
+                                                          0 && (
                                                           <p className="bg-white flex items-center justify-center text-green-600 p-1 rounded">
-                                                            <BadgeDollarSign size={10} className="mr-1" />
+                                                            <BadgeDollarSign
+                                                              size={10}
+                                                              className="mr-1"
+                                                            />
                                                             <strong className="mr-1">
                                                               PTP Amount :
                                                             </strong>{" "}
@@ -2009,17 +1972,15 @@ const AskForScopeAdmin = ({
                                                     </div>
                                                   </div>
                                                   <div className="space-y-1 text-gray-600">
-
-
                                                     {quote.ptp_comments !==
                                                       "" && (
-                                                        <p>
-                                                          <strong>
-                                                            PTP Comments :
-                                                          </strong>{" "}
-                                                          {quote.ptp_comments}
-                                                        </p>
-                                                      )}
+                                                      <p>
+                                                        <strong>
+                                                          PTP Comments :
+                                                        </strong>{" "}
+                                                        {quote.ptp_comments}
+                                                      </p>
+                                                    )}
                                                     {quote.ptp_file != null && (
                                                       <p className="flex items-center gap-1">
                                                         <strong>
@@ -2040,19 +2001,27 @@ const AskForScopeAdmin = ({
                                                       </p>
                                                     )}
                                                     {quote.ptp_time && (
-                                                        <div className='flex items-center justify-end'>
-                                                          <p className='text-gray-500 tenpx'>
-                                                            {new Date(quote.ptp_time).toLocaleDateString('en-US', {
-                                                              day: 'numeric',
-                                                              month: 'short',
-                                                              year: 'numeric',
-                                                              hour: 'numeric',
-                                                        minute: '2-digit',
-                                                        hour12: true
-                                                            }).replace(',', ',')}
-                                                          </p>
-                                                        </div>
-                                                      )}
+                                                      <div className="flex items-center justify-end">
+                                                        <p className="text-gray-500 tenpx">
+                                                          {new Date(
+                                                            quote.ptp_time
+                                                          )
+                                                            .toLocaleDateString(
+                                                              "en-US",
+                                                              {
+                                                                day: "numeric",
+                                                                month: "short",
+                                                                year: "numeric",
+                                                                hour: "numeric",
+                                                                minute:
+                                                                  "2-digit",
+                                                                hour12: true,
+                                                              }
+                                                            )
+                                                            .replace(",", ",")}
+                                                        </p>
+                                                      </div>
+                                                    )}
                                                   </div>
                                                 </div>
                                               </div>
@@ -2060,7 +2029,7 @@ const AskForScopeAdmin = ({
                                             <div className="row mt-0 mx-1">
                                               {quote.quote_status != 1 &&
                                                 quote.submittedtoadmin ==
-                                                "true" &&
+                                                  "true" &&
                                                 loopUserObject.id != "206" && (
                                                   <>
                                                     <div className="nav-tabs-custom tabb p-3 shadow-0">
@@ -2069,11 +2038,9 @@ const AskForScopeAdmin = ({
                                                           Submit Price
                                                         </li>
                                                       </ul>
+                                                      
                                                       <div className="tab-content p-0 mt-2">
-                                                        <div
-                                                          className="tab-pane active"
-                                                          id="tab_2"
-                                                        >
+                                                        <div className="tab-pane active" id="tab_2">
                                                           <form
                                                             method="post"
                                                             name="submitQuoteForm"
@@ -2094,180 +2061,81 @@ const AskForScopeAdmin = ({
                                                                 quote.quoteid
                                                               }
                                                             />
+                                                            
                                                             <div className="box-body p-0 f-12">
-                                                              <div className="row">
-                                                                {[
-                                                                  "Basic",
-                                                                  "Standard",
-                                                                  "Advanced",
-                                                                ].map(
-                                                                  (
-                                                                    plan,
-                                                                    index
-                                                                  ) => (
-                                                                    <div
-                                                                      className={` ${scopeTabVisible &&
-                                                                          !chatTabVisible &&
-                                                                          !feasTabVisible
-                                                                          ? "col-md-4"
-                                                                          : "col-md-12"
-                                                                        } form-group`}
-                                                                      key={
-                                                                        index
-                                                                      }
-                                                                    >
-                                                                      <div className="flex justify-between items-center mb-2">
-                                                                        <label
-                                                                          htmlFor={`amount_${plan}`}
-                                                                          className="control-label mb-0"
-                                                                        >
-                                                                          Amount
-                                                                          for{" "}
-                                                                          <strong>
-                                                                            {
-                                                                              plan
-                                                                            }{" "}
-                                                                            (
-                                                                            {quote.currency ===
-                                                                              "Other"
-                                                                              ? quote.other_currency
-                                                                              : quote.currency}
-                                                                            )
-                                                                          </strong>
+                                                              <table className="w-full border-collapse">
+                                                                <thead>
+                                                                  <tr>
+                                                                    <th className="border px-4 py-2">Plan</th>
+                                                                    <th className="border px-4 py-2">Amount</th>
+                                                                    <th className="border px-4 py-2">MP Price</th>
+                                                                  </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                  {["Basic", "Standard", "Advanced"].map((plan, index) => (
+                                                                    <tr key={index}>
+                                                                      <td className="border px-4 py-2">
+                                                                        <label htmlFor={`amount_${plan}`} className="mb-0">
+                                                                          {plan} ({quote.currency === "Other" ? quote.other_currency : quote.currency})
                                                                         </label>
-                                                                        <div className="flex items-center">
-                                                                          <input
-                                                                            type="checkbox"
-                                                                            className="nh-1 nw-1"
-                                                                            id={`mp_${plan}`}
-                                                                            name={`mp_${plan}`}
-                                                                            checked={
-                                                                              selectedMP ===
-                                                                              plan
-                                                                            }
-                                                                            onChange={() =>
-                                                                              handleMPChange(
-                                                                                plan
-                                                                              )
-                                                                            }
-                                                                          />
-                                                                          <label
-                                                                            style={{
-                                                                              fontSize:
-                                                                                "10px",
-                                                                            }}
-                                                                            htmlFor={`mp_${plan}`}
-                                                                            className="ml-1 mb-0"
-                                                                          >
-                                                                            Mark
-                                                                            as
-                                                                            MP
-                                                                            Price
-                                                                          </label>
-                                                                        </div>
-                                                                      </div>
-                                                                      <div className="">
+                                                                      </td>
+                                                                      <td className="border px-4 py-2">
                                                                         <input
                                                                           type="text"
                                                                           name={`amount_${plan}`}
                                                                           id={`amount_${plan}`}
-                                                                          className="form-control form-conotrol-sm"
-                                                                          value={
-                                                                            amounts[
-                                                                            plan
-                                                                            ] ||
-                                                                            (quote.quote_status == 2 ? 
-                                                                              quote.quote_price.split(',')[
-                                                                                plan === 'Basic' ? 0 : 
-                                                                                plan === 'Standard' ? 1 : 2
-                                                                              ] : 
-                                                                              ""
-                                                                            )
-                                                                          } // Default to empty if no amount is set
-                                                                          required={
-                                                                            quote.plan &&
-                                                                            quote.plan
-                                                                              .split(
-                                                                                ","
-                                                                              )
-                                                                              .includes(
-                                                                                plan
-                                                                              )
-                                                                          } // Required only if the plan is included in quote.plan
-                                                                          disabled={
-                                                                            !quote.plan ||
-                                                                            !quote.plan
-                                                                              .split(
-                                                                                ","
-                                                                              )
-                                                                              .includes(
-                                                                                plan
-                                                                              )
-                                                                          } // Disable if the plan is not in quote.plan
-                                                                          onChange={(
-                                                                            e
-                                                                          ) =>
-                                                                            handleAmountChange(
-                                                                              e,
-                                                                              plan
-                                                                            )
-                                                                          }
+                                                                          className="form-control form-control-sm"
+                                                                          value={amounts[plan] || (quote.quote_status == 2 
+                                                                            ? quote.quote_price.split(",")[plan === "Basic" ? 0 : plan === "Standard" ? 1 : 2]
+                                                                            : "")}
+                                                                          required={quote.plan && quote.plan.split(",").includes(plan)}
+                                                                          disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
+                                                                          onChange={(e) => handleAmountChange(e, plan)}
                                                                         />
-                                                                        <div
-                                                                          className="error"
-                                                                          id={`amountError_${plan}`}
-                                                                        ></div>
-                                                                      </div>
-                                                                    </div>
-                                                                  )
-                                                                )}
+                                                                        <div className="error" id={`amountError_${plan}`}></div>
+                                                                      </td>
+                                                                      <td className="border px-4 py-2 text-center">
+                                                                        <input
+                                                                          type="checkbox"
+                                                                          className="nh-1 nw-1"
+                                                                          id={`mp_${plan}`}
+                                                                          name={`mp_${plan}`}
+                                                                          checked={selectedMP === plan}
+                                                                          onChange={() => handleMPChange(plan)}
+                                                                        />
+                                                                      </td>
+                                                                    </tr>
+                                                                  ))}
+                                                                </tbody>
+                                                              </table>
 
-                                                                <div className="form-group col-sm-12">
-                                                                  <div className="mt-2">
-                                                                    <textarea
-                                                                      name="comment"
-                                                                      id="comment"
-                                                                      placeholder="Comments"
-                                                                      className="form-control form-conotrol-sm"
-                                                                      value={
-                                                                        comment
-                                                                      }
-                                                                      onChange={(
-                                                                        e
-                                                                      ) =>
-                                                                        setComment(
-                                                                          e
-                                                                            .target
-                                                                            .value
-                                                                        )
-                                                                      }
-                                                                    ></textarea>
-                                                                    <div
-                                                                      className="error"
-                                                                      id="commentError"
-                                                                    ></div>
-                                                                  </div>
-                                                                </div>
+                                                              <div className="mt-4">
+                                                                <textarea
+                                                                  name="comment"
+                                                                  id="comment"
+                                                                  placeholder="Comments"
+                                                                  className="form-control form-control-sm w-full"
+                                                                  value={comment}
+                                                                  onChange={(e) => setComment(e.target.value)}
+                                                                ></textarea>
+                                                                <div className="error" id="commentError"></div>
                                                               </div>
-                                                            </div>
-                                                            <div className="">
-                                                              <input
-                                                                type="button"
-                                                                name="priceSubmitted"
-                                                                className="btn pull-right btn-success btn-sm f-12"
-                                                                value="Submit"
-                                                                onClick={() =>
-                                                                  PriceSubmitValidate(
+
+                                                              <div className="mt-4 text-right">
+                                                                <input
+                                                                  type="button"
+                                                                  name="priceSubmitted"
+                                                                  className="btn btn-success btn-sm f-12"
+                                                                  value="Submit"
+                                                                  onClick={() => PriceSubmitValidate(
                                                                     quote.assign_id,
                                                                     quote.quoteid,
                                                                     quote.plan,
                                                                     quote.user_id
-                                                                  )
-                                                                }
-                                                                disabled={
-                                                                  priceLoading
-                                                                }
-                                                              />
+                                                                  )}
+                                                                  disabled={priceLoading}
+                                                                />
+                                                              </div>
                                                             </div>
                                                           </form>
                                                         </div>
@@ -2292,16 +2160,18 @@ const AskForScopeAdmin = ({
                               )}
                               {chatTabVisible && (
                                 <div
-                                  className={`${fullScreenTab == "chat"
+                                  className={`${
+                                    fullScreenTab == "chat"
                                       ? "custom-modal"
                                       : colClass
-                                    } p-0`}
+                                  } p-0`}
                                 >
                                   <div
-                                    className={`${fullScreenTab == "chat"
+                                    className={`${
+                                      fullScreenTab == "chat"
                                         ? "custom-modal-content"
                                         : ""
-                                      } `}
+                                    } `}
                                   >
                                     <div className={`p-0 `}>
                                       <Chat
@@ -2329,16 +2199,18 @@ const AskForScopeAdmin = ({
 
                               {feasTabVisible && quote.isfeasability == 1 && (
                                 <div
-                                  className={`${fullScreenTab == "feas"
+                                  className={`${
+                                    fullScreenTab == "feas"
                                       ? "custom-modal"
                                       : colClass
-                                    }`}
+                                  }`}
                                 >
                                   <div
-                                    className={`${fullScreenTab == "feas"
+                                    className={`${
+                                      fullScreenTab == "feas"
                                         ? "custom-modal-content"
                                         : ""
-                                      } `}
+                                    } `}
                                   >
                                     <div className={` pr-0`}>
                                       <div className="bg-white">
@@ -2352,25 +2224,25 @@ const AskForScopeAdmin = ({
                                                 <div className="flex items-center">
                                                   {quote.feasability_status ==
                                                     "Completed" && (
-                                                      <>
-                                                        {loopUserObject.id !=
-                                                          "206" && (
-                                                            <button
-                                                              onClick={() => {
-                                                                toggleFeasCommentsEditingForm(
-                                                                  quote
-                                                                );
-                                                              }}
-                                                              className="btn btn-sm btn-primary flex items-center p-1 mr-2"
-                                                            >
-                                                              <Pencil
-                                                                className=""
-                                                                size={12}
-                                                              />
-                                                            </button>
-                                                          )}
-                                                      </>
-                                                    )}
+                                                    <>
+                                                      {loopUserObject.id !=
+                                                        "206" && (
+                                                        <button
+                                                          onClick={() => {
+                                                            toggleFeasCommentsEditingForm(
+                                                              quote
+                                                            );
+                                                          }}
+                                                          className="btn btn-sm btn-primary flex items-center p-1 mr-2"
+                                                        >
+                                                          <Pencil
+                                                            className=""
+                                                            size={12}
+                                                          />
+                                                        </button>
+                                                      )}
+                                                    </>
+                                                  )}
                                                   <button className="">
                                                     {fullScreenTab == "feas" ? (
                                                       <Minimize2
@@ -2399,48 +2271,48 @@ const AskForScopeAdmin = ({
 
                                               {quote.feasability_status ==
                                                 "Completed" && (
-                                                  <>
-                                                    <div className="px-3 pt-3 pb-0">
-                                                      <p
-                                                        style={{
-                                                          textDecoration:
-                                                            "italic",
-                                                        }}
-                                                        className="italic px-0 f-12"
-                                                      >
-                                                        <strong>
-                                                          Feasibility Comments:
-                                                        </strong>
+                                                <>
+                                                  <div className="px-3 pt-3 pb-0">
+                                                    <p
+                                                      style={{
+                                                        textDecoration:
+                                                          "italic",
+                                                      }}
+                                                      className="italic px-0 f-12"
+                                                    >
+                                                      <strong>
+                                                        Feasibility Comments:
+                                                      </strong>
 
-                                                        <span
-                                                          className="mt-2"
-                                                          dangerouslySetInnerHTML={{
-                                                            __html:
-                                                              quote.feasability_comments,
-                                                          }}
-                                                        />
+                                                      <span
+                                                        className="mt-2"
+                                                        dangerouslySetInnerHTML={{
+                                                          __html:
+                                                            quote.feasability_comments,
+                                                        }}
+                                                      />
+                                                    </p>
+                                                    {quote.feas_file_name && (
+                                                      <p className="flex items-center">
+                                                        Feasibility Attachment :{" "}
+                                                        <a
+                                                          href={
+                                                            "https://apacvault.com/public/feasabilityFiles/" +
+                                                            quote.feas_file_name
+                                                          }
+                                                          target="_blank"
+                                                          className="text-blue-600 flex items-center ml-2"
+                                                        >
+                                                          <Paperclip
+                                                            size={13}
+                                                          />{" "}
+                                                          View File
+                                                        </a>
                                                       </p>
-                                                      {quote.feas_file_name && (
-                                                        <p className="flex items-center">
-                                                          Feasibility Attachment :{" "}
-                                                          <a
-                                                            href={
-                                                              "https://apacvault.com/public/feasabilityFiles/" +
-                                                              quote.feas_file_name
-                                                            }
-                                                            target="_blank"
-                                                            className="text-blue-600 flex items-center ml-2"
-                                                          >
-                                                            <Paperclip
-                                                              size={13}
-                                                            />{" "}
-                                                            View File
-                                                          </a>
-                                                        </p>
-                                                      )}
-                                                    </div>
-                                                  </>
-                                                )}
+                                                    )}
+                                                  </div>
+                                                </>
+                                              )}
                                             </>
                                           )}
                                           <div className="p-3">

@@ -157,7 +157,6 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
                     </button>
                 </div>
                 <div className="nav-tabs-custom tabb">
-
                     <div className="tab-content">
                         <div className="tab-pane active" id="tab_2">
                             <form
@@ -168,71 +167,57 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
                             >
                                 <input type="hidden" name="ref_id" value={quote.assign_id} />
                                 <input type="hidden" name="quote_id" value={quote.quoteid} />
-                                <div className="box-body p-2">
-                                    <div className="row">
-                                        {["Basic", "Standard", "Advanced"].map((plan, index) => (
-                                            <div className="form-group col-4" key={index}>
-                                                <label
-                                                    htmlFor={`amount_${plan}`}
-                                                    className="control-label"
-                                                >
-                                                    Amount for{" "}
-                                                    <strong>
-                                                        {plan} (
-                                                        {quote.currency === "Other"
-                                                            ? quote.other_currency
-                                                            : quote.currency}
-                                                        )
-                                                    </strong>
-                                                </label>
-                                                <div className="">
-                                                    <input
-                                                        type="text"
-                                                        name={`amount_${plan}`}
-                                                        id={`amount_${plan}`}
-                                                        className="form-control"
-                                                        value={amounts[plan] || ""} // Default to empty if no amount is set
-                                                        required={
-                                                            quote.plan &&
-                                                            quote.plan.split(",").includes(plan)
-                                                        } // Required only if the plan is included in quote.plan
-                                                        disabled={
-                                                            !quote.plan ||
-                                                            !quote.plan.split(",").includes(plan)
-                                                        } // Disable if the plan is not in quote.plan
-                                                        onChange={(e) => handleAmountChange(e, plan)}
-                                                    />
-                                                    <div className="error" id={`amountError_${plan}`}></div>
-                                                </div>
-                                            </div>
-                                        ))}
+                                <div className="box-body p-2 f-12">
+                                    <table className="w-full border-collapse">
+                                        <thead>
+                                            <tr>
+                                                <th className="border px-4 py-2">Plan</th>
+                                                <th className="border px-4 py-2">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {["Basic", "Standard", "Advanced"].map((plan, index) => (
+                                                <tr key={index}>
+                                                    <td className="border px-4 py-2">
+                                                        <label htmlFor={`amount_${plan}`} className="mb-0">
+                                                            {plan} ({quote.currency === "Other" ? quote.other_currency : quote.currency})
+                                                        </label>
+                                                    </td>
+                                                    <td className="border px-4 py-2">
+                                                        <input
+                                                            type="text"
+                                                            name={`amount_${plan}`}
+                                                            id={`amount_${plan}`}
+                                                            className="form-control form-control-sm"
+                                                            value={amounts[plan] || ""}
+                                                            required={quote.plan && quote.plan.split(",").includes(plan)}
+                                                            disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
+                                                            onChange={(e) => handleAmountChange(e, plan)}
+                                                        />
+                                                        <div className="error" id={`amountError_${plan}`}></div>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
 
-                                        <div className="form-group col-sm-12">
-                                            <label
-                                                htmlFor="comment"
-                                                className="col-sm-3 control-label"
-                                            >
-                                                Comments
-                                            </label>
-                                            <div className="">
-                                                <textarea
-                                                    name="comment"
-                                                    id="comment"
-                                                    placeholder="Comments"
-                                                    className="form-control"
-                                                    value={comment}
-                                                    onChange={(e) => setComment(e.target.value)}
-                                                ></textarea>
-                                                <div className="error" id="commentError"></div>
-                                            </div>
-                                        </div>
+                                    <div className="mt-4">
+                                        <textarea
+                                            name="comment"
+                                            id="comment"
+                                            placeholder="Comments"
+                                            className="form-control form-control-sm w-full"
+                                            value={comment}
+                                            onChange={(e) => setComment(e.target.value)}
+                                        ></textarea>
+                                        <div className="error" id="commentError"></div>
                                     </div>
                                 </div>
-                                <div className="box-footer p-2">
+                                <div className="box-footer p-2 mt-4 text-right">
                                     <input
                                         type="button"
                                         name="priceSubmitted"
-                                        className="btn pull-right btn-success"
+                                        className="btn btn-success btn-sm"
                                         value="Submit"
                                         onClick={handleSubmit}
                                         disabled={priceLoading}
