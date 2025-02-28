@@ -925,72 +925,101 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                     )}
                                                                                                     {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                                                         <>
-                                                                                                            {quote.old_plan && (
-                                                                                                                <p className='text-gray-600 mb-2'>
-                                                                                                                    <div><strong>Quote Price For Old Plan</strong></div>{' '}
-                                                                                                                    {(() => {
-                                                                                                                        const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                                                                        const plans = quote.old_plan.split(','); // Split plan into an array
-                                                                                                                        return plans.map((plan, index) => (
-                                                                                                                            <span key={index} className="line-through bg-gray-200 p-1 mx-1 rounded border border-gray-500 f-12 mb-2 d-inline-block">
-                                                                                                                                <div><strong>{plan} </strong></div> {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                                                                {index < plans.length - 1 && ', '}
-                                                                                                                                {quote.mp_price === plan && " (MP Price)"}
-                                                                                                                            </span>
-                                                                                                                        ));
-                                                                                                                    })()}
-                                                                                                                </p>
+                                                                                                            <table className="w-full border-collapse " style={{ fontSize: "12px" }}>
+                                                                                                                <thead>
+                                                                                                                    <tr className="bg-gray-50">
+                                                                                                                        <th className="border px-3 py-2 text-left">Plan Type</th>
+                                                                                                                        <th className="border px-3 py-2 text-left">Price Details</th>
+                                                                                                                    </tr>
+                                                                                                                </thead>
+                                                                                                                <tbody>
+                                                                                                                    {/* Old Plan Price Row */}
+                                                                                                                    {quote.old_plan && quote.plan != quote.old_plan && (
+                                                                                                                        <tr className="border-b">
+                                                                                                                            <td className="border px-1 py-2">
+                                                                                                                                <strong>Old Plan Price</strong>
+                                                                                                                            </td>
+                                                                                                                            <td className="border px-1 py-2">
+                                                                                                                                {(() => {
+                                                                                                                                    const prices = quote.quote_price.split(",");
+                                                                                                                                    const plans = quote.old_plan.split(",");
+                                                                                                                                    return plans.map((plan, index) => (
+                                                                                                                                        <span key={index} className="line-through bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600">
+                                                                                                                                            {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                                                                            {quote.mp_price === plan && " (MP Price)"}
+                                                                                                                                        </span>
+                                                                                                                                    ));
+                                                                                                                                })()}
+                                                                                                                            </td>
+                                                                                                                        </tr>
+                                                                                                                    )}
 
-                                                                                                            )}
-                                                                                                            {quote.quote_status != 2 && (
-                                                                                                                <p className='mb-2'>
-                                                                                                                    <div><strong>Quote Price</strong></div>{' '}
-                                                                                                                    {(() => {
-                                                                                                                        const prices = quote.quote_price.split(','); // Split quote_price into an array
-                                                                                                                        const plans = quote.plan.split(','); // Split plan into an array
-                                                                                                                        return plans.map((plan, index) => (
-                                                                                                                            <span key={index} className={`${quote.discount_price != null ? "line-through bg-red-200 p-1 rounded mr-1 f-12" : ""}`}>
-                                                                                                                                <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                                                                                {index < plans.length - 1 && ', '}
-                                                                                                                                {quote.mp_price === plan && " (MP Price)"}
-                                                                                                                            </span>
-                                                                                                                        ));
-                                                                                                                    })()}
-                                                                                                                </p>
-                                                                                                            )}
+                                                                                                                    {/* Current Quote Price Row */}
+                                                                                                                    {quote.quote_status != 2 && (
+                                                                                                                        <tr className="border-b">
+                                                                                                                            <td className="border px-1 py-2">
+                                                                                                                                <strong>Quote Price</strong>
+                                                                                                                            </td>
+                                                                                                                            <td className="border px-1 py-2">
+                                                                                                                                {(() => {
+                                                                                                                                    const prices = quote.quote_price.split(",");
+                                                                                                                                    const plans = quote.plan.split(",");
+                                                                                                                                    return plans.map((plan, index) => (
+                                                                                                                                        <span
+                                                                                                                                            key={index}
+                                                                                                                                            className={`${quote.discount_price != null ? 'line-through' : ''} bg-red-100 px-2 py-1 rounded mr-2`}
+                                                                                                                                        >
+                                                                                                                                            {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                                                                                            {quote.mp_price === plan && " (MP Price)"}
+                                                                                                                                        </span>
+                                                                                                                                    ));
+                                                                                                                                })()}
+                                                                                                                            </td>
+                                                                                                                        </tr>
+                                                                                                                    )}
 
-                                                                                                            {quote.discount_price && (
-                                                                                                                <p>
-                                                                                                                    <div><strong>Discounted Price</strong></div>{' '}
-                                                                                                                    {(() => {
-                                                                                                                        const prices = quote.discount_price.split(','); // Split quote_price into an array
-                                                                                                                        const plans = quote.plan.split(','); // Split plan into an array
-                                                                                                                        return plans.map((plan, index) => (
-                                                                                                                            <span key={index} className='silver px-1 py-1 f-12 rounded mr-1'>
-                                                                                                                                <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
-                                                                                                                                {index < plans.length - 1 && ', '}
-                                                                                                                                {quote.mp_price === plan && " (MP Price)"}
-                                                                                                                            </span>
-                                                                                                                        ));
-                                                                                                                    })()}
-                                                                                                                </p>
-                                                                                                            )}
-                                                                                                            {quote.final_price && (
-                                                                                                                <p >
-                                                                                                                    <div><strong>Final Price</strong></div>{' '}
-                                                                                                                    {(() => {
-                                                                                                                        const prices = quote.final_price.split(','); // Split quote_price into an array
-                                                                                                                        const plans = quote.plan.split(','); // Split plan into an array
-                                                                                                                        return plans.map((plan, index) => (
-                                                                                                                            <span key={index} className=' px-1 py-2 rounded mr-1 gold'>
-                                                                                                                                <strong>{plan} </strong>: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
-                                                                                                                                {index < plans.length - 1 && ', '}
-                                                                                                                                {quote.mp_price === plan && " (MP Price)"}
-                                                                                                                            </span>
-                                                                                                                        ));
-                                                                                                                    })()}
-                                                                                                                </p>
-                                                                                                            )}
+                                                                                                                    {/* Discounted Price Row */}
+                                                                                                                    {quote.discount_price && (
+                                                                                                                        <tr className="border-b">
+                                                                                                                            <td className="border px-1 py-2">
+                                                                                                                                <strong>Discounted Price</strong>
+                                                                                                                            </td>
+                                                                                                                            <td className="border px-1 py-2">
+                                                                                                                                {(() => {
+                                                                                                                                    const prices = quote.discount_price.split(",");
+                                                                                                                                    const plans = quote.plan.split(",");
+                                                                                                                                    return plans.map((plan, index) => (
+                                                                                                                                        <span key={index} className="silver px-1 py-1 f-12 rounded mr-1">
+                                                                                                                                            {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
+                                                                                                                                            {quote.mp_price === plan && " (MP Price)"}
+                                                                                                                                        </span>
+                                                                                                                                    ));
+                                                                                                                                })()}
+                                                                                                                            </td>
+                                                                                                                        </tr>
+                                                                                                                    )}
+
+                                                                                                                    {/* Final Price Row */}
+                                                                                                                    {quote.final_price && (
+                                                                                                                        <tr>
+                                                                                                                            <td className="border px-1 py-2">
+                                                                                                                                <strong>Final Price</strong>
+                                                                                                                            </td>
+                                                                                                                            <td className="border px-1 py-2">
+                                                                                                                                {(() => {
+                                                                                                                                    const prices = quote.final_price.split(",");
+                                                                                                                                    const plans = quote.plan.split(",");
+                                                                                                                                    return plans.map((plan, index) => (
+                                                                                                                                        <span key={index} className="gold px-1 py-1 f-12 rounded mr-1">
+                                                                                                                                            {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                                                                                        </span>
+                                                                                                                                    ));
+                                                                                                                                })()}
+                                                                                                                            </td>
+                                                                                                                        </tr>
+                                                                                                                    )}
+                                                                                                                </tbody>
+                                                                                                            </table>
                                                                                                             {quote.user_comments && (
                                                                                                                 <p><div><strong style={{ textDecoration: "underline" }}>Admin Comments</strong></div> {quote.user_comments}</p>
                                                                                                             )}
