@@ -1314,12 +1314,16 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             <td className="border px-1 py-2">
                                                               <strong>Old Plan Price</strong>
                                                             </td>
-                                                            <td className="border px-1 py-2">
+                                                            <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`} 
+                                                            
+                                                            >
                                                               {(() => {
                                                                 const prices = quote.quote_price.split(",");
                                                                 const plans = quote.old_plan.split(",");
                                                                 return plans.map((plan, index) => (
-                                                                  <span key={index} className="line-through bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600">
+                                                                  <span key={index} className="line-through bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600"
+                                                                  style={{textAlign: colClass == 'col-md-4' ? 'left' : '', width: colClass == 'col-md-4' ? '90%' : ''}}
+                                                                  >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}
                                                                   </span>
@@ -1335,7 +1339,9 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             <td className="border px-1 py-2">
                                                               <strong>Quote Price</strong>
                                                             </td>
-                                                            <td className="border px-1 py-2">
+                                                            <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`} 
+                                                            
+                                                            >
                                                               {(() => {
                                                                 const prices = quote.quote_price.split(",");
                                                                 const plans = quote.plan.split(",");
@@ -1343,6 +1349,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                   <span 
                                                                     key={index} 
                                                                     className={`${quote.discount_price != null ? 'line-through' : ''} ruby px-1 py-1 f-12 rounded mr-1`}
+                                                                    style={{textAlign: colClass == 'col-md-4' ? 'left' : '', width: colClass == 'col-md-4' ? '90%' : ''}}
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}
@@ -1359,12 +1366,16 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             <td className="border px-1 py-2">
                                                               <strong>Discounted Price</strong>
                                                             </td>
-                                                            <td className="border px-1 py-2">
+                                                            <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`} 
+                                                            
+                                                            >
                                                               {(() => {
                                                                 const prices = quote.discount_price.split(",");
                                                                 const plans = quote.plan.split(",");
                                                                 return plans.map((plan, index) => (
-                                                                  <span key={index} className="silver px-1 py-1 f-12 rounded mr-1">
+                                                                  <span key={index} className="silver px-1 py-1 f-12 rounded mr-1"
+                                                                  style={{textAlign: colClass == 'col-md-4' ? 'left' : '', width: colClass == 'col-md-4' ? '90%' : ''}}
+                                                                  >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}
                                                                   </span>
@@ -1380,12 +1391,16 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             <td className="border px-1 py-2">
                                                               <strong>Final Price</strong>
                                                             </td>
-                                                            <td className="border px-1 py-2">
+                                                            <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`} 
+                                                            
+                                                            >
                                                               {(() => {
                                                                 const prices = quote.final_price.split(",");
                                                                 const plans = quote.plan.split(",");
                                                                 return plans.map((plan, index) => (
-                                                                  <span key={index} className="gold px-1 py-1 f-12 rounded mr-1">
+                                                                  <span key={index} className="gold px-1 py-1 f-12 rounded mr-1"
+                                                                  style={{textAlign: colClass == 'col-md-4' ? 'left' : '', width: colClass == 'col-md-4' ? '90%' : ''}}
+                                                                  >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
                                                                   </span>
                                                                 ));
