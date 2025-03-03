@@ -1023,6 +1023,23 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                             {quote.user_comments && (
                                                                                                                 <p><div><strong style={{ textDecoration: "underline" }}>Admin Comments</strong></div> {quote.user_comments}</p>
                                                                                                             )}
+                                                                                                            {quote.new_comments && (() => {
+                                                                                                                let parsedComments;
+                                                                                                                try {
+                                                                                                                    parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                                                                } catch (error) {
+                                                                                                                    console.error("Invalid JSON format:", error);
+                                                                                                                    return null; // Return nothing if parsing fails
+                                                                                                                }
+
+                                                                                                                return Object.entries(parsedComments)
+                                                                                                                    .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                                                                    .map(([key, value]) => (
+                                                                                                                        <p key={key} className="text-gray-600 text-sm">
+                                                                                                                            <strong>Comments for {key}:</strong> {value}
+                                                                                                                        </p>
+                                                                                                                    ));
+                                                                                                            })()}
                                                                                                         </>
                                                                                                     )}
 
