@@ -1428,12 +1428,12 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                       return Object.entries(parsedComments)
                                                         .filter(([_, value]) => value.trim() !== "") // Remove empty values
                                                         .map(([key, value]) => (
-                                                          <p key={key} className="text-gray-600 text-sm">
-                                                            <strong>Comments for {key}:</strong> {value}
+                                                          <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                            <span>Comments for {key}:</span> {value}
                                                           </p>
                                                         ));
                                                     })()}
-                                                    
+
                                                     {quote.quote_time && (
                                                       <div className='flex items-center justify-end'>
                                                         <p className='text-gray-500 tenpx'>
