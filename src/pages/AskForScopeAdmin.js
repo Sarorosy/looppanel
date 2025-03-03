@@ -1660,7 +1660,7 @@ const AskForScopeAdmin = ({
                                                             </td>
                                                           </tr>
                                                         )}
-                                                        { quote.plan && quote.quote_status == 2 && (
+                                                        {quote.plan && quote.quote_status == 2 && (
                                                           <tr className="border-b">
                                                             <td className="border px-1 py-2">
                                                               <strong>Plan Price</strong>
@@ -1787,7 +1787,7 @@ const AskForScopeAdmin = ({
                                                         return Object.entries(parsedComments)
                                                           .filter(([_, value]) => value.trim() !== "") // Remove empty values
                                                           .map(([key, value]) => (
-                                                            <p key={key} className="text-black text-sm" style={{fontSize: "11px"}}>
+                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
                                                               <span>Comments for {key}:</span> {value}
                                                             </p>
                                                           ));
@@ -2125,21 +2125,21 @@ const AskForScopeAdmin = ({
                                                               <table className="w-full border-collapse">
                                                                 <thead>
                                                                   <tr>
-                                                                    <th className="border px-4 py-2">Plan</th>
-                                                                    <th className="border px-4 py-2">Amount</th>
-                                                                    <th className="border px-4 py-2">MP Price</th>
-                                                                    <th className="border px-4 py-2">Comment</th>
+                                                                    <th className="border px-2 py-2 w-1/6">Plan</th>
+                                                                    <th className="border px-2 py-2 w-1/6">Amount</th>
+                                                                    <th className="border px-2 py-2 w-1/6 text-center">MP</th>
+                                                                    <th className="border px-2 py-2 w-auto">Comment</th>
                                                                   </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                   {["Basic", "Standard", "Advanced"].map((plan, index) => (
                                                                     <tr key={index}>
-                                                                      <td className="border px-4 py-2">
+                                                                      <td className="border px-2 py-2 w-1/6" style={{ fontSize: "10px" }}>
                                                                         <label htmlFor={`amount_${plan}`} className="mb-0">
                                                                           {plan} ({quote.currency === "Other" ? quote.other_currency : quote.currency})
                                                                         </label>
                                                                       </td>
-                                                                      <td className="border px-4 py-2">
+                                                                      <td className="border px-1 py-2">
                                                                         <input
                                                                           type="text"
                                                                           name={`amount_${plan}`}
@@ -2154,7 +2154,7 @@ const AskForScopeAdmin = ({
                                                                         />
                                                                         <div className="error" id={`amountError_${plan}`}></div>
                                                                       </td>
-                                                                      <td className="border px-4 py-2 text-center">
+                                                                      <td className="border py-2 text-center" style={{ width: "50px" }}>
                                                                         <input
                                                                           type="checkbox"
                                                                           className="nh-1 nw-1"
@@ -2165,7 +2165,7 @@ const AskForScopeAdmin = ({
                                                                           disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
                                                                         />
                                                                       </td>
-                                                                      <td className="border px-4 py-2 text-center">
+                                                                      <td className="border px-4 py-2 text-center w-auto">
                                                                         <button
                                                                           type="button"
                                                                           className="btn btn-info px-1 py-1 flex items-center justify-between"
@@ -2173,37 +2173,35 @@ const AskForScopeAdmin = ({
                                                                           disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
                                                                           onClick={() => toggleCommentBox(plan)}
                                                                         >
-                                                                          {showComments[plan] ? "Hide" : "Add"} <MessageCirclePlus size={18} className="ml-2" />
+                                                                          {showComments[plan] ? "Hide" : "Add"} comment for {plan}
                                                                         </button>
+                                                                        <div className="mt-1">
+                                                                          {["Basic", "Standard", "Advanced"].map(
+                                                                            (p) =>
+                                                                              showComments[p] && p == plan && (
+                                                                                <div key={p} className="mt-1">
+                                                                                  <textarea
+                                                                                    name={`comment_${p}`}
+                                                                                    id={`comment_${p}`}
+                                                                                    placeholder={`Comments for ${p}`}
+                                                                                    className="form-control form-control-sm w-full"
+                                                                                    value={comments[p]}
+                                                                                    onChange={(e) =>
+                                                                                      setComments({ ...comments, [p]: e.target.value })
+                                                                                    }
+                                                                                  ></textarea>
+                                                                                  <div className="error" id={`commentError_${p}`}></div>
+                                                                                </div>
+                                                                              )
+                                                                          )}
+                                                                        </div>
                                                                       </td>
                                                                     </tr>
                                                                   ))}
                                                                 </tbody>
                                                               </table>
 
-                                                              <div className="mt-4">
-                                                                {["Basic", "Standard", "Advanced"].map(
-                                                                  (plan) =>
-                                                                    showComments[plan] && (
-                                                                      <div key={plan} className="mt-3">
-                                                                        <label htmlFor={`comment_${plan}`} className="font-bold">
-                                                                          Comment for {plan}
-                                                                        </label>
-                                                                        <textarea
-                                                                          name={`comment_${plan}`}
-                                                                          id={`comment_${plan}`}
-                                                                          placeholder={`Comments for ${plan}`}
-                                                                          className="form-control form-control-sm w-full"
-                                                                          value={comments[plan]}
-                                                                          onChange={(e) =>
-                                                                            setComments({ ...comments, [plan]: e.target.value })
-                                                                          }
-                                                                        ></textarea>
-                                                                        <div className="error" id={`commentError_${plan}`}></div>
-                                                                      </div>
-                                                                    )
-                                                                )}
-                                                              </div>
+
 
 
                                                               <div className="mt-4 text-right">
