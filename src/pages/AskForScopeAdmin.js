@@ -35,6 +35,7 @@ import {
   Share2,
   Copy,
   MessageCirclePlus,
+  MessageCircleX,
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import AddTags from "./AddTags";
@@ -1642,7 +1643,7 @@ const AskForScopeAdmin = ({
                                                         {quote.old_plan && quote.plan != quote.old_plan && (
                                                           <tr className="border-b">
                                                             <td className="border px-1 py-2">
-                                                              <strong>Old Plan Price</strong>
+                                                              <strong>Initial Plan Price</strong>
                                                             </td>
                                                             <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`}>
                                                               {(() => {
@@ -1685,7 +1686,7 @@ const AskForScopeAdmin = ({
                                                         )}
 
                                                         {/* Current Quote Price Row */}
-                                                        {quote.quote_status != 2 && (
+                                                        {quote.quote_status != 2 && !quote.discount_price &&(
                                                           <tr className="border-b">
                                                             <td className="border px-1 py-2">
                                                               <strong>Quote Price</strong>
@@ -2126,8 +2127,7 @@ const AskForScopeAdmin = ({
                                                                 <thead>
                                                                   <tr>
                                                                     <th className="border px-2 py-2 w-1/6">Plan</th>
-                                                                    <th className="border px-2 py-2 w-1/6">Amount</th>
-                                                                    <th className="border px-2 py-2 w-1/6 text-center">MP</th>
+                                                                    <th className="border px-2 py-2 w-2/6">Amount</th>
                                                                     <th className="border px-2 py-2 w-auto">Comment</th>
                                                                   </tr>
                                                                 </thead>
@@ -2139,7 +2139,8 @@ const AskForScopeAdmin = ({
                                                                           {plan} ({quote.currency === "Other" ? quote.other_currency : quote.currency})
                                                                         </label>
                                                                       </td>
-                                                                      <td className="border px-1 py-2">
+                                                                      <td className="border px-1 py-2 ">
+                                                                        <div className="flex items-start">
                                                                         <input
                                                                           type="text"
                                                                           name={`amount_${plan}`}
@@ -2153,29 +2154,33 @@ const AskForScopeAdmin = ({
                                                                           onChange={(e) => handleAmountChange(e, plan)}
                                                                         />
                                                                         <div className="error" id={`amountError_${plan}`}></div>
-                                                                      </td>
-                                                                      <td className="border py-2 text-center" style={{ width: "50px" }}>
+
                                                                         <input
                                                                           type="checkbox"
-                                                                          className="nh-1 nw-1"
+                                                                          className="nh-1 nw-1 mx-1"
                                                                           id={`mp_${plan}`}
                                                                           name={`mp_${plan}`}
                                                                           checked={selectedMP === plan}
                                                                           onChange={() => handleMPChange(plan)}
                                                                           disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
                                                                         />
+                                                                        <label for={`mp_${plan}`} style={{fontSize : "8px"}}>MP</label>
+                                                                        </div>
                                                                       </td>
-                                                                      <td className="border px-4 py-2 text-center w-auto">
+                                                                      
+                                                                      <td className="border px-4 py-2 text-center w-auto ">
+                                                                        <div className="flex items-center">
                                                                         <button
                                                                           type="button"
-                                                                          className="btn btn-info px-1 py-1 flex items-center justify-between"
-                                                                          style={{ fontSize: "10px" }}
+                                                                          className={`btn  px-1 py-1 flex items-center justify-between ${showComments[plan] ? "btn-danger" : "btn-info"}`}
+                                                                          style={{ fontSize: "10px"}}
                                                                           disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
                                                                           onClick={() => toggleCommentBox(plan)}
                                                                         >
-                                                                          {showComments[plan] ? "Hide" : "Add"} comment for {plan}
+                                                                          {showComments[plan] ? <MessageCircleX size={18} /> : <MessageCirclePlus size={18} className="" />} 
                                                                         </button>
-                                                                        <div className="mt-1">
+
+                                                                        <div className="ml-0.5">
                                                                           {["Basic", "Standard", "Advanced"].map(
                                                                             (p) =>
                                                                               showComments[p] && p == plan && (
@@ -2194,6 +2199,7 @@ const AskForScopeAdmin = ({
                                                                                 </div>
                                                                               )
                                                                           )}
+                                                                        </div>
                                                                         </div>
                                                                       </td>
                                                                     </tr>

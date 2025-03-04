@@ -1312,7 +1312,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         {quote.old_plan && quote.plan != quote.old_plan && (
                                                           <tr className="border-b">
                                                             <td className="border px-1 py-2">
-                                                              <strong>Old Plan Price</strong>
+                                                              <strong>Initial Plan Price</strong>
                                                             </td>
                                                             <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`}
 
@@ -1358,7 +1358,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         )}
 
                                                         {/* Current Quote Price Row */}
-                                                        {quote.quote_status != 2 && (
+                                                        {quote.quote_status != 2 && !quote.discount_price && (
                                                           <tr className="border-b">
                                                             <td className="border px-1 py-2">
                                                               <strong>Quote Price</strong>

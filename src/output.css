@@ -764,6 +764,10 @@ video {
   margin-top: 1rem;
 }
 
+.ml-0\.5 {
+  margin-left: 0.125rem;
+}
+
 .block {
   display: block;
 }
@@ -862,6 +866,10 @@ video {
 
 .w-2\/3 {
   width: 66.666667%;
+}
+
+.w-2\/6 {
+  width: 33.333333%;
 }
 
 .w-20 {
@@ -1313,6 +1321,11 @@ video {
 .bg-yellow-500 {
   --tw-bg-opacity: 1;
   background-color: rgb(234 179 8 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[\#17a2b8\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(23 162 184 / var(--tw-bg-opacity, 1));
 }
 
 .bg-opacity-50 {
