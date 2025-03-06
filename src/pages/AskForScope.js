@@ -1319,7 +1319,6 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         <tr className="bg-gray-50">
                                                           <th className="border px-3 py-2 text-left">Plan Type</th>
                                                           <th className="border px-3 py-2 text-left">Price Details</th>
-                                                          <th className="border px-3 py-2 text-left">Comments</th>
                                                         </tr>
                                                       </thead>
                                                       <tbody>
@@ -1337,38 +1336,36 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 const plans = quote.old_plan.split(",");
                                                                 return plans.map((plan, index) => (
                                                                   <span key={index} className="line-through bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600"
-                                                                    style={{ textAlign: colClass == 'col-md-4' ? 'left' : '', width: colClass == 'col-md-4' ? '90%' : '' }}
+                                                                    style={{ textAlign: colClass == 'col-md-4' ? 'left' : 'center', width: colClass == 'col-md-4' ? '90%' : '' }}
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}
+
+                                                                    {quote.new_comments && (() => {
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
+
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
                                                             </td>
-                                                            <td className="border px-1 py-2" rowSpan={4}>
-                                                              {quote.new_comments && (() => {
-                                                                let parsedComments;
-                                                                try {
-                                                                  parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                                } catch (error) {
-                                                                  console.error("Invalid JSON format:", error);
-                                                                  return null; // Return nothing if parsing fails
-                                                                }
 
-                                                                return Object.entries(parsedComments)
-                                                                  .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                                  .map(([key, value]) => (
-                                                                    <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                                      <span> {key}:</span> {value}
-                                                                    </p>
-                                                                  ));
-                                                              })()}
-                                                              {quote.user_comments && (
-                                                                  <p className="text-gray-600 text-sm mt-3">
-                                                                    <strong>Admin Comments:</strong> {quote.user_comments}
-                                                                  </p>
-                                                                )}
-                                                            </td>
                                                           </tr>
                                                         )}
 
@@ -1389,37 +1386,33 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}
+
+                                                                    {quote.new_comments && (() => {
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
+
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
+
                                                             </td>
-                                                            {!quote.old_plan && (
-                                                              <td className="border px-1 py-2" rowSpan={4}>
-                                                                {quote.new_comments && (() => {
-                                                                  let parsedComments;
-                                                                  try {
-                                                                    parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                                  } catch (error) {
-                                                                    console.error("Invalid JSON format:", error);
-                                                                    return null; // Return nothing if parsing fails
-                                                                  }
 
-                                                                  return Object.entries(parsedComments)
-                                                                    .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                                    .map(([key, value]) => (
-                                                                      <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                                        <span> {key}:</span> {value}
-                                                                      </p>
-                                                                    ));
-                                                                })()}
-
-                                                                {quote.user_comments && (
-                                                                  <p className="text-gray-600 text-sm mt-3">
-                                                                    <strong>Admin Comments:</strong> {quote.user_comments}
-                                                                  </p>
-                                                                )}
-                                                              </td>
-                                                            )}
                                                           </tr>
                                                         )}
 
@@ -1443,37 +1436,31 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}
+                                                                    {quote.new_comments && (() => {
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
+
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
                                                             </td>
-                                                            {!quote.old_plan && (
-                                                              <td className="border px-1 py-2" rowSpan={4}>
-                                                                {quote.new_comments && (() => {
-                                                                  let parsedComments;
-                                                                  try {
-                                                                    parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                                  } catch (error) {
-                                                                    console.error("Invalid JSON format:", error);
-                                                                    return null; // Return nothing if parsing fails
-                                                                  }
 
-                                                                  return Object.entries(parsedComments)
-                                                                    .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                                    .map(([key, value]) => (
-                                                                      <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                                        <span> {key}:</span> {value}
-                                                                      </p>
-                                                                    ));
-                                                                })()}
-
-                                                                {quote.user_comments && (
-                                                                  <p className="text-gray-600 text-sm mt-3">
-                                                                    <strong>Admin Comments:</strong> {quote.user_comments}
-                                                                  </p>
-                                                                )}
-                                                              </td>
-                                                            )}
                                                           </tr>
                                                         )}
 
@@ -1495,38 +1482,33 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}
+
+                                                                    {quote.new_comments && (() => {
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
+
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
                                                             </td>
 
-                                                            {(!quote.old_plan || (quote.old_plan == quote.plan)) && (
-                                                              <td className="border px-1 py-2" rowSpan={4}>
-                                                                {quote.new_comments && (() => {
-                                                                  let parsedComments;
-                                                                  try {
-                                                                    parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                                  } catch (error) {
-                                                                    console.error("Invalid JSON format:", error);
-                                                                    return null; // Return nothing if parsing fails
-                                                                  }
 
-                                                                  return Object.entries(parsedComments)
-                                                                    .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                                    .map(([key, value]) => (
-                                                                      <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                                        <span> {key}:</span> {value}
-                                                                      </p>
-                                                                    ));
-                                                                })()}
-
-                                                                {quote.user_comments && (
-                                                                  <p className="text-gray-600 text-sm mt-3">
-                                                                    <strong>Admin Comments:</strong> {quote.user_comments}
-                                                                  </p>
-                                                                )}
-                                                              </td>
-                                                            )}
                                                           </tr>
                                                         )}
 
@@ -1547,6 +1529,26 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                     style={{ textAlign: colClass == 'col-md-4' ? 'left' : '', width: colClass == 'col-md-4' ? '90%' : '' }}
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
+                                                                    {quote.new_comments && (() => {
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
+
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
