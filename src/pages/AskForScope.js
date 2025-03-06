@@ -589,7 +589,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                   padding: "1px 6px",
                                 }}
                               >
-                                <Headset size={13} /> 
+                                <Headset size={13} />
                               </span>
                             )}
                             {quote.ownership_transferred == 1 && (
@@ -773,7 +773,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                               <Share2 size={14} className="" />
                             </button>
 
-                            
+
                           </div>
                         </td>
                       </tr>
@@ -1319,6 +1319,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         <tr className="bg-gray-50">
                                                           <th className="border px-3 py-2 text-left">Plan Type</th>
                                                           <th className="border px-3 py-2 text-left">Price Details</th>
+                                                          <th className="border px-3 py-2 text-left">Comments</th>
                                                         </tr>
                                                       </thead>
                                                       <tbody>
@@ -1328,7 +1329,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             <td className="border px-1 py-2">
                                                               <strong>Initial Plan Price</strong>
                                                             </td>
-                                                            <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`}
+                                                            <td className={`border px-1 py-2 flex flex-col space-y-1`}
 
                                                             >
                                                               {(() => {
@@ -1343,16 +1344,40 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                   </span>
                                                                 ));
                                                               })()}
+                                                            </td>
+                                                            <td className="border px-1 py-2" rowSpan={4}>
+                                                              {quote.new_comments && (() => {
+                                                                let parsedComments;
+                                                                try {
+                                                                  parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                } catch (error) {
+                                                                  console.error("Invalid JSON format:", error);
+                                                                  return null; // Return nothing if parsing fails
+                                                                }
+
+                                                                return Object.entries(parsedComments)
+                                                                  .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                  .map(([key, value]) => (
+                                                                    <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                                      <span> {key}:</span> {value}
+                                                                    </p>
+                                                                  ));
+                                                              })()}
+                                                              {quote.user_comments && (
+                                                                  <p className="text-gray-600 text-sm mt-3">
+                                                                    <strong>Admin Comments:</strong> {quote.user_comments}
+                                                                  </p>
+                                                                )}
                                                             </td>
                                                           </tr>
                                                         )}
 
-                                                        { quote.plan && quote.quote_status == 2 && (
+                                                        {quote.plan && quote.quote_status == 2 && !quote.discount_price && (
                                                           <tr className="border-b">
                                                             <td className="border px-1 py-2">
                                                               <strong>Plan Price</strong>
                                                             </td>
-                                                            <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`}
+                                                            <td className={`border px-1 py-2 flex flex-col space-y-1`}
 
                                                             >
                                                               {(() => {
@@ -1368,6 +1393,33 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 ));
                                                               })()}
                                                             </td>
+                                                            {!quote.old_plan && (
+                                                              <td className="border px-1 py-2" rowSpan={4}>
+                                                                {quote.new_comments && (() => {
+                                                                  let parsedComments;
+                                                                  try {
+                                                                    parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                  } catch (error) {
+                                                                    console.error("Invalid JSON format:", error);
+                                                                    return null; // Return nothing if parsing fails
+                                                                  }
+
+                                                                  return Object.entries(parsedComments)
+                                                                    .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                    .map(([key, value]) => (
+                                                                      <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                                        <span> {key}:</span> {value}
+                                                                      </p>
+                                                                    ));
+                                                                })()}
+
+                                                                {quote.user_comments && (
+                                                                  <p className="text-gray-600 text-sm mt-3">
+                                                                    <strong>Admin Comments:</strong> {quote.user_comments}
+                                                                  </p>
+                                                                )}
+                                                              </td>
+                                                            )}
                                                           </tr>
                                                         )}
 
@@ -1375,9 +1427,9 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         {quote.quote_status != 2 && !quote.discount_price && (
                                                           <tr className="border-b">
                                                             <td className="border px-1 py-2">
-                                                              <strong>Quote Price</strong>
+                                                              <strong>Quote Price </strong>
                                                             </td>
-                                                            <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`}
+                                                            <td className={`border px-1 py-2 flex flex-col space-y-1`}
 
                                                             >
                                                               {(() => {
@@ -1395,6 +1447,33 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 ));
                                                               })()}
                                                             </td>
+                                                            {!quote.old_plan && (
+                                                              <td className="border px-1 py-2" rowSpan={4}>
+                                                                {quote.new_comments && (() => {
+                                                                  let parsedComments;
+                                                                  try {
+                                                                    parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                  } catch (error) {
+                                                                    console.error("Invalid JSON format:", error);
+                                                                    return null; // Return nothing if parsing fails
+                                                                  }
+
+                                                                  return Object.entries(parsedComments)
+                                                                    .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                    .map(([key, value]) => (
+                                                                      <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                                        <span> {key}:</span> {value}
+                                                                      </p>
+                                                                    ));
+                                                                })()}
+
+                                                                {quote.user_comments && (
+                                                                  <p className="text-gray-600 text-sm mt-3">
+                                                                    <strong>Admin Comments:</strong> {quote.user_comments}
+                                                                  </p>
+                                                                )}
+                                                              </td>
+                                                            )}
                                                           </tr>
                                                         )}
 
@@ -1404,7 +1483,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             <td className="border px-1 py-2">
                                                               <strong>Discounted Price</strong>
                                                             </td>
-                                                            <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`}
+                                                            <td className={`border px-1 py-2 flex flex-col space-y-1`}
 
                                                             >
                                                               {(() => {
@@ -1420,6 +1499,34 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 ));
                                                               })()}
                                                             </td>
+
+                                                            {(!quote.old_plan || (quote.old_plan == quote.plan)) && (
+                                                              <td className="border px-1 py-2" rowSpan={4}>
+                                                                {quote.new_comments && (() => {
+                                                                  let parsedComments;
+                                                                  try {
+                                                                    parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                  } catch (error) {
+                                                                    console.error("Invalid JSON format:", error);
+                                                                    return null; // Return nothing if parsing fails
+                                                                  }
+
+                                                                  return Object.entries(parsedComments)
+                                                                    .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                    .map(([key, value]) => (
+                                                                      <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
+                                                                        <span> {key}:</span> {value}
+                                                                      </p>
+                                                                    ));
+                                                                })()}
+
+                                                                {quote.user_comments && (
+                                                                  <p className="text-gray-600 text-sm mt-3">
+                                                                    <strong>Admin Comments:</strong> {quote.user_comments}
+                                                                  </p>
+                                                                )}
+                                                              </td>
+                                                            )}
                                                           </tr>
                                                         )}
 
@@ -1429,7 +1536,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                             <td className="border px-1 py-2">
                                                               <strong>Final Price</strong>
                                                             </td>
-                                                            <td className={`border px-1 py-2 ${colClass == 'col-md-4' ? 'flex flex-col space-y-1' : ''}`}
+                                                            <td className={`border px-1 py-2 flex flex-col space-y-1`}
 
                                                             >
                                                               {(() => {
@@ -1448,29 +1555,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         )}
                                                       </tbody>
                                                     </table>
-                                                    {quote.user_comments && (
-                                                      <p className="text-gray-600 text-sm mt-3">
-                                                        <strong>Admin Comments:</strong> {quote.user_comments}
-                                                      </p>
-                                                    )}
 
-                                                    {quote.new_comments && (() => {
-                                                      let parsedComments;
-                                                      try {
-                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                      } catch (error) {
-                                                        console.error("Invalid JSON format:", error);
-                                                        return null; // Return nothing if parsing fails
-                                                      }
 
-                                                      return Object.entries(parsedComments)
-                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                        .map(([key, value]) => (
-                                                          <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                            <span>Comments for {key}:</span> {value}
-                                                          </p>
-                                                        ));
-                                                    })()}
 
                                                     {quote.quote_time && (
                                                       <div className='flex items-center justify-end'>
@@ -1533,7 +1619,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                   )}
                                               </div>
                                               <div>
-                                                
+
                                                 <CallRecordingPending
                                                   scopeDetails={quote}
                                                   quoteId={quote.quoteid}
@@ -1541,7 +1627,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                     fetchScopeDetails
                                                   }
                                                 />
-                                                
+
                                               </div>
 
                                               {quote.isfeasability == 1 && (

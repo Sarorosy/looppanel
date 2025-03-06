@@ -9,7 +9,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, ListIcon, FileQuestion, UserCircle, UserCheck } from 'lucide-react';
+import { RefreshCcw, Filter, ListIcon, FileQuestion, UserCircle, UserCheck, ArrowLeftRight } from 'lucide-react';
 import QueryDetails from './QueryDetails';
 import { AnimatePresence, motion } from 'framer-motion';
 import SummaryPage from './SummaryPage';
@@ -22,6 +22,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import { getSocket } from './Socket';
 import { io } from "socket.io-client";
+import TransferRequestsPageTl from './TransferRequstsPageTl';
 const socket = getSocket();
 
 const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquoteid }) => {
@@ -42,6 +43,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const [followingOpen, setFollowingOpen] = useState(false);
     const [feasPageOpen, setFeasPageOpen] = useState(false);
     const [tlPageOpen, setTlPageOpen] = useState(false);
+    const [transferPageOpen, setTransferPageOpen] = useState(false);
     const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0)
     const [followupCount, setFollowupCount] = useState(0)
     const navigate = useNavigate();
@@ -89,6 +91,9 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     };
     const handleTlButtonClick = (query) => {
         setTlPageOpen(true);
+    };
+    const handleTransferButtonClick = (query) => {
+        setTransferPageOpen(true);
     };
 
     const toggleFeasPage = () => {
@@ -409,7 +414,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
             <div className="mb-3 bg-white px-3 py-3 rounded aql">
                 <h1 className='text-xl font-bold mb-3'>Query History</h1>
                 <div className='flex items-center space-x-2 '>
-                    <div className="w-1/6">
+                    <div style={{width : "110px"}}>
                         <input
                             type="text"
                             className="form-control"
@@ -418,7 +423,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                             onChange={(e) => setRefId(e.target.value)}
                         />
                     </div>
-                    <div className="w-1/5">
+                    <div style={{width : "160px"}}>
                         <input
                             type="text"
                             className="form-control"
@@ -427,7 +432,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                             onChange={(e) => setKeyword(e.target.value)}
                         />
                     </div>
-                    <div className="w-1/5">
+                    <div style={{width : "170px"}}>
                         <select
                             id="user_id"
                             className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
@@ -443,7 +448,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                             ))}
                         </select>
                     </div>
-                    <div className="w-1/2 flex justify-content-end space-x-2 items-center">
+                    <div className=" flex justify-content-end space-x-2 items-center">
                         <label>&nbsp;</label>
                         <button className="gree text-white flex items-center" onClick={() => { fetchQuotes(false) }}>
                             <Filter size={12} />
@@ -464,6 +469,12 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                                 {followupCount}
                             </span>
                         </button>
+                        {loopuserObject.transferaccess == 1 && (
+                            <button className="bg-gray-200 flex items-center relative" onClick={handleTransferButtonClick} title='Transfer Requests'>
+                                <ArrowLeftRight size={15} />
+                                Transfer Requests
+                            </button>
+                        )}
                         {loopuserObject.tl == 1 && (
                             <button className="bg-gray-200 flex items-center relative" onClick={handleTlButtonClick} title='All Users Request'>
                                 <UserCircle size={15} />
@@ -539,6 +550,9 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                 )}
                 {tlPageOpen && (
                     <ManageTlQuery onClose={() => { setTlPageOpen(!tlPageOpen) }} />
+                )}
+                {transferPageOpen && (
+                    <TransferRequestsPageTl onClose={() => { setTransferPageOpen(!transferPageOpen) }} />
                 )}
             </AnimatePresence>
             
