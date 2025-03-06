@@ -1369,7 +1369,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                           </tr>
                                                         )}
 
-                                                        {quote.plan && quote.quote_status == 2 && !quote.discount_price && (
+                                                        {quote.plan && quote.quote_status == 2 && !quote.discount_price && (!quote.old_plan || (quote.plan == quote.old_plan)) && (
                                                           <tr className="border-b">
                                                             <td className="border px-1 py-2">
                                                               <strong>Plan Price</strong>
@@ -1382,7 +1382,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                 const plans = quote.old_plan.split(",");
                                                                 return plans.map((plan, index) => (
                                                                   <span key={index} className="line-through bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600"
-                                                                    style={{ textAlign: colClass == 'col-md-4' ? 'left' : '', width: colClass == 'col-md-4' ? '90%' : '' }}
+                                                                    style={{ textAlign: colClass == 'col-md-4' ? 'left' : 'center', width: colClass == 'col-md-4' ? '90%' : '' }}
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}
