@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -20,6 +20,7 @@ import ScopeLoader from './ScopeLoader';
 import { getSocket } from './Socket';
 import ReactTooltip, { Tooltip } from 'react-tooltip'
 import MergedHistoryComponentNew from "./MergedHistoryComponentNew";
+import CallRecordingPending from './CallRecordingPending';
 
 const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName, tlType, tagAccess }) => {
   const socket = getSocket();
@@ -580,6 +581,17 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                 Edited
                               </span>
                             )}
+                            {quote.callrecordingpending == 1 && (
+                              <span
+                                className="text-orange-600 rounded-full text-sm ml-2"
+                                style={{
+                                  fontSize: "11px",
+                                  padding: "1px 6px",
+                                }}
+                              >
+                                <Headset size={13} /> 
+                              </span>
+                            )}
                             {quote.ownership_transferred == 1 && (
                               <div className="relative group">
                                 <ArrowLeftRight
@@ -760,6 +772,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                             >
                               <Share2 size={14} className="" />
                             </button>
+
+                            
                           </div>
                         </td>
                       </tr>
@@ -1517,6 +1531,17 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                       }
                                                     />
                                                   )}
+                                              </div>
+                                              <div>
+                                                
+                                                <CallRecordingPending
+                                                  scopeDetails={quote}
+                                                  quoteId={quote.quoteid}
+                                                  after={
+                                                    fetchScopeDetails
+                                                  }
+                                                />
+                                                
                                               </div>
 
                                               {quote.isfeasability == 1 && (

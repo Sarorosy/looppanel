@@ -6,7 +6,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, ArrowLeftRight, BotOff, Share2 } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, ArrowLeftRight, BotOff, Share2, Headset } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -16,6 +16,7 @@ import TransferForm from './TransferForm';
 import { io } from "socket.io-client";
 import ScopeLoader from './ScopeLoader';
 import { getSocket } from './Socket';
+import CallRecordingPending from './CallRecordingPending';
 const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) => {
     const socket = getSocket();
     const [scopeDetails, setScopeDetails] = useState(null);
@@ -299,6 +300,17 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                         PTP
                                                     </span>
                                                 )}
+                                                {quote.callrecordingpending == 1 && (
+                                                    <span
+                                                        className="text-orange-600 rounded-full text-sm ml-2"
+                                                        style={{
+                                                            fontSize: "11px",
+                                                            padding: "1px 6px",
+                                                        }}
+                                                    >
+                                                        <Headset size={13} />
+                                                    </span>
+                                                )}
                                             </p>
                                             {quote.feasability_status == 'Pending' && (
                                                 <button onClick={toggleTransferForm} className='flex items-center mr-3  px-2 py-1 btn btn-outline-success f-14'>
@@ -457,6 +469,17 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                 </span>
                                             </p>
                                         )}
+                                        <div>
+
+                                            <CallRecordingPending
+                                                scopeDetails={quote}
+                                                quoteId={quote.quoteid}
+                                                after={
+                                                    fetchScopeDetailsForSocket
+                                                }
+                                            />
+
+                                        </div>
                                         {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                             <>
                                                 <p>

@@ -36,6 +36,7 @@ import {
   Copy,
   MessageCirclePlus,
   MessageCircleX,
+  Headset,
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import AddTags from "./AddTags";
@@ -55,6 +56,7 @@ import { getSocket } from "./Socket";
 import ReactTooltip, { Tooltip } from "react-tooltip";
 import MergedHistoryComponentNew from "./MergedHistoryComponentNew";
 import EditCommentsComponent from "./EditCommentsComponent";
+import CallRecordingPending from "./CallRecordingPending";
 
 const AskForScopeAdmin = ({
   queryId,
@@ -881,6 +883,17 @@ const AskForScopeAdmin = ({
                                 style={{ fontSize: "11px", padding: "1px 6px" }}
                               >
                                 Edited
+                              </span>
+                            )}
+                            {quote.callrecordingpending == 1 && (
+                              <span
+                                className="text-orange-600 rounded-full text-sm ml-2"
+                                style={{
+                                  fontSize: "11px",
+                                  padding: "1px 6px",
+                                }}
+                              >
+                                <Headset size={13} /> 
                               </span>
                             )}
                             {quote.ownership_transferred == 1 && (
@@ -2002,6 +2015,17 @@ const AskForScopeAdmin = ({
                                                   </>
                                                 )}
                                             </div>
+                                            <div>
+                                                
+                                                <CallRecordingPending
+                                                  scopeDetails={quote}
+                                                  quoteId={quote.quoteid}
+                                                  after={
+                                                    fetchScopeDetailsForSocket
+                                                  }
+                                                />
+                                                
+                                              </div>
                                             {quote.ptp != null && (
                                               <div className="">
                                                 <div className="ptp-get-amt mb-3">

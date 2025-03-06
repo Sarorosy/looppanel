@@ -57,6 +57,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [startDate, setStartDate] = useState(null);
     const [TransferPageVisible, setTransferPageVisible] = useState(false);
     const [endDate, setEndDate] = useState(null);
+    const [callOption, setCallOption] = useState('');
     const [activeTab, setActiveTab] = useState('all');
     const [selectedRows, setSelectedRows] = useState([]);
     const [filterSummary, setFilterSummary] = useState('');
@@ -231,9 +232,10 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         const feasability_status = feasStatus;
         const start_date = startDate;
         const end_date = endDate;
+        const callrecordingpending = callOption;
 
         let payload = {
-            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date
+            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date , callrecordingpending
         };
 
         if (nopayload) {
@@ -276,6 +278,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     if (refID) appliedFilters.push(`Ref ID: ${refID}`);
                     if (scope_id) appliedFilters.push(`Scope ID: ${scope_id}`);
                     if (ptp && ptp == 'Yes') appliedFilters.push(`PTP: YES`);
+                    if (callOption && callOption == '1') appliedFilters.push(`Call Recording Pending`);
                     if (userid) appliedFilters.push(`User: ${users.find(u => u.id === userid)?.fld_first_name ?? 'N/A'}`);
                     if (service_name) appliedFilters.push(`Service: ${services.find(s => s.id === service_name)?.name ?? 'N/A'}`);
                     if (subject_area) appliedFilters.push(`Subject: ${subject_area}`);
@@ -617,6 +620,21 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         </span>
                     `;
                 }
+                if (row.callrecordingpending == 1) {
+                    html += `
+                        <span 
+                            style="
+                                padding: 2px 4px;
+                                color: #E69500FF; 
+                                font-size: 11px; 
+                                font-weight: bold; 
+                                line-height: 1.2;
+                                z-index: 1 !important;
+                            ">
+                            <i class="fa fa-headphones" aria-hidden="true"></i>
+                        </span>
+                    `;
+                }
 
                 if (row.edited == 1) {
                     html += `
@@ -803,6 +821,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setRefId('');
         setScopeId('');
         setKeyword('');
+        setCallOption('');
         setStatus('');
         setFeasStatus('');
         setStartDate('');
@@ -831,6 +850,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         // Reset filter states
         setRefId('');
         setScopeId('');
+        setCallOption('')
         setKeyword('');
         setStatus('');
         setFeasStatus('');
@@ -1176,6 +1196,17 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                         {tag.tag_name}
                                     </option>
                                 ))}
+                            </select>
+                        </div>
+                        <div className=" mb-3" style={{width: "140px"}}>
+
+                            <select
+                                className="form-control form-control-sm"
+                                value={callOption}
+                                onChange={(e) => setCallOption(e.target.value)}
+                            >
+                                <option value="">Call Recording</option>
+                                <option value="1">Pending</option>
                             </select>
                         </div>
                         <div className="col flex items-center justify-end">
