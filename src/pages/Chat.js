@@ -613,7 +613,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                     <div className='flex items-center justify-between mt-2'>
                         <div>
                             {((loopUserObject.fld_email == 'puneet@redmarkediting.com' ||
-                                loopUserObject.fld_email == 'clientsupport@chankyaresearch.net') && status == 0 && submittedToAdmin == "true") ? (
+                                loopUserObject.fld_email == 'clientsupport@chankyaresearch.net') && ((status == 0 && submittedToAdmin == "true") || status == 2)) ? (
                                 <div className="flex items-center">
                                     <label className='mb-0' for="markStatus" style={{ fontSize: "11px" }}>Mark as pending at user</label>
                                     <input
