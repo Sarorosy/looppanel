@@ -35,6 +35,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const [isFeasability, setIsFeasability] = useState(0);
     const [selectedUser, setSelectedUser] = useState('');
     const [wordCountTexts, setWordCountTexts] = useState({});
+    const serviceRef = useRef(null);
 
     const modules = {
         toolbar: [
@@ -56,6 +57,9 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const [loading, setLoading] = useState(false);
     const userData = localStorage.getItem('loopuser');
     const hasFetched = useRef(false);
+
+    
+    
 
     const userObject = JSON.parse(userData);
 
@@ -334,10 +338,12 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                 const parsedPlanComments = details.plan_comments ? JSON.parse(details.plan_comments) : {};
                 const parsedWordCounts = details.word_counts ? JSON.parse(details.word_counts) : {};
 
+                const serviceArray = details.service_name ? details.service_name.split(',') : [];
+
                 await setFormData({
                     currency: details.currency || '',
                     otherCurrency: details.other_currency || '',
-                    service_name: details.service_name || '',
+                    service_name: serviceArray,
                     plan: planArray,
                     comments: details.comments || '',
                     planComments: parsedPlanComments,
@@ -354,6 +360,10 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                 setComments(details.comments ?? '')
                 setIsFeasability(details.isfeasability ?? 0)
                 setSelectedUser(details.feasability_user ?? '')
+
+                setTimeout(() => {
+                    $(serviceRef.current).val(serviceArray).trigger('change');
+                }, 100);
             } else {
                 toast.error('Failed to fetch request details.');
             }
@@ -364,7 +374,25 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             setLoading(false);
         }
     };
+    useEffect(() => {
+        // Initialize select2 for Tags
+        $(serviceRef.current).select2({
+            placeholder: "Select Services",
+            allowClear: true,
+            multiple: true,
+        }).on('change', (e) => {
+            const selectedValues = $(e.target).val();
+            setServiceName(selectedValues);
+        });
 
+        
+        return () => {
+            // Clean up select2 on component unmount
+            if (serviceRef.current) {
+                $(serviceRef.current).select2('destroy');
+            }
+        };
+    }, [services]);
     const fetchInitialData = async () => {
 
 
@@ -430,7 +458,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         //fetchInitialData();
     }, []); // Empty dependency array ensures this runs only once
 
-
+    
     const planColors = {
         Basic: 'text-blue-400', // Custom brown color
         Standard: 'text-gray-400', // Silver color
@@ -492,8 +520,9 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                 <label>Service</label>
                                 <select
                                     name="service_name"
+                                    multiple
                                     value={serviceName}
-                                    onChange={handleInputChange}
+                                    ref={serviceRef}
                                     className="form-control form-control-sm"
                                 >
                                     <option value="">Select Service</option>
