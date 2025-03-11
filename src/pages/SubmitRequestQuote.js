@@ -40,6 +40,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
     const [demoStatus, setDemoStatus] = useState(false);
     const [tags, setTags] = useState([]);
     const tagsRef = useRef(null);
+    const serviceRef = useRef(null);
     const socket = getSocket();
 
     const modules = {
@@ -92,6 +93,29 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
         }
         setWordCountTexts(updatedWordCountTexts);
     }, [wordCounts]);
+
+    useEffect(() => {
+        // Initialize select2 for Tags
+        $(serviceRef.current).select2({
+            placeholder: "Select Services",
+            allowClear: true,
+            multiple: true,
+        }).on('change', (e) => {
+            const selectedValues = $(e.target).val();
+            setSelectedService(selectedValues);
+        });
+
+        
+        $(serviceRef.current).val(selectedService).trigger('change');
+        
+
+        return () => {
+            // Clean up select2 on component unmount
+            if (serviceRef.current) {
+                $(serviceRef.current).select2('destroy');
+            }
+        };
+    }, [services]);
 
     useEffect(() => {
         // Initialize select2 for Tags
@@ -550,11 +574,11 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                                 </label>
                                 <select
                                     id="service_name"
+                                    multiple
                                     value={selectedService}
-                                    onChange={(e) => setSelectedService(e.target.value)}
+                                    ref={serviceRef}
                                     className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
                                 >
-                                    <option value="">Select Service</option>
                                     {services.map((service) => (
                                         <option key={service.id} value={service.id}>
                                             {service.name}

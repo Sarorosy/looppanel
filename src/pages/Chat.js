@@ -261,7 +261,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                 const editorBounds = textareaRef.current.getEditor().container.getBoundingClientRect();
 
                 setDropdownPosition({
-                    top: bounds.top + editorBounds.top -60,
+                    top: bounds.top + editorBounds.top - 60,
                     left: bounds.left + 25
                 });
             }
@@ -396,7 +396,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             return `<b style="color:#126dff;cursor:pointer;">${name}</b>`;
         });
     };
-    
+
 
     const modules = {
         toolbar: [
@@ -463,7 +463,15 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                                 )}
                                             </span>
                                             <span className="chat-timestamp">
-                                                {new Date(chatVal.date * 1000).toLocaleString()}
+                                                {new Date(chatVal.date * 1000).toLocaleString('en-US', {
+                                                    day: '2-digit',
+                                                    month: 'short',
+                                                    year: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit',
+                                                    hour12: true
+                                                }).replace(',', '')}
+
                                             </span>
                                         </div>
 
@@ -501,7 +509,14 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                                         <div className="reply-message">
                                                             <div className="reply-info">
                                                                 <span className="reply-name">{reply.fld_first_name} {reply.fld_last_name}</span>
-                                                                <span className="reply-timestamp">{new Date(reply.date * 1000).toLocaleString()}</span>
+                                                                <span className="reply-timestamp">{new Date(reply.date * 1000).toLocaleString('en-US', {
+                                                                    day: '2-digit',
+                                                                    month: 'short',
+                                                                    year: 'numeric',
+                                                                    hour: '2-digit',
+                                                                    minute: '2-digit',
+                                                                    hour12: true
+                                                                }).replace(',', '')}</span>
                                                             </div>
                                                             <div className="reply-text">{reply.message}</div>
                                                         </div>
@@ -548,7 +563,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                             const newSelectedUsers = new Set([...selectedUsers]);
                             mentions.forEach(mention => newSelectedUsers.add(mention.id));
                             setSelectedUsers(newSelectedUsers);
-                            
+
                             setMentions(mentions.map(mention => `@${mention.display}`));
                             setMentionIds(mentions.map(mention => mention.id));
                         }}
@@ -605,7 +620,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                 backgroundColor: '#DAF0FAFF',
                                 color: '#0057B300',
                                 marginTop: '-6px',
-                                
+
                             }}
                         />
                     </MentionsInput>
