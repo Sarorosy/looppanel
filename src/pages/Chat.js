@@ -463,7 +463,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                                 )}
                                             </span>
                                             <span className="chat-timestamp">
-                                                {new Date(chatVal.date * 1000).toLocaleString('en-US', {
+                                                {new Date(chatVal.date * 1000).toLocaleString('en-GB', {
                                                     day: '2-digit',
                                                     month: 'short',
                                                     year: 'numeric',
@@ -471,8 +471,8 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                                     minute: '2-digit',
                                                     hour12: true
                                                 }).replace(',', '')}
-
                                             </span>
+
                                         </div>
 
                                         {/* Chat Text */}
@@ -509,14 +509,17 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                                         <div className="reply-message">
                                                             <div className="reply-info">
                                                                 <span className="reply-name">{reply.fld_first_name} {reply.fld_last_name}</span>
-                                                                <span className="reply-timestamp">{new Date(reply.date * 1000).toLocaleString('en-US', {
-                                                                    day: '2-digit',
-                                                                    month: 'short',
-                                                                    year: 'numeric',
-                                                                    hour: '2-digit',
-                                                                    minute: '2-digit',
-                                                                    hour12: true
-                                                                }).replace(',', '')}</span>
+                                                                <span className="reply-timestamp">
+                                                                    {new Date(reply.date * 1000).toLocaleString('en-GB', {
+                                                                        day: '2-digit',
+                                                                        month: 'short',
+                                                                        year: 'numeric',
+                                                                        hour: '2-digit',
+                                                                        minute: '2-digit',
+                                                                        hour12: true
+                                                                    }).replace(',', '')}
+                                                                </span>
+
                                                             </div>
                                                             <div className="reply-text">{reply.message}</div>
                                                         </div>
