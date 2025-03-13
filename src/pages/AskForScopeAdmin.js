@@ -2291,7 +2291,7 @@ const AskForScopeAdmin = ({
                                                                           value={
                                                                             amounts[plan] ||
                                                                             (quote.quote_status == 2 && quote.plan === plan
-                                                                              ? quote.quote_price.split(",")[quote.plan.split(",").indexOf(plan)]
+                                                                              ? quote.quote_price.split(",")[quote.old_plan ? quote.old_plan.split(",").indexOf(plan) : quote.plan.split(",").indexOf(plan)]
                                                                               : "")
                                                                           }
                                                                           
