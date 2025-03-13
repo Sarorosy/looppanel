@@ -7,7 +7,7 @@ import { getSocket } from './Socket';
 function AskPtp({ scopeDetails, quoteId, after, plans }) {
     const socket = getSocket();
     const [showForm, setShowForm] = useState(false);
-    const [ptp, setPtp] = useState(scopeDetails.ptp); // Default value is "No"
+    const [ptp, setPtp] = useState(scopeDetails.ptp && scopeDetails.ptp != null ? scopeDetails.ptp : "No"); // Default value is "No"
     const [ptpAmount, setPtpAmount] = useState(scopeDetails.ptp_amount);
     const [ptpComments, setPtpComments] = useState('');
     const [ptploading, setPtpLoading] = useState(false);
@@ -120,7 +120,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                                     <input
                                         type="checkbox"
                                         id="ptp"
-                                        checked={ptp === 'Yes'}
+                                        checked={ptp == 'Yes'}
                                         onChange={(e) => setPtp(e.target.checked ? 'Yes' : 'No')}
                                         className="form-checkbox text-blue-600 h-2 w-2"
                                     />
