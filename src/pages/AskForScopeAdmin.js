@@ -2288,9 +2288,13 @@ const AskForScopeAdmin = ({
                                                                           name={`amount_${plan}`}
                                                                           id={`amount_${plan}`}
                                                                           className="form-control form-control-sm"
-                                                                          value={amounts[plan] || (quote.quote_status == 2
-                                                                            ? quote.quote_price.split(",")[plan === "Basic" ? 0 : plan === "Standard" ? 1 : 2]
-                                                                            : "")}
+                                                                          value={
+                                                                            amounts[plan] ||
+                                                                            (quote.quote_status == 2 && quote.plan === plan
+                                                                              ? quote.quote_price.split(",")[quote.plan.split(",").indexOf(plan)]
+                                                                              : "")
+                                                                          }
+                                                                          
                                                                           required={quote.plan && quote.plan.split(",").includes(plan)}
                                                                           disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
                                                                           onChange={(e) => handleAmountChange(e, plan)}
