@@ -59,14 +59,14 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
             return;
         }
 
-        // Convert prices from comma-separated string to an array and calculate 30% minimum required amount
-        selectedPrices = selectedPrices.split(",").map(price => Math.round((parseFloat(price) * 30) / 100));
+        // Convert prices from comma-separated string to an array and calculate 70% minimum required amount
+        selectedPrices = selectedPrices.split(",").map(price => Math.round((parseFloat(price) * 70) / 100));
         
         // Get the minimum required amount
         let minRequiredAmount = Math.min(...selectedPrices);
 
         if (ptp === "Yes" && parseFloat(ptpAmount) < minRequiredAmount) {
-            toast.error(`The PTP amount must be at least ${minRequiredAmount}  (30%)`);
+            toast.error(`The PTP amount must be at least ${minRequiredAmount}  (70%)`);
             setPtpLoading(false);
             return;
         }
