@@ -16,6 +16,10 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
     const loopuserData = localStorage.getItem('loopuser');
     const loopUserObject = JSON.parse(loopuserData);
 
+    console.log("amounts given final" + scopeDetails.final_price);
+    console.log("amounts given discount" + scopeDetails.discount_price);
+    console.log("amounts given quote" + scopeDetails.quote_price);
+
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prevSelectedPlans) => {
             if (prevSelectedPlans.includes(plan)) {
@@ -43,6 +47,30 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
             setPtpLoading(false);
             return;
         }
+        let selectedPrices = scopeDetails.final_price 
+        ? scopeDetails.final_price
+        : scopeDetails.discount_price
+        ? scopeDetails.discount_price
+        : scopeDetails.quote_price;
+
+        if (!selectedPrices) {
+            toast.error("No valid prices available.");
+            setPtpLoading(false);
+            return;
+        }
+
+        // Convert prices from comma-separated string to an array and calculate 30% minimum required amount
+        selectedPrices = selectedPrices.split(",").map(price => Math.round((parseFloat(price) * 30) / 100));
+        
+        // Get the minimum required amount
+        let minRequiredAmount = Math.min(...selectedPrices);
+
+        if (ptp === "Yes" && parseFloat(ptpAmount) < minRequiredAmount) {
+            toast.error(`The PTP amount must be at least ${minRequiredAmount}  (30%)`);
+            setPtpLoading(false);
+            return;
+        }
+
         if (!ptpComments) {
             toast.error("Please fill all fields");
             setPtpLoading(false);
