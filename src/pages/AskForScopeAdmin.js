@@ -769,6 +769,8 @@ const AskForScopeAdmin = ({
     setSelectedUser(event.target.value); // Update the state with selected user ID
   };
 
+
+
   return (
     <div className=" h-full bg-gray-100  z-50 overflow-y-auto mt-2 rounded w-full">
       <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
@@ -893,7 +895,7 @@ const AskForScopeAdmin = ({
                                   padding: "1px 6px",
                                 }}
                               >
-                                <Headset size={13} /> 
+                                <Headset size={13} />
                               </span>
                             )}
                             {quote.ownership_transferred == 1 && (
@@ -1665,41 +1667,42 @@ const AskForScopeAdmin = ({
                                                                 const prices = quote.quote_price.split(",");
                                                                 const plans = quote.old_plan.split(",");
                                                                 return plans.map((plan, index) => (
-                                                                  <span key={index} className="line-through bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600"
+                                                                  <span key={index} className=" bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600"
                                                                     style={{ textAlign: colClass == 'col-md-4' ? 'left' : 'center', width: colClass == 'col-md-4' ? '90%' : '' }}
                                                                   >
-                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                    {quote.mp_price === plan && " (MP Price)"}
-
+                                                                    <p className="line-through">
+                                                                      {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
+                                                                    </p>
                                                                     {quote.new_comments && (() => {
-                                                                        let parsedComments;
-                                                                        try {
-                                                                          parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                                        } catch (error) {
-                                                                          console.error("Invalid JSON format:", error);
-                                                                          return null; 
-                                                                        }
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
 
-                                                                        return Object.entries(parsedComments)
-                                                                          .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                                          .map(([key, value]) => (
-                                                                            key == plan ? (
-                                                                              <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                                                {value}
-                                                                              </p>
-                                                                            ) : null
-                                                                            
-                                                                          ));
-                                                                      })()}
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
                                                             </td>
-                                                            
+
                                                           </tr>
                                                         )}
 
-                                                        {quote.plan && quote.quote_status == 2 && !quote.discount_price &&  (!quote.old_plan ||( quote.plan == quote.old_plan )) && (
+                                                        {quote.plan && quote.quote_status == 2 && !quote.discount_price && (!quote.old_plan || (quote.plan == quote.old_plan)) && (
                                                           <tr className="border-b">
                                                             <td className="border px-1 py-2">
                                                               <strong>Plan Price</strong>
@@ -1711,38 +1714,39 @@ const AskForScopeAdmin = ({
                                                                 const prices = quote.quote_price.split(",");
                                                                 const plans = quote.old_plan.split(",");
                                                                 return plans.map((plan, index) => (
-                                                                  <span key={index} className="line-through bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600"
+                                                                  <span key={index} className=" bg-gray-100 px-2 py-1 rounded mr-2 text-gray-600"
                                                                     style={{ textAlign: colClass == 'col-md-4' ? 'left' : 'center', width: colClass == 'col-md-4' ? '90%' : '' }}
                                                                   >
-                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                    {quote.mp_price === plan && " (MP Price)"}
-
+                                                                    <p className="line-through">
+                                                                      {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
+                                                                    </p>
                                                                     {quote.new_comments && (() => {
-                                                                        let parsedComments;
-                                                                        try {
-                                                                          parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                                        } catch (error) {
-                                                                          console.error("Invalid JSON format:", error);
-                                                                          return null; 
-                                                                        }
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
 
-                                                                        return Object.entries(parsedComments)
-                                                                          .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                                          .map(([key, value]) => (
-                                                                            key == plan ? (
-                                                                              <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                                                {value}
-                                                                              </p>
-                                                                            ) : null
-                                                                            
-                                                                          ));
-                                                                      })()}
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
-                                                              
+
                                                             </td>
-                                                            
+
                                                           </tr>
                                                         )}
 
@@ -1761,36 +1765,38 @@ const AskForScopeAdmin = ({
                                                                 return plans.map((plan, index) => (
                                                                   <span
                                                                     key={index}
-                                                                    className={`${quote.discount_price != null ? 'line-through' : ''} ruby px-1 py-1 f-12 rounded mr-1`}
+                                                                    className={`${quote.discount_price != null ? '' : ''} ruby px-1 py-1 f-12 rounded mr-1`}
                                                                     style={{ textAlign: colClass == 'col-md-4' ? 'left' : '', width: colClass == 'col-md-4' ? '90%' : '' }}
                                                                   >
-                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                    <p className={`${quote.discount_price != null ? 'line-through' : ''}}`}>
+                                                                      {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
+                                                                    </p>
                                                                     {quote.new_comments && (() => {
-                                                                        let parsedComments;
-                                                                        try {
-                                                                          parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                                        } catch (error) {
-                                                                          console.error("Invalid JSON format:", error);
-                                                                          return null; 
-                                                                        }
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
 
-                                                                        return Object.entries(parsedComments)
-                                                                          .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                                          .map(([key, value]) => (
-                                                                            key == plan ? (
-                                                                              <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                                                {value}
-                                                                              </p>
-                                                                            ) : null
-                                                                            
-                                                                          ));
-                                                                      })()}
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
                                                             </td>
-                                                            
+
                                                           </tr>
                                                         )}
 
@@ -1812,33 +1818,33 @@ const AskForScopeAdmin = ({
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ?? 0}
                                                                     {quote.mp_price === plan && " (MP Price)"}
-                                                                    
-                                                                    {quote.new_comments && (() => {
-                                                                        let parsedComments;
-                                                                        try {
-                                                                          parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                                        } catch (error) {
-                                                                          console.error("Invalid JSON format:", error);
-                                                                          return null; 
-                                                                        }
 
-                                                                        return Object.entries(parsedComments)
-                                                                          .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                                          .map(([key, value]) => (
-                                                                            key == plan ? (
-                                                                              <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                                                {value}
-                                                                              </p>
-                                                                            ) : null
-                                                                            
-                                                                          ));
-                                                                      })()}
+                                                                    {quote.new_comments && (() => {
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
+
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
                                                             </td>
 
-                                                            
+
                                                           </tr>
                                                         )}
 
@@ -1860,25 +1866,25 @@ const AskForScopeAdmin = ({
                                                                   >
                                                                     {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index]}
                                                                     {quote.new_comments && (() => {
-                                                                        let parsedComments;
-                                                                        try {
-                                                                          parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
-                                                                        } catch (error) {
-                                                                          console.error("Invalid JSON format:", error);
-                                                                          return null; 
-                                                                        }
+                                                                      let parsedComments;
+                                                                      try {
+                                                                        parsedComments = JSON.parse(quote.new_comments); // Parse JSON string to object
+                                                                      } catch (error) {
+                                                                        console.error("Invalid JSON format:", error);
+                                                                        return null;
+                                                                      }
 
-                                                                        return Object.entries(parsedComments)
-                                                                          .filter(([_, value]) => value.trim() !== "") // Remove empty values
-                                                                          .map(([key, value]) => (
-                                                                            key == plan ? (
-                                                                              <p key={key} className="text-black text-sm" style={{ fontSize: "11px" }}>
-                                                                                {value}
-                                                                              </p>
-                                                                            ) : null
-                                                                            
-                                                                          ));
-                                                                      })()}
+                                                                      return Object.entries(parsedComments)
+                                                                        .filter(([_, value]) => value.trim() !== "") // Remove empty values
+                                                                        .map(([key, value]) => (
+                                                                          key == plan ? (
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important" }}>
+                                                                              {value}
+                                                                            </p>
+                                                                          ) : null
+
+                                                                        ));
+                                                                    })()}
                                                                   </span>
                                                                 ));
                                                               })()}
@@ -2134,16 +2140,16 @@ const AskForScopeAdmin = ({
                                                 )}
                                             </div>
                                             <div>
-                                                
-                                                <CallRecordingPending
-                                                  scopeDetails={quote}
-                                                  quoteId={quote.quoteid}
-                                                  after={
-                                                    fetchScopeDetailsForSocket
-                                                  }
-                                                />
-                                                
-                                              </div>
+
+                                              <CallRecordingPending
+                                                scopeDetails={quote}
+                                                quoteId={quote.quoteid}
+                                                after={
+                                                  fetchScopeDetailsForSocket
+                                                }
+                                              />
+
+                                            </div>
                                             {quote.ptp != null && (
                                               <div className="">
                                                 <div className="ptp-get-amt mb-3">
@@ -2279,73 +2285,97 @@ const AskForScopeAdmin = ({
                                                                       <td className="border px-2 py-2 w-1/6" style={{ fontSize: "10px" }}>
                                                                         <label htmlFor={`amount_${plan}`} className="mb-0">
                                                                           {plan} ({quote.currency === "Other" ? quote.other_currency : quote.currency})
+
+                                                                          {(() => {
+                                                                          let parsedComments = null;
+                                                                          if (quote.new_comments) {
+                                                                            try {
+                                                                              parsedComments = JSON.parse(quote.new_comments);
+                                                                            } catch (error) {
+                                                                              console.error("Invalid JSON format:", error);
+                                                                            }
+                                                                          }
+
+                                                                          return (
+                                                                            <i 
+                                                                            class="fa fa-info bg-gray-500 px-1 py-0.5 rounded-full text-white ml-1" 
+                                                                            style={{ fontSize: "8px" }}
+                                                                            data-tooltip-id="my-tooltip" data-tooltip-content={parsedComments?.[plan] || ""}
+                                                                            ></i>
+                                                                          );
+                                                                        })()}
                                                                         </label>
+
+                                                                        
                                                                       </td>
                                                                       <td className="border px-1 py-2 ">
                                                                         <div className="flex items-start">
-                                                                        <input
-                                                                          type="text"
-                                                                          name={`amount_${plan}`}
-                                                                          id={`amount_${plan}`}
-                                                                          className="form-control form-control-sm"
-                                                                          value={
-                                                                            amounts[plan] ||
-                                                                            (quote.quote_status == 2 && quote.plan === plan
-                                                                              ? quote.quote_price.split(",")[quote.old_plan ? quote.old_plan.split(",").indexOf(plan) : quote.plan.split(",").indexOf(plan)]
-                                                                              : "")
-                                                                          }
-                                                                          
-                                                                          required={quote.plan && quote.plan.split(",").includes(plan)}
-                                                                          disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
-                                                                          onChange={(e) => handleAmountChange(e, plan)}
-                                                                        />
-                                                                        <div className="error" id={`amountError_${plan}`}></div>
+                                                                          <input
+                                                                            type="text"
+                                                                            name={`amount_${plan}`}
+                                                                            id={`amount_${plan}`}
+                                                                            className="form-control form-control-sm"
+                                                                            value={
+                                                                              amounts[plan] ||
+                                                                              (quote.quote_status == 2 && quote.plan === plan
+                                                                                ? quote.quote_price.split(",")[quote.old_plan ? quote.old_plan.split(",").indexOf(plan) : quote.plan.split(",").indexOf(plan)]
+                                                                                : "")
+                                                                            }
 
-                                                                        <input
-                                                                          type="checkbox"
-                                                                          className="nh-1 nw-1 mx-1"
-                                                                          id={`mp_${plan}`}
-                                                                          name={`mp_${plan}`}
-                                                                          checked={selectedMP === plan}
-                                                                          onChange={() => handleMPChange(plan)}
-                                                                          disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
-                                                                        />
-                                                                        <label for={`mp_${plan}`} style={{fontSize : "8px"}}>MP</label>
+                                                                            required={quote.plan && quote.plan.split(",").includes(plan)}
+                                                                            disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
+                                                                            onChange={(e) => handleAmountChange(e, plan)}
+                                                                          />
+                                                                          <div className="error" id={`amountError_${plan}`}></div>
+
+                                                                          <input
+                                                                            type="checkbox"
+                                                                            className="nh-1 nw-1 mx-1"
+                                                                            id={`mp_${plan}`}
+                                                                            name={`mp_${plan}`}
+                                                                            checked={selectedMP === plan}
+                                                                            onChange={() => handleMPChange(plan)}
+                                                                            disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
+                                                                          />
+                                                                          <label for={`mp_${plan}`} style={{ fontSize: "8px" }}>MP</label>
+
+
                                                                         </div>
                                                                       </td>
-                                                                      
+
                                                                       <td className="border px-4 py-2 text-center w-auto ">
                                                                         <div className="flex items-center">
-                                                                        <button
-                                                                          type="button"
-                                                                          className={`btn  px-1 py-1 flex items-center justify-between ${showComments[plan] ? "btn-danger" : "btn-info"}`}
-                                                                          style={{ fontSize: "10px"}}
-                                                                          disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
-                                                                          onClick={() => toggleCommentBox(plan)}
-                                                                        >
-                                                                          {showComments[plan] ? <MessageCircleX size={18} /> : <MessageCirclePlus size={18} className="" />} 
-                                                                        </button>
 
-                                                                        <div className="ml-0.5">
-                                                                          {["Basic", "Standard", "Advanced"].map(
-                                                                            (p) =>
-                                                                              showComments[p] && p == plan && (
-                                                                                <div key={p} className="mt-1">
-                                                                                  <textarea
-                                                                                    name={`comment_${p}`}
-                                                                                    id={`comment_${p}`}
-                                                                                    placeholder={`Comments for ${p}`}
-                                                                                    className="form-control form-control-sm w-full"
-                                                                                    value={comments[p]}
-                                                                                    onChange={(e) =>
-                                                                                      setComments({ ...comments, [p]: e.target.value })
-                                                                                    }
-                                                                                  ></textarea>
-                                                                                  <div className="error" id={`commentError_${p}`}></div>
-                                                                                </div>
-                                                                              )
-                                                                          )}
-                                                                        </div>
+                                                                          <button
+                                                                            type="button"
+                                                                            className={`btn  px-1 py-1 flex items-center justify-between ${showComments[plan] ? "btn-danger" : "btn-info"}`}
+                                                                            style={{ fontSize: "10px" }}
+                                                                            disabled={!quote.plan || !quote.plan.split(",").includes(plan)}
+                                                                            onClick={() => toggleCommentBox(plan)}
+                                                                          >
+                                                                            {showComments[plan] ? <MessageCircleX size={18} /> : <MessageCirclePlus size={18} className="" />}
+                                                                          </button>
+
+                                                                          <div className="ml-0.5">
+                                                                            {["Basic", "Standard", "Advanced"].map(
+                                                                              (p) =>
+                                                                                showComments[p] && p == plan && (
+                                                                                  <div key={p} className="mt-1">
+                                                                                    <textarea
+                                                                                      name={`comment_${p}`}
+                                                                                      id={`comment_${p}`}
+                                                                                      placeholder={`Comments for ${p}`}
+                                                                                      className="form-control form-control-sm w-full"
+                                                                                      value={comments[p]}
+                                                                                      onChange={(e) =>
+                                                                                        setComments({ ...comments, [p]: e.target.value })
+                                                                                      }
+                                                                                    ></textarea>
+                                                                                    <div className="error" id={`commentError_${p}`}></div>
+                                                                                  </div>
+                                                                                )
+                                                                            )}
+                                                                          </div>
                                                                         </div>
                                                                       </td>
                                                                     </tr>
