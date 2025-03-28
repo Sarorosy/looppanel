@@ -2282,7 +2282,7 @@ const AskForScopeAdmin = ({
                                                                 <tbody>
                                                                   {["Basic", "Standard", "Advanced"].map((plan, index) => (
                                                                     <tr key={index}>
-                                                                      <td className="border px-2 py-2 w-1/6" style={{ fontSize: "10px" }}>
+                                                                      <td className="border px-2 py-2 w-1/4" style={{ fontSize: "10px" }}>
                                                                         <label htmlFor={`amount_${plan}`} className="mb-0">
                                                                           {plan} ({quote.currency === "Other" ? quote.other_currency : quote.currency})
 
