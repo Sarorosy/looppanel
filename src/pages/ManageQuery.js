@@ -283,7 +283,32 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     if (service_name) appliedFilters.push(`Service: ${services.find(s => s.id === service_name)?.name ?? 'N/A'}`);
                     if (subject_area) appliedFilters.push(`Subject: ${subject_area}`);
                     if (tags.length > 0) appliedFilters.push(`Tags: ${tags.join(', ')}`);
-                    if (status) appliedFilters.push(`Status: ${status}`);
+                    if (status)
+                    {
+                        let displayStatus = ""
+                        
+                        switch (status) {
+                            case "PendingAtUser":
+                                displayStatus = "PendingAtUser";
+                                break;
+                            case "PendingAtAdmin":
+                                displayStatus = "PendingAtAdmin";
+                                break;
+                            case "1":
+                                displayStatus = "Submitted";
+                                break;
+                            case "2":
+                                displayStatus = "Discount Requested";
+                                break;
+                            case "3":
+                                displayStatus = "Discount Submitted";
+                                break;
+                            default:
+                                displayStatus = "Pending";
+                                break;
+                        }
+                        appliedFilters.push(`Status: ${displayStatus}`);
+                    }
                     if (feasability_status) appliedFilters.push(`Feasibility: ${feasability_status}`);
                     if (start_date && end_date) appliedFilters.push(`Date: ${start_date.toLocaleDateString()} - ${end_date.toLocaleDateString()}`);
 
