@@ -367,6 +367,8 @@ const ManageTlQuery = ({ onClose }) => {
                 } else {
                     if (data == 0) {
                         return '<span class="text-red-600 font-bold">Pending at Admin</span>';
+                    }else if (data == 1 && row['discount_price'] !== "" && row['discount_price'] !== null) {
+                        return '<span class="text-green-600 font-bold">Discount Submitted</span>';
                     } else if (data == 1) {
                         return '<span class="text-green-600 font-bold">Submitted</span>';
                     } else if (data == 2) {
@@ -560,6 +562,7 @@ const ManageTlQuery = ({ onClose }) => {
                                 <option value="PendingAtAdmin">Pending at Admin</option>
                                 <option value="1">Submitted</option>
                                 <option value="2">Discount Requested</option>
+                                <option value="3">Discount Submitted</option>
                             </select>
                         </div>
                         <div className="col-2 mb-3">

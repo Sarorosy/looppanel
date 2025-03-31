@@ -977,8 +977,11 @@ const AskForScopeAdmin = ({
                               : quote.quote_status == 0 &&
                                 quote.submittedtoadmin == "true"
                                 ? "Pending at Admin"
+                                : quote.quote_status == 1 && quote.discount_price != "" && quote.discount_price != null
+                                  ? "Discount Submitted"
                                 : quote.quote_status == 1
                                   ? "Submitted"
+                                  
                                   : quote.quote_status == 2
                                     ? "Discount Requested"
                                     : "Unknown"}
