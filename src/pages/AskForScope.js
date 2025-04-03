@@ -21,6 +21,12 @@ import { getSocket } from './Socket';
 import ReactTooltip, { Tooltip } from 'react-tooltip'
 import MergedHistoryComponentNew from "./MergedHistoryComponentNew";
 import CallRecordingPending from './CallRecordingPending';
+import academic from '../academic.svg';
+import experiment from '../poll.svg';
+
+
+
+
 
 const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName, tlType, tagAccess }) => {
   const socket = getSocket();
@@ -1227,6 +1233,32 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                     )
                                                   )}
                                             </div>
+                                            {quote.client_academic_level && quote.results_section && (
+                                              <div class="flex gap-4 mb-3">
+                                                <div class="flex items-center px-1 py-1 bg-blue-100 border-l-4 border-blue-500 text-blue-900 shadow-md rounded-lg"
+                                                  x-show="quote.client_academic_level">
+                                                  <div>
+                                                    <img src={academic} className='h-5 w-5' />
+                                                  </div>
+                                                  <div className='px-2'>
+                                                    <h3 class="text-md font-semibold">Academic Level</h3>
+                                                    <p class="text-sm">{quote.client_academic_level}</p>
+                                                  </div>
+                                                </div>
+
+                                                <div class="flex items-center px-1 py-1 bg-green-100 border-l-4 border-green-500 text-green-900 shadow-md rounded-lg"
+                                                  x-show="quote.results_section">
+                                                    <div>
+                                                    <img src={experiment} className='h-5 w-5' />
+                                                  </div>
+                                                  <div className='px-2'>
+                                                  <h3 class="text-md font-semibold">Results Section</h3>
+                                                  <p class="text-sm">{quote.results_section}</p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            )}
+
                                             <div className="mb-0 mt-0 row px-2 pb-3 space-y-2">
                                               {quote.comments &&
                                                 quote.comments != "" &&
@@ -1339,8 +1371,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                     style={{ textAlign: colClass == 'col-md-4' ? 'left' : 'center', width: colClass == 'col-md-4' ? '90%' : '' }}
                                                                   >
                                                                     <p className="line-through">
-                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                      {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
                                                                     </p>
                                                                     {quote.new_comments && (() => {
                                                                       let parsedComments;
@@ -1355,7 +1387,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                         .filter(([_, value]) => value.trim() !== "") // Remove empty values
                                                                         .map(([key, value]) => (
                                                                           key == plan ? (
-                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px",textDecoration:"none !important", }}>
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important", }}>
                                                                               {value}
                                                                             </p>
                                                                           ) : null
@@ -1386,8 +1418,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                     style={{ textAlign: colClass == 'col-md-4' ? 'left' : 'center', width: colClass == 'col-md-4' ? '90%' : '' }}
                                                                   >
                                                                     <p className="line-through">
-                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                      {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
                                                                     </p>
                                                                     {quote.new_comments && (() => {
                                                                       let parsedComments;
@@ -1402,7 +1434,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                         .filter(([_, value]) => value.trim() !== "") // Remove empty values
                                                                         .map(([key, value]) => (
                                                                           key == plan ? (
-                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px",textDecoration:"none !important" }}>
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important" }}>
                                                                               {value}
                                                                             </p>
                                                                           ) : null
@@ -1437,8 +1469,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                     style={{ textAlign: colClass == 'col-md-4' ? 'left' : '', width: colClass == 'col-md-4' ? '90%' : '' }}
                                                                   >
                                                                     <p className={`${quote.discount_price != null ? 'line-through' : ''}}`}>
-                                                                    {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
-                                                                    {quote.mp_price === plan && " (MP Price)"}
+                                                                      {plan}: {quote.currency == "Other" ? quote.other_currency : quote.currency} {prices[index] ? prices[index] : 0}
+                                                                      {quote.mp_price === plan && " (MP Price)"}
                                                                     </p>
                                                                     {quote.new_comments && (() => {
                                                                       let parsedComments;
@@ -1453,7 +1485,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                         .filter(([_, value]) => value.trim() !== "") // Remove empty values
                                                                         .map(([key, value]) => (
                                                                           key == plan ? (
-                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px",textDecoration:"none !important" }}>
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important" }}>
                                                                               {value}
                                                                             </p>
                                                                           ) : null
@@ -1500,7 +1532,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                         .filter(([_, value]) => value.trim() !== "") // Remove empty values
                                                                         .map(([key, value]) => (
                                                                           key == plan ? (
-                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px",textDecoration:"none !important" }}>
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important" }}>
                                                                               {value}
                                                                             </p>
                                                                           ) : null
@@ -1546,7 +1578,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                                         .filter(([_, value]) => value.trim() !== "") // Remove empty values
                                                                         .map(([key, value]) => (
                                                                           key == plan ? (
-                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px",textDecoration:"none !important" }}>
+                                                                            <p key={key} className="text-black text-sm" style={{ fontSize: "11px", textDecoration: "none !important" }}>
                                                                               {value}
                                                                             </p>
                                                                           ) : null

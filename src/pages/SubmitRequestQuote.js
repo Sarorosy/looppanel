@@ -37,6 +37,8 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
     const plans = ['Basic', 'Standard', 'Advanced']; // Hardcoded plans
     const [demodone, setDemodone] = useState('no');
     const [demoId, setDemoId] = useState('');
+    const [client_academic_level, setClient_academic_level] = useState('');
+    const [results_section, setResults_section] = useState('');
     const [demoStatus, setDemoStatus] = useState(false);
     const [tags, setTags] = useState([]);
     const tagsRef = useRef(null);
@@ -79,7 +81,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
     const numberToWords = (num) => {
         const toWords = require("number-to-words");
         return toWords.toWords(Number(num));
-      };
+    };
 
     useEffect(() => {
         const updatedWordCountTexts = {};
@@ -105,9 +107,9 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
             setSelectedService(selectedValues);
         });
 
-        
+
         $(serviceRef.current).val(selectedService).trigger('change');
-        
+
 
         return () => {
             // Clean up select2 on component unmount
@@ -128,9 +130,9 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
             setSelectedTags(selectedValues);
         });
 
-        
+
         $(tagsRef.current).val(selectedTags).trigger('change');
-        
+
 
         return () => {
             // Clean up select2 on component unmount
@@ -318,6 +320,16 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
             setSubmitting(false);
             return;
         }
+        if(!client_academic_level){
+            toast.error('Please select client academic level!');
+            setSubmitting(false);
+            return;
+        }
+        if(!results_section){
+            toast.error('Please select results section!');
+            setSubmitting(false);
+            return;
+        }
         const planOrder = ['Basic', 'Standard', 'Advanced'];
         const sortedPlans = selectedPlans.sort((a, b) => {
             return planOrder.indexOf(a) - planOrder.indexOf(b);
@@ -328,6 +340,8 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
         formData.append('currency', selectedCurrency);
         formData.append('other_currency', otherCurrency);
         formData.append('service_name', selectedService);
+        formData.append('client_academic_level',client_academic_level);
+        formData.append('results_section',results_section);
         formData.append('subject_area', selectedSubjectArea);
         formData.append('other_subject_area', otherSubjectArea);
         formData.append('plan', sortedPlans);
@@ -767,6 +781,46 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                                 </div>
                             )}
                         </div>
+
+                        <div className='flex w-full items-end space-x-2'>
+                            <div className='w-1/2'>
+                                <label htmlFor="client_academic_level" className="block text-sm font-medium text-gray-700">
+                                    Client's Acadedemic level
+                                </label>
+                                <select
+                                    id="client_academic_level"
+                                    value={client_academic_level}
+                                    onChange={(e) => setClient_academic_level(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="">Select academic level</option>
+                                    <option value="PhD">PhD</option>
+                                    <option value="Bachelors">Bachelors</option>
+                                    <option value="Masters">Masters</option>
+                                    <option value="Post Doctoral">Post Doctoral</option>
+                                    <option value="Author">Author</option>
+
+                                </select>
+                            </div>
+                            <div className='w-1/2'>
+                                <label htmlFor="results_section" className="block text-sm font-medium text-gray-700">
+                                    Results Section
+                                </label>
+                                <select
+                                    id="results_section"
+                                    value={results_section}
+                                    onChange={(e) => setResults_section(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="">Select results section</option>
+                                    <option value="Client will provide">Client will provide</option>
+                                    <option value="We need to work">We need to work</option>
+                                    <option value="Partially client will provide">Partially client will provide</option>
+                                    <option value="Theoretical Work">Theoretical Work</option>
+
+                                </select>
+                            </div>
+                        </div>
                         {/* Plan Dropdown */}
                         <div className="w-full mt-4">
                             <label htmlFor="plan" className="block text-sm font-medium text-gray-700">
@@ -793,9 +847,9 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                         </div>
                         <div className="mt-4">
                             {selectedPlans.sort((a, b) => {
-                                    const order = ['Basic', 'Standard', 'Advanced'];
-                                    return order.indexOf(a) - order.indexOf(b); // Sort based on the predefined order
-                                }).map((plan) => (
+                                const order = ['Basic', 'Standard', 'Advanced'];
+                                return order.indexOf(a) - order.indexOf(b); // Sort based on the predefined order
+                            }).map((plan) => (
                                 <>
                                     <div key={plan} className="mb-4">
                                         <label htmlFor={`comment_${plan}`} className="block text-sm font-medium text-gray-700">
@@ -861,24 +915,24 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                             </select>
                         </div>
                         <div className='w-full '>
-                                {/* Tags */}
-                                <label>Tags</label>
-                                <select
-                                    name="tags"
-                                    id="tags"
-                                    className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control select2-hidden-accessible"
-                                    multiple
-                                    value={selectedTags}
-                                    ref={tagsRef}
-                                >
-                                    <option value="">Select Tags</option>
-                                    {tags.map((tag) => (
-                                        <option key={tag.id} value={tag.id}>
-                                            {tag.tag_name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
+                            {/* Tags */}
+                            <label>Tags</label>
+                            <select
+                                name="tags"
+                                id="tags"
+                                className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control select2-hidden-accessible"
+                                multiple
+                                value={selectedTags}
+                                ref={tagsRef}
+                            >
+                                <option value="">Select Tags</option>
+                                {tags.map((tag) => (
+                                    <option key={tag.id} value={tag.id}>
+                                        {tag.tag_name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
 
                         <div className=" flex w-full mt-4" style={{ display: `${demoStatus ? 'none' : 'block'}` }}>
                             <div className="flex items-center">
@@ -967,7 +1021,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                         </div>
                     </form>
                 </div>
-                
+
             </div>
         </motion.div>
     );

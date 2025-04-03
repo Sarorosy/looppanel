@@ -29,6 +29,8 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const [serviceName, setServiceName] = useState('');
     const [selectedSubjectArea, setSelectedSubjectArea] = useState('');
     const [otherSubjectArea, setOtherSubjectArea] = useState('');
+    const [client_academic_level, setClient_academic_level] = useState('');
+    const [results_section, setResults_section] = useState('');
     const [plan, setPlan] = useState([]);
     const [comments, setComments] = useState('');
     const [planComments, setPlanComments] = useState({});
@@ -58,8 +60,8 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const userData = localStorage.getItem('loopuser');
     const hasFetched = useRef(false);
 
-    
-    
+
+
 
     const userObject = JSON.parse(userData);
 
@@ -146,7 +148,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const numberToWords = (num) => {
         const toWords = require("number-to-words");
         return toWords.toWords(Number(num));
-      };
+    };
 
     useEffect(() => {
         const updatedWordCountTexts = {};
@@ -220,8 +222,8 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             setSubmitting(false);
             return;
         }
-        
-        
+
+
         if (selectedSubjectArea == "") {
             toast.error('Please select subject area!');
             setSubmitting(false);
@@ -229,6 +231,16 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         }
         if (selectedSubjectArea == "Other" && !otherSubjectArea) {
             toast.error('Please enter other subject area name!');
+            setSubmitting(false);
+            return;
+        }
+        if (!client_academic_level) {
+            toast.error('Please select client academic level!');
+            setSubmitting(false);
+            return;
+        }
+        if (!results_section) {
+            toast.error('Please select results section!');
             setSubmitting(false);
             return;
         }
@@ -242,6 +254,8 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             payload.append('other_currency', otherCurrency);
             payload.append('service_name', serviceName);
             payload.append('subject_area', selectedSubjectArea);
+            payload.append('client_academic_level',client_academic_level);
+            payload.append('results_section', results_section);
             payload.append('other_subject_area', otherSubjectArea);
             const planOrder = ['Basic', 'Standard', 'Advanced'];
 
@@ -360,6 +374,8 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                 setComments(details.comments ?? '')
                 setIsFeasability(details.isfeasability ?? 0)
                 setSelectedUser(details.feasability_user ?? '')
+                setClient_academic_level(details.client_academic_level);
+                setResults_section(details.results_section);
 
                 setTimeout(() => {
                     $(serviceRef.current).val(serviceArray).trigger('change');
@@ -385,7 +401,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             setServiceName(selectedValues);
         });
 
-        
+
         return () => {
             // Clean up select2 on component unmount
             if (serviceRef.current) {
@@ -458,7 +474,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
         //fetchInitialData();
     }, []); // Empty dependency array ensures this runs only once
 
-    
+
     const planColors = {
         Basic: 'text-blue-400', // Custom brown color
         Standard: 'text-gray-400', // Silver color
@@ -714,6 +730,45 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                 </div>
                             )}
                         </div>
+                        <div className='flex w-full items-end space-x-2 my-3'>
+                            <div className='w-1/2'>
+                                <label htmlFor="client_academic_level" className="block text-sm font-medium text-gray-700">
+                                    Client's Acadedemic level
+                                </label>
+                                <select
+                                    id="client_academic_level"
+                                    value={client_academic_level}
+                                    onChange={(e) => setClient_academic_level(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="">Select academic level</option>
+                                    <option value="PhD">PhD</option>
+                                    <option value="Bachelors">Bachelors</option>
+                                    <option value="Masters">Masters</option>
+                                    <option value="Post Doctoral">Post Doctoral</option>
+                                    <option value="Author">Author</option>
+
+                                </select>
+                            </div>
+                            <div className='w-1/2'>
+                                <label htmlFor="results_section" className="block text-sm font-medium text-gray-700">
+                                    Results Section
+                                </label>
+                                <select
+                                    id="results_section"
+                                    value={results_section}
+                                    onChange={(e) => setResults_section(e.target.value)}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="">Select results section</option>
+                                    <option value="Client will provide">Client will provide</option>
+                                    <option value="We need to work">We need to work</option>
+                                    <option value="Partially client will provide">Partially client will provide</option>
+                                    <option value="Theoretical Work">Theoretical Work</option>
+
+                                </select>
+                            </div>
+                        </div>
                         <div className='w-full mb-3'>
                             {/* Plan Checkboxes */}
                             <label className="">Plan</label>
@@ -797,7 +852,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                         <div className='w-full mb-3'>
                             {/* Comments */}
                             <label>Additional Comments <span className='text-gray-400 text-sm ml-2'>(optional)</span></label>
-                            <ReactQuill value={comments} onChange={(value) => setComments(value)} modules={modules}/>
+                            <ReactQuill value={comments} onChange={(value) => setComments(value)} modules={modules} />
                         </div>
 
                         <div className='mt-2 text-right'>
@@ -811,7 +866,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                         </div>
                     </form>
                 </div>
-                
+
             </div>
         </motion.div>
     );

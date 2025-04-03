@@ -20,6 +20,10 @@ import ScopeLoader from './ScopeLoader';
 import { getSocket } from './Socket';
 import ReactTooltip, { Tooltip } from 'react-tooltip';
 import MergedHistoryComponentNew from "./MergedHistoryComponentNew";
+import academic from '../academic.svg';
+import experiment from '../poll.svg';
+
+
 
 const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
     const socket = getSocket();
@@ -885,6 +889,31 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                                             </div>
                                                                                                         </div>
                                                                                                     ))
+                                                                                            )}
+                                                                                            {quote.client_academic_level && quote.results_section && (
+                                                                                                <div class="flex gap-4 mb-3">
+                                                                                                    <div class="flex items-center px-1 py-1 bg-blue-100 border-l-4 border-blue-500 text-blue-900 shadow-md rounded-lg"
+                                                                                                        x-show="quote.client_academic_level">
+                                                                                                        <div>
+                                                                                                            <img src={academic} className='h-5 w-5' />
+                                                                                                        </div>
+                                                                                                        <div className='px-2'>
+                                                                                                            <h3 class="text-md font-semibold">Academic Level</h3>
+                                                                                                            <p class="text-sm">{quote.client_academic_level}</p>
+                                                                                                        </div>
+                                                                                                    </div>
+
+                                                                                                    <div class="flex items-center px-1 py-1 bg-green-100 border-l-4 border-green-500 text-green-900 shadow-md rounded-lg"
+                                                                                                        x-show="quote.results_section">
+                                                                                                        <div>
+                                                                                                            <img src={experiment} className='h-5 w-5' />
+                                                                                                        </div>
+                                                                                                        <div className='px-2'>
+                                                                                                            <h3 class="text-md font-semibold">Results Section</h3>
+                                                                                                            <p class="text-sm">{quote.results_section}</p>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                </div>
                                                                                             )}
                                                                                             <div className='col-md-12'>
                                                                                                 <div className='mb-0 row px-2 pb-3 space-y-4'>

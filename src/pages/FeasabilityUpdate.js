@@ -17,6 +17,10 @@ import { io } from "socket.io-client";
 import ScopeLoader from './ScopeLoader';
 import { getSocket } from './Socket';
 import CallRecordingPending from './CallRecordingPending';
+import academic from '../academic.svg';
+import experiment from '../poll.svg';
+
+
 const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) => {
     const socket = getSocket();
     const [scopeDetails, setScopeDetails] = useState(null);
@@ -429,6 +433,31 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                 )}
                                             </>
                                         )}
+                                        {quote.client_academic_level && quote.results_section && (
+                                              <div class="flex gap-4 mb-3">
+                                                <div class="flex items-center px-1 py-1 bg-blue-100 border-l-4 border-blue-500 text-blue-900 shadow-md rounded-lg"
+                                                  x-show="quote.client_academic_level">
+                                                  <div>
+                                                    <img src={academic} className='h-5 w-5' />
+                                                  </div>
+                                                  <div className='px-2'>
+                                                    <h3 class="text-md font-semibold">Academic Level</h3>
+                                                    <p class="text-sm">{quote.client_academic_level}</p>
+                                                  </div>
+                                                </div>
+
+                                                <div class="flex items-center px-1 py-1 bg-green-100 border-l-4 border-green-500 text-green-900 shadow-md rounded-lg"
+                                                  x-show="quote.results_section">
+                                                    <div>
+                                                    <img src={experiment} className='h-5 w-5' />
+                                                  </div>
+                                                  <div className='px-2'>
+                                                  <h3 class="text-md font-semibold">Results Section</h3>
+                                                  <p class="text-sm">{quote.results_section}</p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            )}
                                         <p>
                                             <strong>Comments:</strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} />
                                         </p>
