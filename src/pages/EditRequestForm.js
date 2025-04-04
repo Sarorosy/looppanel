@@ -733,7 +733,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                         <div className='flex w-full items-end space-x-2 my-3'>
                             <div className='w-1/2'>
                                 <label htmlFor="client_academic_level" className="block text-sm font-medium text-gray-700">
-                                    Client's Acadedemic level
+                                    Client's Academic level
                                 </label>
                                 <select
                                     id="client_academic_level"
