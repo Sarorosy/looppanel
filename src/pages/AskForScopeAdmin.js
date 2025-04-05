@@ -982,12 +982,12 @@ const AskForScopeAdmin = ({
                                 ? "Pending at Admin"
                                 : quote.quote_status == 1 && quote.discount_price != "" && quote.discount_price != null
                                   ? "Discount Submitted"
-                                : quote.quote_status == 1
-                                  ? "Submitted"
-                                  
-                                  : quote.quote_status == 2
-                                    ? "Discount Requested"
-                                    : "Unknown"}
+                                  : quote.quote_status == 1
+                                    ? "Submitted"
+
+                                    : quote.quote_status == 2
+                                      ? "Discount Requested"
+                                      : "Unknown"}
                           </span>
                           {quote.isfeasability == 1 &&
                             quote.feasability_status == "Completed" && (
@@ -1575,31 +1575,35 @@ const AskForScopeAdmin = ({
                                                     )
                                                   )}
                                             </div>
-                                                  {quote.client_academic_level && quote.results_section && (
-                                                                                                <div class="flex gap-4 mb-3">
-                                                                                                  <div class="flex items-center px-1 py-1 bg-blue-100 border-l-4 border-blue-500 text-blue-900 shadow-md rounded-lg"
-                                                                                                    x-show="quote.client_academic_level">
-                                                                                                    <div>
-                                                                                                      <img src={academic} className='h-5 w-5' />
-                                                                                                    </div>
-                                                                                                    <div className='px-2'>
-                                                                                                      <h3 class="text-md font-semibold">Academic Level</h3>
-                                                                                                      <p class="text-sm">{quote.client_academic_level}</p>
-                                                                                                    </div>
-                                                                                                  </div>
-                                                  
-                                                                                                  <div class="flex items-center px-1 py-1 bg-green-100 border-l-4 border-green-500 text-green-900 shadow-md rounded-lg"
-                                                                                                    x-show="quote.results_section">
-                                                                                                      <div>
-                                                                                                      <img src={experiment} className='h-5 w-5' />
-                                                                                                    </div>
-                                                                                                    <div className='px-2'>
-                                                                                                    <h3 class="text-md font-semibold">Results Section</h3>
-                                                                                                    <p class="text-sm">{quote.results_section}</p>
-                                                                                                    </div>
-                                                                                                  </div>
-                                                                                                </div>
-                                                                                              )}
+                                            {quote.client_academic_level && quote.results_section && (
+                                              <div class="flex gap-4 mb-3">
+                                                <div class="flex items-center px-1 py-1 bg-blue-100 border-l-2 border-blue-500 text-blue-900 shadow-md rounded-lg"
+                                                  x-show="quote.client_academic_level">
+
+                                                  <div className=''>
+                                                    <h3 class="text-md font-semibold flex items-center">
+                                                      <div className="pr-1">
+                                                        <img src={academic} className='h-4 w-4' />
+                                                      </div>
+                                                      Academic Level</h3>
+                                                    <p class=" elevenpx">{quote.client_academic_level}</p>
+                                                  </div>
+                                                </div>
+
+                                                <div class="flex items-center px-1 py-1 bg-green-100 border-l-4 border-green-500 text-green-900 shadow-md rounded-lg"
+                                                  x-show="quote.results_section">
+
+                                                  <div className=''>
+                                                    <h3 class="text-md font-semibold flex items-center">
+                                                      <div className="pr-1">
+                                                        <img src={experiment} className='h-4 w-4' />
+                                                      </div>
+                                                      Results Section</h3>
+                                                    <p class="elevenpx">{quote.results_section}</p>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                            )}
                                             <div className="mb-0 mt-0 row px-2 pb-3 space-y-4 ">
                                               {quote.comments &&
                                                 quote.comments != "" &&
@@ -2271,7 +2275,7 @@ const AskForScopeAdmin = ({
                                                 loopUserObject.id != "206" && (
                                                   <>
                                                     <div className="nav-tabs-custom tabb p-3 shadow-0">
-                                                      <ul className="nav nav-tabs pb-2 p-0">
+                                                      <ul className="nav border-none nav-tabs pb-2 p-0">
                                                         <li className="btn btn-primary btn-sm border-0 f-12">
                                                           Submit Price
                                                         </li>
@@ -2317,26 +2321,26 @@ const AskForScopeAdmin = ({
                                                                           {plan} ({quote.currency === "Other" ? quote.other_currency : quote.currency})
 
                                                                           {(() => {
-                                                                          let parsedComments = null;
-                                                                          if (quote.new_comments) {
-                                                                            try {
-                                                                              parsedComments = JSON.parse(quote.new_comments);
-                                                                            } catch (error) {
-                                                                              console.error("Invalid JSON format:", error);
+                                                                            let parsedComments = null;
+                                                                            if (quote.new_comments) {
+                                                                              try {
+                                                                                parsedComments = JSON.parse(quote.new_comments);
+                                                                              } catch (error) {
+                                                                                console.error("Invalid JSON format:", error);
+                                                                              }
                                                                             }
-                                                                          }
 
-                                                                          return (
-                                                                            <i 
-                                                                            class="fa fa-info bg-gray-500 px-1 py-0.5 rounded-full text-white ml-1" 
-                                                                            style={{ fontSize: "8px" }}
-                                                                            data-tooltip-id="my-tooltip" data-tooltip-content={parsedComments?.[plan] || ""}
-                                                                            ></i>
-                                                                          );
-                                                                        })()}
+                                                                            return (
+                                                                              <i
+                                                                                class="fa fa-info bg-gray-500 px-1 py-0.5 rounded-full text-white ml-1"
+                                                                                style={{ fontSize: "8px" }}
+                                                                                data-tooltip-id="my-tooltip" data-tooltip-content={parsedComments?.[plan] || ""}
+                                                                              ></i>
+                                                                            );
+                                                                          })()}
                                                                         </label>
 
-                                                                        
+
                                                                       </td>
                                                                       <td className="border px-1 py-2 ">
                                                                         <div className="flex items-start">

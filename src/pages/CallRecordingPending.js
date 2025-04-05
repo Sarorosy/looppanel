@@ -51,14 +51,14 @@ function CallRecordingPending({ scopeDetails, quoteId, after }) {
             {scopeDetails.callrecordingpending == 0 && (
                 <button 
                     onClick={handleSubmit} 
-                    className="btn text-white bg-orange-500 hover:bg-orange-600 flex items-center f-12 py-0 px-1 btn-sm">
-                    Mark Call Recording Pending <Headset size={15} className='ml-1' />
+                    className="btn text-white bg-orange-500 hover:bg-orange-600 flex items-center f-12 py-1 px-1.5 btn-sm">
+                    Call Recording Pending <Headset size={15} className='ml-1' />
                 </button>
             )}
             {(scopeDetails.callrecordingpending == 1 && scopeDetails.callrecordingpendinguser == loopUserObject.id) && (
                 <button 
                     onClick={handleSubmit} 
-                    className="btn text-white bg-orange-500 hover:bg-orange-600 flex items-center f-12 py-0 px-1 btn-sm">
+                    className="btn text-white bg-orange-500 hover:bg-orange-600 flex items-center f-12 py-1 px-1.5 btn-sm">
                     Remove Call Recording Pending <Headset size={15} className='ml-1' />
                 </button>
             )}

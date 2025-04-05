@@ -526,7 +526,7 @@ th{
   background-position: left;
 
 }
-@keyframes shine {
+@keyframes shine_old {
   to{background-position: right}
  
 }
@@ -946,4 +946,7 @@ focus-outline-none:focus:not(:focus-visible) {
 }
 .tenpx{
   font-size: 10px;
+}
+.elevenpx{
+  font-size: 11px;
 }
