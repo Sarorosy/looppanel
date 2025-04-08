@@ -45,9 +45,9 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const [tlPageOpen, setTlPageOpen] = useState(false);
     const [transferPageOpen, setTransferPageOpen] = useState(false);
     const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0)
-    const [followupCount, setFollowupCount] = useState(0)
+    const [followupCount, setFollowupCount] = useState(0);
+    const [requestPendingCount, setRequestPendingCount] = useState(0);
     const navigate = useNavigate();
-
     const userData = localStorage.getItem('user');
 
     const userObject = JSON.parse(userData);
@@ -128,7 +128,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
     // Fetch all data on initial render
     useEffect(() => {
-        fetchQuotes(false);
+        fetchQuotes(false, false);
         fetchWebsites();
         notification();
     }, []);
@@ -158,15 +158,17 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
         }
     };
 
-    const fetchQuotes = async (nopayload = false) => {
+    
+
+    const fetchQuotes = async (nopayload = false , requestPending = false) => {
         setLoading(true);
 
         let hasResponse = false;
-        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite, user_type: userObject.user_type, team_id :userObject.team_id }
+        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter : requestPending ? "requestsent" : "" }
 
         if (nopayload) {
             // If nopayload is true, send an empty payload
-            payload = { loop_user_id: loopuserId, user_id: userId,user_type: userObject.user_type, team_id :userObject.team_id };
+            payload = { loop_user_id: loopuserId, user_id: userId, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter : requestPending ? "requestsent" : "" }; //selectedFilter : "requestsent"
         }
 
         try {
@@ -186,6 +188,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                 setQuotes(data.data); // Update the quotes state
                 setPendingFeasRequestCount(data.pendingFeasRequestCount ? data.pendingFeasRequestCount : 0);
                 setFollowupCount(data.followingCount ? data.followingCount : 0);
+                setRequestPendingCount(data.request_pending_count ? data.request_pending_count : 0);
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
@@ -372,7 +375,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
         setRefId('');
         setSelectedWebsite('');
         $(selectUserRef.current).val(null).trigger('change');
-        fetchQuotes(true);
+        fetchQuotes(true, false);
     };
 
     const handleRequestAccessClick = async (data) => {
@@ -402,8 +405,8 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
         } catch (error) {
             // Handle network errors
             toast.error('There was an error sending the request.');
-        }finally{
-            fetchQuotes(false);
+        } finally {
+            fetchQuotes(false, false);
         }
     };
 
@@ -412,9 +415,16 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
             {/* Filter Section */}
             <div className="mb-3 bg-white px-3 py-3 rounded aql">
-                <h1 className='text-xl font-bold mb-3'>Query History</h1>
+                <div className="flex items-center justify-start mb-3">
+                    <h1 className='text-xl font-bold '>Query History</h1>
+                    <div
+                    onClick={() => { fetchQuotes(false, true) }}
+                    title='Transfer requests pending count' class="cursor-pointer bg-red-100 text-red-700 px-2 py-1 rounded-lg font-semibold tenpx ml-3">
+                        Request Pending: <span class="font-bold">{requestPendingCount}</span>
+                    </div>
+                </div>
                 <div className='flex items-center space-x-2 '>
-                    <div style={{width : "110px"}}>
+                    <div style={{ width: "110px" }}>
                         <input
                             type="text"
                             className="form-control"
@@ -423,7 +433,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                             onChange={(e) => setRefId(e.target.value)}
                         />
                     </div>
-                    <div style={{width : "160px"}}>
+                    <div style={{ width: "160px" }}>
                         <input
                             type="text"
                             className="form-control"
@@ -432,7 +442,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                             onChange={(e) => setKeyword(e.target.value)}
                         />
                     </div>
-                    <div style={{width : "170px"}}>
+                    <div style={{ width: "170px" }}>
                         <select
                             id="user_id"
                             className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control"
@@ -448,9 +458,11 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                             ))}
                         </select>
                     </div>
+
+
                     <div className=" flex justify-content-end space-x-2 items-center">
                         <label>&nbsp;</label>
-                        <button className="gree text-white flex items-center" onClick={() => { fetchQuotes(false) }}>
+                        <button className="gree text-white flex items-center" onClick={() => { fetchQuotes(false , false) }}>
                             <Filter size={12} />
                             Apply
                         </button>
@@ -529,7 +541,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                         onClose={toggleDetailsPage}
                         queryId={selectedQuery}
                         quotationId={selectedQuote}
-                        after={() => { fetchQuotes(false) }}
+                        after={() => { fetchQuotes(false, false) }}
                     />
 
                 )}
@@ -537,16 +549,16 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
                     <SummaryPage
                         onClose={toggleSummaryPage}
-                        after={() => { fetchQuotes(false) }}
+                        after={() => { fetchQuotes(false, false) }}
                     />
 
                 )}
                 {followingOpen && (
                     <FollowingPage onClose={toggleFollowingPage}
-                        after={() => { fetchQuotes(false) }} />
+                        after={() => { fetchQuotes(false, false) }} />
                 )}
                 {feasPageOpen && (
-                    <FeasabilityPage onClose={toggleFeasPage} after={() => { fetchQuotes(false) }} />
+                    <FeasabilityPage onClose={toggleFeasPage} after={() => { fetchQuotes(false, false) }} />
                 )}
                 {tlPageOpen && (
                     <ManageTlQuery onClose={() => { setTlPageOpen(!tlPageOpen) }} />
@@ -555,7 +567,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                     <TransferRequestsPageTl onClose={() => { setTransferPageOpen(!transferPageOpen) }} />
                 )}
             </AnimatePresence>
-            
+
         </div>
     );
 };
