@@ -158,17 +158,17 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
         }
     };
 
-    
 
-    const fetchQuotes = async (nopayload = false , requestPending = false) => {
+
+    const fetchQuotes = async (nopayload = false, requestPending = false) => {
         setLoading(true);
 
         let hasResponse = false;
-        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter : requestPending ? "requestsent" : "" }
+        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter: requestPending ? "requestsent" : "" }
 
         if (nopayload) {
             // If nopayload is true, send an empty payload
-            payload = { loop_user_id: loopuserId, user_id: userId, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter : requestPending ? "requestsent" : "" }; //selectedFilter : "requestsent"
+            payload = { loop_user_id: loopuserId, user_id: userId, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter: requestPending ? "requestsent" : "" }; //selectedFilter : "requestsent"
         }
 
         try {
@@ -418,8 +418,8 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                 <div className="flex items-center justify-start mb-3">
                     <h1 className='text-xl font-bold '>Query History</h1>
                     <div
-                    onClick={() => { fetchQuotes(false, true) }}
-                    title='Transfer requests pending count' class="cursor-pointer bg-red-100 text-red-700 px-2 py-1 rounded-lg font-semibold tenpx ml-3">
+                        onClick={() => { fetchQuotes(false, true) }}
+                        title='Transfer requests pending count' class="cursor-pointer bg-red-100 text-red-700 px-2 py-1 rounded-lg font-semibold tenpx ml-3">
                         Request Pending: <span class="font-bold">{requestPendingCount}</span>
                     </div>
                 </div>
@@ -462,7 +462,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
                     <div className=" flex justify-content-end space-x-2 items-center">
                         <label>&nbsp;</label>
-                        <button className="gree text-white flex items-center" onClick={() => { fetchQuotes(false , false) }}>
+                        <button className="gree text-white flex items-center" onClick={() => { fetchQuotes(false, false) }}>
                             <Filter size={12} />
                             Apply
                         </button>

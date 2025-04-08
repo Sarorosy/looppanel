@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, Bell, Quote, MessageSquareMore,Megaphone, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight, Hash } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
-import LogoNew from '../logo-new.png';
+import LogoNew from '../v2-black.png';
 import { AnimatePresence } from 'framer-motion';
 import QueryDetails from '../pages/QueryDetails';
 import QueryDetailsAdmin from '../pages/QueryDetailsAdmin';
