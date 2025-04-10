@@ -41,6 +41,7 @@ function DecryptPage() {
                     setResponseMessage("Verification successful."); // Message for step 1
                     setSuccessStep1(true); // Step 1 success
                     localStorage.setItem("loopuser", JSON.stringify(data.data))
+                    localStorage.setItem("loggedInToken", decryptedToken);
                     setStep(2); // Move to step 2 (Authentication)
                 } else {
                     setResponseMessage(data.message || "Unauthorized access.");

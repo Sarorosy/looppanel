@@ -63,6 +63,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [filterSummary, setFilterSummary] = useState('');
     const [showFilterDiv, setShowFilterDiv] = useState(true);
 
+
     const navigate = useNavigate();
 
 
@@ -91,6 +92,41 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     }, [userObject, loopUserObject, navigate]);
 
+
+    const loggedInUserToken = localStorage.getItem("loggedInToken");
+
+    useEffect(() => {
+        const verifyUser = async () => {
+            if (loggedInUserToken == null || loggedInUserToken == undefined || loggedInUserToken == "" || loggedInUserToken == "null") {
+                console.log("User is not logged in. Redirecting to Oops page.");
+                toast.error("Missing or Invalid Token. Please login again.");
+                navigate("/oops");
+                return;
+            }
+
+            try {
+                const response = await fetch("https://apacvault.com/Login/verifyUserToken", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": "Bearer " + loggedInUserToken,
+                    },
+                    body: JSON.stringify({ id: loopUserObject?.id }), // Ensure loopUserObject is defined
+                });
+
+                const data = await response.json();
+
+                if (!data.status) {
+                    toast.error("Invalid Token. Please login again.");
+                    navigate("/oops");
+                }
+            } catch (error) {
+                console.error("Error verifying token:", error);
+            }
+        };
+
+        verifyUser();
+    }, [navigate]); // Add navigate as a dependency
 
 
     const handleTabClick = (tab) => {
@@ -235,7 +271,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         const callrecordingpending = callOption;
 
         let payload = {
-            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date , callrecordingpending
+            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, callrecordingpending
         };
 
         if (nopayload) {
@@ -283,10 +319,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     if (service_name) appliedFilters.push(`Service: ${services.find(s => s.id === service_name)?.name ?? 'N/A'}`);
                     if (subject_area) appliedFilters.push(`Subject: ${subject_area}`);
                     if (tags.length > 0) appliedFilters.push(`Tags: ${tags.join(', ')}`);
-                    if (status)
-                    {
+                    if (status) {
                         let displayStatus = ""
-                        
+
                         switch (status) {
                             case "PendingAtUser":
                                 displayStatus = "PendingAtUser";
@@ -754,9 +789,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 } else {
                     if (data == 0) {
                         return '<span class="text-red-600 font-bold">Pending at Admin</span>';
-                    }else if (data == 1 && row['discount_price'] !== "" && row['discount_price'] !== null) {
+                    } else if (data == 1 && row['discount_price'] !== "" && row['discount_price'] !== null) {
                         return '<span class="text-green-600 font-bold">Discount Submitted</span>';
-                    } else if (data == 1 ) {
+                    } else if (data == 1) {
                         return '<span class="text-green-600 font-bold">Submitted</span>';
                     } else if (data == 2) {
                         return '<span class="text-yellow-600 font-bold">Discount Requested</span>';
@@ -1226,7 +1261,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 ))}
                             </select>
                         </div>
-                        <div className=" mb-3" style={{width: "140px"}}>
+                        <div className=" mb-3" style={{ width: "140px" }}>
 
                             <select
                                 className="form-control form-control-sm"

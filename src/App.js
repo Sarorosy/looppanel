@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useParams, useNavigate } from 'react-router-dom';
 import DecryptPage from "./DecryptPage";
 import Layout from './components/Layout';
 import ManageContactMadeQueries from "./pages/ManageContactMadeQueries";
@@ -15,6 +15,8 @@ import { Toaster } from 'react-hot-toast';
 import FollowingPage from './pages/FollowingPage';
 import FeasabilityPage from './pages/FeasabilityPage';
 import { ScanFace } from 'lucide-react';
+import Oops from './Oops';
+
 // basename="/askforscope"
 
 
@@ -25,6 +27,8 @@ function App() {
   const userData = localStorage.getItem('loopuser');
 
   const userObject = JSON.parse(userData);
+  
+
 
   const requestPermission = async () => {
     try {
@@ -196,6 +200,7 @@ function App() {
           path="/"
           element={<Layout request={requestPermission} />}
         >
+          <Route path='/oops' element={<Oops />} />
           <Route path="/assignquery" element={<ManageContactMadeQueries notification={requestPermission} />} />
           <Route path="/query" element={<ManageQuery />} />
           <Route path="/viewdetails/:ref_id/:quote_id" element={<ViewDetails />} />
