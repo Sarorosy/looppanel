@@ -33,14 +33,14 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [refID, setRefId] = useState('');
     const [scopeId, setScopeId] = useState('');
     const [keyword, setKeyword] = useState('');
-    const [status, setStatus] = useState('');
+    const [status, setStatus] = useState([]);
     const [feasStatus, setFeasStatus] = useState('');
     const [selectedDate, setSelectedDate] = useState(null);
     const [users, setUsers] = useState([]);
     const [services, setServices] = useState([]);
-    const [selectedService, setSelectedService] = useState('');
-    const [selectedSubjectArea, setSelectedSubjectArea] = useState('');
-    const [selectedUser, setSelectedUser] = useState('');
+    const [selectedService, setSelectedService] = useState([]);
+    const [selectedSubjectArea, setSelectedSubjectArea] = useState([]);
+    const [selectedUser, setSelectedUser] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
     const [ptp, setPtp] = useState('');
     const [loading, setLoading] = useState(false);
@@ -48,6 +48,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const tagsRef = useRef(null);
     const selectUserRef = useRef(null);
     const selectServiceRef = useRef(null);
+    const selectSubjectRef = useRef(null);
+    const selectStatusRef = useRef(null);
     const [selectedQuery, setSelectedQuery] = useState('');
     const [selectedQuote, setSelectedQuote] = useState('');
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -212,7 +214,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     useEffect(() => {
         // Initialize select2 for Select Team
         $(selectUserRef.current).select2({
-            placeholder: "Select User",
+            placeholder: "Select Users",
+            multiple: true,
             allowClear: true,
         }).on('change', (e) => {
             setSelectedUser($(e.target).val());
@@ -228,22 +231,75 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     }, [users]);
 
     useEffect(() => {
-        // Initialize select2 for Select Team
         $(selectServiceRef.current).select2({
+            multiple: true,
             placeholder: "Select Service",
             allowClear: true,
         }).on('change', (e) => {
-            setSelectedService($(e.target).val());
+            const rawValues = $(e.target).val() || [];
+    
+            // Sanitize: remove empty strings or invalid entries
+            const sanitized = rawValues.filter(v => v && v.trim() !== '');
+    
+            // Optional: append instead of replace (avoid duplicates)
+            setSelectedService(prev => {
+                const merged = [...new Set([...prev, ...sanitized])]; // unique values only
+                return merged;
+            });
         });
-
-
+    
         return () => {
-            // Destroy select2 when the component unmounts
             if (selectServiceRef.current) {
                 $(selectServiceRef.current).select2('destroy');
             }
         };
     }, [services]);
+
+    useEffect(() => {
+        const $select = $(selectSubjectRef.current);
+    
+        $select.select2({
+            placeholder: "Select SubjectArea",
+            allowClear: true,
+            multiple: true,
+            width: '100%',
+        });
+    
+        $select.on('change', () => {
+            const values = $select.val() || [];
+            const sanitized = values.filter(v => v && v.trim() !== '');
+            setSelectedSubjectArea(sanitized); // ✅ sets array
+        });
+    
+        return () => {
+            $select.off('change');
+            $select.select2('destroy');
+        };
+    }, []);
+
+    useEffect(() => {
+        const $select = $(selectStatusRef.current);
+    
+        $select.select2({
+            placeholder: "Select Quote Status",
+            allowClear: true,
+            multiple: true,
+            width: '100%',
+        });
+    
+        $select.on('change', () => {
+            const values = $select.val() || [];
+            const sanitized = values.filter(v => v && v.trim() !== '');
+            setStatus(sanitized); // ✅ sets array
+        });
+    
+        return () => {
+            $select.off('change');
+            $select.select2('destroy');
+        };
+    }, []);
+    
+    
 
     // Fetch all data on initial render
     useEffect(() => {
@@ -315,35 +371,41 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     if (scope_id) appliedFilters.push(`Scope ID: ${scope_id}`);
                     if (ptp && ptp == 'Yes') appliedFilters.push(`PTP: YES`);
                     if (callOption && callOption == '1') appliedFilters.push(`Call Recording Pending`);
-                    if (userid) appliedFilters.push(`User: ${users.find(u => u.id === userid)?.fld_first_name ?? 'N/A'}`);
-                    if (service_name) appliedFilters.push(`Service: ${services.find(s => s.id === service_name)?.name ?? 'N/A'}`);
+                    if (userid && userid.length > 0) {
+                        const userNames = userid
+                            .map(id => {
+                                const user = users.find(u => u.id.toString() === id.toString());
+                                return user ? user.fld_first_name + ' ' + user.fld_last_name : 'N/A';
+                            })
+                            .join(', ');
+                        appliedFilters.push(`Users: ${userNames}`);
+                    }
+                    
+                    if (service_name && service_name.length > 0) {
+                        const serviceNames = service_name
+                            .map(id => {
+                                const service = services.find(s => s.id.toString() === id.toString());
+                                return service ? service.name : 'N/A';
+                            })
+                            .join(', ');
+                        appliedFilters.push(`Services: ${serviceNames}`);
+                    }
+                    
                     if (subject_area) appliedFilters.push(`Subject: ${subject_area}`);
                     if (tags.length > 0) appliedFilters.push(`Tags: ${tags.join(', ')}`);
-                    if (status) {
-                        let displayStatus = ""
-
-                        switch (status) {
-                            case "PendingAtUser":
-                                displayStatus = "PendingAtUser";
-                                break;
-                            case "PendingAtAdmin":
-                                displayStatus = "PendingAtAdmin";
-                                break;
-                            case "1":
-                                displayStatus = "Submitted";
-                                break;
-                            case "2":
-                                displayStatus = "Discount Requested";
-                                break;
-                            case "3":
-                                displayStatus = "Discount Submitted";
-                                break;
-                            default:
-                                displayStatus = "Pending";
-                                break;
-                        }
-                        appliedFilters.push(`Status: ${displayStatus}`);
+                    if (status && status.length > 0) {
+                        const statusLabels = {
+                            "PendingAtUser": "Pending at User",
+                            "PendingAtAdmin": "Pending at Admin",
+                            "1": "Submitted",
+                            "2": "Discount Requested",
+                            "3": "Discount Submitted"
+                        };
+                    
+                        const displayStatuses = status.map(s => statusLabels[s] ?? "Pending");
+                        appliedFilters.push(`Status: ${displayStatuses.join(", ")}`);
                     }
+                    
                     if (feasability_status) appliedFilters.push(`Feasibility: ${feasability_status}`);
                     if (start_date && end_date) appliedFilters.push(`Date: ${start_date.toLocaleDateString()} - ${end_date.toLocaleDateString()}`);
 
@@ -884,18 +946,20 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setScopeId('');
         setKeyword('');
         setCallOption('');
-        setStatus('');
+        setStatus([]);
         setFeasStatus('');
         setStartDate('');
         setEndDate('');
-        setSelectedUser('');  // Reset selected user
-        setSelectedService('');  // Reset selected service
+        setSelectedUser([]);  // Reset selected user
+        setSelectedService([]);  // Reset selected service
         setSelectedSubjectArea('');
         setSelectedTags([]);  // Reset selected tags
 
         // Reset the select elements and trigger change
         $(selectUserRef.current).val(null).trigger('change');
         $(selectServiceRef.current).val(null).trigger('change');
+        $(selectSubjectRef.current).val(null).trigger('change');
+        $(selectStatusRef.current).val(null).trigger('change');
         $(tagsRef.current).val([]).trigger('change');
         setFilterSummary('');
 
@@ -914,18 +978,20 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setScopeId('');
         setCallOption('')
         setKeyword('');
-        setStatus('');
+        setStatus([]);
         setFeasStatus('');
         setStartDate('');
         setEndDate('');
-        setSelectedUser('');  // Reset selected user
-        setSelectedService('');  // Reset selected service
+        setSelectedUser([]);  // Reset selected user
+        setSelectedService([]);  // Reset selected service
         setSelectedSubjectArea('');
         setSelectedTags([]);  // Reset selected tags
 
         // Reset the select elements and trigger change
         $(selectUserRef.current).val(null).trigger('change');
         $(selectServiceRef.current).val(null).trigger('change');
+        $(selectSubjectRef.current).val(null).trigger('change');
+        $(selectStatusRef.current).val(null).trigger('change');
         $(tagsRef.current).val([]).trigger('change');
 
     };
@@ -999,11 +1065,11 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             <select
                                 id="user_id"
                                 className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control form-control-sm slt-x-isu "
-
+                                multiple
                                 value={selectedUser}
                                 ref={selectUserRef}
                             >
-                                <option value="">Select User</option>
+                                
                                 {users.map(user => (
                                     <option key={user.id} value={user.id}>
                                         {user.fld_first_name + " " + user.fld_last_name}
@@ -1015,7 +1081,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             <select
                                 id="service_name"
                                 className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control form-control-sm"
-
+                                multiple
                                 value={selectedService}
                                 ref={selectServiceRef}
                             >
@@ -1031,8 +1097,10 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             <select
                                 id="subject_area"
                                 className="form-control form-control-sm"
+                                multiple
                                 value={selectedSubjectArea}
-                                onChange={(e) => setSelectedSubjectArea(e.target.value)}
+                                ref={selectSubjectRef}
+                                //onChange={(e) => setSelectedSubjectArea(e.target.value)}
                             >
                                 <option value="">Select Subject Area</option>
 
@@ -1205,7 +1273,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             <select
                                 className="form-control form-control-sm"
                                 value={status}
-                                onChange={(e) => setStatus(e.target.value)}
+                                ref={selectStatusRef}
+                                //onChange={(e) => setStatus(e.target.value)}
                             >
                                 <option value="">Select Quote Status</option>
                                 <option value="PendingAtUser">Pending at User</option>

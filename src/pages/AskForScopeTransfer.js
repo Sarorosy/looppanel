@@ -158,8 +158,6 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
     };
 
 
-
-
     useEffect(() => {
         if (queryId) {
             fetchScopeDetails(); // Fetch the scope details when the component mounts
