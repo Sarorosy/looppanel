@@ -37,6 +37,7 @@ import {
   MessageCirclePlus,
   MessageCircleX,
   Headset,
+  Crown,
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import AddTags from "./AddTags";
@@ -59,6 +60,8 @@ import EditCommentsComponent from "./EditCommentsComponent";
 import CallRecordingPending from "./CallRecordingPending";
 import academic from '../academic.svg';
 import experiment from '../poll.svg';
+import AttachedFiles from "./AttachedFiles";
+import AlreadyQuoteGiven from "./AlreadyQuoteGiven";
 
 
 const AskForScopeAdmin = ({
@@ -67,6 +70,7 @@ const AskForScopeAdmin = ({
   quotationId,
   viewAll,
   clientEmail,
+  clientWebsite,
   info,
 }) => {
   const socket = getSocket();
@@ -140,6 +144,7 @@ const AskForScopeAdmin = ({
   const [scopeTabVisible, setScopeTabVisible] = useState(true);
   const [chatTabVisible, setChatTabVisible] = useState(true);
   const [feasTabVisible, setFeasTabVisible] = useState(false);
+  const [fileTabVisible, setFileTabVisible] = useState(true);
   const [fullScreenTab, setFullScreenTab] = useState(null);
   const closeModal = () => {
     setChatTabVisible(false);
@@ -147,15 +152,55 @@ const AskForScopeAdmin = ({
   const handleTabButtonClick = (tab) => {
     if (tab == "scope") {
       setScopeTabVisible(true);
-      setFullScreenTab(null);
+      setFullScreenTab(null)
     } else if (tab == "chat") {
       setChatTabVisible(!chatTabVisible);
-      setFullScreenTab(null);
+      setFullScreenTab(null)
     } else if (tab == "feas") {
       setFeasTabVisible(!feasTabVisible);
-      setFullScreenTab(null);
+      setFullScreenTab(null)
+    }
+    else if (tab == "file") {
+      setFileTabVisible(!fileTabVisible);
+      setFullScreenTab(null)
     }
   };
+
+  const handlefullScreenBtnClick = (tab) => {
+    if (tab == "scope") {
+      setFullScreenTab("scope")
+    } else if (tab == "chat") {
+      setFullScreenTab("chat")
+    } else if (tab == "feas") {
+      setFullScreenTab("feas")
+    } else if (tab == "file") {
+      setFullScreenTab("file")
+    } else {
+      setFullScreenTab(null)
+    }
+  }
+  const getVisibleTabCount = () => {
+    let visibleCount = 0;
+    if (scopeTabVisible) visibleCount++;
+    if (chatTabVisible) visibleCount++;
+    if (feasTabVisible) visibleCount++;
+    if (fileTabVisible) visibleCount++;
+    return visibleCount;
+  };
+
+  // Determine the colClass based on the number of visible tabs
+  const colClass = useMemo(() => {
+    const visibleTabs = getVisibleTabCount();
+    if (visibleTabs === 1) {
+      return "col-md-12";
+    } else if (visibleTabs === 2) {
+      return "col-md-6";
+    } else if (visibleTabs === 3) {
+      return "col-md-4";
+    } else {
+      return "col-md-3";
+    }
+  }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
 
   useEffect(() => {
     socket.on("tagsUpdated", (data) => {
@@ -193,26 +238,7 @@ const AskForScopeAdmin = ({
     };
   }, []);
 
-  const handlefullScreenBtnClick = (tab) => {
-    if (tab == "scope") {
-      // setChatTabVisible(false);
-      // setFeasTabVisible(false);
-      // setScopeTabVisible(true);
-      setFullScreenTab("scope");
-    } else if (tab == "chat") {
-      // setChatTabVisible(true);
-      // setFeasTabVisible(false);
-      // setScopeTabVisible(false);
-      setFullScreenTab("chat");
-    } else if (tab == "feas") {
-      // setChatTabVisible(false);
-      // setFeasTabVisible(true);
-      // setScopeTabVisible(false);
-      setFullScreenTab("feas");
-    } else {
-      setFullScreenTab(null);
-    }
-  };
+
 
   const FollowersList = ({ followerNames }) => {
     if (!followerNames) return null;
@@ -250,25 +276,7 @@ const AskForScopeAdmin = ({
     setSelectedMP(selectedMP === plan ? "" : plan); // Toggle selection
   };
 
-  const getVisibleTabCount = () => {
-    let visibleCount = 0;
-    if (scopeTabVisible) visibleCount++;
-    if (chatTabVisible) visibleCount++;
-    if (feasTabVisible) visibleCount++;
-    return visibleCount;
-  };
 
-  // Determine the colClass based on the number of visible tabs
-  const colClass = useMemo(() => {
-    const visibleTabs = getVisibleTabCount();
-    if (visibleTabs === 1) {
-      return "col-md-12";
-    } else if (visibleTabs === 2) {
-      return "col-md-6";
-    } else {
-      return "col-md-4";
-    }
-  }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
 
   const planColClass = useMemo(() => {
     const visibleTabs = getVisibleTabCount();
@@ -865,6 +873,14 @@ const AskForScopeAdmin = ({
                           style={{ fontSize: "11px" }}
                         >
                           <p className="flex items-center">
+                          {quote.parent_quote == true && (
+                              <Crown color='orange' 
+                              className="mr-1"
+                              size={20}
+                              data-tooltip-id="my-tooltip"
+                              data-tooltip-content="Parent Quote" // Tooltip for Parent Quote
+                              />
+                            )}
                             {quote.assign_id}
                             {quote.ptp == "Yes" && (
                               <span
@@ -1126,6 +1142,26 @@ const AskForScopeAdmin = ({
                                 >
                                   Feasibility{" "}
                                   {feasTabVisible ? (
+                                    <Eye
+                                      size={20}
+                                      className="badge badge-dark ml-2"
+                                    />
+                                  ) : (
+                                    <EyeClosed
+                                      size={20}
+                                      className="badge badge-dark ml-2"
+                                    />
+                                  )}
+                                </button>
+                                <button
+                                  onClick={() => handleTabButtonClick("file")}
+                                  className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${fileTabVisible
+                                    ? "btn-info focus-outline-none"
+                                    : "btn-light"
+                                    } btn btn-sm`}
+                                >
+                                  Attached Files{" "}
+                                  {fileTabVisible ? (
                                     <Eye
                                       size={20}
                                       className="badge badge-dark ml-2"
@@ -2279,6 +2315,9 @@ const AskForScopeAdmin = ({
                                                         <li className="btn btn-primary btn-sm border-0 f-12">
                                                           Submit Price
                                                         </li>
+                                                        
+                                                         <AlreadyQuoteGiven email_id={clientEmail} website_id={clientWebsite} />
+                                                        
                                                       </ul>
 
                                                       <div className="tab-content p-0 mt-2">
@@ -2617,6 +2656,40 @@ const AskForScopeAdmin = ({
                                               onlyFetch="feasibility"
                                             />
                                           </div>
+                                        </>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                              {fileTabVisible && (
+                                <div
+                                  className={`${fullScreenTab == "file"
+                                    ? "custom-modal"
+                                    : colClass
+                                    }`}
+                                >
+                                  <div
+                                    className={`${fullScreenTab == "file"
+                                      ? "custom-modal-content"
+                                      : ""
+                                      }`}
+                                  >
+                                    <div className={` pr-0`}>
+                                      <div className="bg-white">
+                                        <>
+                                          <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                            <h3 className=""><strong>Attached Files</strong></h3>
+                                            <div className='flex items-center'>
+
+                                              <button className="">
+                                                {fullScreenTab == "file" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("file") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                              </button>
+                                            </div>
+                                          </div>
+
+                                          <AttachedFiles ref_id={quote.assign_id} relevant_file={quote.relevant_file} quote={quote} />
+
                                         </>
                                       </div>
                                     </div>

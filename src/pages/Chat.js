@@ -646,20 +646,23 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                             ) : null}
                         </div>
                         <div className='flex items-end justify-end'>
-                            <div className="flex items-end justify-end ">
-                                <label
-                                    htmlFor="fileInput"
-                                    className="border border-gray-300 rounded px-2 py-1 bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200 mb-0 mr-2"
-                                >
-                                    <Paperclip size={15} />
-                                </label>
-                                <input
-                                    type="file"
-                                    id="fileInput"
-                                    onChange={handleFileChange}
-                                    className="hidden"
-                                />
-                            </div>
+                            {allDetails.parent_quote == true && (
+                                <div className="flex items-end justify-end ">
+                                    <label
+                                        htmlFor="fileInput"
+                                        className="border border-gray-300 rounded px-2 py-1 bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200 mb-0 mr-2"
+                                    >
+                                        <Paperclip size={15} />
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="fileInput"
+                                        onChange={handleFileChange}
+                                        className="hidden"
+                                    />
+                                </div>
+                            )}
+
                             <button
                                 onClick={sendMessage}
                                 disabled={buttonDisabled}

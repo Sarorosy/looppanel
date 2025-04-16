@@ -14,7 +14,7 @@ import { io } from "socket.io-client";
 import { getSocket } from './Socket';
 
 
-const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }) => {
+const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, parentQuote }) => {
     const [currencies, setCurrencies] = useState([]);
     const [services, setServices] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
@@ -320,12 +320,12 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
             setSubmitting(false);
             return;
         }
-        if(!client_academic_level){
+        if (!client_academic_level) {
             toast.error('Please select client academic level!');
             setSubmitting(false);
             return;
         }
-        if(!results_section){
+        if (!results_section) {
             toast.error('Please select results section!');
             setSubmitting(false);
             return;
@@ -340,8 +340,8 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
         formData.append('currency', selectedCurrency);
         formData.append('other_currency', otherCurrency);
         formData.append('service_name', selectedService);
-        formData.append('client_academic_level',client_academic_level);
-        formData.append('results_section',results_section);
+        formData.append('client_academic_level', client_academic_level);
+        formData.append('results_section', results_section);
         formData.append('subject_area', selectedSubjectArea);
         formData.append('other_subject_area', otherSubjectArea);
         formData.append('plan', sortedPlans);
@@ -513,15 +513,17 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
                         >
                             Ask For Scope
                         </h2>
-                        <h2
-                            className={`tab-btn-n-set cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 1
-                                ? "bg-white text-blue-700 shadow-md"
-                                : "bg-blue-600 hover:bg-blue-500 text-gray-200"
-                                }`}
-                            onClick={() => setIsFeasability(1)}
-                        >
-                            Ask For Feasibility Check
-                        </h2>
+                        {parentQuote && (
+                            <h2
+                                className={`tab-btn-n-set cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 1
+                                    ? "bg-white text-blue-700 shadow-md"
+                                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
+                                    }`}
+                                onClick={() => setIsFeasability(1)}
+                            >
+                                Ask For Feasibility Check
+                            </h2>
+                        )}
                     </div>
 
                     {/* Close Button */}
@@ -979,35 +981,38 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName }
 
 
                         </div>
-                        {/* File Upload */}
-                        <div className="w-full">
-                            <label className="block text-sm font-medium text-gray-700">Upload Files</label>
-                            {files.map((item, index) => (
-                                <div key={item.id} className="flex items-center mt-1 space-x-2">
-                                    <input
-                                        type="file"
-                                        onChange={(e) => handleFileChange(item.id, e)}
-                                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                    />
-                                    {index > 0 && (
-                                        <button
-                                            type="button"
-                                            onClick={() => handleRemoveFileInput(item.id)}
-                                            className="px-2 py-1 bg-red-500 text-white rounded white-space-nowrap f-14"
-                                        >
-                                            - Remove
-                                        </button>
-                                    )}
-                                </div>
-                            ))}
-                            <button
-                                type="button"
-                                onClick={handleAddFileInput}
-                                className="mt-2 px-2 py-1 bg-green-500 text-white rounded f-14"
-                            >
-                                + Add
-                            </button>
-                        </div>
+
+                        {parentQuote && (
+                            <div className="w-full">
+                                <label className="block text-sm font-medium text-gray-700">Upload Files</label>
+                                {files.map((item, index) => (
+                                    <div key={item.id} className="flex items-center mt-1 space-x-2">
+                                        <input
+                                            type="file"
+                                            onChange={(e) => handleFileChange(item.id, e)}
+                                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border file:border-gray-300 file:rounded file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                        />
+                                        {index > 0 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => handleRemoveFileInput(item.id)}
+                                                className="px-2 py-1 bg-red-500 text-white rounded white-space-nowrap f-14"
+                                            >
+                                                - Remove
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={handleAddFileInput}
+                                    className="mt-2 px-2 py-1 bg-green-500 text-white rounded f-14"
+                                >
+                                    + Add
+                                </button>
+                            </div>
+                        )}
+
 
                         {/* Submit Button */}
                         <div className='text-right'>

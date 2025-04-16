@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle,Hourglass, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset, Star, Crown } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -23,6 +23,7 @@ import MergedHistoryComponentNew from "./MergedHistoryComponentNew";
 import CallRecordingPending from './CallRecordingPending';
 import academic from '../academic.svg';
 import experiment from '../poll.svg';
+import AttachedFiles from './AttachedFiles';
 
 
 
@@ -57,6 +58,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
   const [historyLoading, setHistoryLoading] = useState(false);
 
   const [error, setError] = useState(null);
+  const [totalCount, setTotalCount] = useState("0");
 
   const [historyPanelOpen, SetHistoryPanelOpen] = useState(false);
   const [quoteIdForHistory, setQuoteIdForHistory] = useState('');
@@ -70,6 +72,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
   const [scopeTabVisible, setScopeTabVisible] = useState(true);
   const [chatTabVisible, setChatTabVisible] = useState(true);
   const [feasTabVisible, setFeasTabVisible] = useState(false);
+  const [fileTabVisible, setFileTabVisible] = useState(true);
   const [fullScreenTab, setFullScreenTab] = useState(null);
   const closeModal = () => {
     setChatTabVisible(false);
@@ -85,24 +88,21 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
       setFeasTabVisible(!feasTabVisible);
       setFullScreenTab(null)
     }
+    else if (tab == "file") {
+      setFileTabVisible(!fileTabVisible);
+      setFullScreenTab(null)
+    }
   };
 
   const handlefullScreenBtnClick = (tab) => {
     if (tab == "scope") {
-      // setChatTabVisible(false);
-      // setFeasTabVisible(false);
-      // setScopeTabVisible(true);
       setFullScreenTab("scope")
     } else if (tab == "chat") {
-      // setChatTabVisible(true);
-      // setFeasTabVisible(false);
-      // setScopeTabVisible(false);
       setFullScreenTab("chat")
     } else if (tab == "feas") {
-      // setChatTabVisible(false);
-      // setFeasTabVisible(true);
-      // setScopeTabVisible(false);
       setFullScreenTab("feas")
+    } else if (tab == "file") {
+      setFullScreenTab("file")
     } else {
       setFullScreenTab(null)
     }
@@ -112,6 +112,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
     if (scopeTabVisible) visibleCount++;
     if (chatTabVisible) visibleCount++;
     if (feasTabVisible) visibleCount++;
+    if (fileTabVisible) visibleCount++;
     return visibleCount;
   };
 
@@ -122,8 +123,10 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
       return "col-md-12";
     } else if (visibleTabs === 2) {
       return "col-md-6";
-    } else {
+    } else if (visibleTabs === 3) {
       return "col-md-4";
+    } else {
+      return "col-md-3";
     }
   }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
 
@@ -193,7 +196,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
 
   const thisUserId = (userIdDefined && userIdDefined != null && userIdDefined != "") ? userIdDefined : loopUserObject.id
 
-
+  const [parentQuote, setParentQuote] = useState(false);
   const fetchScopeDetails = async () => {
     setLoading(true); // Show loading spinner
     let hasResponse = false;
@@ -221,7 +224,61 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
               ? JSON.parse(quote.relevant_file)
               : [], // Parse the file data if present
           }));
+          if (parsedQuoteInfo.length === 0) {
+            setParentQuote(true);
+          } else {
+            setParentQuote(false);
+          }
+          setScopeDetails(parsedQuoteInfo); // Set the array of quotes
+          setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
+          setTotalCount(data.totalCounter ? data.totalCounter : "0");
+        } else {
+          setScopeDetails(null); // If no quoteInfo, set scopeDetails to null
+        }
+      } else {
+        console.error('Failed to fetch Details:', data.message);
+      }
+      hasResponse = true;
+    } catch (error) {
+      console.error('Error fetching details:', error);
+    } finally {
+      if (hasResponse) {
+        setLoading(false); // Hide the loader
+      }
+    }
+  };
+  const fetchAllScopeDetails = async () => {
+    setLoading(true); // Show loading spinner
+    let hasResponse = false;
+    try {
+      const response = await fetch(
+        'https://apacvault.com/Webapi/adminScopeDetails',
+        {
+          method: 'POST', // Use POST method
+          headers: {
+            'Content-Type': 'application/json', // Set content type to JSON
+          },
+          body: JSON.stringify({ ref_id: queryId, user_type: userType }), // Send the ref_id
+        }
+      );
 
+      const data = await response.json(); // Parse the response as JSON
+      console.log(data);
+
+      if (data.status) {
+        if (data.quoteInfo != null && Array.isArray(data.quoteInfo)) {
+          // If quoteInfo is an array, process each entry
+          const parsedQuoteInfo = data.quoteInfo.map((quote) => ({
+            ...quote,
+            relevant_file: quote.relevant_file
+              ? JSON.parse(quote.relevant_file)
+              : [], // Parse the file data if present
+          }));
+          if (parsedQuoteInfo.length === 0) {
+            setParentQuote(true);
+          } else {
+            setParentQuote(false);
+          }
           setScopeDetails(parsedQuoteInfo); // Set the array of quotes
           setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
         } else {
@@ -511,6 +568,15 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
         <h2 className="text-sx font-semibold ">Ask For Scope </h2>
         <div className="flex items-center">
           <button
+            onClick={fetchAllScopeDetails}
+            className="flex items-center mr-2 rounded px-2 py-1 text-xs btn-light"
+          >
+            <Hourglass size={10} className="mr-1" /> <div>All </div>
+            <span className="px-1 py-0 f-10 rounded-full bg-blue-600 text-white ml-2">
+              {totalCount}
+            </span>
+          </button>
+          <button
             disabled={tlType && tlType == 2}
             onClick={toggleAddNewForm}
             className="flex items-center mr-2 rounded px-2 py-1 text-xs btn-light line-h-in"
@@ -559,6 +625,14 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                           style={{ fontSize: "11px" }}
                         >
                           <p className="flex items-center line-h-in">
+                            {quote.parent_quote == true && (
+                              <Crown color='orange' 
+                              className="mr-1"
+                              size={20}
+                              data-tooltip-id="my-tooltip"
+                              data-tooltip-content="Parent Quote" // Tooltip for Parent Quote
+                              />
+                            )}
                             {quote.assign_id}
                             {quote.ptp == "Yes" && (
                               <span
@@ -841,6 +915,27 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                 >
                                   Feasibility{" "}
                                   {feasTabVisible ? (
+                                    <Eye
+                                      size={20}
+                                      className="badge badge-dark ml-2"
+                                    />
+                                  ) : (
+                                    <EyeClosed
+                                      size={20}
+                                      className="badge badge-dark ml-2"
+                                    />
+                                  )}
+                                </button>
+
+                                <button
+                                  onClick={() => handleTabButtonClick("file")}
+                                  className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${fileTabVisible
+                                    ? "btn-info focus-outline-none"
+                                    : "btn-light"
+                                    } btn btn-sm`}
+                                >
+                                  Attached Files{" "}
+                                  {fileTabVisible ? (
                                     <Eye
                                       size={20}
                                       className="badge badge-dark ml-2"
@@ -1248,12 +1343,12 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
 
                                                 <div class="flex items-center px-1 py-1 bg-green-100 border-l-4 border-green-500 text-green-900 shadow-md rounded-lg"
                                                   x-show="quote.results_section">
-                                                    <div>
+                                                  <div>
                                                     <img src={experiment} className='h-5 w-5' />
                                                   </div>
                                                   <div className='px-2'>
-                                                  <h3 class="text-md font-semibold">Results Section</h3>
-                                                  <p class="text-sm">{quote.results_section}</p>
+                                                    <h3 class="text-md font-semibold">Results Section</h3>
+                                                    <p class="text-sm">{quote.results_section}</p>
                                                   </div>
                                                 </div>
                                               </div>
@@ -1895,6 +1990,40 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                   </div>
                                 </div>
                               )}
+                              {fileTabVisible && (
+                                <div
+                                  className={`${fullScreenTab == "file"
+                                    ? "custom-modal"
+                                    : colClass
+                                    }`}
+                                >
+                                  <div
+                                    className={`${fullScreenTab == "file"
+                                      ? "custom-modal-content"
+                                      : ""
+                                      }`}
+                                  >
+                                    <div className={` pr-0`}>
+                                      <div className="bg-white">
+                                        <>
+                                          <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                            <h3 className=""><strong>Attached Files</strong></h3>
+                                            <div className='flex items-center'>
+
+                                              <button className="">
+                                                {fullScreenTab == "file" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("file") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                              </button>
+                                            </div>
+                                          </div>
+
+                                          <AttachedFiles ref_id={quote.assign_id} relevant_file={quote.relevant_file} quote={quote} />
+
+                                        </>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           </td>
                         </tr>
@@ -1915,6 +2044,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
           <AnimatePresence>
             {addNewFormOpen && (
               <SubmitRequestQuote
+                parentQuote={parentQuote}
                 refId={queryId}
                 onClose={toggleAddNewForm}
                 after={fetchScopeDetails}

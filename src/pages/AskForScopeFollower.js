@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, Pencil, CheckCircle, XCircle, Share2, Copy } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, Pencil, CheckCircle, XCircle, Share2, Copy, Crown } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -22,6 +22,7 @@ import ReactTooltip, { Tooltip } from 'react-tooltip';
 import MergedHistoryComponentNew from "./MergedHistoryComponentNew";
 import academic from '../academic.svg';
 import experiment from '../poll.svg';
+import AttachedFiles from './AttachedFiles';
 
 
 
@@ -67,6 +68,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
     const [scopeTabVisible, setScopeTabVisible] = useState(true);
     const [chatTabVisible, setChatTabVisible] = useState(true);
     const [feasTabVisible, setFeasTabVisible] = useState(false);
+    const [fileTabVisible, setFileTabVisible] = useState(true);
     const [fullScreenTab, setFullScreenTab] = useState(null);
     const closeModal = () => {
         setChatTabVisible(false);
@@ -82,24 +84,21 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
             setFeasTabVisible(!feasTabVisible);
             setFullScreenTab(null)
         }
+        else if (tab == "file") {
+            setFileTabVisible(!fileTabVisible);
+            setFullScreenTab(null)
+        }
     };
 
     const handlefullScreenBtnClick = (tab) => {
         if (tab == "scope") {
-            // setChatTabVisible(false);
-            // setFeasTabVisible(false);
-            // setScopeTabVisible(true);
             setFullScreenTab("scope")
         } else if (tab == "chat") {
-            // setChatTabVisible(true);
-            // setFeasTabVisible(false);
-            // setScopeTabVisible(false);
             setFullScreenTab("chat")
         } else if (tab == "feas") {
-            // setChatTabVisible(false);
-            // setFeasTabVisible(true);
-            // setScopeTabVisible(false);
             setFullScreenTab("feas")
+        } else if (tab == "file") {
+            setFullScreenTab("file")
         } else {
             setFullScreenTab(null)
         }
@@ -109,6 +108,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
         if (scopeTabVisible) visibleCount++;
         if (chatTabVisible) visibleCount++;
         if (feasTabVisible) visibleCount++;
+        if (fileTabVisible) visibleCount++;
         return visibleCount;
     };
 
@@ -119,8 +119,10 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
             return "col-md-12";
         } else if (visibleTabs === 2) {
             return "col-md-6";
-        } else {
+        } else if (visibleTabs === 3) {
             return "col-md-4";
+        } else {
+            return "col-md-3";
         }
     }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
 
@@ -522,6 +524,14 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                             >
                                                 <td className="border px-2 py-2 " style={{ fontSize: "11px" }}>
                                                     <p className='flex items-center line-h-in'>
+                                                        {quote.parent_quote == true && (
+                                                            <Crown color='orange'
+                                                                className="mr-1"
+                                                                size={20}
+                                                                data-tooltip-id="my-tooltip"
+                                                                data-tooltip-content="Parent Quote" // Tooltip for Parent Quote
+                                                            />
+                                                        )}
                                                         {quote.assign_id}
                                                         {quote.ptp == "Yes" && (
                                                             <span
@@ -655,6 +665,26 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                         } btn btn-sm`}
                                                                 >
                                                                     Feasibility  {feasTabVisible ? <Eye size={20} className="badge badge-dark ml-2" /> : <EyeClosed size={20} className="badge badge-dark ml-2" />}
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleTabButtonClick("file")}
+                                                                    className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${fileTabVisible
+                                                                        ? "btn-info focus-outline-none"
+                                                                        : "btn-light"
+                                                                        } btn btn-sm`}
+                                                                >
+                                                                    Attached Files{" "}
+                                                                    {fileTabVisible ? (
+                                                                        <Eye
+                                                                            size={20}
+                                                                            className="badge badge-dark ml-2"
+                                                                        />
+                                                                    ) : (
+                                                                        <EyeClosed
+                                                                            size={20}
+                                                                            className="badge badge-dark ml-2"
+                                                                        />
+                                                                    )}
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -1185,6 +1215,40 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                             onlyFetch="feasibility"
                                                                                         />
                                                                                     </div>
+                                                                                </>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                            {fileTabVisible && (
+                                                                <div
+                                                                    className={`${fullScreenTab == "file"
+                                                                        ? "custom-modal"
+                                                                        : colClass
+                                                                        }`}
+                                                                >
+                                                                    <div
+                                                                        className={`${fullScreenTab == "file"
+                                                                            ? "custom-modal-content"
+                                                                            : ""
+                                                                            }`}
+                                                                    >
+                                                                        <div className={` pr-0`}>
+                                                                            <div className="bg-white">
+                                                                                <>
+                                                                                    <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                                                                        <h3 className=""><strong>Attached Files</strong></h3>
+                                                                                        <div className='flex items-center'>
+
+                                                                                            <button className="">
+                                                                                                {fullScreenTab == "file" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("file") }} className="btn btn-sm btn-light flex items-center p-1" />)}
+                                                                                            </button>
+                                                                                        </div>
+                                                                                    </div>
+
+                                                                                    <AttachedFiles ref_id={quote.assign_id} relevant_file={quote.relevant_file} quote={quote} />
+
                                                                                 </>
                                                                             </div>
                                                                         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell, Quote, MessageSquareMore,Megaphone, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight, Hash } from 'lucide-react';
+import { LogOut, Bell, Quote, MessageSquareMore, Megaphone, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight, Hash, UserX } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import LogoNew from '../new-logo.png';
 import { AnimatePresence } from 'framer-motion';
@@ -11,13 +11,15 @@ import FeasabilityQueryDetails from '../pages/FeasabilityQueryDetails';
 import toast from 'react-hot-toast';
 import NotificationLoader from '../pages/NotificationLoader';
 import TransferRequestsPage from '../pages/TransferRequestsPage';
+import ConfirmationModal from './ConfirmationModal';
+import { getSocket } from '../pages/Socket';
 
 const Header = ({ requestPermission }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationCount, setNotificationCount] = useState(0); // State for notification count
   const [notifications, setNotifications] = useState([]); // State for notifications
   const [notificationsVisible, setNotificationsVisible] = useState(false); // To control visibility of notifications dropdown
-  
+  const socket = getSocket();
   const [loading, setLoading] = useState(false); // State for loading spinner
   const [selectedQuery, setSelectedQuery] = useState('');
   const [selectedQuote, setSelectedQuote] = useState('');
@@ -25,7 +27,7 @@ const Header = ({ requestPermission }) => {
   const [isFeasDetailsOpen, setIsFeasDetailsOpen] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState(null);
 
-  
+
 
   const navigate = useNavigate();
 
@@ -56,10 +58,21 @@ const Header = ({ requestPermission }) => {
     setIsFeasDetailsOpen(!isFeasDetailsOpen);
   };
 
+  useEffect(() => {
+    socket.on('terminateallsessions', (data) => {
+      localStorage.clear();
+      window.location.href="https://apacvault.com/login/";
+    });
+
+    return () => {
+        socket.off('terminateallsessions');  // Clean up on component unmount
+    };
+}, []);
+
   const timeAgo = (timestamp) => {
     const currentTime = Math.floor(Date.now() / 1000); // Get current time in seconds
     const diff = currentTime - timestamp; // Time difference in seconds
-  
+
     const seconds = diff;
     const minutes = Math.floor(diff / 60);
     const hours = Math.floor(diff / 3600);
@@ -67,7 +80,7 @@ const Header = ({ requestPermission }) => {
     const weeks = Math.floor(diff / 604800);
     const months = Math.floor(diff / 2628000);
     const years = Math.floor(diff / 31536000);
-  
+
     if (seconds < 60) return `${seconds} sec ago`;
     if (minutes < 60) return `${minutes} min ago`;
     if (hours < 24) return `${hours} hr ago`;
@@ -128,12 +141,12 @@ const Header = ({ requestPermission }) => {
 
     setSelectedQuery(refId);
     setSelectedQuote(quoteId)
-    if(isfeasability == 0){
+    if (isfeasability == 0) {
       setIsDetailsOpen(true);
-    }else{
-      if(viewer != null && viewer == 'owner'){
+    } else {
+      if (viewer != null && viewer == 'owner') {
         setIsDetailsOpen(true);
-      }else if(viewer!= null && viewer == 'viewer'){
+      } else if (viewer != null && viewer == 'viewer') {
         setIsFeasDetailsOpen(true);
       }
     }
@@ -229,8 +242,17 @@ const Header = ({ requestPermission }) => {
     }
   };
 
-  
-  
+  const logoutAllUsers = async () => {
+    console.log("Logout all users clicked");
+    socket.emit("closeallusersessions", "yesclearall")
+
+  }
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const openAllUsersSessionClear = () =>{
+    setConfirmationModalOpen(true);
+  }
+
+
 
 
   return (
@@ -239,18 +261,26 @@ const Header = ({ requestPermission }) => {
         {/* Logo and Navigation Links */}
         <div className="flex items-center">
           <h1 className="text-xl font-bold mr-6  py-3 px-2">
-          <img
-          src={LogoNew}
-          alt="Company Logo"
-          className="nav-logo"
-        />
+            <img
+              src={LogoNew}
+              alt="Company Logo"
+              className="nav-logo"
+            />
           </h1>
 
         </div>
 
         {/* User Session Info */}
         <div className="relative n-dp-dn z-50 items-center flex">
-          
+
+          {userObject.id == 1 && (
+            <button onClick={openAllUsersSessionClear} className=" ml-6 relative text-red-500 rounded-md">
+              <UserX size={24} />
+
+            </button>
+          )}
+
+
           <button onClick={toggleNotifications} className="text-dark ml-6 relative">
             <Bell size={24} />
             {notificationCount > 0 && (
@@ -259,14 +289,14 @@ const Header = ({ requestPermission }) => {
               </span>
             )}
           </button>
-          
+
 
           {/* Notifications Dropdown */}
           {notificationsVisible && (
             <div className="absolute top-12 right-0 bg-white text-black shadow-lg w-72 border-t-2 border-blue-400 py-3 px-1 rounded">
               <div className='flex items-center justify-between'>
-              <h3 className="font-bold mb-2 ml-2">Notifications</h3>
-              <button onClick={MarkAllAsRead} className='mr-2 rounded px-1 border-2 hover:border-blue-400 duration-200'>Read All</button>
+                <h3 className="font-bold mb-2 ml-2">Notifications</h3>
+                <button onClick={MarkAllAsRead} className='mr-2 rounded px-1 border-2 hover:border-blue-400 duration-200'>Read All</button>
               </div>
               {loading ? (
                 <NotificationLoader />
@@ -276,12 +306,12 @@ const Header = ({ requestPermission }) => {
                 <div className=' overflow-y-scroll' style={{ height: "200px" }}>
                   <ul className='p-1 text-sm'>
                     {notifications.map((notification, index) => (
-                      <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id, notification.quote_id, notification.isfeasability,notification.viewer)}>
+                      <li key={index} className={`border-b py-1 px-1 my-1 rounded-sm cursor-pointer ${notification.isread == 0 ? 'bg-blue-100' : ''}`} onClick={() => handleNotificationClick(notification.id, notification.ref_id, notification.quote_id, notification.isfeasability, notification.viewer)}>
                         <p className='flex items-start'>
                           {/* Display icon based on notification type */}
                           {notification.icon == 'quote' && (
                             <span className="mr-2">
-                              <Quote size={22} className='bg-green-100 text-green-800 rounded-full border-1 p-1 border-green-800'/>
+                              <Quote size={22} className='bg-green-100 text-green-800 rounded-full border-1 p-1 border-green-800' />
                             </span>
                           )}
                           {notification.icon == 'feasability' && (
@@ -291,40 +321,40 @@ const Header = ({ requestPermission }) => {
                           )}
                           {notification.icon == 'chat' && (
                             <span className="mr-2">
-                              <MessageSquareText size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800'/> 
+                              <MessageSquareText size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800' />
                             </span>
                           )}
                           {notification.icon == 'tag' && (
                             <span className="mr-2">
-                              <Hash size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800'/>
+                              <Hash size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800' />
                             </span>
                           )}
                           {notification.icon == 'completed' && (
                             <span className="mr-2">
-                              <CircleCheck size={24} className='bg-green-100 text-green-800 rounded-full'/> {/* Completed icon */}
+                              <CircleCheck size={24} className='bg-green-100 text-green-800 rounded-full' /> {/* Completed icon */}
                             </span>
                           )}
                           {notification.icon == 'transferred' && (
                             <span className="mr-2">
-                              <ArrowLeftRight size={26} className='bg-orange-100 text-orange-800 rounded-full border border-orange-600 p-1'/> {/* Completed icon */}
+                              <ArrowLeftRight size={26} className='bg-orange-100 text-orange-800 rounded-full border border-orange-600 p-1' /> {/* Completed icon */}
                             </span>
                           )}
                           {notification.icon == 'discount' && (
                             <span className="mr-2">
-                              <CirclePercent size={24} className='bg-red-100 text-red-800 rounded-full '/> {/* Completed icon */}
+                              <CirclePercent size={24} className='bg-red-100 text-red-800 rounded-full ' /> {/* Completed icon */}
                             </span>
                           )}
                           {(!notification.icon || notification.icon == null) && (
                             <span className="mr-2">
-                              <BellIcon size={22}  className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800'/> 
+                              <BellIcon size={22} className='bg-blue-100 text-blue-800 rounded-full border-1 p-1 border-blue-800' />
                             </span>
                           )}
                           <span>
-                          {notification.isdeleted == 1 ? <span style={{textDecoration:"line-through", color:"red"}}>{notification.deleted_user_name } </span>: notification.fld_first_name} {notification.message} on quotation for ref_id{' '}
-                          <strong>{notification.ref_id}</strong>
-                          <span className="text-gray-500 text-xs ml-2">
-                        {timeAgo(notification.date)} {/* Display time ago */}
-                      </span>
+                            {notification.isdeleted == 1 ? <span style={{ textDecoration: "line-through", color: "red" }}>{notification.deleted_user_name} </span> : notification.fld_first_name} {notification.message} on quotation for ref_id{' '}
+                            <strong>{notification.ref_id}</strong>
+                            <span className="text-gray-500 text-xs ml-2">
+                              {timeAgo(notification.date)} {/* Display time ago */}
+                            </span>
                           </span>
                         </p>
                       </li>
@@ -379,7 +409,14 @@ const Header = ({ requestPermission }) => {
           )
         }
 
-        
+        {confirmationModalOpen && (
+          <ConfirmationModal title="Are You Sure Want To Clear All Sessions?" 
+          message="It will destroy all active sessions and all users will be logged out including you."
+          onYes={logoutAllUsers}
+          onClose={() => setConfirmationModalOpen(false)}
+          />
+        )}
+
       </AnimatePresence>
 
     </header>

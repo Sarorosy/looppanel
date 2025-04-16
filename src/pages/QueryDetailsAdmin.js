@@ -55,7 +55,7 @@ const QueryDetailsAdmin = ({
               if (loggedInUserToken == null || loggedInUserToken == undefined || loggedInUserToken == "" || loggedInUserToken == "null") {
                   console.log("User is not logged in. Redirecting to Oops page.");
                   toast.error("Missing or Invalid Token. Please login again.");
-                  navigate("/oops");
+                  //navigate("/oops");
                   return;
               }
   
@@ -73,7 +73,7 @@ const QueryDetailsAdmin = ({
   
                   if (!data.status) {
                       toast.error("Invalid Token. Please login again.");
-                      navigate("/oops");
+                      //navigate("/oops");
                   }
               } catch (error) {
                   console.error("Error verifying token:", error);
@@ -103,6 +103,7 @@ const QueryDetailsAdmin = ({
       console.log(data);
       if (data.status) {
         setQueryInfo(data.queryInfo); // Update the quotes state
+        console.log("Query Info:", data.queryInfo);
         setTatScore(data.tatScore);
         setQuoteId(data.quoteId);
       } else {
@@ -186,6 +187,7 @@ const QueryDetailsAdmin = ({
           quotationId={quotationId}
           viewAll={viewAll}
           clientEmail={queryInfo.email_id}
+          clientWebsite ={queryInfo.website_id}
           info={queryInfo}
         />
         {detailsTabVisible && (

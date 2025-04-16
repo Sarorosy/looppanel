@@ -102,7 +102,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             if (loggedInUserToken == null || loggedInUserToken == undefined || loggedInUserToken == "" || loggedInUserToken == "null") {
                 console.log("User is not logged in. Redirecting to Oops page.");
                 toast.error("Missing or Invalid Token. Please login again.");
-                navigate("/oops");
+                //navigate("/oops");
                 return;
             }
 
@@ -120,7 +120,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
                 if (!data.status) {
                     toast.error("Invalid Token. Please login again.");
-                    navigate("/oops");
+                    //navigate("/oops");
                 }
             } catch (error) {
                 console.error("Error verifying token:", error);
@@ -210,6 +210,38 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         }
     }, [sharelinkrefid, sharelinkquoteid]);
 
+    const fetchTags = async () => {
+        try {
+            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const data = await response.json();
+            if (data.status) setTags(data.data || []);
+        } catch (error) {
+
+        }
+    };
+
+    useEffect(() => {
+        // Initialize select2 for Tags
+        $(tagsRef.current).select2({
+            placeholder: "Select Tags",
+            allowClear: true,
+            multiple: true,
+        }).on('change', (e) => {
+            const selectedValues = $(e.target).val();
+            setSelectedTags(selectedValues || []);
+        });
+
+
+        $(tagsRef.current).val(selectedTags).trigger('change');
+
+
+        return () => {
+            // Clean up select2 on component unmount
+            if (tagsRef.current) {
+                $(tagsRef.current).select2('destroy');
+            }
+        };
+    }, [tags]);
 
     useEffect(() => {
         // Initialize select2 for Select Team
@@ -238,10 +270,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         }).on('change', (e) => {
             const rawValues = $(e.target).val() || [];
     
-            // Sanitize: remove empty strings or invalid entries
-            const sanitized = rawValues.filter(v => v && v.trim() !== '');
+            const sanitized = rawValues.filter(v => v && v.trim() != '');
     
-            // Optional: append instead of replace (avoid duplicates)
             setSelectedService(prev => {
                 const merged = [...new Set([...prev, ...sanitized])]; // unique values only
                 return merged;
@@ -267,7 +297,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     
         $select.on('change', () => {
             const values = $select.val() || [];
-            const sanitized = values.filter(v => v && v.trim() !== '');
+            const sanitized = values.filter(v => v && v.trim() != '');
             setSelectedSubjectArea(sanitized); // ✅ sets array
         });
     
@@ -289,7 +319,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     
         $select.on('change', () => {
             const values = $select.val() || [];
-            const sanitized = values.filter(v => v && v.trim() !== '');
+            const sanitized = values.filter(v => v && v.trim() != '');
             setStatus(sanitized); // ✅ sets array
         });
     
@@ -391,7 +421,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         appliedFilters.push(`Services: ${serviceNames}`);
                     }
                     
-                    if (subject_area) appliedFilters.push(`Subject: ${subject_area}`);
+                    if (subject_area && subject_area.length > 0) appliedFilters.push(`Subject: ${subject_area}`);
                     if (tags.length > 0) appliedFilters.push(`Tags: ${tags.join(', ')}`);
                     if (status && status.length > 0) {
                         const statusLabels = {
@@ -668,38 +698,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             console.error('Error fetching Services:', error);
         }
     };
-    const fetchTags = async () => {
-        try {
-            const response = await fetch('https://apacvault.com/Webapi/getTags');
-            const data = await response.json();
-            if (data.status) setTags(data.data || []);
-        } catch (error) {
-
-        }
-    };
-
-    useEffect(() => {
-        // Initialize select2 for Tags
-        $(tagsRef.current).select2({
-            placeholder: "Select Tags",
-            allowClear: true,
-            multiple: true,
-        }).on('change', (e) => {
-            const selectedValues = $(e.target).val();
-            setSelectedTags(selectedValues || []);
-        });
-
-
-        $(tagsRef.current).val(selectedTags).trigger('change');
-
-
-        return () => {
-            // Clean up select2 on component unmount
-            if (tagsRef.current) {
-                $(tagsRef.current).select2('destroy');
-            }
-        };
-    }, [tags]);
+    
 
     const columns = [
         {
@@ -1085,7 +1084,6 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 value={selectedService}
                                 ref={selectServiceRef}
                             >
-                                <option value="">Select Service</option>
                                 {services.map(service => (
                                     <option key={service.id} value={service.id}>
                                         {service.name}
@@ -1102,7 +1100,6 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 ref={selectSubjectRef}
                                 //onChange={(e) => setSelectedSubjectArea(e.target.value)}
                             >
-                                <option value="">Select Subject Area</option>
 
                                 <option value="Accounting">Accounting</option>
                                 <option value="Accounts Law">Accounts Law</option>
@@ -1276,7 +1273,6 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 ref={selectStatusRef}
                                 //onChange={(e) => setStatus(e.target.value)}
                             >
-                                <option value="">Select Quote Status</option>
                                 <option value="PendingAtUser">Pending at User</option>
                                 <option value="PendingAtAdmin">Pending at Admin</option>
                                 <option value="1">Submitted</option>

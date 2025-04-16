@@ -27,7 +27,7 @@ function App() {
   const userData = localStorage.getItem('loopuser');
 
   const userObject = JSON.parse(userData);
-  
+
 
 
   const requestPermission = async () => {
@@ -115,12 +115,12 @@ function App() {
     const { ref_id, quote_id } = useParams();
     const [quoteDetails, setQuoteDetails] = useState(null);
     const [loading, setLoading] = useState(false);
-  
+
     useEffect(() => {
       const fetchUserType = async () => {
         try {
           setLoading(true);
-          const response = await fetch("https://apacvault.com/Webapi/getusersforscope",{
+          const response = await fetch("https://apacvault.com/Webapi/getusersforscope", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -131,9 +131,9 @@ function App() {
             }),
           });
           const data = await response.json();
-          if(data.status){
+          if (data.status) {
             setQuoteDetails(data.data); // Adjust based on API response structure
-          }else{
+          } else {
             return <div>You are not authorized to access this Quote</div>;
           }
         } catch (error) {
@@ -142,52 +142,52 @@ function App() {
           setLoading(false);
         }
       };
-  
+
       fetchUserType();
     }, []);
-  
+
     if (loading) return <div className="min-h-80 animate-pulse flex items-center justify-center bg-gray-200">
-      
-      </div>;
-  
+
+    </div>;
+
     if (!quoteDetails) {
       return <div className="min-h-80 flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <h2 className="text-4xl font-bold text-gray-800 mb-4">Oops!</h2>
-        <div className='flex items-center justify-center'>
-        <ScanFace size={40} className="text-red-600 mr-2 animate-shake" />
-        <p className="text-xl text-gray-600 ">
-          Umm... Looks like you don't have access to this quote
-        </p>
+        <div className="text-center">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">Oops!</h2>
+          <div className='flex items-center justify-center'>
+            <ScanFace size={40} className="text-red-600 mr-2 animate-shake" />
+            <p className="text-xl text-gray-600 ">
+              Umm... Looks like you don't have access to this quote
+            </p>
+          </div>
         </div>
-      </div>
-    </div>;
+      </div>;
     }
-    
+
     if (userObject && (userObject.id == 1 || userObject.id == 342 || userObject.scopeadmin == 1)) {
       return <ManageQuery sharelinkrefid={ref_id} sharelinkquoteid={quote_id} />;
-    } else if(userObject && userObject.id == quoteDetails.user_id) {
+    } else if (userObject && userObject.id == quoteDetails.user_id) {
       return <ManageContactMadeQueries notification={requestPermission} sharelinkrefid={ref_id} sharelinkquoteid={quote_id} />;
-    }else if(userObject && quoteDetails.followers.includes(userObject.id)) {
+    } else if (userObject && quoteDetails.followers.includes(userObject.id)) {
       return <FollowingPage sharelinkrefid={ref_id} sharelinkquoteid={quote_id} />;
-    }else if(userObject && quoteDetails.isfeasability == 1 && quoteDetails.feasability_status == "Pending"  && quoteDetails.feasability_user == userObject.id) {
+    } else if (userObject && quoteDetails.isfeasability == 1 && quoteDetails.feasability_status == "Pending" && quoteDetails.feasability_user == userObject.id) {
       return <FeasabilityPage sharelinkrefid={ref_id} sharelinkquoteid={quote_id} />;
-    }else{
+    } else {
       return <div className="min-h-80 flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <h2 className="text-4xl font-bold text-gray-800 mb-4">Oops!</h2>
-        <div className='flex items-center justify-center'>
-        <ScanFace size={40} className="text-red-600 mr-2 animate-shake" />
-        <p className="text-xl text-gray-600 ">
-          Umm... Looks like you don't have access to this quote
-        </p>
+        <div className="text-center">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">Oops!</h2>
+          <div className='flex items-center justify-center'>
+            <ScanFace size={40} className="text-red-600 mr-2 animate-shake" />
+            <p className="text-xl text-gray-600 ">
+              Umm... Looks like you don't have access to this quote
+            </p>
+          </div>
         </div>
-      </div>
-    </div>;
+      </div>;
     }
   };
-  
-  
+
+
 
   return (
     <Router basename="/askforscope">
