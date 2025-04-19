@@ -367,7 +367,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         try {
 
             const response = await fetch(
-                'https://apacvault.com/Webapi/listaskforscope',
+                'https://apacvault.com/Webapi/listAskForScopeNew',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -880,6 +880,19 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 // Return "-" if no feasability_status is present
                 return '-';
             },
+        },
+        {
+            title: 'Instacrm Status',
+            data: 'instacrm_status',
+            orderable: false,
+            render: function (data, type, row) {
+                if (data === 'Quoted') {
+                    return '<span class="text-blue-600 font-bold">Quoted</span>';
+                } else if (data === 'Converted') {
+                    return '<span class="text-green-600 font-bold">Converted</span>';
+                }
+                return '-';
+            }
         },
         {
             title: 'Tags',
