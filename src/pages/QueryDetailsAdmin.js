@@ -49,39 +49,7 @@ const QueryDetailsAdmin = ({
   const loopUserObject = JSON.parse(loopUserData);
 
   const loggedInUserToken = localStorage.getItem("loggedInToken");
-  
-      useEffect(() => {
-          const verifyUser = async () => {
-              if (loggedInUserToken == null || loggedInUserToken == undefined || loggedInUserToken == "" || loggedInUserToken == "null") {
-                  console.log("User is not logged in. Redirecting to Oops page.");
-                  toast.error("Missing or Invalid Token. Please login again.");
-                  //navigate("/oops");
-                  return;
-              }
-  
-              try {
-                  const response = await fetch("https://apacvault.com/Login/verifyUserToken", {
-                      method: "POST",
-                      headers: {
-                          "Content-Type": "application/json",
-                          "Authorization": "Bearer " + loggedInUserToken,
-                      },
-                      body: JSON.stringify({ id: loopUserObject?.id }), // Ensure loopUserObject is defined
-                  });
-  
-                  const data = await response.json();
-  
-                  if (!data.status) {
-                      toast.error("Invalid Token. Please login again.");
-                      //navigate("/oops");
-                  }
-              } catch (error) {
-                  console.error("Error verifying token:", error);
-              }
-          };
-  
-          verifyUser();
-      }, [navigate]); // Add navigate as a dependency
+ 
       
   const fetchQueryDetails = async () => {
     setLoading(true); // Show loading spinner
