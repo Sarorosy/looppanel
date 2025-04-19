@@ -13,6 +13,7 @@ import NotificationLoader from '../pages/NotificationLoader';
 import TransferRequestsPage from '../pages/TransferRequestsPage';
 import ConfirmationModal from './ConfirmationModal';
 import { getSocket } from '../pages/Socket';
+import { Tooltip } from 'react-tooltip';
 
 const Header = ({ requestPermission }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -61,13 +62,13 @@ const Header = ({ requestPermission }) => {
   useEffect(() => {
     socket.on('terminateallsessions', (data) => {
       localStorage.clear();
-      window.location.href="https://apacvault.com/login/";
+      window.location.href = "https://apacvault.com/login/";
     });
 
     return () => {
-        socket.off('terminateallsessions');  // Clean up on component unmount
+      socket.off('terminateallsessions');  // Clean up on component unmount
     };
-}, []);
+  }, []);
 
   const timeAgo = (timestamp) => {
     const currentTime = Math.floor(Date.now() / 1000); // Get current time in seconds
@@ -248,7 +249,7 @@ const Header = ({ requestPermission }) => {
 
   }
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
-  const openAllUsersSessionClear = () =>{
+  const openAllUsersSessionClear = () => {
     setConfirmationModalOpen(true);
   }
 
@@ -274,7 +275,10 @@ const Header = ({ requestPermission }) => {
         <div className="relative n-dp-dn z-50 items-center flex">
 
           {userObject.id == 1 && (
-            <button onClick={openAllUsersSessionClear} className=" ml-6 relative text-red-500 rounded-md">
+            <button
+              data-tooltip-id="my-tooltip"
+              data-tooltip-content="Expire All Active Sessions"
+              onClick={openAllUsersSessionClear} className=" ml-6 relative text-red-500 rounded-md">
               <UserX size={24} />
 
             </button>
@@ -410,15 +414,15 @@ const Header = ({ requestPermission }) => {
         }
 
         {confirmationModalOpen && (
-          <ConfirmationModal title="Are You Sure Want To Clear All Sessions?" 
-          message="It will destroy all active sessions and all users will be logged out including you."
-          onYes={logoutAllUsers}
-          onClose={() => setConfirmationModalOpen(false)}
+          <ConfirmationModal title="Are You Sure Want To Clear All Sessions?"
+            message="It will destroy all active sessions and all users will be logged out including you."
+            onYes={logoutAllUsers}
+            onClose={() => setConfirmationModalOpen(false)}
           />
         )}
 
       </AnimatePresence>
-
+      <Tooltip id="my-tooltip" />
     </header>
   );
 };
