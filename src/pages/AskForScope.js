@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle,Hourglass, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset, Star, Crown } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, Hourglass, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset, Star, Crown, Pen } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -583,7 +583,10 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
           >
             <PlusCircle size={15} className="mr-1" /> Add New
           </button>
-          <button onClick={fetchScopeDetails} className="btn btn-dark btn-sm">
+          <button onClick={fetchScopeDetails}
+            data-tooltip-id="my-tooltip"
+            data-tooltip-content="Refresh"
+            className="btn btn-dark btn-sm">
             <RefreshCcw size={15} className="cursor-pointer" />
           </button>
         </div>
@@ -626,11 +629,11 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                         >
                           <p className="flex items-center line-h-in">
                             {quote.parent_quote == true && (
-                              <Crown color='orange' 
-                              className="mr-1"
-                              size={20}
-                              data-tooltip-id="my-tooltip"
-                              data-tooltip-content="Parent Quote" // Tooltip for Parent Quote
+                              <Crown color='orange'
+                                className="mr-1"
+                                size={20}
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Parent Quote" // Tooltip for Parent Quote
                               />
                             )}
                             {quote.assign_id}
@@ -793,6 +796,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                             <button
                               onClick={() => toggleRow(index)}
                               className="flex items-center justify-center btn btn-primary btn-sm mr-1"
+                              data-tooltip-id="my-tooltip"
+                              data-tooltip-content="Toggle Row"
                             >
                               {expandedRowIndex == index ? (
                                 <ArrowUp size={14} className="text-white" />
@@ -808,10 +813,12 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                 onClick={() => {
                                   toggleEditForm(quote.quoteid);
                                 }}
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Edit"
                                 disabled={tlType && tlType == 2}
                                 className="flex items-center justify-center btn btn-warning btn-sm mr-1"
                               >
-                                <Settings2 size={14} className="text-white" />
+                                <Pen size={14} className="text-white" />
                               </button>
                             ) : null}
 
@@ -823,6 +830,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                   quote.user_id
                                 );
                               }}
+                              data-tooltip-id="my-tooltip"
+                              data-tooltip-content="Update Tags"
                               className="flex items-center  btn btn-dark btn-sm mr-1"
                             >
                               <Hash size={14} />
@@ -832,6 +841,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                               onClick={() => {
                                 toggleFollowersForm(quote.quoteid, thisUserId);
                               }}
+                              data-tooltip-id="my-tooltip"
+                              data-tooltip-content="Update Followers"
                               className="flex items-center justify-center btn btn-info btn-sm mr-1"
                             >
                               <UserRoundPlus size={14} className="" />
@@ -848,6 +859,8 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                     console.error("Failed to copy URL:", err);
                                   });
                               }}
+                              data-tooltip-id="my-tooltip"
+                              data-tooltip-content="Copy Quote URL"
                               className="flex items-center justify-center btn btn-success btn-sm mr-1"
                             >
                               <Share2 size={14} className="" />
@@ -1364,7 +1377,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                                         fontSize: "12px",
                                                       }}
                                                     >
-                                                      Description
+                                                      Additional Comments
                                                     </strong>{" "}
                                                     <span
                                                       dangerouslySetInnerHTML={{

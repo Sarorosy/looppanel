@@ -311,15 +311,18 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
     const numberToWords = (num) => {
         const toWords = require("number-to-words");
         return toWords.toWords(Number(num));
-      };
+    };
 
     return (
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-2">
                 <h2 className="text-xl font-semibold " >Previous Requests</h2>
                 <div className='flex items-center'>
-                
-                    <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
+
+                    <RefreshCcw size={20}
+                        data-tooltip-id="my-tooltip"
+                        data-tooltip-content="Refresh"
+                        onClick={fetchScopeDetails} className='cursor-pointer' />
                 </div>
             </div>
 
@@ -420,7 +423,7 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
                                                         {expandedRowIndex == index ? <ArrowUp size={20} className='bg-blue-500 p-1 rounded-full text-white' /> : <ArrowDown size={20} className='bg-blue-500 p-1 rounded-full text-white' />}
                                                     </button>
 
-                                                    
+
                                                 </td>
                                             </tr>
                                             {/* Accordion */}
@@ -466,45 +469,45 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
                                                                 </p>
                                                             )}
                                                             {quote.ptp != null && (
-                                                                          <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
-                                                                            <h3 className="text-md font-semibold mb-2 text-gray-700">PTP Details</h3>
-                                                                            <div className="space-y-1 text-sm text-gray-600">
-                                                                              <p className="flex items-center gap-1">
-                                                                                <strong>PTP:</strong>
-                                                                                {quote.ptp === "Yes" ? (
-                                                                                  <CheckCircle className="text-green-500 w-4 h-4" />
-                                                                                ) : (
-                                                                                  <XCircle className="text-red-500 w-4 h-4" />
-                                                                                )}
-                                                                              </p>
-                                                                              {quote.ptp_amount && quote.ptp_amount != 0 && (
-                                                                                <p>
-                                                                                  <strong>PTP Amount:</strong> {quote.ptp_amount}
-                                                                                </p>
-                                                                              )}
-                                                                              {quote.ptp === "Yes" && quote.ptp_comments !== "" && (
-                                                                                <p>
-                                                                                  <strong>PTP Comments:</strong> {quote.ptp_comments}
-                                                                                </p>
-                                                                              )}
-                                                                              {quote.ptp_file != null && (
-                                                                                <p className="flex items-center gap-1">
-                                                                                  <strong>Attached File:</strong>
-                                                                                  <Paperclip className="text-blue-500 w-4 h-4" />
-                                                                                  <a
+                                                                <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
+                                                                    <h3 className="text-md font-semibold mb-2 text-gray-700">PTP Details</h3>
+                                                                    <div className="space-y-1 text-sm text-gray-600">
+                                                                        <p className="flex items-center gap-1">
+                                                                            <strong>PTP:</strong>
+                                                                            {quote.ptp === "Yes" ? (
+                                                                                <CheckCircle className="text-green-500 w-4 h-4" />
+                                                                            ) : (
+                                                                                <XCircle className="text-red-500 w-4 h-4" />
+                                                                            )}
+                                                                        </p>
+                                                                        {quote.ptp_amount && quote.ptp_amount != 0 && (
+                                                                            <p>
+                                                                                <strong>PTP Amount:</strong> {quote.ptp_amount}
+                                                                            </p>
+                                                                        )}
+                                                                        {quote.ptp === "Yes" && quote.ptp_comments !== "" && (
+                                                                            <p>
+                                                                                <strong>PTP Comments:</strong> {quote.ptp_comments}
+                                                                            </p>
+                                                                        )}
+                                                                        {quote.ptp_file != null && (
+                                                                            <p className="flex items-center gap-1">
+                                                                                <strong>Attached File:</strong>
+                                                                                <Paperclip className="text-blue-500 w-4 h-4" />
+                                                                                <a
                                                                                     className="text-blue-500 font-semibold hover:underline"
                                                                                     href={`https://apacvault.com/public/${quote.ptp_file}`}
                                                                                     download={quote.ptpfile}
                                                                                     target="_blank"
                                                                                     rel="noopener noreferrer"
-                                                                                  >
+                                                                                >
                                                                                     {quote.ptp_file}
-                                                                                  </a>
-                                                                                </p>
-                                                                              )}
-                                                                            </div>
-                                                                          </div>
+                                                                                </a>
+                                                                            </p>
                                                                         )}
+                                                                    </div>
+                                                                </div>
+                                                            )}
 
                                                             {quote.service_name && quote.plan && (
                                                                 <>
@@ -620,7 +623,7 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
                                                                     </div>
                                                                 </div>
                                                             )}
-                                                            
+
                                                             {quote.demodone != 0 && (
                                                                 <>
                                                                     <p className='flex items-center '><p className='mr-3'> <strong>Demo Id : </strong> {quote.demo_id}</p><span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> </p>
@@ -821,7 +824,7 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
 
                 </div>
             )}
-            
+
         </div>
     );
 };

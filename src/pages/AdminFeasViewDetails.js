@@ -159,7 +159,10 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                 <h2 className="text-xl font-semibold " >Check Feasibility </h2>
                 <div className='flex items-center justify-between'>
 
-                    <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
+                    <RefreshCcw size={20} onClick={fetchScopeDetails}
+                        data-tooltip-id="my-tooltip"
+                        data-tooltip-content="Refresh"
+                        className='cursor-pointer' />
                 </div>
             </div>
 
@@ -312,16 +315,16 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
                                             }
                                         >
                                             {
-                                                            quote.quote_status == 0 && quote.submittedtoadmin == 'false'
-                                                                ? 'Pending at User'
-                                                                : quote.quote_status == 0 && quote.submittedtoadmin == 'true'
-                                                                    ? 'Pending at Admin'
-                                                                    : quote.quote_status == 1
-                                                                        ? 'Submitted'
-                                                                        : quote.quote_status == 2
-                                                                            ? 'Discount Requested'
-                                                                            : 'Unknown'
-                                                        }
+                                                quote.quote_status == 0 && quote.submittedtoadmin == 'false'
+                                                    ? 'Pending at User'
+                                                    : quote.quote_status == 0 && quote.submittedtoadmin == 'true'
+                                                        ? 'Pending at Admin'
+                                                        : quote.quote_status == 1
+                                                            ? 'Submitted'
+                                                            : quote.quote_status == 2
+                                                                ? 'Discount Requested'
+                                                                : 'Unknown'
+                                            }
                                         </span>
                                     </p>
                                     {assignQuoteInfo && assignQuoteInfo !== false && (
@@ -387,7 +390,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
 
                 </div>
             )}
-           
+
         </div>
     );
 };

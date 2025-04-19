@@ -487,7 +487,10 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                 <h2 className="text-sx font-semibold " >Ask For Scope </h2>
                 <div className='flex items-center'>
 
-                    <button onClick={fetchScopeDetails} className="btn btn-dark btn-sm">
+                    <button onClick={fetchScopeDetails}
+                        data-tooltip-id="my-tooltip"
+                        data-tooltip-content="Refresh"
+                        className="btn btn-dark btn-sm">
                         <RefreshCcw size={15} className="cursor-pointer" />
                     </button>
                 </div>
@@ -948,7 +951,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                             <div className='col-md-12'>
                                                                                                 <div className='mb-0 row px-2 pb-3 space-y-4'>
                                                                                                     {quote.comments && quote.comments != "" && quote.comments != null && (
-                                                                                                        <p className='mb-2'><strong style={{}} className='mb-2 d-block'>Description</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                                                                        <p className='mb-2'><strong style={{}} className='mb-2 d-block'>Additional Comments</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
                                                                                                     )}
                                                                                                     {quote.final_comments != null && (
                                                                                                         <div>

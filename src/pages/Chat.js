@@ -367,7 +367,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                 // Extract first names for setting users
                 const usersList = data.data.map(user => ({
                     id: user.id,
-                    name: user.fld_first_name
+                    name: user.fld_first_name + " " + user.fld_last_name
                 }));
                 setUsers(usersList);
             } else {
@@ -432,7 +432,10 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
                 <h3 className=""><strong>Communication Hub</strong></h3>
                 <div className='flex items-center'>
-                    <button className='btn btn-light btn-sm flex items-center p-1 mr-2' onClick={fetchMessages}>
+                    <button
+                        data-tooltip-id="my-tooltip"
+                        data-tooltip-content="Refresh"
+                        className='btn btn-light btn-sm flex items-center p-1 mr-2' onClick={fetchMessages}>
                         <RefreshCcw size={10} />
                     </button>
                     <button className="" >
@@ -459,7 +462,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                                         {chatVal.deleted_user_name}
                                                     </span>
                                                 ) : (
-                                                    chatVal.fld_first_name
+                                                    chatVal.fld_first_name + " " + chatVal.fld_last_name
                                                 )}
                                             </span>
                                             <span className="chat-timestamp">
@@ -650,6 +653,8 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                 <div className="flex items-end justify-end ">
                                     <label
                                         htmlFor="fileInput"
+                                        data-tooltip-id="my-tooltip"
+                                        data-tooltip-content="Attach File"
                                         className="border border-gray-300 rounded px-2 py-1 bg-gray-100 text-sm text-gray-700 cursor-pointer hover:bg-gray-200 mb-0 mr-2"
                                     >
                                         <Paperclip size={15} />

@@ -346,7 +346,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
     const numberToWords = (num) => {
         const toWords = require("number-to-words");
         return toWords.toWords(Number(num));
-      };
+    };
 
     const getStatusText = (status) => {
         switch (status) {
@@ -369,7 +369,10 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
         <div className=" h-full bg-gray-100 shadow-lg z-50 overflow-y-auto mt-2 rounded w-full">
             <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
                 <h2 className="text-xl font-semibold " >Ask For Scope </h2>
-                <RefreshCcw size={20} onClick={fetchScopeDetails} className='cursor-pointer' />
+                <RefreshCcw size={20}
+                    data-tooltip-id="my-tooltip"
+                    data-tooltip-content="Refresh"
+                    onClick={fetchScopeDetails} className='cursor-pointer' />
             </div>
 
             {loading ? (
@@ -421,8 +424,8 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                         )}
                                                         {quote.ownership_transferred == 1 && (
                                                             <div className="relative group">
-                                                                <ArrowLeftRight size={24} className="text-yellow-600 bg-yellow-300 border-2 border-yellow-600 p-1 rounded-full ml-1" data-tooltip-id="my-tooltip" data-tooltip-content={ `Ownership transferred from ${quote.old_user_name}`} />
-                                                                
+                                                                <ArrowLeftRight size={24} className="text-yellow-600 bg-yellow-300 border-2 border-yellow-600 p-1 rounded-full ml-1" data-tooltip-id="my-tooltip" data-tooltip-content={`Ownership transferred from ${quote.old_user_name}`} />
+
                                                             </div>
                                                         )}
 
@@ -451,11 +454,11 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                     ? 'Pending at Admin'
                                                                     : quote.quote_status == 1 && quote.discount_price != "" && quote.discount_price != null
                                                                         ? "Discount Submitted"
-                                                                    : quote.quote_status == 1
-                                                                        ? 'Submitted'
-                                                                        : quote.quote_status == 2
-                                                                            ? 'Discount Requested'
-                                                                            : 'Unknown'
+                                                                        : quote.quote_status == 1
+                                                                            ? 'Submitted'
+                                                                            : quote.quote_status == 2
+                                                                                ? 'Discount Requested'
+                                                                                : 'Unknown'
                                                         }
                                                     </span>
                                                     {quote.isfeasability == 1 && quote.feasability_status == "Completed" && (
@@ -598,7 +601,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
 
                                                             <div className='space-y-4'>
                                                                 {quote.comments && quote.comments != "" && quote.comments != null && (
-                                                                    <p><strong style={{ textDecoration: "underline" }}>Description:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
+                                                                    <p><strong style={{ textDecoration: "underline" }}>Additional Comments:</strong>  <span dangerouslySetInnerHTML={{ __html: quote.comments }} /></p>
                                                                 )}
 
                                                                 {quote.final_comments != null && (
@@ -835,7 +838,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                     )}
                 </div>
             )}
-            
+
             <AnimatePresence>
 
                 {editFormOpen && (

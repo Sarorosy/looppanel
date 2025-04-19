@@ -32,7 +32,7 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
         <div>
 
             <button className="text-blue-600  hover:underline  px-1 pt-1 " onClick={() => setShowModal(true)}>
-                Quote Already Given
+                Quote For Other Website
             </button>
 
             <AnimatePresence>

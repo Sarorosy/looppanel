@@ -46,7 +46,7 @@ const AllFeasPage = ({ onClose }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({user_id:selectedUser, assign_user:selectedAssignUser, feas_status:status}),
+                    body: JSON.stringify({ user_id: selectedUser, assign_user: selectedAssignUser, feas_status: status }),
                 }
             );
 
@@ -89,7 +89,7 @@ const AllFeasPage = ({ onClose }) => {
     DataTable.use(DT);
 
     const fetchUsers = async () => {
-        
+
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/getAllUsersForAdmin',
@@ -101,16 +101,16 @@ const AllFeasPage = ({ onClose }) => {
                     body: JSON.stringify(), // Pass the POST data as JSON
                 }
             );
-    
+
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
-                setUsers(data.data); 
+                setUsers(data.data);
             } else {
                 console.error('Failed to fetch Services:', data.message);
             }
         } catch (error) {
             console.error('Error fetching Services:', error);
-        } 
+        }
     };
 
     useEffect(() => {
@@ -273,68 +273,70 @@ const AllFeasPage = ({ onClose }) => {
                     </button>
                 </div>
             </div>
-            <div className=" mb-3 bg-white container py-3 rounded "> 
-            <h1 className='text-xl font-bold mb-3'>All Feasibility List</h1>
-            <div className='flex items-center space-x-2 aql'>
+            <div className=" mb-3 bg-white container py-3 rounded ">
+                <h1 className='text-xl font-bold mb-3'>All Feasibility List</h1>
+                <div className='flex items-center space-x-2 aql'>
 
-                <div className="w-1/2">
-                    <select
-                        id="user_id"
-                        className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control slt-x-isu "
+                    <div className="w-1/2">
+                        <select
+                            id="user_id"
+                            className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control slt-x-isu "
 
-                        value={selectedUser}
-                        ref={selectUserRef}
-                    >
-                        <option value="">Select User</option>
-                        {users.map(user => (
-                            <option key={user.id} value={user.id}>
-                                {user.fld_first_name + " " + user.fld_last_name}
-                            </option>
-                        ))}
-                    </select>
+                            value={selectedUser}
+                            ref={selectUserRef}
+                        >
+                            <option value="">Select User</option>
+                            {users.map(user => (
+                                <option key={user.id} value={user.id}>
+                                    {user.fld_first_name + " " + user.fld_last_name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="w-1/2">
+                        <select
+                            id="assignuser_id"
+                            className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control slt-x-isu "
+
+                            value={selectedAssignUser}
+                            ref={selectAssignRef}
+                        >
+                            <option value="">Select User</option>
+                            {users.map(user => (
+                                <option key={user.id} value={user.id}>
+                                    {user.fld_first_name + " " + user.fld_last_name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="w-1/2 ss">
+
+                        <select
+                            className="form-control"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                        >
+                            <option value="">Select Status</option>
+                            <option value="Pending">Feasibility Pending</option>
+                            <option value="Completed">Feasibility Completed</option>
+                        </select>
+                    </div>
+                    <div className="w-1/2 flex justify-content-end space-x-2 items-center">
+                        <button className="gree text-white flex items-center" onClick={fetchQuoteSummary}>
+                            <Filter size={12} /> &nbsp;
+                            Apply
+                        </button>
+
+                        <button
+                            onClick={refresh}
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content="Refresh"
+                            className="flex items-center bg-blue-400 text-white  hover:text-blue-600 hover:bg-blue-500 transition-colors px-2 py-1 f-12 rounded shadow"
+                        >
+                            Refresh <RefreshCcw size={15} className="ml-2" />
+                        </button>
+                    </div>
                 </div>
-                <div className="w-1/2">
-                    <select
-                        id="assignuser_id"
-                        className=" px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 form-control slt-x-isu "
-
-                        value={selectedAssignUser}
-                        ref={selectAssignRef}
-                    >
-                        <option value="">Select User</option>
-                        {users.map(user => (
-                            <option key={user.id} value={user.id}>
-                                {user.fld_first_name + " " + user.fld_last_name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="w-1/2 ss">
-
-                    <select
-                        className="form-control"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                    >
-                        <option value="">Select Status</option>
-                        <option value="Pending">Feasibility Pending</option>
-                        <option value="Completed">Feasibility Completed</option>
-                    </select>
-                </div>
-                <div className="w-1/2 flex justify-content-end space-x-2 items-center">
-                    <button className="gree text-white flex items-center" onClick={fetchQuoteSummary}>
-                        <Filter size={12} /> &nbsp;
-                        Apply
-                    </button>
-
-                    <button
-                        onClick={refresh}
-                        className="flex items-center bg-blue-400 text-white  hover:text-blue-600 hover:bg-blue-500 transition-colors px-2 py-1 f-12 rounded shadow"
-                    >
-                        Refresh <RefreshCcw size={15} className="ml-2" />
-                    </button>
-                </div>
-            </div>
             </div>
 
             {loading ? (

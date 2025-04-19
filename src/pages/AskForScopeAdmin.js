@@ -835,7 +835,10 @@ const AskForScopeAdmin = ({
               </span>
             </button>
           )}
-          <button onClick={fetchScopeDetails} className="btn btn-dark btn-sm">
+          <button onClick={fetchScopeDetails}
+            data-tooltip-id="my-tooltip"
+            data-tooltip-content="Refresh"
+            className="btn btn-dark btn-sm">
             <RefreshCcw size={15} className="cursor-pointer" />
           </button>
         </div>
@@ -873,12 +876,12 @@ const AskForScopeAdmin = ({
                           style={{ fontSize: "11px" }}
                         >
                           <p className="flex items-center">
-                          {quote.parent_quote == true && (
-                              <Crown color='orange' 
-                              className="mr-1"
-                              size={20}
-                              data-tooltip-id="my-tooltip"
-                              data-tooltip-content="Parent Quote" // Tooltip for Parent Quote
+                            {quote.parent_quote == true && (
+                              <Crown color='orange'
+                                className="mr-1"
+                                size={20}
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Parent Quote" // Tooltip for Parent Quote
                               />
                             )}
                             {quote.assign_id}
@@ -909,6 +912,8 @@ const AskForScopeAdmin = ({
                             {quote.callrecordingpending == 1 && (
                               <span
                                 className="text-orange-600 rounded-full text-sm ml-2"
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Call recording pending"
                                 style={{
                                   fontSize: "11px",
                                   padding: "1px 6px",
@@ -1054,6 +1059,8 @@ const AskForScopeAdmin = ({
                               <button
                                 onClick={() => toggleRow(index)}
                                 className="flex items-center justify-center btn btn-primary btn-sm mr-1"
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Toggle Row"
                               >
                                 {expandedRowIndex === index ? (
                                   <ArrowUp size={14} className="text-white" />
@@ -1067,6 +1074,8 @@ const AskForScopeAdmin = ({
                                   toggleEditForm(quote.quoteid, quote.user_id);
                                 }}
                                 className="flex items-center  btn btn-dark btn-sm mr-1"
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Update Tags"
                               >
                                 <Hash size={14} className="" />
                               </button>
@@ -1077,6 +1086,8 @@ const AskForScopeAdmin = ({
                                     thisUserId
                                   );
                                 }}
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Update Followers"
                                 className="flex items-center  btn btn-info btn-sm mr-1"
                               >
                                 <UserRoundPlus size={14} className="" />
@@ -1646,7 +1657,7 @@ const AskForScopeAdmin = ({
                                                 quote.comments != null && (
                                                   <p>
                                                     <strong style={{}}>
-                                                      Description
+                                                      Additional Comments
                                                     </strong>{" "}
                                                     <span
                                                       dangerouslySetInnerHTML={{
@@ -2315,9 +2326,9 @@ const AskForScopeAdmin = ({
                                                         <li className="btn btn-primary btn-sm border-0 f-12">
                                                           Submit Price
                                                         </li>
-                                                        
-                                                         <AlreadyQuoteGiven email_id={clientEmail} website_id={clientWebsite} />
-                                                        
+
+                                                        <AlreadyQuoteGiven email_id={clientEmail} website_id={clientWebsite} />
+
                                                       </ul>
 
                                                       <div className="tab-content p-0 mt-2">

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FileDown } from "lucide-react"; // Make sure lucide-react is installed
+import { FileDown, FileWarning } from "lucide-react"; // Make sure lucide-react is installed
 
 const AttachedFiles = ({ ref_id, relevant_file, quote }) => {
     const [chatFiles, setChatFiles] = useState([]);
@@ -95,24 +95,33 @@ const AttachedFiles = ({ ref_id, relevant_file, quote }) => {
 
 
             {relevantFiles.length === 0 ? (
-                <p className="text-gray-500">No files attached.</p>
+                <p className="text-gray-500">No relevant files attached.</p>
             ) : (
                 <ul className="space-y-1">
-                    {relevantFiles.map((file, index) => (
-                        <li key={index} className="flex items-center p-2 bg-gray-50  rounded-md transition">
-                            <FileDown className="text-blue-500" size={18} />
-                            <a
-                                href={`${fileBaseURL}${file.file_path}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                download
-                                className="text-blue-600 font-medium hover:underline truncate"
-                            >
-                                {file.filename}
-                            </a>
-                        </li>
-                    ))}
+                    {relevantFiles.map((file, index) => {
+                        const truncateMiddle = (str, maxLength = 30) => {
+                            if (str.length <= maxLength) return str;
+                            const half = Math.floor((maxLength - 3) / 2); // subtract 3 for "..."
+                            return str.slice(0, half) + '...' + str.slice(str.length - half);
+                        };
+
+                        return (
+                            <li key={index} className="flex items-center gap-x-1 p-2 bg-gray-50 rounded-md transition">
+                                <FileDown className="text-blue-500" size={18} />
+                                <a
+                                    href={`${fileBaseURL}${file.file_path}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    download
+                                    className="text-blue-600 font-medium hover:underline"
+                                >
+                                    {truncateMiddle(file.filename)} ({file.quote_id})
+                                </a>
+                            </li>
+                        );
+                    })}
                 </ul>
+
             )}
 
             {chatFiles.length === 0 ? (
@@ -122,7 +131,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote }) => {
                     <hr style={{ background: "#b5b5b5" }} />
                     <ul className="space-y-3">
                         {chatFiles.map((file, index) => (
-                            <li key={index} className="flex items-center gap-3 p-2 bg-gray-50 hover:bg-gray-100 rounded-md transition">
+                            <li key={index} className="flex items-center gap-x-1 p-2  rounded-md transition">
                                 <FileDown className="text-green-500" size={18} />
                                 <a
                                     href={`${file.file_path}`}
@@ -131,7 +140,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote }) => {
                                     download
                                     className="text-green-700 font-medium hover:underline truncate"
                                 >
-                                    {file.file_path.split("/").pop()}
+                                    {file.file_path.split("/").pop()} ({file.quote_id})
                                 </a>
                             </li>
                         ))}
@@ -145,26 +154,34 @@ const AttachedFiles = ({ ref_id, relevant_file, quote }) => {
                 <>
                     <hr style={{ background: "#b5b5b5" }} />
                     <ul className="space-y-3">
-                        {feasFiles.map((file, index) => (
-                            <li key={index} className="flex items-center gap-3 p-2 bg-gray-50 hover:bg-gray-100 rounded-md transition">
-                                <FileDown className="text-purple-500" size={18} />
-                                <a
-                                    href={
-                                        "https://apacvault.com/public/feasabilityFiles/" +
-                                        file
-                                    }
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    download
-                                    className="text-purple-700 font-medium hover:underline truncate"
-                                >
-                                    {file}
-                                </a>
-                            </li>
-                        ))}
+                        {feasFiles.map((file, index) => {
+                            const truncateMiddle = (str, maxLength = 30) => {
+                                if (str.length <= maxLength) return str;
+                                const half = Math.floor((maxLength - 3) / 2); // 3 for "..."
+                                return str.slice(0, half) + '...' + str.slice(str.length - half);
+                            };
+
+                            return (
+                                <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition">
+                                    <FileDown className="text-purple-500" size={18} />
+                                    <a
+                                        href={`https://apacvault.com/public/feasabilityFiles/${file.file_name}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        download
+                                        className="text-purple-700 font-medium hover:underline truncate"
+                                        title={file.file_name} // optional: show full name on hover
+                                    >
+                                        {truncateMiddle(file.file_name)} ({file.quote_id})
+                                    </a>
+                                </li>
+                            );
+                        })}
                     </ul>
+
                 </>
             )}
+
 
         </div>
     );

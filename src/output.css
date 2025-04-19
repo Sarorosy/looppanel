@@ -1052,8 +1052,8 @@ video {
   gap: 1rem;
 }
 
-.gap-x-5 {
-  column-gap: 1.25rem;
+.gap-x-1 {
+  column-gap: 0.25rem;
 }
 
 .gap-x-2 {
@@ -1549,16 +1549,16 @@ video {
   padding-right: 0.5rem;
 }
 
-.pt-3 {
-  padding-top: 0.75rem;
-}
-
 .pr-3 {
   padding-right: 0.75rem;
 }
 
 .pt-1 {
   padding-top: 0.25rem;
+}
+
+.pt-3 {
+  padding-top: 0.75rem;
 }
 
 .text-left {
@@ -1967,11 +1967,6 @@ video {
 .hover\:bg-blue-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(37 99 235 / var(--tw-bg-opacity, 1));
-}
-
-.hover\:bg-gray-100:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(243 244 246 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:bg-gray-200:hover {

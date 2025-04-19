@@ -760,6 +760,8 @@ focus-outline-none:focus:not(:focus-visible) {
   border-radius: 1rem;
   background-color: #fafafa;
   position: relative;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .chat-text.right {
