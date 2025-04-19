@@ -31,7 +31,7 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
     return (
         <div>
 
-            <button className="btn btn-warning px-1 py-0.5 elevenpx" onClick={() => setShowModal(true)}>
+            <button className="text-blue-600  hover:underline  px-1 pt-1 " onClick={() => setShowModal(true)}>
                 Quote Already Given
             </button>
 
@@ -45,36 +45,36 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
                         onClick={() => setShowModal(false)}
                     >
                         <motion.div
-                            className="bg-white p-6 rounded-xl shadow-2xl max-w-4xl w-full"
+                            className="bg-white p-6 rounded-xl shadow-2xl max-w-4xl "
                             initial={{ scale: 0.8 }}
                             animate={{ scale: 1 }}
                             exit={{ scale: 0.8 }}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <h2 className="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">Quote Details</h2>
+                            <h2 className=" font-bold mb-3 text-gray-800 text-lg font-semibold mb-2 border-b pb-2 ">Quote Details</h2>
                             {quoteDetails.map((quote, index) => {
                                 const plans = quote.plan.split(',');
                                 const comments = JSON.parse(quote.plan_comments || '{}');
                                 const wordCounts = JSON.parse(quote.word_counts || '{}');
 
                                 return (
-                                    <div key={index} className="mb-8 text-gray-800 overflow-y-scroll">
+                                    <div key={index} className="mb-8 text-gray-800 overflow-y-scroll pr-3">
                                         <div className="grid grid-cols-3 md:grid-cols-3 gap-4 mb-4">
-                                            <div className="p-3 border rounded bg-gray-50">
-                                                <p className="text-sm font-semibold">Quote ID</p>
+                                            <div className="p-2 border rounded bg-gray-50 d-flex gap-x-2">
+                                                <p className="text-sm font-semibold">Quote ID :</p>
                                                 <p>{quote.id}</p>
                                             </div>
-                                            <div className="p-3 border rounded bg-gray-50">
-                                                <p className="text-sm font-semibold">Ref ID</p>
+                                            <div className="p-2 border rounded bg-gray-50 d-flex gap-x-2">
+                                                <p className="text-sm font-semibold">Ref ID :</p>
                                                 <p>{quote.ref_id}</p>
                                             </div>
-                                            <div className="p-3 border rounded bg-gray-50">
-                                                <p className="text-sm font-semibold">Client Name</p>
+                                            <div className="p-2 border rounded bg-gray-50 d-flex gap-x-2">
+                                                <p className="text-sm font-semibold">Client Name :</p>
                                                 <p>{quote.client_name}</p>
                                             </div>
                                         </div>
 
-                                        <div className="mb-6">
+                                        <div className="mb-3">
                                             <h3 className="text-lg font-semibold mb-2">Plan Details</h3>
                                             <div className="overflow-auto">
                                                 <table className="w-full border border-gray-300 text-sm">
@@ -145,9 +145,9 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
                                     </div>
                                 );
                             })}
-                            <div className="text-right mt-6">
+                            <div className="text-right mt-3">
                                 <button
-                                    className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+                                    className="btn btn-danger btn-sm"
                                     onClick={() => setShowModal(false)}
                                 >
                                     Close

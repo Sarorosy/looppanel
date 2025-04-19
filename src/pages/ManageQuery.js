@@ -367,7 +367,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         try {
 
             const response = await fetch(
-                'https://apacvault.com/Webapi/listAskForScopeNew',
+                'https://apacvault.com/Webapi/listAskForScope',
                 {
                     method: 'POST', // Use POST method
                     headers: {

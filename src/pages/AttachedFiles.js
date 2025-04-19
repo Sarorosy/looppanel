@@ -99,7 +99,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote }) => {
             ) : (
                 <ul className="space-y-1">
                     {relevantFiles.map((file, index) => (
-                        <li key={index} className="flex items-center p-2 bg-gray-50 hover:bg-gray-100 rounded-md transition">
+                        <li key={index} className="flex items-center p-2 bg-gray-50  rounded-md transition">
                             <FileDown className="text-blue-500" size={18} />
                             <a
                                 href={`${fileBaseURL}${file.file_path}`}
