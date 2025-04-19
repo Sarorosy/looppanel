@@ -881,19 +881,19 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 return '-';
             },
         },
-        {
-            title: 'Instacrm Status',
-            data: 'instacrm_status',
-            orderable: false,
-            render: function (data, type, row) {
-                if (data === 'Quoted') {
-                    return '<span class="text-blue-600 font-bold">Quoted</span>';
-                } else if (data === 'Converted') {
-                    return '<span class="text-green-600 font-bold">Converted</span>';
-                }
-                return '-';
-            }
-        },
+        // {
+        //     title: 'Instacrm Status',
+        //     data: 'instacrm_status',
+        //     orderable: false,
+        //     render: function (data, type, row) {
+        //         if (data === 'Quoted') {
+        //             return '<span class="text-blue-600 font-bold">Quoted</span>';
+        //         } else if (data === 'Converted') {
+        //             return '<span class="text-green-600 font-bold">Converted</span>';
+        //         }
+        //         return '-';
+        //     }
+        // },
         {
             title: 'Tags',
             data: 'tag_names', // Replace with actual field name from your dataset
