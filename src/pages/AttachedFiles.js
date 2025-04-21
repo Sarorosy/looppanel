@@ -7,6 +7,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
     const [relevantFiles, setRelevantFiles] = useState([]);
     const [feasFiles, setFeasFiles] = useState([]);
     const [attachedFiles, setAttachedFiles] = useState([]);
+    const [uploading, setUploading] = useState(false);
     const loopuserData = localStorage.getItem('loopuser');
     const loopUserObject = JSON.parse(loopuserData);
     let files = [];
@@ -138,6 +139,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
         });
 
         try {
+            setUploading(true);
             const res = await axios.post(
                 "https://apacvault.com/Webapi/upload_attach_file",
                 formData,
@@ -154,6 +156,8 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
 
         } catch (err) {
             console.error("Upload failed:", err);
+        }finally{
+            setUploading(false);
         }
     };
 
@@ -175,6 +179,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                                     onClick={handleUpload}
                                     className="btn btn-success btn-sm px-1"
                                     title="Upload"
+                                    disabled={selectedFiles.length === 0 || uploading}
                                 >
                                     <CircleCheck size={16} />
                                 </button>
