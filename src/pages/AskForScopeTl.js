@@ -44,6 +44,8 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
     const [quoteIdForFeasHistory, setQuoteIdForFeasHistory] = useState('');
     const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
 
+    
+
     const toggleHistoryDiv = ($id) => {
         setQuoteIdForHistory($id);
         SetHistoryPanelOpen(true);

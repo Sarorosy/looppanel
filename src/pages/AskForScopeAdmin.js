@@ -38,6 +38,7 @@ import {
   MessageCircleX,
   Headset,
   Crown,
+  Upload,
 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import AddTags from "./AddTags";
@@ -147,30 +148,13 @@ const AskForScopeAdmin = ({
   const [fileTabVisible, setFileTabVisible] = useState(true);
   const [fullScreenTab, setFullScreenTab] = useState(null);
 
-  const [quoteHistoryData, setQuoteHistoryData] = useState([]);
-  
-    // Fetch Quote History Data
-    const fetchQuoteHistory = async () => {
-      try {
-        const response = await fetch(
-          "https://apacvault.com/Webapi/getquotehistory",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ ref_id: queryId, quote_id: quotationId }),
-          }
-        );
-  
-        if (response.ok) {
-          const data = await response.json();
-          if (data.status) {
-            setQuoteHistoryData(data.historyData);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching quote history:", error);
-      }
-    };
+  const [showUpload, setShowUpload] = useState(false);
+
+  const changeShowUpload = () => {
+    setShowUpload(!showUpload)
+  }
+
+
   const closeModal = () => {
     setChatTabVisible(false);
   };
@@ -2524,7 +2508,6 @@ const AskForScopeAdmin = ({
                                               quoteId={quote.quoteid}
                                               refId={quote.assign_id}
                                               onlyFetch="quote"
-                                              fetchQuoteHistory={fetchQuoteHistory}
                                             />
                                           </div>
                                         </div>
@@ -2718,14 +2701,24 @@ const AskForScopeAdmin = ({
                                           <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
                                             <h3 className=""><strong>Attached Files</strong></h3>
                                             <div className='flex items-center'>
-
+                                              {!showUpload && (
+                                                <button
+                                                  onClick={() => setShowUpload(true)}
+                                                  className="btn btn-info btn-sm f-11 flex items-center p-1"
+                                                >
+                                                  <Upload className="mr-1" size={10} /> Attach more file
+                                                </button>
+                                              )}
                                               <button className="">
                                                 {fullScreenTab == "file" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("file") }} className="btn btn-sm btn-light flex items-center p-1" />)}
                                               </button>
                                             </div>
                                           </div>
 
-                                          <AttachedFiles ref_id={quote.assign_id} relevant_file={quote.relevant_file} quote={quote} />
+                                          <AttachedFiles ref_id={quote.assign_id} relevant_file={quote.relevant_file} quote={quote}
+                                          showUpload={showUpload}
+                                          setShowUpload={changeShowUpload}
+                                          />
 
                                         </>
                                       </div>
