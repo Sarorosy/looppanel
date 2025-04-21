@@ -30,6 +30,19 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
     const userObject = JSON.parse(userData);
 
     const plans = ['Basic', 'Standard', 'Advanced'];
+    
+
+    const fetchTags = async () => {
+        try {
+            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const data = await response.json();
+            if (data.status) setTags(data.data || []);
+        } catch (error) {
+            toast.error('Failed to fetch tags.');
+        }finally{
+            fetchInitialData();
+        }
+    };
     const fetchInitialData = async () => {
         try {
             setLoading(true);
@@ -56,16 +69,6 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
             toast.error('Error fetching request details.');
         } finally {
             setLoading(false);
-        }
-    };
-
-    const fetchTags = async () => {
-        try {
-            const response = await fetch('https://apacvault.com/Webapi/getTags');
-            const data = await response.json();
-            if (data.status) setTags(data.data || []);
-        } catch (error) {
-            toast.error('Failed to fetch tags.');
         }
     };
 
@@ -127,8 +130,8 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
     };
 
     useEffect(() => {
+        
         fetchTags();
-        fetchInitialData();
     }, []);
 
 
