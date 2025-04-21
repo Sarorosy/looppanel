@@ -2027,13 +2027,13 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                         <>
                                           <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
                                             <h3 className=""><strong>Attached Files</strong></h3>
-                                            <div className='flex items-center'>
+                                            <div className='flex items-center gap-2 '>
                                               {!showUpload && (
                                                 <button
                                                   onClick={() => setShowUpload(true)}
-                                                  className="flex items-center text-teal-600 hover:text-teal-800 border border-teal-600 elevenpx text-sm font-medium  bg-white px-2 py-0.5 rounded ml-auto mr-2"
+                                                  className="btn btn-info btn-sm f-11 flex items-center p-1"
                                                 >
-                                                  <Upload className="mr-2" size={14} /> Attach more file
+                                                  <Upload className="mr-1" size={10} /> Attach more file
                                                 </button>
                                               )}
 

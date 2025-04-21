@@ -158,40 +158,35 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
     };
 
     return (
-        <div className="bg-white p-x-2 py-1  shadow-md border elevenpx">
+        <div className="bg-white p-x-2 pt-1 shadow-md border elevenpx">
 
             {quote.parent_quote !== 1 && (
                 <>
                     {showUpload && (
-                        <div className="flex items-start sm:items-center gap-3 mt-4 px-2 py-1 mx-2 bg-gray-50 border border-gray-200 rounded-xl shadow-sm">
+                        <div className="bg-gray-100 p-2 m-2 flex items-center gap-2">
                             <input
                                 type="file"
                                 multiple
                                 onChange={handleFileChange}
-                                className="block w-fit text-xs text-gray-700 
-             file:mr-2 file:py-1 file:px-2 
-             file:rounded file:border file:border-gray-300 
-             file:text-xs file:font-medium 
-             file:bg-white file:text-blue-600 
-             hover:file:bg-gray-100"
+                                className="form-control form-control-sm"
                             />
-                            <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                            <div className="flex justify-end items-center gap-2 sm:mt-0">
                                 <button
                                     onClick={handleUpload}
-                                    className="flex items-center justify-center p-2 bg-green-100 hover:bg-green-200 rounded-full text-green-700 hover:text-green-800 transition"
+                                    className="btn btn-success btn-sm px-1"
                                     title="Upload"
                                 >
-                                    <CircleCheck size={18} />
+                                    <CircleCheck size={16} />
                                 </button>
                                 <button
                                     onClick={() => {
                                         setShowUpload(false);
                                         setSelectedFiles([]);
                                     }}
-                                    className="flex items-center justify-center p-2 bg-red-100 hover:bg-red-200 rounded-full text-red-700 hover:text-red-800 transition"
+                                    className="btn btn-danger btn-sm px-1"
                                     title="Cancel"
                                 >
-                                    <CircleX size={18} />
+                                    <CircleX size={16} />
                                 </button>
                             </div>
                         </div>
@@ -211,7 +206,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                         };
 
                         return (
-                            <li key={index} className="flex items-center gap-x-1 p-2 bg-gray-50 rounded-md transition">
+                            <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition border-bottom">
                                 <FileDown className="text-blue-500" size={18} />
                                 <a
                                     href={`${fileBaseURL}${file.file_path}`}
@@ -233,10 +228,10 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 <p className="text-gray-500 text-sm"></p>
             ) : (
                 <>
-                    <hr style={{ background: "#b5b5b5" }} />
+                    
                     <ul className="space-y-3">
                         {chatFiles.map((file, index) => (
-                            <li key={index} className="flex items-center gap-x-1 p-2  rounded-md transition">
+                            <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition border-bottom">
                                 <FileDown className="text-green-500" size={18} />
                                 <a
                                     href={`${file.file_path}`}
@@ -258,7 +253,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 <p className="text-gray-500 text-sm"></p>
             ) : (
                 <>
-                    <hr style={{ background: "#b5b5b5" }} />
+                    
                     <ul className="space-y-3">
                         {feasFiles.map((file, index) => {
                             const truncateMiddle = (str, maxLength = 30) => {
@@ -268,7 +263,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                             };
 
                             return (
-                                <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition">
+                                <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition border-bottom">
                                     <FileDown className="text-purple-500" size={18} />
                                     <a
                                         href={`https://apacvault.com/public/feasabilityFiles/${file.file_name}`}
@@ -292,10 +287,10 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 <p className="text-gray-500 text-sm"></p>
             ) : (
                 <>
-                    <hr style={{ background: "#b5b5b5" }} />
+                    
                     <ul className="space-y-3">
                         {attachedFiles.map((file, index) => (
-                            <li key={index} className="flex items-center gap-x-1 p-2  rounded-md transition">
+                            <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition border-bottom">
                                 <FileDown className="text-green-500" size={18} />
                                 <a
                                     href={`${fileBaseURL}${file.file}`}
