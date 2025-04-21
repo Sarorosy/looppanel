@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, Hourglass, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset, Star, Crown, Pen } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, Hourglass, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset, Star, Crown, Pen, Upload } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -68,12 +68,18 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
   const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
   const [userIdForTag, setUserIdForTag] = useState('');
 
+  const [showUpload, setShowUpload] = useState(false);
+
+  const changeShowUpload = () => {
+    setShowUpload(!showUpload)
+  }
 
   const [scopeTabVisible, setScopeTabVisible] = useState(true);
   const [chatTabVisible, setChatTabVisible] = useState(true);
   const [feasTabVisible, setFeasTabVisible] = useState(false);
   const [fileTabVisible, setFileTabVisible] = useState(true);
   const [fullScreenTab, setFullScreenTab] = useState(null);
+
   const closeModal = () => {
     setChatTabVisible(false);
   };
@@ -2022,6 +2028,14 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                           <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
                                             <h3 className=""><strong>Attached Files</strong></h3>
                                             <div className='flex items-center'>
+                                              {!showUpload && (
+                                                <button
+                                                  onClick={() => setShowUpload(true)}
+                                                  className="flex items-center text-teal-600 hover:text-teal-800 border border-teal-600 elevenpx text-sm font-medium  bg-white px-2 py-0.5 rounded ml-auto mr-2"
+                                                >
+                                                  <Upload className="mr-2" size={14} /> Attach more file
+                                                </button>
+                                              )}
 
                                               <button className="">
                                                 {fullScreenTab == "file" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-light flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("file") }} className="btn btn-sm btn-light flex items-center p-1" />)}
@@ -2029,7 +2043,13 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                             </div>
                                           </div>
 
-                                          <AttachedFiles ref_id={quote.assign_id} relevant_file={quote.relevant_file} quote={quote} />
+                                          <AttachedFiles ref_id={quote.assign_id}
+                                            relevant_file={quote.relevant_file}
+                                            quote={quote}
+                                            showUpload={showUpload}
+                                            setShowUpload={changeShowUpload}
+
+                                          />
 
                                         </>
                                       </div>

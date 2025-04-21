@@ -146,6 +146,31 @@ const AskForScopeAdmin = ({
   const [feasTabVisible, setFeasTabVisible] = useState(false);
   const [fileTabVisible, setFileTabVisible] = useState(true);
   const [fullScreenTab, setFullScreenTab] = useState(null);
+
+  const [quoteHistoryData, setQuoteHistoryData] = useState([]);
+  
+    // Fetch Quote History Data
+    const fetchQuoteHistory = async () => {
+      try {
+        const response = await fetch(
+          "https://apacvault.com/Webapi/getquotehistory",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ref_id: queryId, quote_id: quotationId }),
+          }
+        );
+  
+        if (response.ok) {
+          const data = await response.json();
+          if (data.status) {
+            setQuoteHistoryData(data.historyData);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching quote history:", error);
+      }
+    };
   const closeModal = () => {
     setChatTabVisible(false);
   };
@@ -2499,6 +2524,7 @@ const AskForScopeAdmin = ({
                                               quoteId={quote.quoteid}
                                               refId={quote.assign_id}
                                               onlyFetch="quote"
+                                              fetchQuoteHistory={fetchQuoteHistory}
                                             />
                                           </div>
                                         </div>

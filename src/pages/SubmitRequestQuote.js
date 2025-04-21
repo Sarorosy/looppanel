@@ -513,7 +513,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                         >
                             Ask For Scope
                         </h2>
-                        {parentQuote && (
+                        
                             <h2
                                 className={`tab-btn-n-set cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 1
                                     ? "bg-white text-blue-700 shadow-md"
@@ -523,7 +523,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                             >
                                 Ask For Feasibility Check
                             </h2>
-                        )}
+                        
                     </div>
 
                     {/* Close Button */}
