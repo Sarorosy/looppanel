@@ -2031,7 +2031,7 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
                                               {!showUpload && (
                                                 <button
                                                   onClick={() => setShowUpload(true)}
-                                                  className="btn btn-info btn-sm f-11 flex items-center p-1"
+                                                  className="btn btn-info btn-sm f-11 flex items-center p-1 testtt"
                                                 >
                                                   <Upload className="mr-1" size={10} /> Attach more file
                                                 </button>
