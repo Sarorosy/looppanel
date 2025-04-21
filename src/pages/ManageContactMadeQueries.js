@@ -23,6 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import { getSocket } from './Socket';
 import { io } from "socket.io-client";
 import TransferRequestsPageTl from './TransferRequstsPageTl';
+import UserFeasibilityPage from './UserFeasibilityPage';
 const socket = getSocket();
 
 const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquoteid }) => {
@@ -47,6 +48,9 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0)
     const [followupCount, setFollowupCount] = useState(0);
     const [requestPendingCount, setRequestPendingCount] = useState(0);
+
+    const [userFeasPageOpen, setUserFeasPageOpen] = useState(false);
+
     const navigate = useNavigate();
     const userData = localStorage.getItem('user');
 
@@ -158,10 +162,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
         }
     };
 
-     const loggedInUserToken = localStorage.getItem("loggedInToken");
-    
-      
-
+     
     const fetchQuotes = async (nopayload = false, requestPending = false) => {
         setLoading(true);
 
@@ -507,7 +508,11 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                                 {pendingFeasRequestCount}
                             </span>
                         </button>
-
+                        {(loopuserObject.feasibility_access == 1) && (
+                            <button className="bg-gray-200 flex items-center relative" onClick={() => { setUserFeasPageOpen(true) }}>
+                                User Feasibility Requests
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -561,6 +566,9 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                 )}
                 {feasPageOpen && (
                     <FeasabilityPage onClose={toggleFeasPage} after={() => { fetchQuotes(false, false) }} />
+                )}
+                {userFeasPageOpen && (
+                    <UserFeasibilityPage onClose={()=>{setUserFeasPageOpen(false)}} after={fetchQuotes(false, false)} />
                 )}
                 {tlPageOpen && (
                     <ManageTlQuery onClose={() => { setTlPageOpen(!tlPageOpen) }} />
