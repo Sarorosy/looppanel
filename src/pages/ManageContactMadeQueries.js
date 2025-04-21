@@ -568,7 +568,8 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                     <FeasabilityPage onClose={toggleFeasPage} after={() => { fetchQuotes(false, false) }} />
                 )}
                 {userFeasPageOpen && (
-                    <UserFeasibilityPage onClose={()=>{setUserFeasPageOpen(false)}} after={fetchQuotes(false, false)} />
+                    
+                    <UserFeasibilityPage onClose={()=>{setUserFeasPageOpen(false)}} after={() => { fetchQuotes(false, false) }} />
                 )}
                 {tlPageOpen && (
                     <ManageTlQuery onClose={() => { setTlPageOpen(!tlPageOpen) }} />

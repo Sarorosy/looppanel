@@ -34,21 +34,20 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getAllFeasabilityAssignedToUser',
+                'https://apacvault.com/Webapi/getAllUsersFeasibilityRequests',
                 {
                     method: 'POST', // Use POST method
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify({ user_id: userObject.id, }),
+                    body: JSON.stringify({ user_id: userObject.id, assigned_users: userObject.tl_users }),
                 }
             );
 
             const data = await response.json(); // Parse the response as JSON
             console.log(data)
             if (data.status) {
-                setQuoteSummary(data.data); // Update the quotes state
-                setPendingCount(data.pending_count ? data.pending_count : 0);
+                setQuoteSummary(data.data); 
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
@@ -195,10 +194,34 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
             orderable: false,
         },
         {
-            title: 'Ask For Scope Id',
+            title: 'Quote Id',
             data: 'id', // Replace with actual field name
             orderable: false,
             className: 'text-center',
+        },
+        {
+            title: 'CRM Name',
+            data: null, // Replace with actual field name
+            orderable: false,
+            className: 'text-center',
+            render: function (data, type, row) {
+                if (row && row.created_by_first_name) {
+                    return `<span class=" font-bold">${row.created_by_first_name +  " " + row.created_by_last_name}</span>`;
+                } 
+                return '<span></span>';
+            },
+        },
+        {
+            title: 'Client Name',
+            data: null, // Replace with actual field name
+            orderable: false,
+            className: 'text-center',
+            render: function (data, type, row) {
+                if (row && row.client_name) {
+                    return `<span class=" font-bold">${row.client_name}</span>`;
+                } 
+                return '<span></span>';
+            },
         },
         {
             title: 'Feasibility Status',
@@ -280,10 +303,7 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
             </div>
             <div className="flex justify-end mb-3 bg-white container py-3 rounded ">
             
-                <div className="flex items-center bg-red-400 text-white px-2 py-1 rounded shadow mr-2">
-                    <span className="f-12">Pending:</span>
-                    <span className="ml-2 font-bold f-12">{pendingCount}</span>
-                </div>
+                
                 <button
                     onClick={fetchQuoteSummary}
                     className="flex items-center bg-blue-400 text-white hover:text-blue-600 hover:bg-blue-500 transition-colors px-2 py-1 f-12 rounded shadow"

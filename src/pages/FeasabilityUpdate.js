@@ -285,7 +285,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                     key={index}
                                     className="p-4 border border-gray-300 rounded-md shadow-md bg-white space-y-4"
                                 >
-                                    {quote.isfeasability == 1 && quote.feasability_user == thisUserId ? (<>
+                                    {quote.isfeasability == 1 && (quote.feasability_user == thisUserId  || loopUserObject.feasibility_access == 1)? (<>
                                         <div className='flex items-start justify-between'>
                                             <p>
                                                 <strong>Ref No.:</strong> {quote.assign_id}
