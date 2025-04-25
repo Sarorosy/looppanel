@@ -435,11 +435,11 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                         title='Transfer requests pending count' class="cursor-pointer bg-blue-100 text-blue-700 px-2 py-1 rounded-lg font-semibold tenpx ml-3">
                         Request Access: <span class="font-bold">{requestAccessCount}</span>
                     </div>
-                    <div
+                    {/* <div
                         onClick={() => { fetchQuotes(false, true, false) }}
                         title='Transfer requests pending count' class="cursor-pointer bg-red-100 text-red-700 px-2 py-1 rounded-lg font-semibold tenpx ml-3">
                         Request Pending: <span class="font-bold">{requestPendingCount}</span>
-                    </div>
+                    </div> */}
                 </div>
                 <div className='flex items-center space-x-2 '>
                     <div style={{ width: "110px" }}>
