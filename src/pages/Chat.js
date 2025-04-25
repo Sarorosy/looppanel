@@ -488,7 +488,17 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                                         {chatVal.isfile == "1" && (
                                             <div className="file-container">
                                                 {/* <i className="fa fa-file mr-3"></i> */}
-                                                <p>{chatVal.file_path.split('/').pop()}</p>
+                                                <p className="text-sm text-gray-800 truncate w-full">
+                                                    {
+                                                        (() => {
+                                                            const fullName = chatVal.file_path.split('/').pop();
+                                                            const maxLength = 35;
+                                                            if (fullName.length <= maxLength) return fullName;
+                                                            const half = Math.floor((maxLength - 3) / 2);
+                                                            return `${fullName.slice(0, half)}...${fullName.slice(-half)}`;
+                                                        })()
+                                                    }
+                                                </p>
                                                 <a href={chatVal.file_path} target="_blank" rel="noopener noreferrer" ><Download size={16} /></a>
                                             </div>
                                         )}

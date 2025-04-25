@@ -11,7 +11,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight, FilterIcon } from 'lucide-react';
+import { RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight, FilterIcon, Users } from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -24,6 +24,7 @@ import { io } from "socket.io-client";
 import { getSocket } from './Socket';
 import TransferRequestsPage from './TransferRequestsPage';
 import TableLoader from '../components/TableLoader';
+import UsersRequestCount from './UsersRequestCount';
 const socket = getSocket();
 
 const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
@@ -977,6 +978,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     };
 
+    const [usersRequestDivOpen, setUsersRequestDivOpen] = useState(false);
+
 
 
     return (
@@ -1000,6 +1003,12 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             <button className="bg-gray-200 flex items-center relative mr-3 p-1 rounded" onClick={() => { navigate("/assignquery") }}>
                                 <MoveLeft size={20} className='mr-2' />
                                 Queries
+                            </button>
+                        )}
+                        {loopUserObject.id == "1" && (
+                            <button className="bg-gray-200 flex items-center relative mr-3 p-1 rounded elevenpx" onClick={() => { setUsersRequestDivOpen(true) }}>
+                                <Users size={18} className='mr-2' />
+                                Users Request Count
                             </button>
                         )}
                         <button onClick={handleExport} className="bg-blue-400 text-white text-sm mr-2  px-2 py-1 rounded hover:bg-blue-500">
@@ -1466,6 +1475,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 )}
                 {TransferPageVisible && (
                     <TransferRequestsPage onClose={() => { setTransferPageVisible(!TransferPageVisible) }} />
+                )}
+                {usersRequestDivOpen && (
+                    <UsersRequestCount users={users} onClose={() => { setUsersRequestDivOpen(!usersRequestDivOpen) }} />
                 )}
             </AnimatePresence>
 

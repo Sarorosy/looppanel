@@ -158,7 +158,7 @@ const QueryDetails = ({ onClose, queryId, quotationId, after, userIdDefined }) =
 
             <div className=' flex items-start justify-between space-x-1 pnav text-black'>
                 
-                <AskForScope queryId={queryId} clientName={queryInfo.name} quotationId={quotationId} userType={userObject.fld_admin_type} userIdDefined={userIdDefined} />
+                <AskForScope queryId={queryId} clientName={queryInfo.name} quotationId={quotationId} userType={userObject.fld_admin_type} userIdDefined={userIdDefined} queryInfo={queryInfo} />
                 {detailsTabVisible && (
                     <div className='col-md-3'>
                         {loading ? (

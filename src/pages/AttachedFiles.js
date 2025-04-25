@@ -120,7 +120,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
         fetchAttachedFiles();
     }, [quote.quoteid]);
 
-    
+
     const [selectedFiles, setSelectedFiles] = useState([]);
 
     const handleFileChange = (e) => {
@@ -156,7 +156,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
 
         } catch (err) {
             console.error("Upload failed:", err);
-        }finally{
+        } finally {
             setUploading(false);
         }
     };
@@ -202,30 +202,49 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
             {relevantFiles.length === 0 ? (
                 <p className="text-gray-500">No relevant files attached.</p>
             ) : (
-                <ul className="space-y-1">
+                <ul className="space-y-2">
                     {relevantFiles.map((file, index) => {
                         const truncateMiddle = (str, maxLength = 30) => {
                             if (str.length <= maxLength) return str;
-                            const half = Math.floor((maxLength - 3) / 2); // subtract 3 for "..."
+                            const half = Math.floor((maxLength - 3) / 2);
                             return str.slice(0, half) + '...' + str.slice(str.length - half);
                         };
 
+                        const formattedDate = new Date(file.created_date * 1000).toLocaleString('en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric',
+                            hour: 'numeric',
+                            minute: '2-digit',
+                            hour12: true,
+                        });
+                        // Convert Unix timestamp to readable
+
                         return (
-                            <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition border-bottom">
-                                <FileDown className="text-blue-500" size={18} />
-                                <a
-                                    href={`${fileBaseURL}${file.file_path}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    download
-                                    className="text-blue-600 font-medium hover:underline"
-                                >
-                                    {truncateMiddle(file.filename)} ({file.quote_id})
-                                </a>
+                            <li
+                                key={index}
+                                className="flex flex-col  justify-between gap-2 p-2 rounded-md border border-gray-200 shadow-sm"
+                            >
+                                <div className="flex items-center gap-x-2">
+                                    <FileDown className="text-blue-500" size={18} />
+                                    <a
+                                        href={`${fileBaseURL}${file.file_path}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        download
+                                        className="text-blue-600 font-medium hover:underline"
+                                    >
+                                        {truncateMiddle(file.filename)} ({file.quote_id})
+                                    </a>
+                                </div>
+                                <div className=" text-gray-500 sm:text-right tenpx">
+                                    {formattedDate}
+                                </div>
                             </li>
                         );
                     })}
                 </ul>
+
 
             )}
 
@@ -233,23 +252,44 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 <p className="text-gray-500 text-sm"></p>
             ) : (
                 <>
-                    
+
                     <ul className="space-y-3">
-                        {chatFiles.map((file, index) => (
-                            <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition border-bottom">
-                                <FileDown className="text-green-500" size={18} />
-                                <a
-                                    href={`${file.file_path}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    download
-                                    className="text-green-700 font-medium hover:underline truncate"
+                        {chatFiles.map((file, index) => {
+                            const formattedDate = new Date(file.date * 1000).toLocaleString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true,
+                            });
+
+
+                            return (
+                                <li
+                                    key={index}
+                                    className="flex flex-col  justify-between gap-2 p-2 rounded-md border border-gray-200 shadow-sm"
                                 >
-                                    {file.file_path.split("/").pop()} ({file.quote_id})
-                                </a>
-                            </li>
-                        ))}
+                                    <div className="flex items-center gap-x-2">
+                                        <FileDown className="text-green-500" size={18} />
+                                        <a
+                                            href={`${file.file_path}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            download
+                                            className="text-green-700 font-medium hover:underline truncate"
+                                        >
+                                            {file.file_path.split("/").pop()} ({file.quote_id})
+                                        </a>
+                                    </div>
+                                    <div className=" text-gray-500 sm:text-right tenpx">
+                                        {formattedDate}
+                                    </div>
+                                </li>
+                            );
+                        })}
                     </ul>
+
                 </>
             )}
 
@@ -258,28 +298,43 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 <p className="text-gray-500 text-sm"></p>
             ) : (
                 <>
-                    
+
                     <ul className="space-y-3">
                         {feasFiles.map((file, index) => {
                             const truncateMiddle = (str, maxLength = 30) => {
                                 if (str.length <= maxLength) return str;
-                                const half = Math.floor((maxLength - 3) / 2); // 3 for "..."
+                                const half = Math.floor((maxLength - 3) / 2);
                                 return str.slice(0, half) + '...' + str.slice(str.length - half);
                             };
 
+                            const formattedDate = new Date(file.created_date * 1000).toLocaleString('en-US', {
+                                month: 'short',
+                                day: 'numeric',
+                                year: 'numeric',
+                                hour: 'numeric',
+                                minute: '2-digit',
+                                hour12: true,
+                            });
+
+
                             return (
-                                <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition border-bottom">
-                                    <FileDown className="text-purple-500" size={18} />
-                                    <a
-                                        href={`https://apacvault.com/public/feasabilityFiles/${file.file_name}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        download
-                                        className="text-purple-700 font-medium hover:underline truncate"
-                                        title={file.file_name} // optional: show full name on hover
-                                    >
-                                        {truncateMiddle(file.file_name)} ({file.quote_id})
-                                    </a>
+                                <li key={index} className="flex flex-col justify-between gap-2 p-2 rounded-md border border-gray-200 shadow-sm">
+                                    <div className="flex items-center gap-x-2">
+                                        <FileDown className="text-purple-500" size={18} />
+                                        <a
+                                            href={`https://apacvault.com/public/feasabilityFiles/${file.file_name}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            download
+                                            className="text-purple-700 font-medium hover:underline truncate"
+                                            title={file.file_name}
+                                        >
+                                            {truncateMiddle(file.file_name)} ({file.quote_id})
+                                        </a>
+                                    </div>
+                                    <div className=" text-gray-500 sm:text-right tenpx">
+                                        {formattedDate}
+                                    </div>
                                 </li>
                             );
                         })}
@@ -292,23 +347,45 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 <p className="text-gray-500 text-sm"></p>
             ) : (
                 <>
-                    
+
                     <ul className="space-y-3">
-                        {attachedFiles.map((file, index) => (
-                            <li key={index} className="flex items-center gap-x-1 p-2 rounded-md transition border-bottom">
-                                <FileDown className="text-green-500" size={18} />
-                                <a
-                                    href={`${fileBaseURL}${file.file}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    download
-                                    className="text-green-700 font-medium hover:underline truncate"
+                        {attachedFiles.map((file, index) => {
+                            const formattedDate = file.created_at
+                                ? new Date(file.created_at).toLocaleString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                    hour: 'numeric',
+                                    minute: '2-digit',
+                                    hour12: true,
+                                })
+                                : 'Unknown';
+
+                            return (
+                                <li
+                                    key={index}
+                                    className="flex flex-col  justify-between gap-2 p-2 rounded-md border border-gray-200 shadow-sm"
                                 >
-                                    {file.file} ({file.quote_id})
-                                </a>
-                            </li>
-                        ))}
+                                    <div className="flex items-center gap-x-2">
+                                        <FileDown className="text-green-500" size={18} />
+                                        <a
+                                            href={`${fileBaseURL}${file.file}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            download
+                                            className="text-green-700 font-medium hover:underline truncate"
+                                        >
+                                            {file.file} ({file.quote_id})
+                                        </a>
+                                    </div>
+                                    <div className="tenpx text-gray-500 sm:text-right">
+                                       {formattedDate}
+                                    </div>
+                                </li>
+                            );
+                        })}
                     </ul>
+
                 </>
             )}
 

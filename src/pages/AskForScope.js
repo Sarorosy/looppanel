@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, Hourglass, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset, Star, Crown, Pen, Upload } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, Hourglass, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset, Star, Crown, Pen, Upload, Folder, BadgeCheck } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -29,7 +29,7 @@ import AttachedFiles from './AttachedFiles';
 
 
 
-const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName, tlType, tagAccess }) => {
+const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined, clientName, tlType, tagAccess }) => {
   const socket = getSocket();
   const [scopeDetails, setScopeDetails] = useState(null);
   const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -440,22 +440,6 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
     };
   }, []);
 
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp * 1000); // Convert Unix timestamp to Date object
-    return date.toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
-  };
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case 0:
-        return 'Pending';
-      case 1:
-        return 'Submitted';
-      default:
-        return 'Unknown';
-    }
-  };
-  const referenceUrl = `https://instacrm.rapidcollaborate.com/managequote/view-askforscope/${scopeDetails?.ref_id}`;
 
   const toggleAddNewForm = () => setAddNewFormOpen((prev) => !prev);
   const toggleEditForm = (id) => {
@@ -469,11 +453,6 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
     SetFeasHistoryPanelOpen((prev) => !prev);
 
   }
-
-
-
-
-
 
   const confirmSubmit = (assign_id, quote_id, user_id) => {
     Swal.fire({
@@ -568,11 +547,90 @@ const AskForScope = ({ queryId, userType, quotationId, userIdDefined, clientName
     return toWords.toWords(Number(num));
   };
 
+  const createRapidShareAccount = async () => {
+    try {
+      console.log(queryInfo)
+      if (!queryInfo.website_name) {
+        toast.error("Website not found for this query.");
+        return;
+      }
+      if (!queryInfo.email_id) {
+        toast.error("Client Email not found for this query.");
+        return;
+      }
+
+      const response = await fetch(`https://www.${queryInfo.website_name}/rapidshare/api/Api/registerUser`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: queryInfo.email_id,
+
+        }),
+      })
+      const data = await response.json();
+      if (data.status) {
+        toast.success(data.message || "RapidShare account created successfully.");
+        setShowRapidButton(false)
+      } else {
+        toast.error(data.message || "Failed to create RapidShare account.");
+      }
+
+    } catch (err) {
+      console.error("Error creating RapidShare account:", err);
+    }
+  }
+
+  const [showRapidButton, setShowRapidButton] = useState(false);
+
+  const checkRapidShareAccount = async () => {
+    try {
+      if (queryInfo && queryInfo.email_id && queryInfo.website_name) {
+        const response = await fetch(`https://www.${queryInfo.website_name}/rapidshare/api/Api/checkAccount`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: queryInfo.email_id,
+          }),
+        })
+        const data = await response.json();
+        if (data.status && !data.value) {
+          setShowRapidButton(true);
+        } else {
+          setShowRapidButton(false);
+        }
+      }
+    } catch (err) {
+      console.error("Error checking RapidShare account:", err);
+    }
+  }
+  useEffect(() => {
+    if (queryInfo && queryInfo.email_id && queryInfo.website_name) {
+      checkRapidShareAccount();
+    }
+  },[queryInfo])
   return (
     <div className=" h-full bg-gray-100  z-50 overflow-y-auto mt-2 rounded w-full">
       <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
         <h2 className="text-sx font-semibold ">Ask For Scope </h2>
         <div className="flex items-center">
+          {/* {showRapidButton ? (
+            <button
+              onClick={createRapidShareAccount}
+              className='flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-blue-950 text-white hover:bg-blue-900'
+            >
+              <Folder size={12} className='mr-1' /> Create RapidShare Account
+            </button>
+          ) : (
+            <button
+              className='flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-blue-950 text-white hover:bg-blue-900'
+            >
+              <Folder size={12} className='mr-1' /> RapidShare Account Created <BadgeCheck size={12} className='ml-1 text-green-600' />
+            </button>
+          )} */}
           <button
             onClick={fetchAllScopeDetails}
             className="flex items-center mr-2 rounded px-2 py-1 text-xs btn-light"

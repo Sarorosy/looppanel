@@ -48,6 +48,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const [pendingFeasRequestCount, setPendingFeasRequestCount] = useState(0)
     const [followupCount, setFollowupCount] = useState(0);
     const [requestPendingCount, setRequestPendingCount] = useState(0);
+    const [requestAccessCount, setRequestAccessCount] = useState(0);
 
     const [userFeasPageOpen, setUserFeasPageOpen] = useState(false);
 
@@ -163,20 +164,28 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     };
 
      
-    const fetchQuotes = async (nopayload = false, requestPending = false) => {
+    const fetchQuotes = async (nopayload = false, requestPending = false, requestAccess = false) => {
         setLoading(true);
 
         let hasResponse = false;
-        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter: requestPending ? "requestsent" : "" }
+
+        let selectedFilter = "";
+        if (requestAccess) {
+            selectedFilter = "requestaccess"; // typo? should it be "requestaccess"?
+        } else if (requestPending) {
+            selectedFilter = "requestsent";
+        }
+
+        let payload = { loop_user_id: loopuserId, user_id: userId, search_keywords: keyword, ref_id: RefId, website: selectedWebsite, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter }
 
         if (nopayload) {
             // If nopayload is true, send an empty payload
-            payload = { loop_user_id: loopuserId, user_id: userId, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter: requestPending ? "requestsent" : "" }; //selectedFilter : "requestsent"
+            payload = { loop_user_id: loopuserId, user_id: userId, user_type: userObject.user_type, team_id: userObject.team_id, selectedFilter }; //selectedFilter : "requestsent"
         }
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/loadcontactmadequeriesNew',
+                'https://apacvault.com/Webapi/loadContactMadeQueriesVeryNew',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -192,6 +201,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                 setPendingFeasRequestCount(data.pendingFeasRequestCount ? data.pendingFeasRequestCount : 0);
                 setFollowupCount(data.followingCount ? data.followingCount : 0);
                 setRequestPendingCount(data.request_pending_count ? data.request_pending_count : 0);
+                setRequestAccessCount(data.request_access_count ? data.request_access_count : 0);
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
@@ -378,7 +388,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
         setRefId('');
         setSelectedWebsite('');
         $(selectUserRef.current).val(null).trigger('change');
-        fetchQuotes(true, false);
+        fetchQuotes(true, false, false);
     };
 
     const handleRequestAccessClick = async (data) => {
@@ -409,7 +419,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
             // Handle network errors
             toast.error('There was an error sending the request.');
         } finally {
-            fetchQuotes(false, false);
+            fetchQuotes(false, false, false);
         }
     };
 
@@ -421,7 +431,12 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                 <div className="flex items-center justify-start mb-3">
                     <h1 className='text-xl font-bold '>Query History</h1>
                     <div
-                        onClick={() => { fetchQuotes(false, true) }}
+                        onClick={() => { fetchQuotes(false, false, true) }}
+                        title='Transfer requests pending count' class="cursor-pointer bg-blue-100 text-blue-700 px-2 py-1 rounded-lg font-semibold tenpx ml-3">
+                        Request Access: <span class="font-bold">{requestAccessCount}</span>
+                    </div>
+                    <div
+                        onClick={() => { fetchQuotes(false, true, false) }}
                         title='Transfer requests pending count' class="cursor-pointer bg-red-100 text-red-700 px-2 py-1 rounded-lg font-semibold tenpx ml-3">
                         Request Pending: <span class="font-bold">{requestPendingCount}</span>
                     </div>
@@ -465,7 +480,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
                     <div className=" flex justify-content-end space-x-2 items-center">
                         <label>&nbsp;</label>
-                        <button className="gree text-white flex items-center" onClick={() => { fetchQuotes(false, false) }}>
+                        <button className="gree text-white flex items-center" onClick={() => { fetchQuotes(false, false, false) }}>
                             <Filter size={12} />
                             Apply
                         </button>
@@ -548,7 +563,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                         onClose={toggleDetailsPage}
                         queryId={selectedQuery}
                         quotationId={selectedQuote}
-                        after={() => { fetchQuotes(false, false) }}
+                        after={() => { fetchQuotes(false, false, false) }}
                     />
 
                 )}
@@ -556,20 +571,20 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
                     <SummaryPage
                         onClose={toggleSummaryPage}
-                        after={() => { fetchQuotes(false, false) }}
+                        after={() => { fetchQuotes(false, false, false) }}
                     />
 
                 )}
                 {followingOpen && (
                     <FollowingPage onClose={toggleFollowingPage}
-                        after={() => { fetchQuotes(false, false) }} />
+                        after={() => { fetchQuotes(false, false, false) }} />
                 )}
                 {feasPageOpen && (
-                    <FeasabilityPage onClose={toggleFeasPage} after={() => { fetchQuotes(false, false) }} />
+                    <FeasabilityPage onClose={toggleFeasPage} after={() => { fetchQuotes(false, false, false) }} />
                 )}
                 {userFeasPageOpen && (
                     
-                    <UserFeasibilityPage onClose={()=>{setUserFeasPageOpen(false)}} after={() => { fetchQuotes(false, false) }} />
+                    <UserFeasibilityPage onClose={()=>{setUserFeasPageOpen(false)}} after={() => { fetchQuotes(false, false, false) }} />
                 )}
                 {tlPageOpen && (
                     <ManageTlQuery onClose={() => { setTlPageOpen(!tlPageOpen) }} />

@@ -1044,8 +1044,7 @@ const AskForScopeAdmin = ({
                               </>
                             )}
                           {quote.isfeasability == 1 &&
-                            quote.feasability_status == "Pending" &&
-                            loopUserObject.id != "206" && (
+                            quote.feasability_status == "Pending" && (
                               <button
                                 onClick={() => {
                                   toggleCompleteFeasability(
