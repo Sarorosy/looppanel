@@ -955,3 +955,11 @@ focus-outline-none:focus:not(:focus-visible) {
 .elevenpx{
   font-size: 11px;
 }
+
+.n-py-1 {
+  padding-top: 3px;
+  padding-bottom: 1px;
+}
+.n-gap-3 {
+  column-gap: 10px;
+}

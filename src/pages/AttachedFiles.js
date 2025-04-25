@@ -162,7 +162,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
     };
 
     return (
-        <div className="bg-white p-x-2 pt-1 shadow-md border elevenpx">
+        <div className="bg-white p-x-2 shadow-md border elevenpx">
 
             {quote.parent_quote !== 1 && (
                 <>
@@ -202,7 +202,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
             {relevantFiles.length === 0 ? (
                 <p className="text-gray-500">No relevant files attached.</p>
             ) : (
-                <ul className="space-y-2">
+                <ul className="">
                     {relevantFiles.map((file, index) => {
                         const truncateMiddle = (str, maxLength = 30) => {
                             if (str.length <= maxLength) return str;
@@ -223,7 +223,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                         return (
                             <li
                                 key={index}
-                                className="flex flex-col  justify-between gap-2 p-2 rounded-md border border-gray-200 shadow-sm"
+                                className="flex flex-col  justify-between gap-2 p-2 border border-gray-200 "
                             >
                                 <div className="flex items-center gap-x-2">
                                     <FileDown className="text-blue-500" size={18} />

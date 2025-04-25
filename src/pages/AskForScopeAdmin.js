@@ -2699,11 +2699,11 @@ const AskForScopeAdmin = ({
                                         <>
                                           <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
                                             <h3 className=""><strong>Attached Files</strong></h3>
-                                            <div className='flex items-center'>
+                                            <div className='flex items-center n-gap-3'>
                                               {!showUpload && (
                                                 <button
                                                   onClick={() => setShowUpload(true)}
-                                                  className="btn btn-info btn-sm f-11 flex items-center p-1"
+                                                  className="btn btn-info btn-sm f-11 flex items-center px-2 n-py-1"
                                                 >
                                                   <Upload className="mr-1" size={10} /> Attach more file
                                                 </button>
