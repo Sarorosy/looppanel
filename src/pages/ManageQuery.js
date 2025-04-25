@@ -1005,7 +1005,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 Queries
                             </button>
                         )}
-                        {loopUserObject.id == "1" && (
+                        {(loopUserObject.id == "206" || loopUserObject.scopeadmin == 1) && (
                             <button className="bg-gray-200 flex items-center relative mr-3 p-1 rounded elevenpx" onClick={() => { setUsersRequestDivOpen(true) }}>
                                 <Users size={18} className='mr-2' />
                                 Users Request Count
