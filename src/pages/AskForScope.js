@@ -24,6 +24,7 @@ import CallRecordingPending from './CallRecordingPending';
 import academic from '../academic.svg';
 import experiment from '../poll.svg';
 import AttachedFiles from './AttachedFiles';
+import ClientSharedFiles from './rapidshare/ClientSharedFiles';
 
 
 
@@ -611,26 +612,34 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     if (queryInfo && queryInfo.email_id && queryInfo.website_name) {
       checkRapidShareAccount();
     }
-  },[queryInfo])
+  }, [queryInfo])
+
+  const [openClientSharedFiles, setOpenClientSharedFiles] = useState(false);
+
   return (
     <div className=" h-full bg-gray-100  z-50 overflow-y-auto mt-2 rounded w-full">
       <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
         <h2 className="text-sx font-semibold ">Ask For Scope </h2>
         <div className="flex items-center">
-          {/* {showRapidButton ? (
-            <button
-              onClick={createRapidShareAccount}
-              className='flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-blue-950 text-white hover:bg-blue-900'
-            >
-              <Folder size={12} className='mr-1' /> Create RapidShare Account
-            </button>
-          ) : (
-            <button
-              className='flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-blue-950 text-white hover:bg-blue-900'
-            >
-              <Folder size={12} className='mr-1' /> RapidShare Account Created <BadgeCheck size={12} className='ml-1 text-green-600' />
-            </button>
-          )} */}
+          {loopUserObject.id == "207" && (
+            showRapidButton ? (
+              <button
+                onClick={createRapidShareAccount}
+                className="flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
+              >
+                <Folder size={12} className="mr-1" /> Create RapidShare Account
+              </button>
+            ) : (
+              <button
+                onClick={() => { setOpenClientSharedFiles(true); }}
+                className="flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
+              >
+                <Folder size={12} className="mr-1" /> RapidShare Account Created
+                <BadgeCheck size={12} className="ml-1 text-green-600" />
+              </button>
+            )
+          )}
+
           <button
             onClick={fetchAllScopeDetails}
             className="flex items-center mr-2 rounded px-2 py-1 text-xs btn-light"
@@ -2192,6 +2201,9 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                 }}
                 after={fetchScopeDetails}
               />
+            )}
+            {openClientSharedFiles && (
+              <ClientSharedFiles queryInfo={queryInfo} onClose={() => { setOpenClientSharedFiles(false) }} />
             )}
           </AnimatePresence>
           <Tooltip id="my-tooltip" />
