@@ -2110,7 +2110,8 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                             </div>
                                           </div>
 
-                                          <AttachedFiles ref_id={quote.assign_id}
+                                          <AttachedFiles 
+                                            ref_id={quote.assign_id}
                                             relevant_file={quote.relevant_file}
                                             quote={quote}
                                             showUpload={showUpload}

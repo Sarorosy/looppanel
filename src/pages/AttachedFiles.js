@@ -24,7 +24,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
 
     const fileBaseURL = "https://apacvault.com/public/QuotationFolder/";
 
-    const quoteID = quote?.quoteid || quote?.quote_id;
+    //const quoteID = quote?.quoteid || quote?.quote_id;
     // Fetch chat attached files from API
     useEffect(() => {
         const fetchChatFiles = async () => {
@@ -199,8 +199,11 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 </>
             )}
 
+            {relevantFiles.length == 0 && chatFiles.length == 0 && feasFiles.length == 0 && attachedFiles.length == 0 && (
+                <p className="text-gray-500 text-center py-3">No Files Found</p>
+            )}
             {relevantFiles.length === 0 ? (
-                <p className="text-gray-500">No relevant files attached.</p>
+                <p className="text-gray-500"></p>
             ) : (
                 <ul className="">
                     {relevantFiles.map((file, index) => {
