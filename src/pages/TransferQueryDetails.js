@@ -29,6 +29,7 @@ const TransferQueryDetails = ({ onClose, queryId, quotationId, after, userIdDefi
     const userData = localStorage.getItem('loopuser');
 
     const userObject = JSON.parse(userData);
+    console.log("queryinfo tagssss" + queryInfo.tags)
 
     const fetchActivityHistory = async () => {
 
@@ -194,7 +195,7 @@ const TransferQueryDetails = ({ onClose, queryId, quotationId, after, userIdDefi
                             {queryInfo.academic_level && <p><strong>Academic Level:</strong> {queryInfo.academic_level}</p>}
                             <p>
                                 <strong>Tag: </strong>
-                                {queryInfo.tags && queryInfo.tags.length > 0 ? (
+                                {queryInfo.tags && queryInfo.tags != null && queryInfo.tags != "null" && queryInfo.tags.length > 0 ? (
                                     <span className="">
                                         {queryInfo.tags.map((tag, index) => (
                                             <div
