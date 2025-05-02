@@ -25,6 +25,7 @@ import academic from '../academic.svg';
 import experiment from '../poll.svg';
 import AttachedFiles from './AttachedFiles';
 import ClientSharedFiles from './rapidshare/ClientSharedFiles';
+import UserAccounts from './rapidshare/UserAccounts';
 
 
 
@@ -2204,7 +2205,8 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
               />
             )}
             {openClientSharedFiles && (
-              <ClientSharedFiles queryInfo={queryInfo} onClose={() => { setOpenClientSharedFiles(false) }} />
+              <UserAccounts queryInfo={queryInfo} onClose={() => { setOpenClientSharedFiles(false) }}  />
+              // <ClientSharedFiles queryInfo={queryInfo} onClose={() => { setOpenClientSharedFiles(false) }} />
             )}
           </AnimatePresence>
           <Tooltip id="my-tooltip" />

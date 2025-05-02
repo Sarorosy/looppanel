@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CirclePause, X, Lock, CircleHelp, FileText } from 'lucide-react';
+import { CirclePause, X, Lock, CircleHelp, FileText, ArrowLeft, CircleArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const ClientSharedFiles = ({ onClose, queryInfo }) => {
+const ClientSharedFiles = ({ userId, onClose, queryInfo }) => {
     const [files, setFiles] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -22,7 +22,7 @@ const ClientSharedFiles = ({ onClose, queryInfo }) => {
             const response = await fetch(`https://${queryInfo.website_name}/rapidshare/api/Api/getAllClientFiles`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: queryInfo.email_id }),
+                body: JSON.stringify({ user_id: userId }),
             });
             const data = await response.json();
             if (data.status) {
@@ -130,8 +130,8 @@ const ClientSharedFiles = ({ onClose, queryInfo }) => {
         >
             <div className="flex justify-between items-center px-4 py-3 border-b bg-blue-500 text-white">
                 <h2 className="text-lg font-semibold">Client Shared Files</h2>
-                <button onClick={onClose} className="text-gray-500 hover:text-red-500">
-                    <X />
+                <button onClick={onClose} className="text-red-500 hover:text-red-600 flex items-center bg-red-100 rounded px-2 py-0.5">
+                    <CircleArrowLeft size={18} className='mr-2' /> Back
                 </button>
             </div>
 
