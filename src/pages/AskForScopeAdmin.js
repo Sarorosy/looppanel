@@ -2332,7 +2332,7 @@ const AskForScopeAdmin = ({
                                                     <div className="nav-tabs-custom tabb p-3 shadow-0">
                                                       <ul className="nav border-none nav-tabs pb-2 p-0">
                                                         <li className="btn btn-primary btn-sm border-0 f-12">
-                                                          Submit Price
+                                                          Submit Price {info.website_name && (" - " + info.website_name)}
                                                         </li>
 
                                                         <AlreadyQuoteGiven email_id={clientEmail} website_id={clientWebsite} />
