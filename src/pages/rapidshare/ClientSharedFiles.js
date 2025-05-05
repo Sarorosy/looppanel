@@ -19,7 +19,7 @@ const ClientSharedFiles = ({ userId, onClose, queryInfo }) => {
                 return;
             }
             setLoading(true);
-            const response = await fetch(`https://${queryInfo.website_name}/rapidshare/api/Api/getAllClientFiles`, {
+            const response = await fetch(`https://rapidcollaborate.com/rapidshare/api/Api/getAllClientFiles`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userId }),

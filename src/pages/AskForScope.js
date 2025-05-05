@@ -561,7 +561,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
         return;
       }
 
-      const response = await fetch(`https://www.${queryInfo.website_name}/rapidshare/api/Api/registerUser`, {
+      const response = await fetch(`https://www.rapidcollaborate.com/rapidshare/api/Api/registerUser`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -589,7 +589,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
   const checkRapidShareAccount = async () => {
     try {
       if (queryInfo && queryInfo.email_id && queryInfo.website_name) {
-        const response = await fetch(`https://www.${queryInfo.website_name}/rapidshare/api/Api/checkAccount`, {
+        const response = await fetch(`https://www.rapidcollaborate.com/rapidshare/api/Api/checkAccount`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

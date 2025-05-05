@@ -19,7 +19,7 @@ const UserAccounts = ({ onClose, queryInfo }) => {
             }
 
             setLoading(true);
-            const response = await fetch(`https://${queryInfo.website_name}/rapidshare/api/Api/getAllAccounts`, {
+            const response = await fetch(`https://rapidcollaborate.com/rapidshare/api/Api/getAllAccounts`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: queryInfo.email_id }),
@@ -57,7 +57,7 @@ const UserAccounts = ({ onClose, queryInfo }) => {
                 return;
             }
 
-            const response = await fetch(`https://www.${queryInfo.website_name}/rapidshare/api/Api/registerUser`, {
+            const response = await fetch(`https://www.rapidcollaborate.com/rapidshare/api/Api/registerUser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
