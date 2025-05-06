@@ -38,27 +38,37 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
             <AnimatePresence>
                 {showModal && (
                     <motion.div
-                        className="modal-backdrop flex items-center justify-center fixed inset-0 z-50 bg-black bg-opacity-50"
+                        className="modal-backdrop h-screen fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setShowModal(false)}
                     >
+                       
                         <motion.div
-                            className="bg-white p-6 rounded-xl shadow-2xl max-w-4xl "
+                            className="bg-white px-6 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
                             initial={{ scale: 0.8 }}
                             animate={{ scale: 1 }}
                             exit={{ scale: 0.8 }}
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <h2 className=" font-bold mb-3 text-gray-800 text-lg font-semibold mb-2 border-b pb-2 ">Quote Details</h2>
+                             <div className="flex items-center justify-between mb-3 border-b py-3 sticky top-0 bg-white">
+                             <h2 className="  text-gray-800 text-lg font-semibold  ">Quote Details</h2>
+                                <button
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => setShowModal(false)}
+                                >
+                                    Close
+                                </button>
+                            </div>
+                            
                             {quoteDetails.map((quote, index) => {
                                 const plans = quote.plan.split(',');
                                 const comments = JSON.parse(quote.plan_comments || '{}');
                                 const wordCounts = JSON.parse(quote.word_counts || '{}');
 
                                 return (
-                                    <div key={index} className="mb-8 text-gray-800 overflow-y-scroll pr-3">
+                                    <div key={index} className="mb-8 text-gray-800 overflow-y-scroll pr-3 space-y-8 py-6">
                                         <div className="grid grid-cols-3 md:grid-cols-3 gap-4 mb-4">
                                             <div className="p-2 border rounded bg-gray-50 d-flex gap-x-2">
                                                 <p className="text-sm font-semibold">Quote ID :</p>
@@ -145,14 +155,7 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
                                     </div>
                                 );
                             })}
-                            <div className="text-right mt-3">
-                                <button
-                                    className="btn btn-danger btn-sm"
-                                    onClick={() => setShowModal(false)}
-                                >
-                                    Close
-                                </button>
-                            </div>
+                            
                         </motion.div>
 
                     </motion.div>
