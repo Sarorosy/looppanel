@@ -11,7 +11,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight, FilterIcon, Users } from 'lucide-react';
+import { FileSpreadsheet, Pencil, CheckCircle, XCircle, Check, RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight, FilterIcon, Users } from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +25,7 @@ import { getSocket } from './Socket';
 import TransferRequestsPage from './TransferRequestsPage';
 import TableLoader from '../components/TableLoader';
 import UsersRequestCount from './UsersRequestCount';
+import Xls from './Xls';
 const socket = getSocket();
 
 const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
@@ -98,7 +99,104 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     const loggedInUserToken = localStorage.getItem("loggedInToken");
 
-    
+    const [file, setFile] = useState(null);
+    const [uploadedFileInfo, setUploadedFileInfo] = useState(null);
+    const [error, setError] = useState("");
+    const [fileContent, setFileContent] = useState([]);
+    const [showUpload, setShowUpload] = useState(false);
+
+    const getTrimmedFilename = (filename, maxLength = 40) => {
+        if (!filename || filename.length <= maxLength) return filename;
+        const start = filename.slice(0, 20);
+        const end = filename.slice(-15);
+        return `${start}...${end}`;
+    };
+
+    useEffect(() => {
+        fetchAndDisplayFile();
+    }, []);
+
+    const fetchAndDisplayFile = async () => {
+        try {
+            const res = await fetch("https://apacvault.com/Webapi/getXlsFileApiAction");
+            const data = await res.json();
+
+            if (data.status && data.file) {
+                const fileName = data.file;
+                setUploadedFileInfo(fileName);
+
+                const fileUrl = `https://apacvault.com/public/QuotationFolder/${fileName}`;
+                const fileRes = await fetch(fileUrl);
+                const blob = await fileRes.blob();
+                const arrayBuffer = await blob.arrayBuffer();
+
+                const workbook = XLSX.read(arrayBuffer, { type: "array" });
+                const firstSheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[firstSheetName];
+                const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                const filteredData = rawData
+                    .filter((row, index) => {
+                        return index > 0 && row.length === 2 && row[0] !== "Ref. No.";
+                    })
+                    .map((row) => ({
+                        refNo: row[0],
+                        status: row[1],
+                    }));
+
+                setFileContent(filteredData);
+                console.log("Filtered Data:", filteredData);
+            }
+        } catch (err) {
+            console.error("Failed to fetch or read the XLSX file:", err);
+        }
+    };
+
+    const handleFileChange = (e) => {
+        const selected = e.target.files[0];
+        if (selected && selected.name.endsWith(".xlsx")) {
+            setFile(selected);
+            setError("");
+        } else {
+            setError("Please upload a valid .xlsx file");
+        }
+    };
+
+    const handleUpload = async () => {
+        if (!file) {
+            toast.error("No file selected");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const res = await fetch("https://apacvault.com/Webapi/uploadQuoteXlsFileApiAction", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await res.json();
+
+            if (data.status) {
+                console.log("Upload response:", data);
+                setUploadedFileInfo(data.file);
+                setError("");
+                fetchAndDisplayFile();
+                setFile(null);
+                setShowUpload(false);
+
+            } else {
+                toast.error(data.message || "Upload failed");
+            }
+        } catch (err) {
+            toast.error("Error uploading file");
+            console.error(err);
+        }
+    };
+
+
 
 
     const handleTabClick = (tab) => {
@@ -239,15 +337,15 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             allowClear: true,
         }).on('change', (e) => {
             const rawValues = $(e.target).val() || [];
-    
+
             const sanitized = rawValues.filter(v => v && v.trim() != '');
-    
+
             setSelectedService(prev => {
                 const merged = [...new Set([...prev, ...sanitized])]; // unique values only
                 return merged;
             });
         });
-    
+
         return () => {
             if (selectServiceRef.current) {
                 $(selectServiceRef.current).select2('destroy');
@@ -257,20 +355,20 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     useEffect(() => {
         const $select = $(selectSubjectRef.current);
-    
+
         $select.select2({
             placeholder: "Select SubjectArea",
             allowClear: true,
             multiple: true,
             width: '100%',
         });
-    
+
         $select.on('change', () => {
             const values = $select.val() || [];
             const sanitized = values.filter(v => v && v.trim() != '');
             setSelectedSubjectArea(sanitized); // ✅ sets array
         });
-    
+
         return () => {
             $select.off('change');
             $select.select2('destroy');
@@ -279,27 +377,27 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     useEffect(() => {
         const $select = $(selectStatusRef.current);
-    
+
         $select.select2({
             placeholder: "Select Quote Status",
             allowClear: true,
             multiple: true,
             width: '100%',
         });
-    
+
         $select.on('change', () => {
             const values = $select.val() || [];
             const sanitized = values.filter(v => v && v.trim() != '');
             setStatus(sanitized); // ✅ sets array
         });
-    
+
         return () => {
             $select.off('change');
             $select.select2('destroy');
         };
     }, []);
-    
-    
+
+
 
     // Fetch all data on initial render
     useEffect(() => {
@@ -380,7 +478,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             .join(', ');
                         appliedFilters.push(`Users: ${userNames}`);
                     }
-                    
+
                     if (service_name && service_name.length > 0) {
                         const serviceNames = service_name
                             .map(id => {
@@ -390,7 +488,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             .join(', ');
                         appliedFilters.push(`Services: ${serviceNames}`);
                     }
-                    
+
                     if (subject_area && subject_area.length > 0) appliedFilters.push(`Subject: ${subject_area}`);
                     if (tags.length > 0) appliedFilters.push(`Tags: ${tags.join(', ')}`);
                     if (status && status.length > 0) {
@@ -401,11 +499,11 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             "2": "Discount Requested",
                             "3": "Discount Submitted"
                         };
-                    
+
                         const displayStatuses = status.map(s => statusLabels[s] ?? "Pending");
                         appliedFilters.push(`Status: ${displayStatuses.join(", ")}`);
                     }
-                    
+
                     if (feasability_status) appliedFilters.push(`Feasibility: ${feasability_status}`);
                     if (start_date && end_date) appliedFilters.push(`Date: ${start_date.toLocaleDateString()} - ${end_date.toLocaleDateString()}`);
 
@@ -668,7 +766,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             console.error('Error fetching Services:', error);
         }
     };
-    
+
 
     const columns = [
         {
@@ -792,16 +890,16 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 }
             },
         },
-        {
-            title: 'Comments',
-            data: 'comments',
-            orderable: false,
-            render: (data) => {
-                // Check if the data is not empty and its length is greater than 50 characters
-                const truncatedData = (data && data.length > 40) ? data.substring(0, 40) + '...' : (data || 'N/A');
-                return `<div style="text-align: left;">${truncatedData}</div>`;
-            },
-        },
+        // {
+        //     title: 'Comments',
+        //     data: 'comments',
+        //     orderable: false,
+        //     render: (data) => {
+        //         // Check if the data is not empty and its length is greater than 50 characters
+        //         const truncatedData = (data && data.length > 40) ? data.substring(0, 40) + '...' : (data || 'N/A');
+        //         return `<div style="text-align: left;">${truncatedData}</div>`;
+        //     },
+        // },
         {
             title: 'Service',
             data: 'service_name',
@@ -851,19 +949,29 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 return '-';
             },
         },
-        // {
-        //     title: 'Instacrm Status',
-        //     data: 'instacrm_status',
-        //     orderable: false,
-        //     render: function (data, type, row) {
-        //         if (data === 'Quoted') {
-        //             return '<span class="text-blue-600 font-bold">Quoted</span>';
-        //         } else if (data === 'Converted') {
-        //             return '<span class="text-green-600 font-bold">Converted</span>';
-        //         }
-        //         return '-';
-        //     }
-        // },
+        {
+            title: 'Instacrm Status',
+            data: null, // We'll manually derive this from fileContent
+            orderable: false,
+            render: function (data, type, row) {
+                const match = fileContent.find(
+                    (item) => String(item.refNo) === String(row.ref_id)
+                );
+
+                if (match) {
+                    const status = match.status;
+                    if (status === 'Quoted') {
+                        return '<span class="text-blue-600 font-bold">Quoted</span>';
+                    } else if (status === 'Converted') {
+                        return '<span class="text-green-600 font-bold">Converted</span>';
+                    } else {
+                        return `<span class="text-gray-600">${status}</span>`;
+                    }
+                }
+
+                return '<span class="text-gray-400 italic">Not Found</span>';
+            }
+        },
         {
             title: 'Tags',
             data: 'tag_names', // Replace with actual field name from your dataset
@@ -984,9 +1092,72 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     return (
         <div className="container bg-gray-100 w-full">
+            <div className="px-4 py-1 flex items-end justify-between bg-white mb-2">
+                <div className="flex items-center justify-end space-x-2">
+                    <FileSpreadsheet size={20} className="text-green-600" />
+                    {uploadedFileInfo ? (
+                        <span className="text-gray-800 font-medium"
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-content={uploadedFileInfo}
+                        >{getTrimmedFilename(uploadedFileInfo)}</span>
+                    ) : (
+                        <span className="text-gray-500 italic">No file uploaded</span>
+                    )}
+                    <button
+                        data-tooltip-id="my-tooltip"
+                        data-tooltip-content="Edit"
+                        onClick={() => setShowUpload(true)}>
+                        <Pencil size={18} className="text-gray-600 hover:text-black transition" />
+                    </button>
+                </div>
 
+                {showUpload && (
+                    <div className=" bg-white shadow-md rounded-xl px-2 py-1 border border-gray-200 w-full max-w-md">
+
+
+                        <div className="flex items-center gap-2">
+                            <h2 className="text-md font-semibold text-gray-800">Upload XLSX File</h2>
+                            <label className="relative cursor-pointer bg-gray-100 hover:bg-gray-200 rounded-md px-3 py-1 text-sm text-gray-700 shadow-inner transition">
+                                Choose File
+                                <input
+                                    type="file"
+                                    accept=".xlsx"
+                                    onChange={handleFileChange}
+                                    className="absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer"
+                                />
+                            </label>
+
+                            <button
+                                onClick={handleUpload}
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content="Upload"
+                                className="flex items-center gap-1 bg-green-500 text-white p-1 rounded-full transition"
+                            >
+                                <Check size={18} />
+                            </button>
+                            <button
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-place='top'
+                                data-tooltip-content="Cancel & Close"
+                                className="flex items-center gap-1 bg-red-500 text-white p-1 rounded-full transition"
+                                onClick={() => setShowUpload(false)}>
+                                <XCircle size={18} />
+                            </button>
+
+                        </div>
+                        {file && (
+                            <p className="mt-2 text-sm text-gray-600 truncate">
+                                Selected: <span className="font-medium">{file.name}</span>
+                            </p>
+                        )}
+
+
+                    </div>
+                )}
+            </div>
             {/* Filter Section */}
             <div className=" mb-3 bg-white px-3 py-3 rounded ">
+
                 <div className='flex justify-between mb-1'>
                     <div className='flex items-center space-x-2'>
                         <h1 className='text-xl font-bold'>All Quote List</h1>
@@ -1059,7 +1230,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 value={selectedUser}
                                 ref={selectUserRef}
                             >
-                                
+
                                 {users.map(user => (
                                     <option key={user.id} value={user.id}>
                                         {user.fld_first_name + " " + user.fld_last_name}
@@ -1089,7 +1260,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 multiple
                                 value={selectedSubjectArea}
                                 ref={selectSubjectRef}
-                                //onChange={(e) => setSelectedSubjectArea(e.target.value)}
+                            //onChange={(e) => setSelectedSubjectArea(e.target.value)}
                             >
 
                                 <option value="Accounting">Accounting</option>
@@ -1262,7 +1433,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 className="form-control form-control-sm"
                                 value={status}
                                 ref={selectStatusRef}
-                                //onChange={(e) => setStatus(e.target.value)}
+                            //onChange={(e) => setStatus(e.target.value)}
                             >
                                 <option value="PendingAtUser">Pending at User</option>
                                 <option value="PendingAtAdmin">Pending at Admin</option>
