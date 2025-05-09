@@ -1092,32 +1092,33 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     return (
         <div className="container bg-gray-100 w-full">
-            <div className="px-4 py-1 flex items-end justify-between bg-white mb-2">
-                <div className="flex items-center justify-end space-x-2">
-                    <FileSpreadsheet size={20} className="text-green-600" />
+            <div className="p-2 flex items-center justify-between bg-white mb-3">
+                <div className="flex items-center justify-end space-x-1">
+                    <FileSpreadsheet size={18} className="text-green-600" />
                     {uploadedFileInfo ? (
-                        <span className="text-gray-800 font-medium"
+                        <span className="text-gray-800 font-medium f-14"
                             data-tooltip-id="my-tooltip"
                             data-tooltip-content={uploadedFileInfo}
                         >{getTrimmedFilename(uploadedFileInfo)}</span>
                     ) : (
-                        <span className="text-gray-500 italic">No file uploaded</span>
+                        <span className="text-gray-500 italic f-14">No file uploaded</span>
                     )}
                     <button
+                        className="btn btn-warning btn-sm ml-2"
                         data-tooltip-id="my-tooltip"
                         data-tooltip-content="Edit"
                         onClick={() => setShowUpload(true)}>
-                        <Pencil size={18} className="text-gray-600 hover:text-black transition" />
+                        <Pencil size={11}  />
                     </button>
                 </div>
 
                 {showUpload && (
-                    <div className=" bg-white shadow-md rounded-xl px-2 py-1 border border-gray-200 w-full max-w-md">
+                    <div className=" ">
 
 
-                        <div className="flex items-center gap-2">
-                            <h2 className="text-md font-semibold text-gray-800">Upload XLSX File</h2>
-                            <label className="relative cursor-pointer bg-gray-100 hover:bg-gray-200 rounded-md px-3 py-1 text-sm text-gray-700 shadow-inner transition">
+                        <div className="flex justify-end items-center gap-2">
+                            <h2 className="text-md font-semibold text-gray-800 f-14">Upload XLSX File</h2>
+                            <label className="relative cursor-pointer bg-gray-100 hover:bg-gray-200 rounded-md px-3 py-1 text-sm text-gray-700 shadow-inner transition mb-0">
                                 Choose File
                                 <input
                                     type="file"
@@ -1131,17 +1132,17 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 onClick={handleUpload}
                                 data-tooltip-id="my-tooltip"
                                 data-tooltip-content="Upload"
-                                className="flex items-center gap-1 bg-green-500 text-white p-1 rounded-full transition"
+                                className="btn btn-success btn-sm"
                             >
-                                <Check size={18} />
+                                <Check size={13} />
                             </button>
                             <button
                                 data-tooltip-id="my-tooltip"
                                 data-tooltip-place='top'
                                 data-tooltip-content="Cancel & Close"
-                                className="flex items-center gap-1 bg-red-500 text-white p-1 rounded-full transition"
+                                className="btn btn-danger btn-sm"
                                 onClick={() => setShowUpload(false)}>
-                                <XCircle size={18} />
+                                <XCircle size={13} />
                             </button>
 
                         </div>

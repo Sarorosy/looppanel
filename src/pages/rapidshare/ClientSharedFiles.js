@@ -128,10 +128,10 @@ const ClientSharedFiles = ({ userId, onClose, queryInfo }) => {
             transition={{ type: 'tween', duration: 0.3 }}
             className="fixed mt-0 top-0 right-0 w-[400px] h-full bg-white shadow-lg z-50"
         >
-            <div className="flex justify-between items-center px-4 py-3 border-b bg-blue-500 text-white">
+            <div className="flex justify-between items-center pl-3 pr-2 py-3 border-b bg-blue-500 text-white mb-2">
                 <h2 className="text-lg font-semibold">Client Shared Files</h2>
-                <button onClick={onClose} className="text-red-500 hover:text-red-600 flex items-center bg-red-100 rounded px-2 py-0.5">
-                    <CircleArrowLeft size={18} className='mr-2' /> Back
+                <button onClick={onClose} className="btn btn-danger btn-sm d-flex items-center f-12">
+                    <ArrowLeft size={11} className='mr-1' /> Back
                 </button>
             </div>
 
@@ -148,15 +148,15 @@ const ClientSharedFiles = ({ userId, onClose, queryInfo }) => {
                         return (
                             <div
                                 key={idx}
-                                className={`flex items-center justify-between ${file.is_trashed == 1 ? "bg-red-100" : "bg-gray-50"} border border-gray-200 rounded-xl p-4 hover:shadow-sm transition`}
+                                className={` ${file.is_trashed == 1 ? "bg-red-100" : "bg-gray-50"} border border-gray-200 rounded p-2 hover:shadow-sm transition`}
                             >
-                                <div className="flex items-center gap-3">
-                                    <FileText className="text-blue-500" />
+                                <div className="flex items-start gap-2">
+                                    <FileText size={20} className="text-blue-500" />
                                     <div>
                                         <p className="text-sm font-semibold text-gray-800">
                                             {file.file_name}
                                         </p>
-                                        <p className="text-xs text-gray-500 capitalize">
+                                        <p className="text-xs text-gray-500 capitalize mt-1">
                                             <span
                                                 className={
                                                     file.access_type === "download"
@@ -186,17 +186,15 @@ const ClientSharedFiles = ({ userId, onClose, queryInfo }) => {
                                 </div>
 
                                 {/* If file is expired, show the request access button */}
+                                <div className='flex justify-end mt-1'>
                                 {isExpired ? (
                                     file.access_requested == 1 ? 
-                                    <button
-                                        
-                                        className="text-sm text-white bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded-lg transition decoration-none hover:decoration-none"
-                                    >
+                                    <button  className="btn btn-danger btn-sm f-11">
                                         Request Pending
                                     </button> : 
                                     <button
                                         onClick={() => handleRequestAccess(file)}
-                                        className="text-sm text-white bg-yellow-600 hover:bg-yellow-700 px-3 py-1 rounded-lg transition decoration-none hover:decoration-none"
+                                        className="btn btn-warning btn-sm f-11"
                                     >
                                         Request Access
                                     </button>
@@ -206,11 +204,12 @@ const ClientSharedFiles = ({ userId, onClose, queryInfo }) => {
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         download={file.access_type === "download"}
-                                        className="text-sm text-white bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded-lg transition decoration-none hover:decoration-none"
+                                        className="btn btn-primary btn-sm f-11"
                                     >
                                         {file.access_type === "download" ? "Download" : "View"}
                                     </a>
                                 )}
+                                </div>
                             </div>
                         );
                     })}

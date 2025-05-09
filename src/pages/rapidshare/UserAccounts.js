@@ -111,19 +111,21 @@ const UserAccounts = ({ onClose, queryInfo }) => {
             transition={{ type: 'tween', duration: 0.3 }}
             className="fixed mt-0 top-0 right-0 w-[400px] h-full bg-white shadow-lg z-50"
         >
-            <div className="flex justify-between items-center px-4 py-3 border-b bg-blue-500 text-white">
+            <div className="flex justify-between items-center pl-3 pr-2 py-3 border-b bg-blue-500 text-white">
                 <h2 className="text-lg font-semibold">User Accounts</h2>
-                <button 
-                data-tooltip-id="my-tooltip"
-                data-tooltip-content="Create Another Account"
-                title='Create Another RapidShare Account'
-                onClick={createRapidShareAccount}
-                
-                className="text-green-600 bg-green-50  border-green-600 rounded px-2 py-0.5 flex items-center" >
-                    <Plus size={20} /> Create New
+                <button onClick={onClose} className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500">
+                    <X  size={15} />
                 </button>
-                <button onClick={onClose} className="text-gray-500 hover:text-red-500">
-                    <X />
+            </div>
+            <div class="p-2 flex justify-content-end mb-1">
+                <button 
+                    data-tooltip-id="my-tooltip"
+                    data-tooltip-content="Create Another Account"
+                    title='Create Another RapidShare Account'
+                    onClick={createRapidShareAccount}
+                    
+                    className="btn btn-info btn-sm d-flex items-center f-12" >
+                        <Plus size={10} className="mr-1" /> Create New
                 </button>
             </div>
 
@@ -134,29 +136,32 @@ const UserAccounts = ({ onClose, queryInfo }) => {
                     No Accounts found with this email.
                 </div>
             ) : (
-                <div className="space-y-4 h-full overflow-y-auto mb-24 pb-24 px-1 ">
+                <div className="space-y-4 h-full overflow-y-auto mb-24 pb-24 px-2 ">
                     {accounts.map((account, index) => (
                         <div
                         key={account.id || index}
-                        className="flex items-center justify-between bg-white border border-gray-200 rounded-2xl py-2 px-1 space-y-2 shadow-sm hover:shadow-md transition"
+                        className="bg-white border border-gray-200 rounded space-y-1 shadow-sm hover:shadow-md transition p-2"
                       >
-                        <div className="flex flex-col justify-start items-start px-3 my-1">
-                          <div className=" flex items-center justify-start">
-                            <UserCircle size={28} className="  mr-3 p-0.5 bg-blue-50 text-blue-600 rounded-full" />
-                            <div className="text-sm font-medium text-gray-800">Username: {account.username || 'N/A'}</div>
-                          </div>
-                          <div>
-                            
-                            <div className="text-sm text-gray-500">Email: {account.email}</div>
-                          </div>
+                        <div className="flex items-start">
+                            <UserCircle size={20} className="bg-blue-50 text-blue-600 rounded-full mr-2" />
+                            <div>
+                                <div className="flex items-center justify-start">
+                                    <div className="text-sm font-medium text-gray-800">Username: {account.username || 'N/A'}</div>
+                                </div>
+                                <div>
+                                    <div className="text-sm text-gray-500">Email: {account.email}</div>
+                                </div>
+                            </div>
                         </div>
                       
-                        <button
-                          className="bg-blue-600 text-white text-sm px-3 py-1 rounded-lg hover:bg-blue-700 transition flex items-center justify-center"
-                          onClick={() => handleViewBtnClick(account.id)}
-                        >
-                          View <CircleArrowRight className='ml-2' size={20} />
-                        </button>
+                        <div className='flex justify-end'>
+                            <button
+                            className="btn btn-primary btn-sm f-11 n-btn py-1 flex items-center justify-center"
+                            onClick={() => handleViewBtnClick(account.id)}
+                            >
+                            View <ArrowRight className='ml-1' size={10} />
+                            </button>
+                        </div>
                       </div>
                     ))}
 
