@@ -42,11 +42,6 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
         setPtpLoading(true);
         e.preventDefault();
 
-        if(ptp != "Yes"){
-            toast.error('Please check PTP checkbox');
-            setPtpLoading(false)
-            return; 
-        }
         if (ptp == 'Yes' && !ptpAmount){
             toast.error("Please Enter amount");
             setPtpLoading(false);
