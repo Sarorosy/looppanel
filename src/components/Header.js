@@ -92,12 +92,28 @@ const Header = ({ requestPermission }) => {
   };
 
   useEffect(() => {
-    const authenticated = localStorage.getItem('authenticated');
+    const checkSessionTimeout = () => {
+        const loginTime = localStorage.getItem("loggedintime");
+        if (loginTime) {
+            const currentTime = Date.now();
+            const FOUR_HOURS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+            if (currentTime - loginTime > FOUR_HOURS) {
+                localStorage.clear(); // Clear all localStorage
+                window.location.href = "https://apacvault.com/login"; // Redirect
+            }
+        }else{
+          localStorage.clear(); // Clear all localStorage
+          window.location.href = "https://apacvault.com/login"; // Redirect
+        }
+    };
 
-    if (!authenticated) {
-      navigate('/login');
-    }
-  }, [navigate]);
+    checkSessionTimeout(); // Run once on load
+
+    const interval = setInterval(checkSessionTimeout, 5 * 60 * 1000); 
+
+    return () => clearInterval(interval); // Cleanup
+}, []);
+
 
   const toggleUserMenu = () => {
     setUserMenuOpen(!userMenuOpen);

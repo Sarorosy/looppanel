@@ -76,6 +76,7 @@ function DecryptPage() {
                     setSuccessStep2(true); // Step 2 success
                     localStorage.setItem("user", JSON.stringify(data.data));
                     localStorage.setItem('authenticated', true);
+                    localStorage.setItem("loggedintime", Date.now());
                     const userType = data.data.user_type; // Retrieve user type from response
                     setTimeout(() => {
                         if (decryptedEmail == "puneet@redmarkediting.com") {

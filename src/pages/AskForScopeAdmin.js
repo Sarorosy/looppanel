@@ -1398,238 +1398,128 @@ const AskForScopeAdmin = ({
                                               </div>
                                             </div>
                                             <div className="row mt-0">
-                                              <div className="col-md-12">
-                                                <p className=" mb-2">
-                                                  <strong>
-                                                    Plan Description
-                                                  </strong>
-                                                </p>
-                                              </div>
-                                              {quote.plan_comments &&
-                                                typeof quote.plan_comments ===
-                                                "string" &&
-                                                quote.plan &&
-                                                Object.entries(
-                                                  JSON.parse(
-                                                    quote.plan_comments
-                                                  )
-                                                )
-                                                  .filter(([plan]) =>
-                                                    quote.plan
-                                                      .split(",")
-                                                      .includes(plan)
-                                                  ) // Filter based on the updated plan list
-                                                  .map(
-                                                    (
-                                                      [plan, comment],
-                                                      index
-                                                    ) => (
-                                                      <div
-                                                        key={index}
-                                                        className={planColClass}
-                                                      >
-                                                        <div className="border p-2 mb-3">
-                                                          <p className="flex items-center mb-1 justify-content-between">
-                                                            <strong>
-                                                              {plan}
-                                                            </strong>{" "}
-                                                            <button
-                                                              className="btn btn-warning btn-sm px-1"
-                                                              onClick={() =>
-                                                                handleEditClick(
-                                                                  quote,
-                                                                  plan,
-                                                                  comment
-                                                                )
-                                                              }
-                                                            >
-                                                              <Pen
-                                                                size={8}
-                                                                className="text-white"
-                                                              />
-                                                            </button>
-                                                          </p>
-                                                          <div
-                                                            dangerouslySetInnerHTML={{
-                                                              __html: comment,
-                                                            }}
-                                                          />
+  <div className="col-md-12">
+    <p className="mb-2">
+      <strong>Plan Description</strong>
+    </p>
+  </div>
+  {quote.plan_comments &&
+    typeof quote.plan_comments === "string" &&
+    (() => {
+      const planComments = JSON.parse(quote.plan_comments);
+      const availablePlans = quote.plan.split(",");
+      
+      // Define the order we want
+      const orderedPlans = ["Basic", "Standard", "Advanced"].filter(plan => 
+        availablePlans.includes(plan)
+      );
+      
+      return orderedPlans.map((plan, index) => {
+        const comment = planComments[plan];
+        if (!comment) return null;
+        
+        return (
+          <div key={index} className={planColClass}>
+            <div className="border p-2 mb-3">
+              <p className="flex items-center mb-1 justify-content-between">
+                <strong>{plan}</strong>{" "}
+                <button
+                  className="btn btn-warning btn-sm px-1"
+                  onClick={() => handleEditClick(quote, plan, comment)}
+                >
+                  <Pen size={8} className="text-white" />
+                </button>
+              </p>
+              <div dangerouslySetInnerHTML={{ __html: comment }} />
 
-                                                          {/* Word Count Section */}
-                                                          {quote.word_counts &&
-                                                            typeof quote.word_counts ===
-                                                            "string" &&
-                                                            Object.entries(
-                                                              JSON.parse(
-                                                                quote.word_counts
-                                                              )
-                                                            )
-                                                              .filter(
-                                                                ([
-                                                                  planWordCount,
-                                                                ]) =>
-                                                                  quote.plan
-                                                                    .split(",")
-                                                                    .includes(
-                                                                      planWordCount
-                                                                    )
-                                                              ) // Filter word count based on the plan list
-                                                              .map(
-                                                                (
-                                                                  [
-                                                                    planWordCount,
-                                                                    wordcount,
-                                                                  ],
-                                                                  wcIndex
-                                                                ) =>
-                                                                  plan ===
-                                                                  planWordCount && (
-                                                                    <div
-                                                                      key={
-                                                                        wcIndex
-                                                                      }
-                                                                      className=" mt-2"
-                                                                    >
-                                                                      <p
-                                                                        style={{
-                                                                          fontWeight:
-                                                                            "bold",
-                                                                          color:
-                                                                            "#007bff",
-                                                                          backgroundColor:
-                                                                            "#f0f8ff", // Background color for word count text
-                                                                          padding:
-                                                                            "5px", // Padding around the word count text
-                                                                          borderRadius:
-                                                                            "5px", // Rounded corners for the background
-                                                                          border:
-                                                                            "1px solid #40BD5DFF",
-                                                                          fontSize:
-                                                                            "11px",
-                                                                        }}
-                                                                      >
-                                                                        <p className="text-black">
-                                                                          <div>
-                                                                            Word
-                                                                            Count:
-                                                                          </div>
-                                                                        </p>
-                                                                        {
-                                                                          planWordCount
-                                                                        }
-                                                                        :{" "}
-                                                                        <span
-                                                                          style={{
-                                                                            color:
-                                                                              "#28a745",
-                                                                          }}
-                                                                        >
-                                                                          {
-                                                                            wordcount
-                                                                          }{" "}
-                                                                          words
-                                                                        </span>
-                                                                        <br />
-                                                                        <span
-                                                                          style={{
-                                                                            color:
-                                                                              "gray",
-                                                                          }}
-                                                                        >
-                                                                          {capitalizeFirstLetter(
-                                                                            numberToWords(
-                                                                              wordcount
-                                                                            )
-                                                                          )}{" "}
-                                                                          words
-                                                                        </span>
-                                                                      </p>
-                                                                    </div>
-                                                                  )
-                                                              )}
+              {/* Word Count Section */}
+              {quote.word_counts &&
+                typeof quote.word_counts === "string" &&
+                (() => {
+                  const wordCounts = JSON.parse(quote.word_counts);
+                  const wordCount = wordCounts[plan];
+                  
+                  if (wordCount) {
+                    return (
+                      <div className="mt-2">
+                        <p
+                          style={{
+                            fontWeight: "bold",
+                            color: "#007bff",
+                            backgroundColor: "#f0f8ff",
+                            padding: "5px",
+                            borderRadius: "5px",
+                            border: "1px solid #40BD5DFF",
+                            fontSize: "11px",
+                          }}
+                        >
+                          <p className="text-black">
+                            <div>Word Count:</div>
+                          </p>
+                          {plan}:{" "}
+                          <span style={{ color: "#28a745" }}>
+                            {wordCount} words
+                          </span>
+                          <br />
+                          <span style={{ color: "gray" }}>
+                            {capitalizeFirstLetter(numberToWords(wordCount))} words
+                          </span>
+                        </p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
 
-                                                          {plan === "Basic" &&
-                                                            quote.basic_edited_time && (
-                                                              <p className="text-gray-500 mt-2 tenpx">
-                                                                {new Date(
-                                                                  quote.basic_edited_time
-                                                                )
-                                                                  .toLocaleDateString(
-                                                                    "en-US",
-                                                                    {
-                                                                      day: "numeric",
-                                                                      month:
-                                                                        "short",
-                                                                      year: "numeric",
-                                                                      hour: "numeric",
-                                                                      minute:
-                                                                        "2-digit",
-                                                                      hour12: true,
-                                                                    }
-                                                                  )
-                                                                  .replace(
-                                                                    ",",
-                                                                    ","
-                                                                  )}
-                                                              </p>
-                                                            )}
-                                                          {plan ===
-                                                            "Standard" &&
-                                                            quote.standard_edited_time && (
-                                                              <p className="text-gray-500 mt-2 tenpx">
-                                                                {new Date(
-                                                                  quote.standard_edited_time
-                                                                )
-                                                                  .toLocaleDateString(
-                                                                    "en-US",
-                                                                    {
-                                                                      day: "numeric",
-                                                                      month:
-                                                                        "short",
-                                                                      year: "numeric",
-                                                                      hour: "numeric",
-                                                                      minute:
-                                                                        "2-digit",
-                                                                      hour12: true,
-                                                                    }
-                                                                  )
-                                                                  .replace(
-                                                                    ",",
-                                                                    ","
-                                                                  )}
-                                                              </p>
-                                                            )}
-                                                          {plan ===
-                                                            "Advanced" &&
-                                                            quote.advanced_edited_time && (
-                                                              <p className="text-gray-500 mt-2 tenpx">
-                                                                {new Date(
-                                                                  quote.advanced_edited_time
-                                                                )
-                                                                  .toLocaleDateString(
-                                                                    "en-US",
-                                                                    {
-                                                                      day: "numeric",
-                                                                      month:
-                                                                        "short",
-                                                                      year: "numeric",
-                                                                      hour: "numeric",
-                                                                      minute:
-                                                                        "2-digit",
-                                                                      hour12: true,
-                                                                    }
-                                                                  )
-                                                                  .replace(
-                                                                    ",",
-                                                                    ","
-                                                                  )}
-                                                              </p>
-                                                            )}
-                                                        </div>
-                                                      </div>
-                                                    )
-                                                  )}
-                                            </div>
+              {/* Timestamp section */}
+              {plan === "Basic" && quote.basic_edited_time && (
+                <p className="text-gray-500 mt-2 tenpx">
+                  {new Date(quote.basic_edited_time)
+                    .toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    })
+                    .replace(",", ",")}
+                </p>
+              )}
+              {plan === "Standard" && quote.standard_edited_time && (
+                <p className="text-gray-500 mt-2 tenpx">
+                  {new Date(quote.standard_edited_time)
+                    .toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    })
+                    .replace(",", ",")}
+                </p>
+              )}
+              {plan === "Advanced" && quote.advanced_edited_time && (
+                <p className="text-gray-500 mt-2 tenpx">
+                  {new Date(quote.advanced_edited_time)
+                    .toLocaleDateString("en-US", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    })
+                    .replace(",", ",")}
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      });
+    })()}
+</div>
                                             {quote.client_academic_level && quote.results_section && (
                                               <div class="flex gap-4 mb-3">
                                                 <div class="flex items-center px-1 py-1 bg-blue-100 border-l-2 border-blue-500 text-blue-900 shadow-md rounded-lg"
