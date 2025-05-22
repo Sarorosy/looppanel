@@ -101,7 +101,7 @@ const ClientSharedFiles = ({ userId, onClose, queryInfo }) => {
 
     const handleRequestAccess = async (file) => {
         try{
-            const response = await fetch(`https://${queryInfo.website_name}/rapidshare/api/Api/request_access`,{
+            const response = await fetch(`https://rapidcollaborate.com/rapidshare/api/Api/request_access`,{
                 method :"POST",
                 headers : {
                     "Content-type" : "application/json"
