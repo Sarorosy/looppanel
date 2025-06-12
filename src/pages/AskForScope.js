@@ -622,7 +622,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
       <div className="flex items-center justify-between bg-blue-400 text-white py-2 px-3">
         <h2 className="text-sx font-semibold ">Ask For Scope </h2>
         <div className="flex items-center">
-          {loopUserObject.id == "207" && (
+          {
             showRapidButton ? (
               <button
                 onClick={createRapidShareAccount}
@@ -638,8 +638,8 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                 <Folder size={12} className="mr-1" /> RapidShare Account Created
                 <BadgeCheck size={12} className="ml-1 text-green-600" />
               </button>
-            )
-          )}
+            )}
+          
 
           <button
             onClick={fetchAllScopeDetails}
