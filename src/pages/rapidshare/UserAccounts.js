@@ -22,7 +22,7 @@ const UserAccounts = ({ onClose, queryInfo }) => {
             const response = await fetch(`https://rapidcollaborate.com/rapidshare/api/Api/getAllAccounts`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: queryInfo.email_id }),
+                body: JSON.stringify({ email: queryInfo.email_id, website: queryInfo.website_name }),
             });
             const data = await response.json();
             if (data.status) {
@@ -118,7 +118,7 @@ const UserAccounts = ({ onClose, queryInfo }) => {
                 </button>
             </div>
             <div class="p-2 flex justify-content-end mb-1">
-                <button 
+                {/* <button 
                     data-tooltip-id="my-tooltip"
                     data-tooltip-content="Create Another Account"
                     title='Create Another RapidShare Account'
@@ -126,7 +126,7 @@ const UserAccounts = ({ onClose, queryInfo }) => {
                     
                     className="btn btn-info btn-sm d-flex items-center f-12" >
                         <Plus size={10} className="mr-1" /> Create New
-                </button>
+                </button> */}
             </div>
 
             {loading ? (
