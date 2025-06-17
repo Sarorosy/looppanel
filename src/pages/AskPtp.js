@@ -42,21 +42,21 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
         setPtpLoading(true);
         e.preventDefault();
 
-        if(ptp != "Yes"){
+        if (ptp != "Yes") {
             toast.error('Please check PTP checkbox');
             setPtpLoading(false)
-            return; 
+            return;
         }
-        if (ptp == 'Yes' && !ptpAmount){
+        if (ptp == 'Yes' && !ptpAmount) {
             toast.error("Please Enter amount");
             setPtpLoading(false);
             return;
         }
-        let selectedPrices = scopeDetails.final_price 
-        ? scopeDetails.final_price
-        : scopeDetails.discount_price
-        ? scopeDetails.discount_price
-        : scopeDetails.quote_price;
+        let selectedPrices = scopeDetails.final_price
+            ? scopeDetails.final_price
+            : scopeDetails.discount_price
+                ? scopeDetails.discount_price
+                : scopeDetails.quote_price;
 
         if (!selectedPrices) {
             toast.error("No valid prices available.");
@@ -65,8 +65,13 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
         }
 
         // Convert prices from comma-separated string to an array and calculate 70% minimum required amount
-        selectedPrices = selectedPrices.split(",").map(price => Math.round((parseFloat(price) * 70) / 100));
-        
+        // selectedPrices = selectedPrices.split(",").map(price => Math.round((parseFloat(price) * 70) / 100));
+        selectedPrices = selectedPrices
+            .split(",")
+            .filter(price => !isNaN(parseFloat(price))) // remove "NA" or non-numeric
+            .map(price => Math.round((parseFloat(price) * 70) / 100));
+
+
         // Get the minimum required amount
         let minRequiredAmount = Math.min(...selectedPrices);
 
@@ -114,9 +119,9 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
             if (result.status === "success") {
                 toast.success('Request submitted successfully');
                 setShowForm(false);
-                socket.emit("requestedDiscount",{
+                socket.emit("requestedDiscount", {
                     "quote_id": quoteId,
-                    "user_name" : loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name 
+                    "user_name": loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name
                 })
                 setTimeout(() => {
                     after();
@@ -224,7 +229,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
                 </AnimatePresence>
             )}
 
-            
+
         </div>
     );
 }
