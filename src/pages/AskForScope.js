@@ -625,21 +625,21 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
           {
             showRapidButton ? (
               <button
-                onClick={createRapidShareAccount}
-                className="flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
+                // onClick={createRapidShareAccount}
+                className="flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-orange-200  hover:bg-orange-300"
               >
-                <Folder size={12} className="mr-1" /> Create RapidShare Account
+                <Folder size={12} className="mr-1" /> RapidShare Account Not created
               </button>
             ) : (
               <button
-                onClick={() => { setOpenClientSharedFiles(true); }}
+                // onClick={() => { setOpenClientSharedFiles(true); }}
                 className="flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
               >
                 <Folder size={12} className="mr-1" /> RapidShare Account Created
                 <BadgeCheck size={12} className="ml-1 text-green-600" />
               </button>
             )}
-          
+
 
           <button
             onClick={fetchAllScopeDetails}
@@ -2111,13 +2111,13 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                             </div>
                                           </div>
 
-                                          <AttachedFiles 
+                                          <AttachedFiles
                                             ref_id={quote.assign_id}
                                             relevant_file={quote.relevant_file}
                                             quote={quote}
                                             showUpload={showUpload}
                                             setShowUpload={changeShowUpload}
-
+                                              queryInfo={queryInfo}
                                           />
 
                                         </>
@@ -2205,7 +2205,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
               />
             )}
             {openClientSharedFiles && (
-              <UserAccounts queryInfo={queryInfo} onClose={() => { setOpenClientSharedFiles(false) }}  />
+              <UserAccounts queryInfo={queryInfo} onClose={() => { setOpenClientSharedFiles(false) }} />
               // <ClientSharedFiles queryInfo={queryInfo} onClose={() => { setOpenClientSharedFiles(false) }} />
             )}
           </AnimatePresence>

@@ -181,6 +181,7 @@ const FeasabilityQueryDetails = ({ onClose, queryId, quotationId, finalFunction 
                                     showUpload={showUpload}
                                     quote={{ quoteid: quotationId }}
                                     setShowUpload={changeShowUpload}
+                                    queryInfo={queryInfo}
                                 />
 <div className="space-y-4 bg-white p-6 rounded-md border-t-2 border-blue-400 mt-2 text-sm">
                                 <div className="relative">

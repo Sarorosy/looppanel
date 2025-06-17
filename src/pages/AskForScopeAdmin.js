@@ -2607,6 +2607,7 @@ const AskForScopeAdmin = ({
                                           <AttachedFiles ref_id={quote.assign_id} relevant_file={quote.relevant_file} quote={quote}
                                           showUpload={showUpload}
                                           setShowUpload={changeShowUpload}
+                                          queryInfo={info}
                                           />
 
                                         </>

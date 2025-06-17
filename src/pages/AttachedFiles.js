@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { CircleCheck, CircleX, FileDown, FileWarning, Paperclip } from "lucide-react"; // Make sure lucide-react is installed
+import { CircleCheck, CircleX, FileDown, FileWarning, Paperclip, Home, Folder, FileText, CircleHelp } from "lucide-react"; // Make sure lucide-react is installed
 import axios from "axios";
+import toast from "react-hot-toast";
+import upleft from '../upleft.svg';
+import rcfav from '../rc-fav.png';
 
-const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload }) => {
+
+
+const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload, queryInfo }) => {
     const [chatFiles, setChatFiles] = useState([]);
     const [relevantFiles, setRelevantFiles] = useState([]);
     const [feasFiles, setFeasFiles] = useState([]);
@@ -119,6 +124,209 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
 
         fetchAttachedFiles();
     }, [quote.quoteid]);
+
+    const [accounts, setAccounts] = useState([]);
+    const [accountData, setAccountData] = useState({});
+    const fetchAccounts = async () => {
+
+        try {
+            if (queryInfo?.email_id == undefined || queryInfo?.email_id == null) {
+                // toast.error('Email is required to fetch files.');
+                return;
+            }
+
+            const response = await fetch(`https://rapidcollaborate.com/rapidshare/api/Api/getAllAccounts`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: queryInfo.email_id, website: queryInfo.website_name }),
+            });
+            const data = await response.json();
+            if (data.status) {
+                setAccounts(data.accounts || []);
+            } else {
+                toast.error(data.message || 'Failed to fetch files.');
+            }
+
+        } catch (error) {
+            console.log('Failed to fetch files.');
+        } finally {
+
+        }
+    }
+
+    useEffect(() => {
+        fetchAccounts();
+    }, [queryInfo]);
+
+    const fetchAllRootFiles = async () => {
+        let newAccountData = {};
+
+        for (const account of accounts) {
+            try {
+                const response = await fetch(`https://rapidcollaborate.com/rapidshare/api/Api/getAllClientFiles`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: account.id, folder: 0 }),
+                });
+                const data = await response.json();
+                if (data.status) {
+                    newAccountData[account.id] = {
+                        folders: data.folders || [],
+                        files: data.files || [],
+                        selectedFolder: 0,
+                        selectedFolderName: null
+                    };
+                }
+            } catch (error) {
+                console.log(`Error fetching files for account ${account.id}`);
+            }
+        }
+
+        setAccountData(newAccountData);
+    };
+
+
+    const [rcFilesLoading, setRcFilesLoading] = useState(false);
+    const [rcFiles, setRcFiles] = useState([]);
+    const [folders, setFolders] = useState([]);
+    const [selectedFolder, setSelectedFolder] = useState(0);
+    const fetchFiles = async (folderId) => {
+
+        try {
+            if (queryInfo?.email_id == undefined || queryInfo?.email_id == null) {
+                toast.error('Email is required to fetch files.');
+                return;
+            }
+            if (queryInfo?.website_name == undefined || queryInfo?.website_name == null) {
+                toast.error('Website name is required to fetch files.');
+                return;
+            }
+            setRcFilesLoading(true);
+            const response = await fetch(`https://rapidcollaborate.com/rapidshare/api/Api/getAllClientFiles`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    //  user_id: userId,
+                    user_id: 1,
+                    folder: folderId
+                }),
+            });
+            const data = await response.json();
+            if (data.status) {
+                setRcFiles(data.files || []);
+                setFolders(data.folders || []);
+            } else {
+                toast.error(data.message || 'Failed to fetch files.');
+            }
+
+        } catch (error) {
+            console.log('Failed to fetch files.');
+        } finally {
+            setRcFilesLoading(false);
+
+        }
+    }
+
+    const [selectedFolderName, setSelectedFolderName] = useState(null);
+    const [loadingAccounts, setLoadingAccounts] = useState({});
+
+    const handleFolderClick = async (accountId, folderId, folderName) => {
+        try {
+            setLoadingAccounts(prev => ({ ...prev, [accountId]: true }));
+            const response = await fetch(`https://rapidcollaborate.com/rapidshare/api/Api/getAllClientFiles`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: accountId, folder: folderId }),
+            });
+            const data = await response.json();
+            if (data.status) {
+                setAccountData(prev => ({
+                    ...prev,
+                    [accountId]: {
+                        ...prev[accountId],
+                        files: data.files || [],
+                        folders: folderId === 0 ? data.folders || [] : prev[accountId].folders,
+                        selectedFolder: folderId,
+                        selectedFolderName: folderName
+                    }
+                }));
+            }
+        } catch (error) {
+            console.log(`Failed to fetch folder ${folderId} for account ${accountId}`);
+        } finally {
+            setLoadingAccounts(prev => ({ ...prev, [accountId]: false }));
+        }
+    };
+    useEffect(() => {
+        if (accounts.length > 0) {
+            fetchAllRootFiles();
+        }
+    }, [accounts]);
+
+
+
+    const [accountCreated, setAccountCreated] = useState(false);
+
+
+    // Helper function to format the uploaded_at date (with time)
+    const formatUploadedAt = (date) => {
+        return new Date(date).toLocaleString("en-GB", {
+            weekday: "short",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "numeric",
+            minute: "numeric",
+            hour12: true,
+        });
+    };
+
+    // Helper function to format the date (expiration date without time)
+    const formatDate = (date) => {
+        return new Date(date).toLocaleString("en-GB", {
+            weekday: "short",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+    };
+
+    const getDaysLeft = (date) => {
+        const today = new Date();
+        const expirationDate = new Date(date.replace(" ", "T")); // Convert '2025-06-23 22:24:29' to '2025-06-23T22:24:29'
+        const timeDiff = expirationDate - today;
+        const daysLeft = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+
+        // If daysLeft is negative, it means the file is expired
+        if (daysLeft < 0) {
+            return `Expired ${Math.abs(daysLeft)} days ago`;
+        }
+        return `Expires in: ${daysLeft} days`;
+    };
+
+    const handleRequestAccess = async (file) => {
+        try {
+            const response = await fetch(`https://rapidcollaborate.com/rapidshare/api/Api/request_access`, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({ file_id: file.id })
+            })
+            const data = await response.json();
+            if (data.status) {
+                toast.success(data.message || "Access requested");
+                fetchAllRootFiles();
+            } else {
+                toast.error(data.message || "Error while requesting accesss")
+            }
+
+        } catch (err) {
+            console.log("Error while requestig access" + err)
+        }
+    };
+
+
 
 
     const [selectedFiles, setSelectedFiles] = useState([]);
@@ -382,7 +590,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                                         </a>
                                     </div>
                                     <div className="tenpx text-gray-500 sm:text-right">
-                                       {formattedDate}
+                                        {formattedDate}
                                     </div>
                                 </li>
                             );
@@ -392,6 +600,105 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 </>
             )}
 
+
+
+            {rcFilesLoading ? (
+                <p>Loading rc files</p>
+            ) : (
+                <div className="space-y-4 h-full overflow-y-auto mb-24 pb-24 px-1">
+
+                    {accounts.map((account) => {
+                        const data = accountData[account.id] || { folders: [], files: [], selectedFolder: 0, selectedFolderName: null };
+
+                        return (
+                            <div key={account.id} className="border rounded p-2 shadow-sm space-y-4">
+                                <h3 className="text-blue-800 font-bold flex items-center text-[12px]">
+                                    <img src={rcfav}
+                                        className="w-8 h-8 mr-1" />
+                                    {account.st_username ?? account.username}
+                                </h3>
+
+                                {/* Breadcrumb UI */}
+                                <div className="flex justify-between">
+                                    <div className="flex gap-2 items-center text-[11px] text-gray-500">
+                                        <Home size={13} className="cursor-pointer" onClick={() => handleFolderClick(account.id, 0, null)} />
+                                        {data.selectedFolderName && <span>/ {data.selectedFolderName}</span>}
+                                    </div>
+                                    {data.selectedFolder !== 0 && (
+                                        <button
+                                            className="btn btn-outline-dark btn-sm f-11 flex items-center"
+                                            onClick={() => handleFolderClick(account.id, 0, null)}
+                                        >
+                                            <img src={upleft} className="w-3 h-3 mr-1 rotate-90" />
+                                            Back
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Folders */}
+                                {data.selectedFolder === 0 && data.folders?.length > 0 && (
+                                    <div className="space-y-2">
+                                        {data.folders.map(folder => (
+                                            <div
+                                                key={folder.id}
+                                                onDoubleClick={() => handleFolderClick(account.id, folder.id, folder.name)}
+                                                className="cursor-pointer flex items-center border p-2 hover:bg-gray-100 rounded"
+                                            >
+                                                <Folder size={20} className="text-yellow-500 fill-yellow-500" />
+                                                <span className="ml-2 font-medium">{folder.name} ({folder.file_count ?? 0})</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Files */}
+                                {loadingAccounts[account.id] ? (
+                                    <div className="text-center text-gray-500 text-sm py-6">
+                                        <span className="animate-pulse">Loading files...</span>
+                                    </div>
+                                ) : data.files?.length === 0 ? (
+                                    <div className="text-sm text-gray-400">No files uploaded yet.</div>
+                                ) : (
+                                    <div className="space-y-3">
+                                        {data.files.map((file, idx) => {
+                                            const isExpired = new Date(file.date) < new Date();
+                                            return (
+                                                <div key={idx} className={`border p-2 rounded bg-white}`}>
+                                                    <div className="flex justify-between items-center">
+                                                        <div>
+                                                            <p className="font-semibold">{file.file_name}</p>
+                                                            <p className="text-xs text-gray-500">{formatUploadedAt(file.uploaded_at)}</p>
+                                                        </div>
+                                                        <div>
+                                                            {isExpired ? (
+                                                                file.access_requested ? (
+                                                                    <button className="text-red-500 f-11">Request Pending</button>
+                                                                ) : (
+                                                                    <button onClick={() => handleRequestAccess(file)} className="text-orage-500 btn-sm f-11">Request Access</button>
+                                                                )
+                                                            ) : (
+                                                                <a
+                                                                    href={`https://rapidcollaborate.com/rapidshare/api/uploads/final/${file.final_name}`}
+                                                                    target="_blank"
+                                                                    download={file.access_type === 'download'}
+                                                                    className="text-blue-600  f-11"
+                                                                >
+                                                                    View
+                                                                </a>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+                        );
+                    })}
+
+                </div>
+            )}
 
         </div>
     );

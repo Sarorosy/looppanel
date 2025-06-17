@@ -26,7 +26,7 @@ import AttachedFiles from './AttachedFiles';
 
 
 
-const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
+const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
     const socket = getSocket();
     const [scopeDetails, setScopeDetails] = useState(null);
     const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
@@ -1250,7 +1250,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId }) => {
                                                                                         </div>
                                                                                     </div>
 
-                                                                                    <AttachedFiles ref_id={quote.assign_id} relevant_file={quote.relevant_file} quote={quote} />
+                                                                                    <AttachedFiles ref_id={quote.assign_id} relevant_file={quote.relevant_file} quote={quote} queryInfo={queryInfo} />
 
                                                                                 </>
                                                                             </div>

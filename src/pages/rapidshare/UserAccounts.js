@@ -14,7 +14,7 @@ const UserAccounts = ({ onClose, queryInfo }) => {
 
         try {
             if (queryInfo?.email_id == undefined || queryInfo?.email_id == null) {
-                toast.error('Email is required to fetch files.');
+                // toast.error('Email is required to fetch files.');
                 return;
             }
 

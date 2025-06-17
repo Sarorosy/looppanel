@@ -47,7 +47,7 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
             const data = await response.json(); // Parse the response as JSON
             console.log(data)
             if (data.status) {
-                setQuoteSummary(data.data); 
+                setQuoteSummary(data.data);
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
@@ -61,7 +61,7 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
         }
     };
     const fetchQuoteSummaryForSocket = async () => {
-        
+
         try {
             const response = await fetch(
                 'https://apacvault.com/Webapi/getAllFeasabilityAssignedToUser',
@@ -82,10 +82,10 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
             } else {
                 console.error('Failed to fetch Details:', data.message);
             }
-            
+
         } catch (error) {
             console.error('Error fetching details:', error);
-        } 
+        }
     };
 
     const toggleDetailsPage = () => {
@@ -96,10 +96,10 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
         setSelectedQuery(query.ref_id);
         setSelectedQuote(query.id);
         setIsDetailsOpen(true);
-        
+
     };
 
-    const finalFunction = () =>{
+    const finalFunction = () => {
         setIsDetailsOpen(false);
         fetchQuoteSummary();
     }
@@ -111,16 +111,16 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
         }
     }, [sharelinkrefid, sharelinkquoteid]);
 
-    const close = () =>{
-        if(onClose){
+    const close = () => {
+        if (onClose) {
             onClose();
-        }else{
+        } else {
             navigate('/assignquery');
         }
-        if(after){
+        if (after) {
             after();
         }
-        
+
     }
     // Use DataTable library
     DataTable.use(DT);
@@ -144,15 +144,15 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
                 status: data.status,
                 fld_first_name: data.fld_first_name,
                 created_date: data.created_date,
-                
+
                 comments: data.comments,
             };
-            if(data.isfeasability == 1 && data.feasability_user == userObject.id){
+            if (data.isfeasability == 1 && data.feasability_user == userObject.id) {
                 setQuoteSummary((prevQuotes) => [...prevQuotes, formattedData]);
             }
 
-            
-            
+
+
         });
 
 
@@ -205,11 +205,14 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
             orderable: false,
             className: 'text-center',
             render: function (data, type, row) {
-                if (row && row.created_by_first_name) {
-                    return `<span class=" font-bold">${row.created_by_first_name +  " " + row.created_by_last_name}</span>`;
-                } 
+                if (row && row.isdeleted == 1 && row.deleted_user_name) {
+                    return `<span class="text-red-500 line-through font-semibold">${row.deleted_user_name}</span>`;
+                } else if (row && row.created_by_first_name) {
+                    return `<span class="font-bold">${row.created_by_first_name} ${row.created_by_last_name}</span>`;
+                }
                 return '<span></span>';
-            },
+            }
+
         },
         {
             title: 'Client Name',
@@ -219,7 +222,7 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
             render: function (data, type, row) {
                 if (row && row.client_name) {
                     return `<span class=" font-bold">${row.client_name}</span>`;
-                } 
+                }
                 return '<span></span>';
             },
         },
@@ -232,11 +235,11 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
                     return '<span class="text-red-600 font-bold">Pending</span>';
                 } else if (data == 'Completed') {
                     return '<span class="text-green-600 font-bold">Submitted</span>';
-                } 
+                }
                 return '<span class="text-gray-600">Unknown</span>';
             },
         },
-        
+
         {
             title: 'Service',
             data: 'service_name', // Replace with actual field name
@@ -289,21 +292,21 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
         >
             <div className='bg-blue-400 text-white py-3 mb-3'>
                 <div className='container flex items-center justify-between p-0'>
-                <h2 className="text-xl font-semibold">All Feasibility Request</h2>
+                    <h2 className="text-xl font-semibold">All Feasibility Request</h2>
 
 
-                <button
-                    onClick={close}
-                    className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
-                >
-                    {/* <CircleX size={32} /> */}
-                    <X size={15} />
-                </button>
+                    <button
+                        onClick={close}
+                        className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
+                    >
+                        {/* <CircleX size={32} /> */}
+                        <X size={15} />
+                    </button>
                 </div>
             </div>
             <div className="flex justify-end mb-3 bg-white container py-3 rounded ">
-            
-                
+
+
                 <button
                     onClick={fetchQuoteSummary}
                     className="flex items-center bg-blue-400 text-white hover:text-blue-600 hover:bg-blue-500 transition-colors px-2 py-1 f-12 rounded shadow"
