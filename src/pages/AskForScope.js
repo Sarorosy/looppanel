@@ -628,14 +628,14 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                 // onClick={createRapidShareAccount}
                 className="flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-orange-200  hover:bg-orange-300"
               >
-                <Folder size={12} className="mr-1" /> RapidShare Account Not created
+                <Folder size={12} className="mr-1" /> FileShare Account Not created
               </button>
             ) : (
               <button
                 // onClick={() => { setOpenClientSharedFiles(true); }}
                 className="flex items-center mr-2 rounded px-2 py-1 text-xs btn btn-sm bg-blue-950 text-white hover:bg-blue-900"
               >
-                <Folder size={12} className="mr-1" /> RapidShare Account Created
+                <Folder size={12} className="mr-1" /> FileShare Account Created
                 <BadgeCheck size={12} className="ml-1 text-green-600" />
               </button>
             )}
@@ -1513,6 +1513,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                     </div>
                                                     <div className='flex items-center'>
                                                       <div className='line-h-in'>{quote.demo_id}</div>
+                                                      
                                                       <div className="line-h-in badge badge-success ml-2 flex items-center f-10">
                                                         Demo Completed{" "}
                                                         <CheckCircle2
@@ -1520,6 +1521,23 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                           className="ml-2"
                                                         />{" "}
                                                       </div>{" "}
+                                                    </div>
+                                                  </p>
+                                                </>
+                                              )}
+                                              {quote.demo_duration && (
+                                                <>
+                                                  <p className="mb-3">
+
+                                                    {" "}
+                                                    <div>
+                                                      <strong>
+                                                        Demo Duration {" "}
+                                                      </strong>{" "}
+                                                    </div>
+                                                    <div className='flex items-center'>
+                                                      <div className='line-h-in'>{quote.demo_duration}</div>
+                                                      
                                                     </div>
                                                   </p>
                                                 </>
@@ -1730,7 +1748,6 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                           </tr>
                                                         )}
 
-                                                        {/* Final Price Row */}
                                                         {quote.final_price && (
                                                           <tr>
                                                             <td className="border px-1 py-2">

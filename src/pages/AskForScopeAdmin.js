@@ -1621,6 +1621,23 @@ const AskForScopeAdmin = ({
                                                   </p>
                                                 </>
                                               )}
+                                              {quote.demo_duration && (
+                                                <>
+                                                  <p className="mb-3">
+
+                                                    {" "}
+                                                    <div>
+                                                      <strong>
+                                                        Demo Duration {" "}
+                                                      </strong>{" "}
+                                                    </div>
+                                                    <div className='flex items-center'>
+                                                      <div className='line-h-in'>{quote.demo_duration}</div>
+                                                      
+                                                    </div>
+                                                  </p>
+                                                </>
+                                              )}
                                               {quote.quote_status != 0 &&
                                                 quote.quote_price &&
                                                 quote.plan && (

@@ -629,6 +629,23 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
                                                                     <p className='flex items-center '><p className='mr-3'> <strong>Demo Id : </strong> {quote.demo_id}</p><span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={15} className='ml-2' /> </span> </p>
                                                                 </>
                                                             )}
+                                                            {quote.demo_duration && (
+                                                                <>
+                                                                    <p className="mb-3">
+
+                                                                        {" "}
+                                                                        <div>
+                                                                            <strong>
+                                                                                Demo Duration {" "}
+                                                                            </strong>{" "}
+                                                                        </div>
+                                                                        <div className='flex items-center'>
+                                                                            <div className='line-h-in'>{quote.demo_duration}</div>
+
+                                                                        </div>
+                                                                    </p>
+                                                                </>
+                                                            )}
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                 <>
                                                                     {quote.old_plan && (

@@ -44,7 +44,7 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
     const [quoteIdForFeasHistory, setQuoteIdForFeasHistory] = useState('');
     const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
 
-    
+
 
     const toggleHistoryDiv = ($id) => {
         setQuoteIdForHistory($id);
@@ -650,6 +650,23 @@ const AskForScopeTl = ({ queryId, userType, quotationId }) => {
                                                                 {quote.demodone != 0 && (
                                                                     <>
                                                                         <p className='flex items-center '>  <p className=''> <strong>Demo Id : </strong> {quote.demo_id}</p> <span className='badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12'>Demo Completed <CheckCircle2 size={12} className='ml-1' /> </span></p>
+                                                                    </>
+                                                                )}
+                                                                {quote.demo_duration && (
+                                                                    <>
+                                                                        <p className="mb-3">
+
+                                                                            {" "}
+                                                                            <div>
+                                                                                <strong>
+                                                                                    Demo Duration {" "}
+                                                                                </strong>{" "}
+                                                                            </div>
+                                                                            <div className='flex items-center'>
+                                                                                <div className='line-h-in'>{quote.demo_duration}</div>
+
+                                                                            </div>
+                                                                        </p>
                                                                     </>
                                                                 )}
                                                                 {quote.quote_status != 0 && quote.quote_price && quote.plan && (

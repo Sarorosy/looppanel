@@ -285,7 +285,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                     key={index}
                                     className="p-4 border border-gray-300 rounded-md shadow-md bg-white space-y-4"
                                 >
-                                    {quote.isfeasability == 1 && (quote.feasability_user == thisUserId  || loopUserObject.feasibility_access == 1)? (<>
+                                    {quote.isfeasability == 1 && (quote.feasability_user == thisUserId || loopUserObject.feasibility_access == 1) ? (<>
                                         <div className='flex items-start justify-between'>
                                             <p>
                                                 <strong>Ref No.:</strong> {quote.assign_id}
@@ -434,30 +434,30 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                             </>
                                         )}
                                         {quote.client_academic_level && quote.results_section && (
-                                              <div class="flex gap-4 mb-3">
+                                            <div class="flex gap-4 mb-3">
                                                 <div class="flex items-center px-1 py-1 bg-blue-100 border-l-4 border-blue-500 text-blue-900 shadow-md rounded-lg"
-                                                  x-show="quote.client_academic_level">
-                                                  <div>
-                                                    <img src={academic} className='h-5 w-5' />
-                                                  </div>
-                                                  <div className='px-2'>
-                                                    <h3 class="text-md font-semibold">Academic Level</h3>
-                                                    <p class="text-sm">{quote.client_academic_level}</p>
-                                                  </div>
+                                                    x-show="quote.client_academic_level">
+                                                    <div>
+                                                        <img src={academic} className='h-5 w-5' />
+                                                    </div>
+                                                    <div className='px-2'>
+                                                        <h3 class="text-md font-semibold">Academic Level</h3>
+                                                        <p class="text-sm">{quote.client_academic_level}</p>
+                                                    </div>
                                                 </div>
 
                                                 <div class="flex items-center px-1 py-1 bg-green-100 border-l-4 border-green-500 text-green-900 shadow-md rounded-lg"
-                                                  x-show="quote.results_section">
+                                                    x-show="quote.results_section">
                                                     <div>
-                                                    <img src={experiment} className='h-5 w-5' />
-                                                  </div>
-                                                  <div className='px-2'>
-                                                  <h3 class="text-md font-semibold">Results Section</h3>
-                                                  <p class="text-sm">{quote.results_section}</p>
-                                                  </div>
+                                                        <img src={experiment} className='h-5 w-5' />
+                                                    </div>
+                                                    <div className='px-2'>
+                                                        <h3 class="text-md font-semibold">Results Section</h3>
+                                                        <p class="text-sm">{quote.results_section}</p>
+                                                    </div>
                                                 </div>
-                                              </div>
-                                            )}
+                                            </div>
+                                        )}
                                         <p>
                                             <strong>Comments:</strong> <span dangerouslySetInnerHTML={{ __html: quote.comments }} />
                                         </p>
@@ -497,6 +497,23 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                     Demo Completed <CheckCircle2 size={15} className="ml-2" />
                                                 </span>
                                             </p>
+                                        )}
+                                        {quote.demo_duration && (
+                                            <>
+                                                <p className="mb-3">
+
+                                                    {" "}
+                                                    <div>
+                                                        <strong>
+                                                            Demo Duration {" "}
+                                                        </strong>{" "}
+                                                    </div>
+                                                    <div className='flex items-center'>
+                                                        <div className='line-h-in'>{quote.demo_duration}</div>
+
+                                                    </div>
+                                                </p>
+                                            </>
                                         )}
                                         <div>
 
