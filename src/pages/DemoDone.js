@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { CheckCircle, CheckIcon, X } from 'lucide-react';
 import { io } from "socket.io-client";
 import { getSocket } from './Socket';
-function DemoDone({ scopeDetails, quoteId, after }) {
+function DemoDone({ scopeDetails, quoteId, after , emailId}) {
     const [showForm, setShowForm] = useState(false);
     const [demoId, setdemoId] = useState('');
     const socket = getSocket();
@@ -100,7 +100,8 @@ function DemoDone({ scopeDetails, quoteId, after }) {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    "demo_id": demoId
+                    "demo_id": demoId,
+                    "email" : emailId
                 })
 
             })

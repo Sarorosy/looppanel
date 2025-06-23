@@ -1849,6 +1849,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
 
                                                       scopeDetails={quote}
                                                       quoteId={quote.quoteid}
+                                                      emailId={queryInfo.email_id}
                                                       after={
                                                         fetchScopeDetails
                                                       }
