@@ -95,5 +95,52 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+  // Track current tab's ID and the number of open tabs
+  const tabId = Date.now().toString();
+  const TAB_LIST_KEY = "open_tabs";
+
+  function getOpenTabs() {
+    try {
+      const tabs = JSON.parse(localStorage.getItem(TAB_LIST_KEY)) || [];
+      return tabs.filter(id => id !== tabId); // Remove current if exists
+    } catch {
+      return [];
+    }
+  }
+
+  function setOpenTabs(tabs) {
+    localStorage.setItem(TAB_LIST_KEY, JSON.stringify(tabs));
+  }
+
+  // Add this tab to the list
+  const currentTabs = getOpenTabs();
+  currentTabs.push(tabId);
+  setOpenTabs(currentTabs);
+
+  // Check if limit exceeded
+  if (currentTabs.length > 2) {
+    document.body.innerHTML = `<h1 style="color:red;text-align:center;">Too many tabs open</h1>`;
+    alert("Only 2 pages allowed at the same time.");
+  }
+
+  // Listen to storage updates
+  window.addEventListener("storage", function (e) {
+    if (e.key === TAB_LIST_KEY) {
+      const tabs = getOpenTabs();
+      if (tabs.length > 2) {
+        document.body.innerHTML = `<h1 style="color:red;text-align:center;">Too many tabs open</h1>`;
+        alert("Only 2 pages allowed at the same time.");
+      }
+    }
+  });
+
+  // Remove this tab from list when closed
+  window.addEventListener("beforeunload", () => {
+    const tabs = getOpenTabs();
+    setOpenTabs(tabs.filter(id => id !== tabId));
+  });
+</script>
+
   </body>
 </html>

@@ -103,7 +103,6 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
                     "demo_id": demoId,
                     "email" : emailId
                 })
-
             })
 
             const data= await response.json()

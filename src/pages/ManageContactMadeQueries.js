@@ -24,6 +24,7 @@ import { getSocket } from './Socket';
 import { io } from "socket.io-client";
 import TransferRequestsPageTl from './TransferRequstsPageTl';
 import UserFeasibilityPage from './UserFeasibilityPage';
+import NonRequestsPage from './NonRequestsPage';
 const socket = getSocket();
 
 const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquoteid }) => {
@@ -51,6 +52,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const [requestAccessCount, setRequestAccessCount] = useState(0);
 
     const [userFeasPageOpen, setUserFeasPageOpen] = useState(false);
+    const [nonRequestsOpen, setNonRequestsOpen] = useState(false);
 
     const navigate = useNavigate();
     const userData = localStorage.getItem('user');
@@ -528,6 +530,10 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                                 User Feasibility Requests
                             </button>
                         )}
+                            <button className="bg-gray-200 flex items-center relative" onClick={() => { setNonRequestsOpen(true) }}>
+                                Non Requests
+                            </button>
+                        
                     </div>
                 </div>
             </div>
@@ -591,6 +597,9 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                 )}
                 {transferPageOpen && (
                     <TransferRequestsPageTl onClose={() => { setTransferPageOpen(!transferPageOpen) }} />
+                )}
+                {nonRequestsOpen && (
+                    <NonRequestsPage onClose={()=>{setNonRequestsOpen(false)}} />
                 )}
             </AnimatePresence>
 
