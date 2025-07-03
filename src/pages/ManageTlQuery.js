@@ -44,6 +44,8 @@ const ManageTlQuery = ({ onClose }) => {
     const [isDetailsOpen, setIsDetailsOpen] = useState(false);
     const [isAllFeasOpen, setIsAllFeasOpen] = useState(false);
     const [selectuserDiv, setSelectUserDiv] = useState(false);
+    const [quoteIssue, setQuoteIssue] = useState('');
+    
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const navigate = useNavigate();
@@ -139,11 +141,12 @@ const ManageTlQuery = ({ onClose }) => {
         const end_date = endDate;
         const assign_users = loopuserObject.tl_users;
         const current_tl = currentTlEmail;
+        const quote_issue = quoteIssue;
 
 
         // Define the payload conditionally
         let payload = {
-            userid, ref_id, current_tl, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, assign_users
+            userid, ref_id, current_tl, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, assign_users, quote_issue
         };
 
         if (nopayload) {
@@ -288,6 +291,22 @@ const ManageTlQuery = ({ onClose }) => {
                                 margin-left: 8px;
                             ">
                             Edited
+                        </span>
+                    `;
+                }
+                if (row.quote_issue == 1) {
+                    html += `
+                        <span 
+                            style="
+                                padding: 2px 4px;
+                                color: #E60000FF; 
+                                font-size: 11px; 
+                                font-weight: bold; 
+                                line-height: 1.2;
+                                z-index: 1 !important;
+                                data-tooltip-id='my-tooltip'
+                                data-tooltip-content='Quote Issue'>
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
                         </span>
                     `;
                 }
@@ -444,6 +463,7 @@ const ManageTlQuery = ({ onClose }) => {
         setKeyword('');
         setStatus('');
         setFeasStatus('');
+        setQuoteIssue('')
         setStartDate('');
         setEndDate('');
         setSelectedUser('');  // Reset selected user
@@ -609,6 +629,17 @@ const ManageTlQuery = ({ onClose }) => {
                                         {tag.tag_name}
                                     </option>
                                 ))}
+                            </select>
+                        </div>
+                        <div className="col-2 mb-3">
+
+                            <select
+                                className="form-control form-control-sm"
+                                value={quoteIssue}
+                                onChange={(e) => setQuoteIssue(e.target.value)}
+                            >
+                                <option value="">Quote Issue</option>
+                                <option value="1">Yes</option>
                             </select>
                         </div>
                         <div className="col flex items-center justify-end">
