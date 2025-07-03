@@ -31,6 +31,11 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const [otherSubjectArea, setOtherSubjectArea] = useState('');
     const [client_academic_level, setClient_academic_level] = useState('');
     const [results_section, setResults_section] = useState('');
+
+    const [timeline, setTimeline] = useState('');
+    const [timelineDays, setTimelineDays] = useState('');
+
+
     const [plan, setPlan] = useState([]);
     const [comments, setComments] = useState('');
     const [planComments, setPlanComments] = useState({});
@@ -245,6 +250,17 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             return;
         }
 
+        if(!timeline){
+            toast.error('Please select timeline!');
+            setSubmitting(false);
+            return;
+        }
+        if(timeline == 'urgent' && (!timelineDays || timelineDays == '')){
+            toast.error('Please select timeline days!');
+            setSubmitting(false);
+            return;
+        }
+
 
         try {
             const payload = new FormData();
@@ -256,6 +272,11 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             payload.append('subject_area', selectedSubjectArea);
             payload.append('client_academic_level',client_academic_level);
             payload.append('results_section', results_section);
+
+            payload.append('timeline', timeline);
+            payload.append('timeline_days',timelineDays);
+
+
             payload.append('other_subject_area', otherSubjectArea);
             const planOrder = ['Basic', 'Standard', 'Advanced'];
 
@@ -376,6 +397,9 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                 setSelectedUser(details.feasability_user ?? '')
                 setClient_academic_level(details.client_academic_level);
                 setResults_section(details.results_section);
+
+                setTimeline(details.timeline ?? "normal");
+                setTimelineDays(details.timeline_days ?? '1')
 
                 setTimeout(() => {
                     $(serviceRef.current).val(serviceArray).trigger('change');
@@ -769,6 +793,48 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                 </select>
                             </div>
                         </div>
+
+                        <div className='flex w-full items-end space-x-2 mt-4'>
+                            <div className='w-1/2'>
+                                <label htmlFor="timeline" className="block text-sm font-medium text-gray-700">
+                                    Timeline
+                                </label>
+                                <select
+                                    id="timeline"
+                                    value={timeline}
+                                    onChange={(e) => {
+                                        setTimeline(e.target.value);
+                                        if (e.target.value !== 'Urgent') {
+                                            setTimelineDays('');
+                                        }
+                                    }}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="normal">Normal</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+
+                            {timeline === 'urgent' && (
+                                <div className='w-1/2'>
+                                    <label htmlFor="timelineDays" className="block text-sm font-medium text-gray-700">
+                                        Timeline Days
+                                    </label>
+                                    <select
+                                        id="timelineDays"
+                                        value={timelineDays}
+                                        onChange={(e) => setTimelineDays(e.target.value)}
+                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                    >
+                                        <option value="">Select days</option>
+                                        {Array.from({ length: 90 }, (_, i) => i + 1).map((day) => (
+                                            <option key={day} value={day}>{day} {day === 1 ? 'day' : 'days'}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
+
                         <div className='w-full mb-3'>
                             {/* Plan Checkboxes */}
                             <label className="">Plan</label>

@@ -62,6 +62,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [TransferPageVisible, setTransferPageVisible] = useState(false);
     const [endDate, setEndDate] = useState(null);
     const [callOption, setCallOption] = useState('');
+    const [quoteIssue, setQuoteIssue] = useState('');
     const [activeTab, setActiveTab] = useState('all');
     const [selectedRows, setSelectedRows] = useState([]);
     const [filterSummary, setFilterSummary] = useState('');
@@ -423,9 +424,10 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         const start_date = startDate;
         const end_date = endDate;
         const callrecordingpending = callOption;
+        const quote_issue = quoteIssue;
 
         let payload = {
-            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, callrecordingpending
+            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, callrecordingpending, quote_issue
         };
 
         if (nopayload) {
@@ -825,6 +827,23 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     `;
                 }
 
+                if (row.quote_issue == 1) {
+                    html += `
+                        <span 
+                            style="
+                                padding: 2px 4px;
+                                color: #E60000FF; 
+                                font-size: 11px; 
+                                font-weight: bold; 
+                                line-height: 1.2;
+                                z-index: 1 !important;
+                                data-tooltip-id='my-tooltip'
+                                data-tooltip-content='Quote Issue'>
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        </span>
+                    `;
+                }
+
                 if (row.edited == 1) {
                     html += `
                         <span 
@@ -1036,6 +1055,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setScopeId('');
         setKeyword('');
         setCallOption('');
+        setQuoteIssue('');
         setStatus([]);
         setFeasStatus('');
         setStartDate('');
@@ -1066,7 +1086,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         // Reset filter states
         setRefId('');
         setScopeId('');
-        setCallOption('')
+        setCallOption('');
+        setQuoteIssue('');
         setKeyword('');
         setStatus([]);
         setFeasStatus('');
@@ -1498,6 +1519,17 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                             >
                                 <option value="">Call Recording</option>
                                 <option value="1">Pending</option>
+                            </select>
+                        </div>
+                        <div className=" mb-3" style={{ width: "140px" }}>
+
+                            <select
+                                className="form-control form-control-sm"
+                                value={quoteIssue}
+                                onChange={(e) => setQuoteIssue(e.target.value)}
+                            >
+                                <option value="">Quote Issue</option>
+                                <option value="1">yes</option>
                             </select>
                         </div>
                         <div className="col flex items-center justify-end">

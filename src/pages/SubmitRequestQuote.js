@@ -39,6 +39,10 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
     const [demoId, setDemoId] = useState('');
     const [client_academic_level, setClient_academic_level] = useState('');
     const [results_section, setResults_section] = useState('');
+
+    const [timeline, setTimeline] = useState('normal');
+    const [timelineDays, setTimelineDays] = useState('');
+
     const [demoStatus, setDemoStatus] = useState(false);
     const [tags, setTags] = useState([]);
     const tagsRef = useRef(null);
@@ -330,6 +334,17 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
             setSubmitting(false);
             return;
         }
+        if(!timeline){
+            toast.error('Please select timeline!');
+            setSubmitting(false);
+            return;
+        }
+        if(timeline == 'urgent' && (!timelineDays || timelineDays == '')){
+            toast.error('Please select timeline days!');
+            setSubmitting(false);
+            return;
+        }
+
         const planOrder = ['Basic', 'Standard', 'Advanced'];
         const sortedPlans = selectedPlans.sort((a, b) => {
             return planOrder.indexOf(a) - planOrder.indexOf(b);
@@ -347,6 +362,8 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
         formData.append('plan', sortedPlans);
         formData.append('comments', comments);
         formData.append('client_name', clientName);
+        formData.append('timeline', timeline);
+        formData.append('timeline_days', timelineDays);
         let planCommentsJson = {};
         let planWordCountsJson = {};
         let emptyCommentFound = false;
@@ -513,17 +530,17 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                         >
                             Ask For Scope
                         </h2>
-                        
-                            <h2
-                                className={`tab-btn-n-set cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 1
-                                    ? "bg-white text-blue-700 shadow-md"
-                                    : "bg-blue-600 hover:bg-blue-500 text-gray-200"
-                                    }`}
-                                onClick={() => setIsFeasability(1)}
-                            >
-                                Ask For Feasibility Check
-                            </h2>
-                        
+
+                        <h2
+                            className={`tab-btn-n-set cursor-pointer px-2 py-1 rounded-lg transition-colors ${isfeasability == 1
+                                ? "bg-white text-blue-700 shadow-md"
+                                : "bg-blue-600 hover:bg-blue-500 text-gray-200"
+                                }`}
+                            onClick={() => setIsFeasability(1)}
+                        >
+                            Ask For Feasibility Check
+                        </h2>
+
                     </div>
 
                     {/* Close Button */}
@@ -823,6 +840,49 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                                 </select>
                             </div>
                         </div>
+
+                        <div className='flex w-full items-end space-x-2 mt-4'>
+                            <div className='w-1/2'>
+                                <label htmlFor="timeline" className="block text-sm font-medium text-gray-700">
+                                    Timeline
+                                </label>
+                                <select
+                                    id="timeline"
+                                    value={timeline}
+                                    onChange={(e) => {
+                                        setTimeline(e.target.value);
+                                        if (e.target.value !== 'Urgent') {
+                                            setTimelineDays('');
+                                        }
+                                    }}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="normal">Normal</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+
+                            {timeline === 'urgent' && (
+                                <div className='w-1/2'>
+                                    <label htmlFor="timelineDays" className="block text-sm font-medium text-gray-700">
+                                        Timeline Days
+                                    </label>
+                                    <select
+                                        id="timelineDays"
+                                        value={timelineDays}
+                                        onChange={(e) => setTimelineDays(e.target.value)}
+                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                    >
+                                        <option value="">Select days</option>
+                                        {Array.from({ length: 90 }, (_, i) => i + 1).map((day) => (
+                                            <option key={day} value={day}>{day} {day === 1 ? 'day' : 'days'}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+                        </div>
+
+
                         {/* Plan Dropdown */}
                         <div className="w-full mt-4">
                             <label htmlFor="plan" className="block text-sm font-medium text-gray-700">

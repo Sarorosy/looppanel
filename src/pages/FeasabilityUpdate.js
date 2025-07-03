@@ -315,6 +315,18 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                         <Headset size={13} />
                                                     </span>
                                                 )}
+                                                {quote.timeline && (
+                                                    <span
+                                                        className={`${quote.timeline == 'normal' ? 'text-red-600 bg-red-100' : 'text-blue-600 bg-blue-100'} rounded-full text-sm ml-2 px-1 py-0.5`}
+                                                        style={{
+                                                            fontSize: "11px",
+                                                        }}
+                                                        data-tooltip-id={quote.timeline == 'normal' ? '' : 'my-tooltip'}
+                                                        data-tooltip-content={quote.timeline_days + " days"}
+                                                    >
+                                                        {quote.timeline}
+                                                    </span>
+                                                )}
                                             </p>
                                             {quote.feasability_status == 'Pending' && (
                                                 <button onClick={toggleTransferForm} className='flex items-center mr-3  px-2 py-1 btn btn-outline-success f-14'>

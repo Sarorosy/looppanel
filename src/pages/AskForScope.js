@@ -759,6 +759,19 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                 />
                               </div>
                             )}
+
+                            {quote.timeline  && (
+                              <span
+                                className={`${quote.timeline == 'normal' ? 'text-red-600 bg-red-100' : 'text-blue-600 bg-blue-100'} rounded-full text-sm ml-2 px-1 py-0.5`}
+                                style={{
+                                  fontSize: "11px",
+                                }}
+                                data-tooltip-id={quote.timeline == 'normal' ? '' : 'my-tooltip'}
+                                data-tooltip-content={quote.timeline_days + " days"}
+                              >
+                                {quote.timeline}
+                              </span>
+                            )}
                           </p>
                         </td>
                         <td
