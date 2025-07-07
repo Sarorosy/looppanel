@@ -952,7 +952,7 @@ const AskForScopeAdmin = ({
                                 data-tooltip-id={quote.timeline == 'normal' ? '' : 'my-tooltip'}
                                 data-tooltip-content={"Timeline: " + quote.timeline_days + " days"}
                               >
-                                {quote.timeline}
+                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
                               </span>
                             )}
 
@@ -2162,6 +2162,27 @@ const AskForScopeAdmin = ({
                                                   </>
                                                 )}
                                             </div>
+                                              {quote.timeline ? (
+                                              <div className="mb-0  mt-0 row p-1 space-y-1  rounded">
+                                                <p className={`font-medium  ${quote.timeline == "urgent" ? "text-red-500" : "text-blue-500"}`}>Timeline : {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}</p>
+                                                {quote.timeline && quote.timeline == 'urgent' && (
+                                                  <span>
+                                                    Timeline Duration : {quote.timeline_days} days
+                                                  </span>
+                                                )}
+                                              </div>
+                                            ) : null}
+                                            {quote.quote_issue == 1 ? (
+                                              <div className="mb-0 mx-2 mt-0 row p-1 space-y-4 bg-red-100 rounded">
+                                                <p className="text-red-500 font-medium">Quote Issue !</p>
+                                                {quote.issue_comments && quote.issue_comments != '' && (
+                                                  <span>
+                                                    {quote.issue_comments}
+                                                  </span>
+                                                )}
+                                              </div>
+                                            ) : null}
+
                                             <div>
 
                                               <CallRecordingPending

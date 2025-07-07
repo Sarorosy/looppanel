@@ -4,6 +4,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import upleft from '../upleft.svg';
 import rcfav from '../rc-fav.png';
+import drivepng from '../drivepng.png';
+
 
 
 
@@ -13,6 +15,8 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
     const [feasFiles, setFeasFiles] = useState([]);
     const [attachedFiles, setAttachedFiles] = useState([]);
     const [uploading, setUploading] = useState(false);
+    const [GdriveLink, setGriveLink] = useState(null);
+
     const loopuserData = localStorage.getItem('loopuser');
     const loopUserObject = JSON.parse(loopuserData);
     let files = [];
@@ -53,6 +57,28 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
 
         fetchChatFiles();
     }, [ref_id]);
+
+    useEffect(() => {
+        const fetchGDriveLink = async () => {
+            if (!queryInfo.email_id) return;
+
+            try {
+                const response = await fetch(`https://www.rapidcollaborate.com/call_calendar/Cronjobs/getCallDriveLink?email=${queryInfo.email_id}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" },
+                });
+
+                const result = await response.json();
+                if(result.status){
+                    setGriveLink(result.data);
+                }
+            } catch (error) {
+                console.error("Error fetching chat files:", error);
+            }
+        };
+
+        fetchGDriveLink();
+    }, [queryInfo]);
 
     useEffect(() => {
         const fetchRelevantFiles = async () => {
@@ -406,6 +432,33 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                     )}
                 </>
             )}
+            {GdriveLink && Array.isArray(GdriveLink) && (
+    <div className="p-4 bg-gray-50 rounded-lg overflow-x-auto">
+        <p className="font-semibold mb-2 flex items-center"><img src={drivepng} className="h-5 w-5" /> Call Recordings:</p>
+        <ul className="list-disc list-inside space-y-1">
+    {GdriveLink
+        .filter(link => link.fld_call_complete_recording) // only non-null
+        .map((link, index) => (
+            <li key={index}>
+                <a
+                    href={link.fld_call_complete_recording}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline break-all"
+                >
+                    {link.fld_call_complete_recording.length > 80
+                        ? `${link.fld_call_complete_recording.slice(0, 40)}...${link.fld_call_complete_recording.slice(-10)}`
+                        : link.fld_call_complete_recording
+                    }
+                </a>
+            </li>
+        ))
+    }
+</ul>
+
+    </div>
+)}
+
 
             {relevantFiles.length == 0 && chatFiles.length == 0 && feasFiles.length == 0 && attachedFiles.length == 0 && (
                 <p className="text-gray-500 text-center py-3">No Files Found</p>

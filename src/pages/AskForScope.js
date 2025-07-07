@@ -769,7 +769,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                 data-tooltip-id={quote.timeline == 'normal' ? '' : 'my-tooltip'}
                                 data-tooltip-content={quote.timeline_days + " days"}
                               >
-                                {quote.timeline}
+                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
                               </span>
                             )}
                           </p>
@@ -1555,6 +1555,16 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                   </p>
                                                 </>
                                               )}
+                                              {quote.timeline ? (
+                                              <div className="mb-0  mt-0 row p-1 space-y-1  rounded">
+                                                <p className={`font-medium  ${quote.timeline == "urgent" ? "text-red-500" : "text-blue-500"}`}>Timeline : {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}</p>
+                                                {quote.timeline && quote.timeline == 'urgent' && (
+                                                  <span>
+                                                    Timeline Duration : {quote.timeline_days} days
+                                                  </span>
+                                                )}
+                                              </div>
+                                            ) : null}
                                               {quote.quote_status != 0 &&
                                                 quote.quote_price &&
                                                 quote.plan && (

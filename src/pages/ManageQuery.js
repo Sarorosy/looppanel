@@ -471,6 +471,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     if (scope_id) appliedFilters.push(`Scope ID: ${scope_id}`);
                     if (ptp && ptp == 'Yes') appliedFilters.push(`PTP: YES`);
                     if (callOption && callOption == '1') appliedFilters.push(`Call Recording Pending`);
+                    if (quoteIssue && quoteIssue == '1') appliedFilters.push(`Quote Issue`);
                     if (userid && userid.length > 0) {
                         const userNames = userid
                             .map(id => {
@@ -1129,7 +1130,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         data-tooltip-id="my-tooltip"
                         data-tooltip-content="Edit"
                         onClick={() => setShowUpload(true)}>
-                        <Pencil size={11}  />
+                        <Pencil size={11} />
                     </button>
                 </div>
 
@@ -1224,7 +1225,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         </button>
                     </div>
                 </div>
-                <div className={`${showFilterDiv ? 'hidden' : 'flex'} items-end space-x-2 border py-3 mt-3 px-3 bg-light`}>
+                <div className={`${showFilterDiv ? 'hidden' : 'flex'} flex-col items-end space-x-2 border py-3 mt-3 px-3 bg-light`}>
                     <div className="row">
                         <div className="col-2 mb-3">
                             <input
@@ -1529,28 +1530,24 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 onChange={(e) => setQuoteIssue(e.target.value)}
                             >
                                 <option value="">Quote Issue</option>
-                                <option value="1">yes</option>
+                                <option value="1">Yes</option>
                             </select>
                         </div>
-                        <div className="col flex items-center justify-end">
-                            {/* <label>&nbsp;</label> */}
-                            <div className='flex'>
-                                <button className="bg-gray-200 text-gray-500 flex items-cente  hover:bg-gray-300  f-12 btn px-2 py-1 mr-2" onClick={resetFilters}>
-                                    <RefreshCcw size={14} /> &nbsp;
-                                    Reset Filters
-                                </button>
-                                <button className="gree text-white mr-1 flex items-center f-12 btn px-2 py-1" onClick={() => { fetchQuotes(false) }}>
-                                    <Filter size={12} /> &nbsp;
-                                    Apply
-                                </button>
 
-                            </div>
-
-
-                        </div>
                     </div>
 
+                    <div className="w-full flex items-center justify-between" >
 
+                        <button className=" text-blue-600 flex items-center  hover:underline  f-12 btn px-2 py-1 mr-2" onClick={resetFilters}>
+                            <RefreshCcw size={14} /> &nbsp;
+                            Reset Filters
+                        </button>
+                        <button className="gree text-white mr-1 flex items-center f-12 btn px-2 py-1" onClick={() => { fetchQuotes(false) }}>
+                            <Filter size={12} /> &nbsp;
+                            Apply
+                        </button>
+
+                    </div>
                 </div>
             </div>
 
