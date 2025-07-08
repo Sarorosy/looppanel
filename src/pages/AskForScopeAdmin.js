@@ -2445,14 +2445,14 @@ const AskForScopeAdmin = ({
                                                                   type="button"
                                                                   name="priceSubmitted"
                                                                   className="btn btn-success btn-sm f-12"
-                                                                  value="Submit"
+                                                                  value={quoteLoading ? "Submitting" : "Submit"}
                                                                   onClick={() => PriceSubmitValidate(
                                                                     quote.assign_id,
                                                                     quote.quoteid,
                                                                     quote.plan,
                                                                     quote.user_id
                                                                   )}
-                                                                  disabled={priceLoading}
+                                                                  disabled={quoteLoading}
                                                                 />
                                                               </div>
                                                             </div>
