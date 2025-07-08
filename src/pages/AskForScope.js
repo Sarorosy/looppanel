@@ -772,6 +772,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                 {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
                               </span>
                             )}
+                            
                           </p>
                         </td>
                         <td

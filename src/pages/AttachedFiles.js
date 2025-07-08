@@ -69,7 +69,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 });
 
                 const result = await response.json();
-                if(result.status){
+                if (result.status) {
                     setGriveLink(result.data);
                 }
             } catch (error) {
@@ -433,31 +433,31 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 </>
             )}
             {GdriveLink && Array.isArray(GdriveLink) && (
-    <div className="p-4 bg-gray-50 rounded-lg overflow-x-auto">
-        <p className="font-semibold mb-2 flex items-center"><img src={drivepng} className="h-5 w-5" /> Call Recordings:</p>
-        <ul className="list-disc list-inside space-y-1">
-    {GdriveLink
-        .filter(link => link.fld_call_complete_recording) // only non-null
-        .map((link, index) => (
-            <li key={index}>
-                <a
-                    href={link.fld_call_complete_recording}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline break-all"
-                >
-                    {link.fld_call_complete_recording.length > 80
-                        ? `${link.fld_call_complete_recording.slice(0, 40)}...${link.fld_call_complete_recording.slice(-10)}`
-                        : link.fld_call_complete_recording
-                    }
-                </a>
-            </li>
-        ))
-    }
-</ul>
+                <div className="p-4 bg-gray-50 rounded-lg overflow-x-auto">
+                    <p className="font-semibold mb-2 flex items-center"><img src={drivepng} className="h-5 w-5" /> Call Recordings:</p>
+                    <ul className="list-disc list-inside space-y-1">
+                        {GdriveLink
+                            .filter(link => link.fld_call_complete_recording) // only non-null
+                            .map((link, index) => (
+                                <li key={index}>
+                                    <a
+                                        href={link.fld_call_complete_recording}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-600 hover:underline break-all"
+                                    >
+                                        {link.fld_call_complete_recording.length > 80
+                                            ? `${link.fld_call_complete_recording.slice(0, 40)}...${link.fld_call_complete_recording.slice(-10)}`
+                                            : link.fld_call_complete_recording
+                                        }
+                                    </a>
+                                </li>
+                            ))
+                        }
+                    </ul>
 
-    </div>
-)}
+                </div>
+            )}
 
 
             {relevantFiles.length == 0 && chatFiles.length == 0 && feasFiles.length == 0 && attachedFiles.length == 0 && (

@@ -938,9 +938,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 } else {
                     if (data == 0) {
                         return '<span class="text-red-600 font-bold">Pending at Admin</span>';
-                    } else if (data == 1 && row['discount_price'] !== "" && row['discount_price'] !== null) {
+                    } else if (data == 1 && row['discount_submitted'] == 1) {
                         return '<span class="text-green-600 font-bold">Discount Submitted</span>';
-                    } else if (data == 1) {
+                    } else if (data == 1 && row['discount_submitted'] == 0) {
                         return '<span class="text-green-600 font-bold">Submitted</span>';
                     } else if (data == 2) {
                         return '<span class="text-yellow-600 font-bold">Discount Requested</span>';
