@@ -23,6 +23,7 @@ import TableLoader from '../components/TableLoader';
 
 const ManageTlQuery = ({ onClose }) => {
     const [quotes, setQuotes] = useState([]);
+    const [quoteId, setQuoteId] = useState('');
     const [refID, setRefId] = useState('');
     const [keyword, setKeyword] = useState('');
     const [status, setStatus] = useState('');
@@ -133,6 +134,7 @@ const ManageTlQuery = ({ onClose }) => {
         // Only use the filters if `nopayload` is false
         const userid = selectedUser;
         const ref_id = refID;
+        const quote_id = quoteId;
         const search_keywords = keyword;
         const service_name = selectedService;
         const tags = selectedTags;
@@ -146,7 +148,7 @@ const ManageTlQuery = ({ onClose }) => {
 
         // Define the payload conditionally
         let payload = {
-            userid, ref_id, current_tl, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, assign_users, quote_issue
+            userid, ref_id, quote_id, current_tl, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, assign_users, quote_issue
         };
 
         if (nopayload) {
@@ -518,6 +520,15 @@ const ManageTlQuery = ({ onClose }) => {
                 </div>
                 <div className='flex items-end space-x-2 px-3'>
                     <div className="row">
+                        <div className="col-2 mb-3">
+                            <input
+                                type="text"
+                                className="form-control form-control-sm"
+                                placeholder='Quote ID'
+                                value={quoteId}
+                                onChange={(e) => setQuoteId(e.target.value)}
+                            />
+                        </div>
                         <div className="col-2 mb-3">
                             <input
                                 type="text"
