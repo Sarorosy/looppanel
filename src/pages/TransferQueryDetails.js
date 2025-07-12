@@ -277,7 +277,7 @@ const TransferQueryDetails = ({ onClose, queryId, quotationId, after, userIdDefi
                         </div>
                     )}
                 </div>
-                <AskForScopeTransfer queryId={queryId} clientName={queryInfo.name} quotationId={quotationId} userType={userObject.fld_admin_type} userIdDefined={userIdDefined} />
+                <AskForScopeTransfer queryId={queryId} clientName={queryInfo.name} quotationId={quotationId} userType={userObject.fld_admin_type} userIdDefined={userIdDefined}  />
 
             </div>
 

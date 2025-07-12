@@ -161,7 +161,7 @@ const QueryDetailsFollowing = ({ onClose, queryId, quotationId, after }) => {
 
             <div className=' flex items-start justify-between space-x-1 pnav text-black'>
 
-                <AskForScopeFollower queryInfo={queryInfo} queryId={queryId} quotationId={quotationId} userType={userObject.fld_admin_type} />
+                <AskForScopeFollower queryInfo={queryInfo} queryId={queryId} quotationId={quotationId} userType={userObject.fld_admin_type}  />
                 {detailsTabVisible && (
                 <div className='col-md-3'>
                     {loading ? (

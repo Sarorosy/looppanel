@@ -139,7 +139,7 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType, tagAcces
 
 
             <div className=' flex items-start justify-between space-x-1 pnav text-black'>
-                <AskForScope queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} tlType={tlType} tagAccess={tagAccess}/>
+                <AskForScope queryId={queryId} userType={userObject.fld_admin_type} quotationId={quotationId} tlType={tlType} tagAccess={tagAccess} queryInfo={queryInfo} />
                 {detailsTabVisible && (
                 <div className='col-md-3'>
                     {loading ? (
