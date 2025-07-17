@@ -31,7 +31,7 @@ const TransferRequestsPage = ({ onClose, after,userIdDefined }) => {
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getalltransferrequests',
+                'http://localhost:5000/api/scope/getalltransferrequests',
                 {
                     method: 'POST', // Use POST method
                     headers: {

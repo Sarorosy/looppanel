@@ -162,7 +162,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
 
     const checkDemoStatus = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/checkDemoDoneStatus', {
+            const response = await fetch('http://localhost:5000/api/scope/checkDemoDoneStatus', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
 
     const fetchCurrencies = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getCurrencies');
+            const response = await fetch('http://localhost:5000/api/scope/getCurrencies');
             const data = await response.json();
             if (data.status) {
                 setCurrencies(data.data || []); // Set fetched currencies
@@ -206,7 +206,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                 return;
             }
 
-            const response = await fetch('https://apacvault.com/Webapi/getServices', {
+            const response = await fetch('http://localhost:5000/api/scope/getServices', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -237,7 +237,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                 return;
             }
 
-            const response = await fetch('https://apacvault.com/Webapi/getAllUsers', {
+            const response = await fetch('http://localhost:5000/api/scope/getAllUsers', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -259,7 +259,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
     };
     const fetchTags = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const response = await fetch('http://localhost:5000/api/scope/getTags');
             const data = await response.json();
             if (data.status) setTags(data.data || []);
         } catch (error) {
@@ -416,7 +416,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
         });
 
         try {
-            const response = await fetch('https://apacvault.com/Webapi/submitRequestQuoteApiActionNew/', {
+            const response = await fetch('http://localhost:5000/api/scope/submitRequestQuoteApiActionNew/', {
                 method: 'POST',
                 body: formData,
             });

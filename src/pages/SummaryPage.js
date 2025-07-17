@@ -33,7 +33,7 @@ const SummaryPage = ({ onClose, after,userIdDefined }) => {
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getQuoteSummary',
+                'http://localhost:5000/api/scope/getQuoteSummary',
                 {
                     method: 'POST', // Use POST method
                     headers: {

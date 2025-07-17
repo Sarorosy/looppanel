@@ -57,7 +57,7 @@ function App() {
               token: currentToken,
             };
 
-            const response = await fetch("https://apacvault.com/webapi/saveFcmToken", {
+            const response = await fetch("http://localhost:5000/api/scope/saveFcmToken", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -120,7 +120,7 @@ function App() {
       const fetchUserType = async () => {
         try {
           setLoading(true);
-          const response = await fetch("https://apacvault.com/Webapi/getusersforscope", {
+          const response = await fetch("http://localhost:5000/api/scope/getusersforscope", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

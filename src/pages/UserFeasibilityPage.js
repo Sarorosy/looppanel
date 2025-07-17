@@ -34,7 +34,7 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getAllUsersFeasibilityRequests',
+                'http://localhost:5000/api/scope/getAllUsersFeasibilityRequests',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -64,7 +64,7 @@ const UserFeasibilityPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid 
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getAllFeasabilityAssignedToUser',
+                'http://localhost:5000/api/scope/getAllFeasabilityAssignedToUser',
                 {
                     method: 'POST', // Use POST method
                     headers: {

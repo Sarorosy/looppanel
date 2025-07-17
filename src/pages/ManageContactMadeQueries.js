@@ -187,7 +187,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/loadContactMadeQueriesVeryNew',
+                'http://localhost:5000/api/scope/loadContactMadeQueriesVeryNew',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -395,7 +395,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
     const handleRequestAccessClick = async (data) => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/requestAccessfortransferredquery', {
+            const response = await fetch('http://localhost:5000/api/scope/requestAccessfortransferredquery', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

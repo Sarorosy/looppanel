@@ -158,7 +158,7 @@ const ManageTlQuery = ({ onClose }) => {
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/listaskforscopefortl',
+                'http://localhost:5000/api/scope/listaskforscopefortl',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -187,7 +187,7 @@ const ManageTlQuery = ({ onClose }) => {
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getAllServices',
+                'http://localhost:5000/api/scope/getAllServices',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -209,7 +209,7 @@ const ManageTlQuery = ({ onClose }) => {
     };
     const fetchTags = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const response = await fetch('http://localhost:5000/api/scope/getTags');
             const data = await response.json();
             if (data.status) setTags(data.data || []);
         } catch (error) {

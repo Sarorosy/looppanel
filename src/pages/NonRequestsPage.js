@@ -35,7 +35,7 @@ const NonRequestsPage = ({ onClose, sharelinkrefid, sharelinkquoteid }) => {
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getAllNonRequests',
+                'http://localhost:5000/api/scope/getAllNonRequests',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -65,7 +65,7 @@ const NonRequestsPage = ({ onClose, sharelinkrefid, sharelinkquoteid }) => {
         
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getAllFeasabilityAssignedToUser',
+                'http://localhost:5000/api/scope/getAllFeasabilityAssignedToUser',
                 {
                     method: 'POST', // Use POST method
                     headers: {

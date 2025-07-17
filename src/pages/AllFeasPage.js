@@ -40,7 +40,7 @@ const AllFeasPage = ({ onClose }) => {
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getAllFeasabilityForAdmin',
+                'http://localhost:5000/api/scope/getAllFeasabilityForAdmin',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -92,7 +92,7 @@ const AllFeasPage = ({ onClose }) => {
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getAllUsersForAdmin',
+                'http://localhost:5000/api/scope/getAllUsersForAdmin',
                 {
                     method: 'POST', // Use POST method
                     headers: {

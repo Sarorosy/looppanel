@@ -97,7 +97,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
 
     const fetchCurrencies = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getCurrencies');
+            const response = await fetch('http://localhost:5000/api/scope/getCurrencies');
             const data = await response.json();
             if (data.status) setCurrencies(data.data || []);
         } catch (error) {
@@ -108,7 +108,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const fetchServices = async () => {
         try {
             const user = JSON.parse(localStorage.getItem('user'));
-            const response = await fetch('https://apacvault.com/Webapi/getServices', {
+            const response = await fetch('http://localhost:5000/api/scope/getServices', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ category: user?.category }),
@@ -129,7 +129,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                 return;
             }
 
-            const response = await fetch('https://apacvault.com/Webapi/getAllUsers', {
+            const response = await fetch('http://localhost:5000/api/scope/getAllUsers', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -294,7 +294,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             payload.append('user_id', userObject.id);
             payload.append('feas_user', selectedUser);
 
-            const response = await fetch('https://apacvault.com/Webapi/updateRequestQuoteApiAction', {
+            const response = await fetch('http://localhost:5000/api/scope/updateRequestQuoteApiAction', {
                 method: 'POST',
                 body: payload,
             });
@@ -332,10 +332,10 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             }
 
             const [currenciesResponse, servicesResponse, usersResponse, requestDetailsResponse] = await axios.all([
-                axios.get('https://apacvault.com/Webapi/getCurrencies'),
-                axios.post('https://apacvault.com/Webapi/getServices', { category }),
-                axios.post('https://apacvault.com/Webapi/getAllUsers', { user_id }),
-                fetch('https://apacvault.com/Webapi/getRequestDetails', {
+                axios.get('http://localhost:5000/api/scope/getCurrencies'),
+                axios.post('http://localhost:5000/api/scope/getServices', { category }),
+                axios.post('http://localhost:5000/api/scope/getAllUsers', { user_id }),
+                fetch('http://localhost:5000/api/scope/getRequestDetails', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ ref_id: refId, quote_id: quoteId }),
@@ -439,7 +439,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
 
         try {
             setLoading(true);
-            const response = await fetch('https://apacvault.com/Webapi/getRequestDetails', {
+            const response = await fetch('http://localhost:5000/api/scope/getRequestDetails', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ref_id: refId, quote_id: quoteId }),

@@ -34,7 +34,7 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
 
     const fetchTags = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const response = await fetch('http://localhost:5000/api/scope/getTags');
             const data = await response.json();
             if (data.status) setTags(data.data || []);
         } catch (error) {
@@ -46,7 +46,7 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
     const fetchInitialData = async () => {
         try {
             setLoading(true);
-            const response = await fetch('https://apacvault.com/Webapi/getRequestDetails', {
+            const response = await fetch('http://localhost:5000/api/scope/getRequestDetails', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ref_id: refId, quote_id: quoteId,  }),
@@ -100,7 +100,7 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
             payload.append('notification', notification);
             payload.append('admin_id', userObject.id)
 
-            const response = await fetch('https://apacvault.com/Webapi/updateTags', {
+            const response = await fetch('http://localhost:5000/api/scope/updateTags', {
                 method: 'POST',
                 body: payload,
             });

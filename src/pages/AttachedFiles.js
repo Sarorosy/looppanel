@@ -40,7 +40,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
             if (!ref_id) return;
 
             try {
-                const response = await fetch("https://apacvault.com/Webapi/getchatattachedfiles", {
+                const response = await fetch("http://localhost:5000/api/scope/getchatattachedfiles", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ ref_id: ref_id })
@@ -85,7 +85,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
             if (!ref_id) return;
 
             try {
-                const response = await fetch("https://apacvault.com/Webapi/getallrelevantfiles", {
+                const response = await fetch("http://localhost:5000/api/scope/getallrelevantfiles", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ ref_id: ref_id })
@@ -108,7 +108,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
             if (!ref_id) return;
 
             try {
-                const response = await fetch("https://apacvault.com/Webapi/getAllFeasFiles", {
+                const response = await fetch("http://localhost:5000/api/scope/getAllFeasFiles", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ ref_id: ref_id })
@@ -130,7 +130,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
         if (!quote.quoteid) return;
 
         try {
-            const response = await fetch("https://apacvault.com/Webapi/fetchallattachedfiles", {
+            const response = await fetch("http://localhost:5000/api/scope/fetchallattachedfiles", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ quote_id: quote.quoteid })
@@ -375,7 +375,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
         try {
             setUploading(true);
             const res = await axios.post(
-                "https://apacvault.com/Webapi/upload_attach_file",
+                "http://localhost:5000/api/scope/upload_attach_file",
                 formData,
                 {
                     headers: {

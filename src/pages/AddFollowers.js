@@ -33,7 +33,7 @@ const AddFollowers = ({ refId, quoteId, after, onClose , userId, notification}) 
     const fetchInitialData = async () => {
         try {
             setLoading(true);
-            const response = await fetch('https://apacvault.com/Webapi/getRequestDetails', {
+            const response = await fetch('http://localhost:5000/api/scope/getRequestDetails', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ref_id: refId, quote_id: quoteId,  }),
@@ -63,7 +63,7 @@ const AddFollowers = ({ refId, quoteId, after, onClose , userId, notification}) 
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getAllUsersForFollowers',{
+            const response = await fetch('http://localhost:5000/api/scope/getAllUsersForFollowers',{
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userObject.id,   }),
@@ -103,7 +103,7 @@ const AddFollowers = ({ refId, quoteId, after, onClose , userId, notification}) 
             payload.append('notification', notification);
             payload.append('admin_id', userObject.id)
 
-            const response = await fetch('https://apacvault.com/Webapi/updateFollowers', {
+            const response = await fetch('http://localhost:5000/api/scope/updateFollowers', {
                 method: 'POST',
                 body: payload,
             });

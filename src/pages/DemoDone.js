@@ -34,7 +34,7 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
         };
 
         try {
-            const response = await fetch('https://apacvault.com/Webapi/markasdemodone', {
+            const response = await fetch('http://localhost:5000/api/scope/markasdemodone', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

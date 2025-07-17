@@ -57,7 +57,7 @@ const QueryDetailsAdmin = ({
 
     try {
       const response = await fetch(
-        "https://apacvault.com/Webapi/view_query_details_api",
+        "http://localhost:5000/api/scope/view_query_details_api",
         {
           method: "POST", // Use POST method
           headers: {

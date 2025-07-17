@@ -134,7 +134,7 @@ const Header = ({ requestPermission }) => {
   const fetchNotificationsCount = async () => {
 
     try {
-      const response = await fetch('https://apacvault.com/Webapi/getNotifications', {
+      const response = await fetch('http://localhost:5000/api/scope/getNotifications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ const Header = ({ requestPermission }) => {
     }
 
     try {
-      const response = await fetch('https://apacvault.com/Webapi/readmessage', {
+      const response = await fetch('http://localhost:5000/api/scope/readmessage', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ const Header = ({ requestPermission }) => {
   const fetchNotifications = async () => {
     setLoading(true); // Show loading spinner
     try {
-      const response = await fetch('https://apacvault.com/Webapi/getNotifications', {
+      const response = await fetch('http://localhost:5000/api/scope/getNotifications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -219,7 +219,7 @@ const Header = ({ requestPermission }) => {
   const MarkAllAsRead = async () => {
     setLoading(true); // Show loading spinner
     try {
-      const response = await fetch('https://apacvault.com/Webapi/readAllNotifications', {
+      const response = await fetch('http://localhost:5000/api/scope/readAllNotifications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

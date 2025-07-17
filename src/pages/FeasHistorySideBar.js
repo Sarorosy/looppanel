@@ -17,7 +17,7 @@ const FeasHistorySideBar = ({ refId, quoteId, onClose }) => {
 
         try {
             setLoading(true);
-            const response = await fetch('https://apacvault.com/Webapi/getFeasabilityHistory', {
+            const response = await fetch('http://localhost:5000/api/scope/getFeasabilityHistory', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

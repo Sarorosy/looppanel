@@ -34,7 +34,7 @@ const FollowingPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid }) => 
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getFollowingTasks',
+                'http://localhost:5000/api/scope/getFollowingTasks',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -69,7 +69,7 @@ const FollowingPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid }) => 
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getFollowingTasks',
+                'http://localhost:5000/api/scope/getFollowingTasks',
                 {
                     method: 'POST', // Use POST method
                     headers: {

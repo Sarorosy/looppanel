@@ -119,7 +119,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     const fetchAndDisplayFile = async () => {
         try {
-            const res = await fetch("https://apacvault.com/Webapi/getXlsFileApiAction");
+            const res = await fetch("http://localhost:5000/api/scope/getXlsFileApiAction");
             const data = await res.json();
 
             if (data.status && data.file) {
@@ -173,7 +173,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         formData.append("file", file);
 
         try {
-            const res = await fetch("https://apacvault.com/Webapi/uploadQuoteXlsFileApiAction", {
+            const res = await fetch("http://localhost:5000/api/scope/uploadQuoteXlsFileApiAction", {
                 method: "POST",
                 body: formData,
             });
@@ -281,7 +281,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     const fetchTags = async () => {
         try {
-            const response = await fetch('https://apacvault.com/Webapi/getTags');
+            const response = await fetch('http://localhost:5000/api/scope/getTags');
             const data = await response.json();
             if (data.status) setTags(data.data || []);
         } catch (error) {
@@ -437,7 +437,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         try {
 
             const response = await fetch(
-                'https://apacvault.com/Webapi/listAskForScope',
+                'http://localhost:5000/api/scope/listAskForScope',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -559,7 +559,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/listAskForScope',
+                'http://localhost:5000/api/scope/listAskForScope',
                 {
                     method: 'POST',
                     headers: {
@@ -749,7 +749,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
         try {
             const response = await fetch(
-                'https://apacvault.com/Webapi/getAllServices',
+                'http://localhost:5000/api/scope/getAllServices',
                 {
                     method: 'POST', // Use POST method
                     headers: {

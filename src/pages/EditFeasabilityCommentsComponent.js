@@ -19,7 +19,7 @@ const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
             if (quote.assign_id && quote.quoteid) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('https://apacvault.com/Webapi/getFeasibilityComments', {
+                    const response = await axios.post('http://localhost:5000/api/scope/getFeasibilityComments', {
                         ref_id: quote.assign_id,
                         quote_id: quote.quoteid,
                     });
@@ -55,7 +55,7 @@ const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
         };
 
         try {
-            const response = await axios.post('https://apacvault.com/Webapi/updateFeasabilityComments', dataToSubmit);
+            const response = await axios.post('http://localhost:5000/api/scope/updateFeasabilityComments', dataToSubmit);
             if (response.data.status) {
                 toast.success("Feasibility comments updated successfully!");
                 onClose(); // Close the form after successful submission

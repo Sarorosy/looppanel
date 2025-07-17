@@ -21,7 +21,7 @@ function CallRecordingPending({ scopeDetails, quoteId, after }) {
         };
 
         try {
-            const response = await fetch('https://apacvault.com/Webapi/markascallrecordingpending', {
+            const response = await fetch('http://localhost:5000/api/scope/markascallrecordingpending', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

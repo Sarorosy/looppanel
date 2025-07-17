@@ -111,7 +111,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
         }
 
         try {
-            const response = await fetch('https://apacvault.com/Webapi/askptp', {
+            const response = await fetch('http://localhost:5000/api/scope/askptp', {
                 method: 'POST',
                 body: formData,
             });

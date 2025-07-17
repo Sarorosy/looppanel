@@ -210,7 +210,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     let hasResponse = false;
     try {
       const response = await fetch(
-        'https://apacvault.com/Webapi/adminScopeDetails',
+        'http://localhost:5000/api/scope/adminScopeDetails',
         {
           method: 'POST', // Use POST method
           headers: {
@@ -260,7 +260,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     let hasResponse = false;
     try {
       const response = await fetch(
-        'https://apacvault.com/Webapi/adminScopeDetails',
+        'http://localhost:5000/api/scope/adminScopeDetails',
         {
           method: 'POST', // Use POST method
           headers: {
@@ -308,7 +308,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     let hasResponse = false;
     try {
       const response = await fetch(
-        'https://apacvault.com/Webapi/adminScopeDetails',
+        'http://localhost:5000/api/scope/adminScopeDetails',
         {
           method: 'POST', // Use POST method
           headers: {
@@ -503,7 +503,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     };
 
     try {
-      const response = await fetch('https://apacvault.com/Webapi/submitFeasRequestToAdmintest', {
+      const response = await fetch('http://localhost:5000/api/scope/submitFeasRequestToAdmintest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

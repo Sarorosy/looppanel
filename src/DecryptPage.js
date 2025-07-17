@@ -25,7 +25,7 @@ function DecryptPage() {
         // First step: Validate credentials (verify email & token)
         const validateCredentials = async () => {
             try {
-                const response = await fetch("https://apacvault.com/login/loginwebapi", {
+                const response = await fetch("http://localhost:5000/api/users/loginwebapi", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ function DecryptPage() {
         // Second step: Authenticate (send email only)
         const authenticateUser = async () => {
             try {
-                const response = await fetch("https://apacvault.com/login/loginwebapisecondstep", {
+                const response = await fetch("http://localhost:5000/api/users/loginwebapisecondstep", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
