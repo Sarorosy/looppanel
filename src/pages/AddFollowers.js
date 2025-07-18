@@ -105,7 +105,17 @@ const AddFollowers = ({ refId, quoteId, after, onClose , userId, notification}) 
 
             const response = await fetch('http://localhost:5000/api/scope/updateFollowers', {
                 method: 'POST',
-                body: payload,
+                headers:{
+                    "Content-type":"application/json"
+                },
+                body: JSON.stringify({
+                    ref_id:refId,
+                    quote_id:quoteId,
+                    followers:formData.users,
+                    user_id:userObject.id,
+                    notification,
+                    admin_id:userObject.id,
+                }),
             });
 
             const data = await response.json();

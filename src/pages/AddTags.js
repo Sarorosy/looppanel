@@ -92,17 +92,27 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
         setSubmitting(true);
 
         try {
-            const payload = new FormData();
-            payload.append('ref_id', refId);
-            payload.append('quote_id', quoteId);
-            payload.append('tags', formData.tags);
-            payload.append('user_id', userId);
-            payload.append('notification', notification);
-            payload.append('admin_id', userObject.id)
+            // const payload = new FormData();
+            // payload.append('ref_id', refId);
+            // payload.append('quote_id', quoteId);
+            // payload.append('tags', formData.tags);
+            // payload.append('user_id', userId);
+            // payload.append('notification', notification);
+            // payload.append('admin_id', userObject.id)
 
             const response = await fetch('http://localhost:5000/api/scope/updateTags', {
                 method: 'POST',
-                body: payload,
+                headers : {
+                    "Content-type" : "application/json"
+                },
+                body: JSON.stringify({
+                    ref_id : refId,
+                    quote_id: quoteId,
+                    tags:formData.tags.join(","),
+                    user_id:userId,
+                    notification,
+                    admin_id : userObject.id
+                }),
             });
 
             const data = await response.json();
