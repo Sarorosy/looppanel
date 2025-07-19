@@ -78,7 +78,15 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
 
             const response = await fetch('http://localhost:5000/api/scope/TransferUser', {
                 method: 'POST',
-                body: payload,
+                 headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    ref_id:refId,
+                    quote_id:quotationId,
+                    user_id:selectedUser,
+                    ref_user_id:userObject.id
+                }),
             });
 
             const data = await response.json();
