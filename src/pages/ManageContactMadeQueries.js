@@ -137,6 +137,9 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     useEffect(() => {
         fetchQuotes(false, false);
         fetchWebsites();
+        fetchFollowingTaskCount();
+        fetchFeasibilityRequestCount();
+        fetchReqpendingCount()
         notification();
     }, []);
 
@@ -165,7 +168,93 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
         }
     };
 
-     
+    const fetchFollowingTaskCount = async () => {
+        try {
+            const response = await fetch(
+                'http://localhost:5000/api/scope/getFollowingTasksCount',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify({
+                        user_id: loopuserId
+                    }), // Pass the POST data as JSON
+                }
+            );
+
+            const data = await response.json(
+
+            ); // Parse the response as JSON
+            if (data.status) {
+                setFollowupCount(data.following_count ? data.following_count : 0);
+
+            } else {
+                console.error('Failed to fetch following task count:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching following task count:', error);
+        }
+    }
+
+    const fetchFeasibilityRequestCount = async () => {
+        try {
+            const response = await fetch(
+                'http://localhost:5000/api/scope/getFeasibilityRequestCount',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify({
+                        user_id: loopuserId
+                    }), // Pass the POST data as JSON
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+
+                setPendingFeasRequestCount(data.feasibility_count ? data.feasibility_count : 0);
+
+
+            } else {
+                console.error('Failed to fetch feasibility request task count:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching feasibility request task count:', error);
+        }
+    }
+
+    const fetchReqpendingCount = async () => {
+        try {
+            const response = await fetch(
+                'http://localhost:5000/api/scope/getPendingReqCount',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify({
+                        user_id: userId
+                    }), // Pass the POST data as JSON
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+
+                setRequestAccessCount(data.request_access_count ? data.request_access_count : 0);
+
+            } else {
+                console.error('Failed to fetch feasibility request task count:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching feasibility request task count:', error);
+        }
+    }
+
+
     const fetchQuotes = async (nopayload = false, requestPending = false, requestAccess = false) => {
         setLoading(true);
 
@@ -200,10 +289,9 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
                 setQuotes(data.data); // Update the quotes state
-                setPendingFeasRequestCount(data.pendingFeasRequestCount ? data.pendingFeasRequestCount : 0);
-                setFollowupCount(data.followingCount ? data.followingCount : 0);
+                // setPendingFeasRequestCount(data.pendingFeasRequestCount ? data.pendingFeasRequestCount : 0);
+
                 setRequestPendingCount(data.request_pending_count ? data.request_pending_count : 0);
-                setRequestAccessCount(data.request_access_count ? data.request_access_count : 0);
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
@@ -530,10 +618,10 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                                 User Feasibility Requests
                             </button>
                         )}
-                            <button className="bg-gray-200 flex items-center relative" onClick={() => { setNonRequestsOpen(true) }}>
-                                Non Requests
-                            </button>
-                        
+                        <button className="bg-gray-200 flex items-center relative" onClick={() => { setNonRequestsOpen(true) }}>
+                            Non Requests
+                        </button>
+
                     </div>
                 </div>
             </div>
@@ -589,8 +677,8 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                     <FeasabilityPage onClose={toggleFeasPage} after={() => { fetchQuotes(false, false, false) }} />
                 )}
                 {userFeasPageOpen && (
-                    
-                    <UserFeasibilityPage onClose={()=>{setUserFeasPageOpen(false)}} after={() => { fetchQuotes(false, false, false) }} />
+
+                    <UserFeasibilityPage onClose={() => { setUserFeasPageOpen(false) }} after={() => { fetchQuotes(false, false, false) }} />
                 )}
                 {tlPageOpen && (
                     <ManageTlQuery onClose={() => { setTlPageOpen(!tlPageOpen) }} />
@@ -599,7 +687,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
                     <TransferRequestsPageTl onClose={() => { setTransferPageOpen(!transferPageOpen) }} />
                 )}
                 {nonRequestsOpen && (
-                    <NonRequestsPage onClose={()=>{setNonRequestsOpen(false)}} />
+                    <NonRequestsPage onClose={() => { setNonRequestsOpen(false) }} />
                 )}
             </AnimatePresence>
 

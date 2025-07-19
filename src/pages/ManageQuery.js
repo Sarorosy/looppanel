@@ -405,6 +405,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         //fetchQuotes(false);
         fetchServices();
         fetchTags();
+        fetchFeasibilityRequestCount();
+        fetchTransferReqCount();
 
     }, []);
 
@@ -526,8 +528,6 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     setAdminPendingQuotes(adminPending);
                 }
                 setUsers(data.users);
-                setPendingFeasRequestCount(data.pendingFeasRequestCount);
-                setPendingTransRequestCount(data.pendingTransferRequestCount ?? 0);
                 resetFiltersWithoutApiCall();
             } else {
                 console.error('Failed to fetch quotes:', data.message);
@@ -607,6 +607,63 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             console.error('Error fetching quotes:', error);
         }
     };
+
+    const fetchTransferReqCount = async()=>{
+         try {
+            const response = await fetch(
+                'http://localhost:5000/api/scope/getalltransferrequests',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify( {
+                    user_id:loopUserObject.id
+                }), // Pass the POST data as JSON
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+                setPendingTransRequestCount(data.data ? data.data.length : 0);
+               
+            } else {
+                console.error('Failed to fetch following task count:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching following task count:', error);
+        }
+    }
+
+    const fetchFeasibilityRequestCount = async()=>{
+         try {
+            const response = await fetch(
+                'http://localhost:5000/api/scope/getFeasibilityRequestCount',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify( {
+                    user_id:loopUserObject.id
+                }), // Pass the POST data as JSON
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+              
+                setPendingFeasRequestCount(data.feasibility_count ? data.feasibility_count : 0);
+                 
+               
+            } else {
+                console.error('Failed to fetch feasibility request task count:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching feasibility request task count:', error);
+        }
+    }
+
 
 
     useEffect(() => {

@@ -12,7 +12,7 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
     const loopuserData = localStorage.getItem('loopuser');
     const loopUserObject = JSON.parse(loopuserData);
 
-     const [btnDisabled, setBtnDisabled] = useState(true);
+     const [btnDisabled, setBtnDisabled] = useState(true); /// true
     const [clientEmail, setClientEmail] = useState(null);
     const [demoDuration, setDemoDuration] = useState(null);
     const [isWrong, setIsWrong] = useState(false)
@@ -124,7 +124,7 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
     }
     useEffect(() => {
         if(demoId && demoId.length > 0) {
-            handleDemoSubmit();
+            handleDemoSubmit(); ///remove
         }
     }, [demoId])
 
