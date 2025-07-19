@@ -206,7 +206,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                 return;
             }
 
-            const response = await fetch('http://localhost:5000/api/scope/getServices', {
+            const response = await fetch('http://localhost:5000/api/scope/getAllServices', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -411,7 +411,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
         formData.append('tags', selectedTags);
         files.forEach((item, index) => {
             if (item.file) {
-                formData.append(`quote_upload_file[${index}]`, item.file);
+                formData.append(`quote_upload_file[]`, item.file);
             }
         });
 
@@ -454,7 +454,6 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
             allowClear: true,
         }).on('change', (e) => {
             setSelectedUser($(e.target).val());
-            console.log(selectedUser);
         });
 
 
@@ -469,44 +468,6 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
         };
     }, [users]);
 
-    const testSocket = () => {
-        socket.emit("newRequest", {
-            "id": "11544",
-            "ref_id": "abcdefg",
-            "user_id": "208",
-            "comments": "<p>NA - Test<\/p>",
-            "deadline_date": null, "currency":
-                "INR", "other_currency": "",
-            "relevant_file": "", "service_name":
-                "Topic Selection", "tags": "1,6",
-            "plan": "Basic,Standard,Advanced",
-            "plan_comments": null,
-            "old_plan": null,
-            "ptp": null,
-            "ptp_currency": null,
-            "ptp_amount": null,
-            "ptp_comments": null,
-            "ptp_file": null,
-            "ptp_count": "0",
-            "demodone": "0",
-            "demo_id": "",
-            "status": "0",
-            "created_date": "1735709759",
-            "isfeasability": "1",
-            "feasability_user": "337",
-            "feasability_status": "Completed",
-            "feasability_comments": null,
-            "feas_file_name": null,
-            "submittedtoadmin": "true",
-            "changestatus": "0",
-            "final_comments": null,
-            "edited": "0",
-            "fld_first_name":
-                "Gunjan", "fld_last_name":
-                "Nagpal", "tag_names":
-                "Topic&Proposal(Tech), ThesisWriting"
-        });
-    };
 
     return (
         <motion.div

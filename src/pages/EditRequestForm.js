@@ -333,7 +333,7 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
 
             const [currenciesResponse, servicesResponse, usersResponse, requestDetailsResponse] = await axios.all([
                 axios.get('http://localhost:5000/api/scope/getCurrencies'),
-                axios.post('http://localhost:5000/api/scope/getServices', { category }),
+                axios.post('http://localhost:5000/api/scope/getAllServices', { category }),
                 axios.post('http://localhost:5000/api/scope/getAllUsers', { user_id }),
                 fetch('http://localhost:5000/api/scope/getRequestDetails', {
                     method: 'POST',
