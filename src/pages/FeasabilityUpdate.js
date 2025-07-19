@@ -82,7 +82,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/adminScopeDetails',
+                'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -126,7 +126,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/adminScopeDetails',
+                'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -217,7 +217,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
         try {
             setHistoryLoading(true);
-            const response = await fetch('http://localhost:5000/api/scope/getFeasabilityHistory', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getFeasabilityHistory', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -640,7 +640,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                             formData.append("file", selectedFile); // Append the file if selected
                                                         }
                                                         try {
-                                                            const response = await fetch("http://localhost:5000/api/scope/completeFeasabilityNew", {
+                                                            const response = await fetch("https://loopback-r9kf.onrender.com/api/scope/completeFeasabilityNew", {
                                                                 method: "POST",
                                                                 body: formData, // Use FormData for file upload
                                                             });

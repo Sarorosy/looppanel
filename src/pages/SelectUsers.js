@@ -32,7 +32,7 @@ const SelectUsers = ({ onClose }) => {
                 return;
             }
 
-            const response = await fetch('http://localhost:5000/api/scope/getAllassignedUsersfortl', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getAllassignedUsersfortl', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: userId }),

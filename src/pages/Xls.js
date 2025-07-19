@@ -16,7 +16,7 @@ const Xls = () => {
 
     const fetchExistingFile = async () => {
         try {
-            const res = await fetch("http://localhost:5000/api/scope/getXlsFileApiAction");
+            const res = await fetch("https://loopback-r9kf.onrender.com/api/scope/getXlsFileApiAction");
             const data = await res.json();
 
             if (data.status && data.file) {
@@ -47,7 +47,7 @@ const Xls = () => {
         formData.append("file", file);
 
         try {
-            const res = await fetch("http://localhost:5000/api/scope/uploadQuoteXlsFileApiAction", {
+            const res = await fetch("https://loopback-r9kf.onrender.com/api/scope/uploadQuoteXlsFileApiAction", {
                 method: "POST",
                 body: formData,
             });

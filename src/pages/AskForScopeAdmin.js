@@ -348,7 +348,7 @@ const AskForScopeAdmin = ({
     let hasResponse = false;
     try {
       const response = await fetch(
-        "http://localhost:5000/api/scope/adminScopeDetails",
+        "https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails",
         {
           method: "POST", // Use POST method
           headers: {
@@ -399,7 +399,7 @@ const AskForScopeAdmin = ({
   const fetchScopeDetailsForSocket = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/scope/adminScopeDetails",
+        "https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails",
         {
           method: "POST", // Use POST method
           headers: {
@@ -446,7 +446,7 @@ const AskForScopeAdmin = ({
     let hasResponse = false;
     try {
       const response = await fetch(
-        "http://localhost:5000/api/scope/adminScopeDetails",
+        "https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails",
         {
           method: "POST", // Use POST method
           headers: {
@@ -555,7 +555,7 @@ const AskForScopeAdmin = ({
   const fetchAllRefIds = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/scope/selectallrefids/",
+        "https://loopback-r9kf.onrender.com/api/scope/selectallrefids/",
         {
           method: "POST", // Use POST method
           headers: {
@@ -623,7 +623,7 @@ const AskForScopeAdmin = ({
       setQuoteLoading(true);
 
       const response = await fetch(
-        "http://localhost:5000/api/scope/submittedtoadminquotenew",
+        "https://loopback-r9kf.onrender.com/api/scope/submittedtoadminquotenew",
         {
           method: "POST",
           headers: {

@@ -10,7 +10,7 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
     useEffect(() => {
         const fetchQuoteData = async () => {
             try {
-                const response = await axios.post('http://localhost:5000/api/scope/checkpresentemail', {
+                const response = await axios.post('https://loopback-r9kf.onrender.com/api/scope/checkpresentemail', {
                     email_id,
                     website_id,
                 });

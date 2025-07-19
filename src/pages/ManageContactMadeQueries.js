@@ -171,7 +171,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const fetchFollowingTaskCount = async () => {
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/getFollowingTasksCount',
+                'https://loopback-r9kf.onrender.com/api/scope/getFollowingTasksCount',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -200,7 +200,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const fetchFeasibilityRequestCount = async () => {
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/getFeasibilityRequestCount',
+                'https://loopback-r9kf.onrender.com/api/scope/getFeasibilityRequestCount',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -229,7 +229,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const fetchReqpendingCount = async () => {
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/getPendingReqCount',
+                'https://loopback-r9kf.onrender.com/api/scope/getPendingReqCount',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -276,7 +276,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/loadContactMadeQueriesVeryNew',
+                'https://loopback-r9kf.onrender.com/api/scope/loadContactMadeQueriesVeryNew',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -483,7 +483,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
     const handleRequestAccessClick = async (data) => {
         try {
-            const response = await fetch('http://localhost:5000/api/scope/requestAccessfortransferredquery', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/requestAccessfortransferredquery', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

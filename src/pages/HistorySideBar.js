@@ -11,7 +11,7 @@ const HistorySideBar = ({ refId, quoteId, onClose }) => {
     // Fetch Quote History Data
     const fetchQuoteHistory = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/scope/getquotehistory', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getquotehistory', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ref_id: refId, quote_id: quoteId }),

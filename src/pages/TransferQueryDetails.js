@@ -62,7 +62,7 @@ const TransferQueryDetails = ({ onClose, queryId, quotationId, after, userIdDefi
         let hasResponse = false;
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/view_query_details_api',
+                'https://loopback-r9kf.onrender.com/api/scope/view_query_details_api',
                 {
                     method: 'POST', // Use POST method
                     headers: {

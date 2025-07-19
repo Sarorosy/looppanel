@@ -17,7 +17,7 @@ const TransferDetailsModal = ({ refId, userName,fromUserName, onClose, after }) 
     // Handle API request for approve/reject
     const handleAction = async () => {
         try {
-            const response = await fetch("http://localhost:5000/api/scope/approvetransferrequest", {
+            const response = await fetch("https://loopback-r9kf.onrender.com/api/scope/approvetransferrequest", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

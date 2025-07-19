@@ -75,7 +75,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
         formData.append("user_type", userObject.user_type);
 
         try {
-            const response = await fetch("http://localhost:5000/api/scope/submitReply", {
+            const response = await fetch("https://loopback-r9kf.onrender.com/api/scope/submitReply", {
                 method: "POST",
                 body: formData,
             });
@@ -118,7 +118,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
     const fetchMessages = async () => {
         setLoadingMessages(true);
         try {
-            const response = await fetch('http://localhost:5000/api/scope/getQuoteChatApiNew', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getQuoteChatApiNew', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -137,7 +137,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
 
     const fetchMessagesForSocket = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/scope/getQuoteChatApiNew', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getQuoteChatApiNew', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
 
         try {
             setButtonDisabled(true);
-            const response = await fetch('http://localhost:5000/api/scope/submituserchatnew', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/submituserchatnew', {
                 method: 'POST',
                 body: formData,
             });
@@ -354,7 +354,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
         ].map(id => id ? parseInt(id, 10) : null).filter(id => id !== null && !isNaN(id));
 
         try {
-            const response = await fetch("http://localhost:5000/api/scope/fetchUsersToMention", {
+            const response = await fetch("https://loopback-r9kf.onrender.com/api/scope/fetchUsersToMention", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

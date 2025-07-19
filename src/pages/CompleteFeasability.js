@@ -68,7 +68,7 @@ const CompleteFeasability = ({ refId, quoteId, after, onClose, userId, notificat
                             formData.append("file", selectedFile); // Append the file if selected
                         }
                         try {
-                            const response = await fetch("http://localhost:5000/api/scope/completeFeasabilityNew", {
+                            const response = await fetch("https://loopback-r9kf.onrender.com/api/scope/completeFeasabilityNew", {
                                 method: "POST",
                                 body: formData, // Use FormData for file upload
                             });

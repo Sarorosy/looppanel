@@ -57,7 +57,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
         let hasResponse = false;
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/adminScopeDetails',
+                'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -131,7 +131,7 @@ const AdminFeasViewDetails = ({ queryId, userType, quotationId, finalFunction })
 
         try {
             setHistoryLoading(true);
-            const response = await fetch('http://localhost:5000/api/scope/getFeasabilityHistory', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getFeasabilityHistory', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

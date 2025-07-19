@@ -167,7 +167,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
         let hasResponse = false;
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/adminScopeDetails',
+                'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -211,7 +211,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
 
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/adminScopeDetails',
+                'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -440,7 +440,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
         };
 
         try {
-            const response = await fetch('http://localhost:5000/api/scope/submitFeasRequestToAdmin', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/submitFeasRequestToAdmin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

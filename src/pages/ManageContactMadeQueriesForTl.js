@@ -64,7 +64,7 @@ const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
 
     const handleRequestAccessClick = async (data) => {
         try {
-            const response = await fetch('http://localhost:5000/api/scope/requestAccessfortransferredquery', {
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/requestAccessfortransferredquery', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -180,7 +180,7 @@ const ManageContactMadeQueriesForTl = ({onClose, loopUserId, instaUserId }) => {
 
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/loadcontactmadequeriesNew',
+                'https://loopback-r9kf.onrender.com/api/scope/loadcontactmadequeriesNew',
                 {
                     method: 'POST', // Use POST method
                     headers: {

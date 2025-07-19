@@ -48,7 +48,7 @@ const QueryDetailsTl = ({ onClose, queryId, quotationId, after, tlType, tagAcces
 
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/view_query_details_api',
+                'https://loopback-r9kf.onrender.com/api/scope/view_query_details_api',
                 {
                     method: 'POST', // Use POST method
                     headers: {

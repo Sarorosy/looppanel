@@ -35,7 +35,7 @@ const NonRequestsPage = ({ onClose, sharelinkrefid, sharelinkquoteid }) => {
 
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/getAllNonRequests',
+                'https://loopback-r9kf.onrender.com/api/scope/getAllNonRequests',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -65,7 +65,7 @@ const NonRequestsPage = ({ onClose, sharelinkrefid, sharelinkquoteid }) => {
         
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/getAllFeasabilityAssignedToUser',
+                'https://loopback-r9kf.onrender.com/api/scope/getAllFeasabilityAssignedToUser',
                 {
                     method: 'POST', // Use POST method
                     headers: {

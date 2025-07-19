@@ -158,7 +158,7 @@ const ManageTlQuery = ({ onClose }) => {
 
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/listaskforscopefortl',
+                'https://loopback-r9kf.onrender.com/api/scope/listaskforscopefortl',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -187,7 +187,7 @@ const ManageTlQuery = ({ onClose }) => {
 
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/getAllServices',
+                'https://loopback-r9kf.onrender.com/api/scope/getAllServices',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -209,7 +209,7 @@ const ManageTlQuery = ({ onClose }) => {
     };
     const fetchTags = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/scope/getTags');
+            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getTags');
             const data = await response.json();
             if (data.status) setTags(data.data || []);
         } catch (error) {

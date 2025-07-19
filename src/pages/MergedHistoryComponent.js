@@ -11,7 +11,7 @@ const MergedHistoryComponent = ({ refId, quoteId, onClose }) => {
   const fetchQuoteHistory = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/scope/getquotehistory",
+        "https://loopback-r9kf.onrender.com/api/scope/getquotehistory",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -34,7 +34,7 @@ const MergedHistoryComponent = ({ refId, quoteId, onClose }) => {
   const fetchFeasibilityHistory = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/api/scope/getFeasabilityHistory",
+        "https://loopback-r9kf.onrender.com/api/scope/getFeasabilityHistory",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
