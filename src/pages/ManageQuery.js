@@ -608,8 +608,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         }
     };
 
-    const fetchTransferReqCount = async()=>{
-         try {
+    const fetchTransferReqCount = async () => {
+        try {
             const response = await fetch(
                 'http://localhost:5000/api/scope/getalltransferrequests',
                 {
@@ -617,16 +617,16 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify( {
-                    user_id:loopUserObject.id
-                }), // Pass the POST data as JSON
+                    body: JSON.stringify({
+                        user_id: loopUserObject.id
+                    }), // Pass the POST data as JSON
                 }
             );
 
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
                 setPendingTransRequestCount(data.data ? data.data.length : 0);
-               
+
             } else {
                 console.error('Failed to fetch following task count:', data.message);
             }
@@ -635,8 +635,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         }
     }
 
-    const fetchFeasibilityRequestCount = async()=>{
-         try {
+    const fetchFeasibilityRequestCount = async () => {
+        try {
             const response = await fetch(
                 'http://localhost:5000/api/scope/getFeasibilityRequestCount',
                 {
@@ -644,18 +644,18 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     headers: {
                         'Content-Type': 'application/json', // Set content type to JSON
                     },
-                    body: JSON.stringify( {
-                    user_id:loopUserObject.id
-                }), // Pass the POST data as JSON
+                    body: JSON.stringify({
+                        user_id: loopUserObject.id
+                    }), // Pass the POST data as JSON
                 }
             );
 
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
-              
+
                 setPendingFeasRequestCount(data.feasibility_count ? data.feasibility_count : 0);
-                 
-               
+
+
             } else {
                 console.error('Failed to fetch feasibility request task count:', data.message);
             }
@@ -979,10 +979,22 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         // },
         {
             title: 'Service',
-            data: 'service_name',
+            data: 'service_name', // actually holds comma-separated service IDs
             orderable: false,
-            render: (data) => `<div style="text-align: left;">${data || 'N/A'}</div>`,
-        },
+            render: function (data, type, row, meta) {
+                if (!data) return '<div style="text-align: left;">N/A</div>';
+
+                const serviceIds = data.split(',').map(id => id.trim());
+
+                const serviceNames = serviceIds.map(id => {
+                    const service = services.find(s => String(s.id) === id);
+                    return service ? service.name : `Service #${id}`;
+                });
+
+                return `<div style="text-align: left;">${serviceNames.join(', ')}</div>`;
+            }
+        }
+        ,
         {
             title: 'Quote Status',
             data: 'status', // Replace with actual field name
@@ -1051,23 +1063,26 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         },
         {
             title: 'Tags',
-            data: 'tag_names', // Replace with actual field name from your dataset
+            data: 'tag_names',
             orderable: false,
             width: "130px",
             className: "text-sm",
-            render: function (data, type, row) {
-                if (!data) return ''; // Handle empty or null data
+            render: function (data, type, row, meta) {
+                if (!data) return '';
 
-                // Split tags, wrap each in a styled span, and join them
-                return data.split(',')
-                    .map(tag =>
-                        `<span class="text-blue-500 inline-block" style="font-sze:10px">
-                            #${tag.trim()}
-                        </span>`
-                    )
-                    .join(''); // Combine all spans into one HTML string
+                // Access the 'tags' array in your component scope
+                const tagIds = data.split(',').map(id => id.trim());
+
+                const tagElements = tagIds.map(id => {
+                    const tagObj = tags.find(t => String(t.id) === id); // Match by string
+                    const tagName = tagObj ? tagObj.tag_name : `#${id}`; // Fallback to id
+                    return `<span class="text-blue-500 inline-block" style="font-size:10px">#${tagName}</span>`;
+                });
+
+                return tagElements.join('');
             }
         },
+
 
         {
             title: 'Created Date',
