@@ -137,6 +137,8 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     useEffect(() => {
         fetchQuotes(false, false);
         fetchWebsites();
+        fetchFollowingTaskCount();
+        fetchFeasibilityRequestCount();
         notification();
     }, []);
 
@@ -164,6 +166,64 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
             console.error('Error fetching Websites:', error);
         }
     };
+
+    const fetchFollowingTaskCount = async()=>{
+         try {
+            const response = await fetch(
+                'http://localhost:5000/api/scope/getFollowingTasksCount',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify( {
+                    user_id:loopuserId
+                }), // Pass the POST data as JSON
+                }
+            );
+
+            const data = await response.json(
+               
+            ); // Parse the response as JSON
+            if (data.status) {
+                setFollowupCount(data.following_count ? data.following_count : 0);
+               
+            } else {
+                console.error('Failed to fetch following task count:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching following task count:', error);
+        }
+    }
+
+    const fetchFeasibilityRequestCount = async()=>{
+         try {
+            const response = await fetch(
+                'http://localhost:5000/api/scope/getFeasibilityRequestCount',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify( {
+                    user_id:loopuserId
+                }), // Pass the POST data as JSON
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+              
+                setPendingFeasRequestCount(data.feasibility_count ? data.feasibility_count : 0);
+                 
+               
+            } else {
+                console.error('Failed to fetch feasibility request task count:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching feasibility request task count:', error);
+        }
+    }
 
      
     const fetchQuotes = async (nopayload = false, requestPending = false, requestAccess = false) => {
@@ -200,8 +260,8 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
                 setQuotes(data.data); // Update the quotes state
-                setPendingFeasRequestCount(data.pendingFeasRequestCount ? data.pendingFeasRequestCount : 0);
-                setFollowupCount(data.followingCount ? data.followingCount : 0);
+               // setPendingFeasRequestCount(data.pendingFeasRequestCount ? data.pendingFeasRequestCount : 0);
+                
                 setRequestPendingCount(data.request_pending_count ? data.request_pending_count : 0);
                 setRequestAccessCount(data.request_access_count ? data.request_access_count : 0);
             } else {
