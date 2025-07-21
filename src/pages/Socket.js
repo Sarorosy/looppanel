@@ -5,7 +5,7 @@ let socket;
 
 export const getSocket = () => {
     if (!socket) {
-        socket = io("https://looppanelsocket.onrender.com", { //https://looppanelsocket-qlcd.onrender.com
+        socket = io("https://looppanelsocket-c8g5.onrender.com", { //https://looppanelsocket.onrender.com
             reconnection: true,
             reconnectionAttempts: 1,
             reconnectionDelay: 3000,
