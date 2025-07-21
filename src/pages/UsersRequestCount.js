@@ -14,7 +14,7 @@ const UsersRequestCount = ({ onClose }) => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getAllInstaCrmusers', {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/getAllInstaCrmusers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: 1 }),
@@ -38,7 +38,7 @@ const UsersRequestCount = ({ onClose }) => {
         return;
       }
       setFetching(true);
-      const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getUserRequestsCount', {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/getUserRequestsCount', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id: selectedUser }),

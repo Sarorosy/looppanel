@@ -119,7 +119,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     const fetchAndDisplayFile = async () => {
         try {
-            const res = await fetch("https://loopback-r9kf.onrender.com/api/scope/getXlsFileApiAction");
+            const res = await fetch("https://loopback-skci.onrender.com/api/scope/getXlsFileApiAction");
             const data = await res.json();
 
             if (data.status && data.file) {
@@ -173,7 +173,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         formData.append("file", file);
 
         try {
-            const res = await fetch("https://loopback-r9kf.onrender.com/api/scope/uploadQuoteXlsFileApiAction", {
+            const res = await fetch("https://loopback-skci.onrender.com/api/scope/uploadQuoteXlsFileApiAction", {
                 method: "POST",
                 body: formData,
             });
@@ -281,7 +281,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     const fetchTags = async () => {
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getTags');
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getTags');
             const data = await response.json();
             if (data.status) setTags(data.data || []);
         } catch (error) {
@@ -439,7 +439,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         try {
 
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/listAskForScope',
+                'https://loopback-skci.onrender.com/api/scope/listAskForScope',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -559,7 +559,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/listAskForScope',
+                'https://loopback-skci.onrender.com/api/scope/listAskForScope',
                 {
                     method: 'POST',
                     headers: {
@@ -611,7 +611,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const fetchTransferReqCount = async () => {
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getalltransferrequests',
+                'https://loopback-skci.onrender.com/api/scope/getalltransferrequests',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -638,7 +638,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const fetchFeasibilityRequestCount = async () => {
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getFeasibilityRequestCount',
+                'https://loopback-skci.onrender.com/api/scope/getFeasibilityRequestCount',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -806,7 +806,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getAllServices',
+                'https://loopback-skci.onrender.com/api/scope/getAllServices',
                 {
                     method: 'POST', // Use POST method
                     headers: {

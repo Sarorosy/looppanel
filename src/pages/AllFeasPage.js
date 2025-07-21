@@ -40,7 +40,7 @@ const AllFeasPage = ({ onClose }) => {
 
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getAllFeasabilityForAdmin',
+                'https://loopback-skci.onrender.com/api/scope/getAllFeasabilityForAdmin',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -92,7 +92,7 @@ const AllFeasPage = ({ onClose }) => {
 
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getAllUsersForAdmin',
+                'https://loopback-skci.onrender.com/api/scope/getAllUsersForAdmin',
                 {
                     method: 'POST', // Use POST method
                     headers: {

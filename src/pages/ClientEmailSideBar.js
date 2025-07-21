@@ -18,7 +18,7 @@ const ClientEmailSideBar = ({ refIds, onClose }) => {
         setLoading(true); // Show loading spinner
         try {
             const dataToFetch = refIds.map(async (ref) => {
-                const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails', {
+                const response = await fetch('https://loopback-skci.onrender.com/api/scope/adminScopeDetails', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

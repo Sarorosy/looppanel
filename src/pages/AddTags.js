@@ -34,7 +34,7 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
 
     const fetchTags = async () => {
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getTags');
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getTags');
             const data = await response.json();
             if (data.status) setTags(data.data || []);
         } catch (error) {
@@ -46,7 +46,7 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
     const fetchInitialData = async () => {
         try {
             setLoading(true);
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getRequestDetails', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getRequestDetails', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ref_id: refId, quote_id: quoteId,  }),
@@ -100,7 +100,7 @@ const AddTags = ({ refId, quoteId, after, onClose , userId, notification}) => {
             // payload.append('notification', notification);
             // payload.append('admin_id', userObject.id)
 
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/updateTags', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/updateTags', {
                 method: 'POST',
                 headers : {
                     "Content-type" : "application/json"

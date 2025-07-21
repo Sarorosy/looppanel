@@ -92,6 +92,17 @@ const AskForScopeAdmin = ({
   const [amounts, setAmounts] = useState({});
   const [comment, setComment] = useState("");
 
+  const [tags, setTags] = useState([]);
+  const fetchTags = async () => {
+    try {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/getTags');
+      const data = await response.json();
+      if (data.status) setTags(data.data || []);
+    } catch (error) {
+
+    }
+  };
+
   const [showComments, setShowComments] = useState({
     Basic: false,
     Standard: false,
@@ -348,7 +359,7 @@ const AskForScopeAdmin = ({
     let hasResponse = false;
     try {
       const response = await fetch(
-        "https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails",
+        "https://loopback-skci.onrender.com/api/scope/adminScopeDetails",
         {
           method: "POST", // Use POST method
           headers: {
@@ -375,10 +386,7 @@ const AskForScopeAdmin = ({
 
           setScopeDetails(parsedQuoteInfo); // Set the array of quotes
           setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
-          setTotalCount(data.totalCounter ? data.totalCounter : "0");
-          setIsFeasabilityCompleted(
-            data.isFeasabilityCompleted ? data.isFeasabilityCompleted : null
-          );
+
         } else {
           setScopeDetails(null); // If no quoteInfo, set scopeDetails to null
         }
@@ -395,11 +403,48 @@ const AskForScopeAdmin = ({
       }
     }
   };
+  const fetchQuoteCountAndFeasStatus = async () => {
+    try {
+      const payload = {
+        ref_id: queryId,
+      };
+
+      const [countRes, feasRes] = await Promise.all([
+        fetch("https://loopback-skci.onrender.com/api/scope/getTotalQuoteCount", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }),
+        fetch("https://loopback-skci.onrender.com/api/scope/getFeasibilityStatus", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }),
+      ]);
+
+      const countData = await countRes.json();
+      const feasData = await feasRes.json();
+
+      if (countData.status) {
+        setTotalCount(countData.totalCounter || "0");
+      }
+
+      if (feasData.status) {
+        setIsFeasabilityCompleted(
+          feasData.isFeasabilityCompleted ?? null
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching quote count or feasibility status:", error);
+    }
+  };
+
+
 
   const fetchScopeDetailsForSocket = async () => {
     try {
       const response = await fetch(
-        "https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails",
+        "https://loopback-skci.onrender.com/api/scope/adminScopeDetails",
         {
           method: "POST", // Use POST method
           headers: {
@@ -446,7 +491,7 @@ const AskForScopeAdmin = ({
     let hasResponse = false;
     try {
       const response = await fetch(
-        "https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails",
+        "https://loopback-skci.onrender.com/api/scope/adminScopeDetails",
         {
           method: "POST", // Use POST method
           headers: {
@@ -555,7 +600,7 @@ const AskForScopeAdmin = ({
   const fetchAllRefIds = async () => {
     try {
       const response = await fetch(
-        "https://loopback-r9kf.onrender.com/api/scope/selectallrefids/",
+        "https://loopback-skci.onrender.com/api/scope/selectallrefids/",
         {
           method: "POST", // Use POST method
           headers: {
@@ -623,7 +668,7 @@ const AskForScopeAdmin = ({
       setQuoteLoading(true);
 
       const response = await fetch(
-        "https://loopback-r9kf.onrender.com/api/scope/submittedtoadminquotenew",
+        "https://loopback-skci.onrender.com/api/scope/submittedtoadminquotenew",
         {
           method: "POST",
           headers: {
@@ -713,6 +758,8 @@ const AskForScopeAdmin = ({
   useEffect(() => {
     if (queryId) {
       fetchScopeDetails(); // Fetch the scope details when the component mounts
+      fetchQuoteCountAndFeasStatus();
+      fetchTags();
     }
   }, [queryId]);
 
@@ -1317,45 +1364,40 @@ const AskForScopeAdmin = ({
                                               </div>
 
                                               {/* Tags Section */}
-                                              {quote.tag_names && (
-                                                <div className="flex items-end  mb-3">
-                                                  <p className="">
-                                                    <div className="">
-                                                      <strong>Tags</strong>
-                                                    </div>
-                                                    {quote.tag_names
+                                              {quote.tags && (
+                                                <div className="flex items-end mb-3 justify-between">
+                                                  <div>
+                                                    <div><strong>Tags</strong></div>
+                                                    {quote.tags
                                                       .split(",")
-                                                      .map((tag, index) => (
+                                                      .map((tagId) => {
+                                                        const tag = tags.find((t) => t.id == tagId.trim());
+                                                        return tag ? tag.tag_name : null;
+                                                      })
+                                                      .filter(Boolean)
+                                                      .map((tagName, index) => (
                                                         <span
                                                           key={index}
                                                           className="badge badge-primary f-10 mr-1"
                                                         >
-                                                          # {tag.trim()}
+                                                          # {tagName}
                                                         </span>
                                                       ))}
-                                                  </p>
+                                                  </div>
                                                   {quote.tags_updated_time && (
-                                                    <p className="text-gray-500 tenpx">
-                                                      {new Date(
-                                                        quote.tags_updated_time
-                                                      )
-                                                        .toLocaleDateString(
-                                                          "en-US",
-                                                          {
-                                                            day: "numeric",
-                                                            month: "short",
-                                                            year: "numeric",
-                                                            hour: "numeric",
-                                                            minute: "2-digit",
-                                                            hour12: true,
-                                                          }
-                                                        )
-                                                        .replace(",", ",")}
+                                                    <p className="text-gray-500 tenpx whitespace-nowrap">
+                                                      {new Date(quote.tags_updated_time).toLocaleDateString("en-US", {
+                                                        day: "numeric",
+                                                        month: "short",
+                                                        year: "numeric",
+                                                        hour: "numeric",
+                                                        minute: "2-digit",
+                                                        hour12: true,
+                                                      }).replace(",", ",")}
                                                     </p>
                                                   )}
                                                 </div>
                                               )}
-
                                               {/* Service Required & Plan Section */}
                                               {quote.service_name &&
                                                 quote.plan && (
@@ -2162,7 +2204,7 @@ const AskForScopeAdmin = ({
                                                   </>
                                                 )}
                                             </div>
-                                              {quote.timeline ? (
+                                            {quote.timeline ? (
                                               <div className="mb-0  mt-0 row p-1 space-y-1  rounded">
                                                 <p className={`font-medium  ${quote.timeline == "urgent" ? "text-red-500" : "text-blue-500"}`}>Timeline : {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}</p>
                                                 {quote.timeline && quote.timeline == 'urgent' && (

@@ -31,7 +31,7 @@ export const QuoteProvider = ({ children }) => {
         };
 
     try {
-      const response = await fetch("https://loopback-r9kf.onrender.com/api/scope/listaskforscope", {
+      const response = await fetch("https://loopback-skci.onrender.com/api/scope/listaskforscope", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

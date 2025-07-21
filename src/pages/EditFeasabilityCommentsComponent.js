@@ -19,7 +19,7 @@ const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
             if (quote.assign_id && quote.quoteid) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('https://loopback-r9kf.onrender.com/api/scope/getFeasibilityComments', {
+                    const response = await axios.post('https://loopback-skci.onrender.com/api/scope/getFeasibilityComments', {
                         ref_id: quote.assign_id,
                         quote_id: quote.quoteid,
                     });
@@ -55,7 +55,7 @@ const EditFeasibilityCommentsComponent = ({ quote, onClose, after }) => {
         };
 
         try {
-            const response = await axios.post('https://loopback-r9kf.onrender.com/api/scope/updateFeasabilityComments', dataToSubmit);
+            const response = await axios.post('https://loopback-skci.onrender.com/api/scope/updateFeasabilityComments', dataToSubmit);
             if (response.data.status) {
                 toast.success("Feasibility comments updated successfully!");
                 onClose(); // Close the form after successful submission

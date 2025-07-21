@@ -64,6 +64,17 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
     const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
     const [userIdForTag, setUserIdForTag] = useState('');
 
+    const [tags, setTags] = useState([]);
+    const fetchTags = async () => {
+        try {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getTags');
+            const data = await response.json();
+            if (data.status) setTags(data.data || []);
+        } catch (error) {
+
+        }
+    };
+
 
     const [scopeTabVisible, setScopeTabVisible] = useState(true);
     const [chatTabVisible, setChatTabVisible] = useState(true);
@@ -167,7 +178,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
+                'https://loopback-skci.onrender.com/api/scope/adminScopeDetails',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -211,7 +222,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
 
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
+                'https://loopback-skci.onrender.com/api/scope/adminScopeDetails',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -277,6 +288,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
     useEffect(() => {
         if (queryId) {
             fetchScopeDetails(); // Fetch the scope details when the component mounts
+            fetchTags();
         }
     }, [queryId]);
     useEffect(() => {
@@ -440,7 +452,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
         };
 
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/submitFeasRequestToAdmin', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/submitFeasRequestToAdmin', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -755,35 +767,41 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
                                                                                                     )}
                                                                                                 </p>
 
-                                                                                                {quote.tag_names && (
-                                                                                                    <div className="flex items-end  mb-3">
-                                                                                                        <p className=''>
-                                                                                                            <div className=''><strong>Tags</strong></div>
-                                                                                                            {quote.tag_names
+                                                                                                {quote.tags && (
+                                                                                                    <div className="flex items-end mb-3 justify-between">
+                                                                                                        <div>
+                                                                                                            <div><strong>Tags</strong></div>
+                                                                                                            {quote.tags
                                                                                                                 .split(",")
-                                                                                                                .map((tag, index) => (
+                                                                                                                .map((tagId) => {
+                                                                                                                    const tag = tags.find((t) => t.id == tagId.trim());
+                                                                                                                    return tag ? tag.tag_name : null;
+                                                                                                                })
+                                                                                                                .filter(Boolean)
+                                                                                                                .map((tagName, index) => (
                                                                                                                     <span
                                                                                                                         key={index}
                                                                                                                         className="badge badge-primary f-10 mr-1"
                                                                                                                     >
-                                                                                                                        # {tag.trim()}
+                                                                                                                        # {tagName}
                                                                                                                     </span>
                                                                                                                 ))}
-                                                                                                        </p>
+                                                                                                        </div>
                                                                                                         {quote.tags_updated_time && (
-                                                                                                            <p className="text-gray-500 tenpx">
-                                                                                                                {new Date(quote.tags_updated_time).toLocaleDateString('en-US', {
-                                                                                                                    day: 'numeric',
-                                                                                                                    month: 'short',
-                                                                                                                    year: 'numeric',
-                                                                                                                    hour: 'numeric',
-                                                                                                                    minute: '2-digit',
-                                                                                                                    hour12: true
-                                                                                                                }).replace(',', ',')}
+                                                                                                            <p className="text-gray-500 tenpx whitespace-nowrap">
+                                                                                                                {new Date(quote.tags_updated_time).toLocaleDateString("en-US", {
+                                                                                                                    day: "numeric",
+                                                                                                                    month: "short",
+                                                                                                                    year: "numeric",
+                                                                                                                    hour: "numeric",
+                                                                                                                    minute: "2-digit",
+                                                                                                                    hour12: true,
+                                                                                                                }).replace(",", ",")}
                                                                                                             </p>
                                                                                                         )}
                                                                                                     </div>
                                                                                                 )}
+
                                                                                                 {quote.ptp != null && (
                                                                                                     <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
                                                                                                         <h3 className="text-md font-semibold mb-2 text-gray-700">PTP Details</h3>

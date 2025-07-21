@@ -134,7 +134,7 @@ const Header = ({ requestPermission }) => {
   const fetchNotificationsCount = async () => {
 
     try {
-      const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getNotifications', {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/getNotifications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -169,7 +169,7 @@ const Header = ({ requestPermission }) => {
     }
 
     try {
-      const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/readmessage', {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/readmessage', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -193,7 +193,7 @@ const Header = ({ requestPermission }) => {
   const fetchNotifications = async () => {
     setLoading(true); // Show loading spinner
     try {
-      const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getNotifications', {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/getNotifications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -219,7 +219,7 @@ const Header = ({ requestPermission }) => {
   const MarkAllAsRead = async () => {
     setLoading(true); // Show loading spinner
     try {
-      const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/readAllNotifications', {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/readAllNotifications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

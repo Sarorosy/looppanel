@@ -21,7 +21,7 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
             if (quote.assign_id && quote.quoteid) {
                 setLoading(true);
                 try {
-                    const response = await axios.post('https://loopback-r9kf.onrender.com/api/scope/getPriceDetails', {
+                    const response = await axios.post('https://loopback-skci.onrender.com/api/scope/getPriceDetails', {
                         ref_id: quote.assign_id,
                         quote_id: quote.quoteid,
                     });
@@ -120,7 +120,7 @@ const EditPriceComponent = ({ quote, priceLoading, PriceSubmitValidate, onClose,
         };
 
         try {
-            const response = await axios.post('https://loopback-r9kf.onrender.com/api/scope/updatePriceQuote', dataToSubmit);
+            const response = await axios.post('https://loopback-skci.onrender.com/api/scope/updatePriceQuote', dataToSubmit);
             if (response.data.status) {
                 toast.success("Price updated successfully!");
                 socket.emit("quotePriceEdited", {

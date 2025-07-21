@@ -49,6 +49,17 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
     const [feasabilityComments, setFeasabilityComments] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
 
+    const [tags, setTags] = useState([]);
+    const fetchTags = async () => {
+        try {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getTags');
+            const data = await response.json();
+            if (data.status) setTags(data.data || []);
+        } catch (error) {
+
+        }
+    };
+
     const modules = {
         toolbar: [
             [{ 'header': [1, 2, false] }],
@@ -82,7 +93,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
+                'https://loopback-skci.onrender.com/api/scope/adminScopeDetails',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -126,7 +137,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
+                'https://loopback-skci.onrender.com/api/scope/adminScopeDetails',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -188,6 +199,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
     useEffect(() => {
         if (queryId) {
             fetchScopeDetails(); // Fetch the scope details when the component mounts
+            fetchTags();
 
         }
     }, [queryId]);
@@ -217,7 +229,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
         try {
             setHistoryLoading(true);
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getFeasabilityHistory', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getFeasabilityHistory', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -334,35 +346,41 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                 </button>
                                             )}
                                         </div>
-                                        {quote.tag_names && (
-                                            <div className="flex items-end  mb-3">
-                                                <p className=''>
-                                                    <div className=''><strong>Tags</strong></div>
-                                                    {quote.tag_names
+                                        {quote.tags && (
+                                            <div className="flex items-end mb-3 justify-between">
+                                                <div>
+                                                    <div><strong>Tags</strong></div>
+                                                    {quote.tags
                                                         .split(",")
-                                                        .map((tag, index) => (
+                                                        .map((tagId) => {
+                                                            const tag = tags.find((t) => t.id == tagId.trim());
+                                                            return tag ? tag.tag_name : null;
+                                                        })
+                                                        .filter(Boolean)
+                                                        .map((tagName, index) => (
                                                             <span
                                                                 key={index}
                                                                 className="badge badge-primary f-10 mr-1"
                                                             >
-                                                                # {tag.trim()}
+                                                                # {tagName}
                                                             </span>
                                                         ))}
-                                                </p>
+                                                </div>
                                                 {quote.tags_updated_time && (
-                                                    <p className="text-gray-500 tenpx">
-                                                        {new Date(quote.tags_updated_time).toLocaleDateString('en-US', {
-                                                            day: 'numeric',
-                                                            month: 'short',
-                                                            year: 'numeric',
-                                                            hour: 'numeric',
-                                                            minute: '2-digit',
-                                                            hour12: true
-                                                        }).replace(',', ',')}
+                                                    <p className="text-gray-500 tenpx whitespace-nowrap">
+                                                        {new Date(quote.tags_updated_time).toLocaleDateString("en-US", {
+                                                            day: "numeric",
+                                                            month: "short",
+                                                            year: "numeric",
+                                                            hour: "numeric",
+                                                            minute: "2-digit",
+                                                            hour12: true,
+                                                        }).replace(",", ",")}
                                                     </p>
                                                 )}
                                             </div>
                                         )}
+
                                         <p>
                                             <strong>Currency:</strong> {quote.currency === "Other" ? quote.other_currency : quote.currency}
                                         </p>
@@ -539,15 +557,15 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
 
                                         </div>
                                         {quote.timeline ? (
-                                              <div className="mb-0  mt-0 row p-1 space-y-1  rounded">
+                                            <div className="mb-0  mt-0 row p-1 space-y-1  rounded">
                                                 <p className={`font-medium  ${quote.timeline == "urgent" ? "text-red-500" : "text-blue-500"}`}>Timeline : {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(0)}</p>
                                                 {quote.timeline && quote.timeline == 'urgent' && (
-                                                  <span>
-                                                    Timeline Duration : {quote.timeline_days} days
-                                                  </span>
+                                                    <span>
+                                                        Timeline Duration : {quote.timeline_days} days
+                                                    </span>
                                                 )}
-                                              </div>
-                                            ) : null}
+                                            </div>
+                                        ) : null}
                                         {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                             <>
                                                 <p>
@@ -640,7 +658,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                             formData.append("file", selectedFile); // Append the file if selected
                                                         }
                                                         try {
-                                                            const response = await fetch("https://loopback-r9kf.onrender.com/api/scope/completeFeasabilityNew", {
+                                                            const response = await fetch("https://loopback-skci.onrender.com/api/scope/completeFeasabilityNew", {
                                                                 method: "POST",
                                                                 body: formData, // Use FormData for file upload
                                                             });

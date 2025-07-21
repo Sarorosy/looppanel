@@ -49,7 +49,7 @@ const EditCommentsComponent = ({ quote, plan, comment, wordCount, onClose, after
         };
 
         try {
-            const response = await axios.post('https://loopback-r9kf.onrender.com/api/scope/updatePlanComments', dataToSubmit);
+            const response = await axios.post('https://loopback-skci.onrender.com/api/scope/updatePlanComments', dataToSubmit);
             if (response.data.status) {
                 toast.success("Comment updated successfully!");
                 onClose(); // Close the form after successful submission

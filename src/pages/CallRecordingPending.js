@@ -21,7 +21,7 @@ function CallRecordingPending({ scopeDetails, quoteId, after }) {
         };
 
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/markascallrecordingpending', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/markascallrecordingpending', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -16,9 +16,9 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
     const loopuserData = localStorage.getItem('loopuser');
     const loopUserObject = JSON.parse(loopuserData);
 
-    console.log("amounts given final" + scopeDetails.final_price);
-    console.log("amounts given discount" + scopeDetails.discount_price);
-    console.log("amounts given quote" + scopeDetails.quote_price);
+    // console.log("amounts given final" + scopeDetails.final_price);
+    // console.log("amounts given discount" + scopeDetails.discount_price);
+    // console.log("amounts given quote" + scopeDetails.quote_price);
 
     const handleCheckboxChange = (plan) => {
         setSelectedPlans((prevSelectedPlans) => {
@@ -111,7 +111,7 @@ function AskPtp({ scopeDetails, quoteId, after, plans }) {
         }
 
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/askptp', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/askptp', {
                 method: 'POST',
                 body: formData,
             });

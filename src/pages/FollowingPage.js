@@ -34,7 +34,7 @@ const FollowingPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid }) => 
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getFollowingTasks',
+                'https://loopback-skci.onrender.com/api/scope/getFollowingTasks',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -69,7 +69,7 @@ const FollowingPage = ({ onClose, after, sharelinkrefid, sharelinkquoteid }) => 
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getFollowingTasks',
+                'https://loopback-skci.onrender.com/api/scope/getFollowingTasks',
                 {
                     method: 'POST', // Use POST method
                     headers: {

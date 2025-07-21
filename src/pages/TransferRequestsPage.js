@@ -31,7 +31,7 @@ const TransferRequestsPage = ({ onClose, after,userIdDefined }) => {
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getalltransferrequests',
+                'https://loopback-skci.onrender.com/api/scope/getalltransferrequests',
                 {
                     method: 'POST', // Use POST method
                     headers: {

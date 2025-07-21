@@ -39,7 +39,7 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
                 return;
             }
 
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getAllUsers', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getAllUsers', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ const TransferForm = ({ refId, quotationId, finalFunction, onClose }) => {
             payload.append('user_id', selectedUser);
             payload.append('ref_user_id', userObject.id)
 
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/TransferUser', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/TransferUser', {
                 method: 'POST',
                  headers: {
                     'Content-Type': 'application/json',

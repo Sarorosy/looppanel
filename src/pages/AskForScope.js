@@ -70,6 +70,17 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
   const [refIdForFeasHistory, setRefIdForFeasHistory] = useState('');
   const [userIdForTag, setUserIdForTag] = useState('');
 
+  const [tags, setTags] = useState([]);
+  const fetchTags = async () => {
+    try {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/getTags');
+      const data = await response.json();
+      if (data.status) setTags(data.data || []);
+    } catch (error) {
+
+    }
+  };
+
   const [showUpload, setShowUpload] = useState(false);
 
   const changeShowUpload = () => {
@@ -81,6 +92,8 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
   const [feasTabVisible, setFeasTabVisible] = useState(false);
   const [fileTabVisible, setFileTabVisible] = useState(true);
   const [fullScreenTab, setFullScreenTab] = useState(null);
+
+
 
   const closeModal = () => {
     setChatTabVisible(false);
@@ -150,6 +163,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
   }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
 
 
+
   const FollowersList = ({ followerNames }) => {
     if (!followerNames) return null;
 
@@ -210,7 +224,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     let hasResponse = false;
     try {
       const response = await fetch(
-        'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
+        'https://loopback-skci.onrender.com/api/scope/adminScopeDetails',
         {
           method: 'POST', // Use POST method
           headers: {
@@ -238,8 +252,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
             setParentQuote(false);
           }
           setScopeDetails(parsedQuoteInfo); // Set the array of quotes
-          setAssignQuoteInfo(data.assignQuoteInfo); // Assuming you also want to set assignQuoteInfo
-          setTotalCount(data.totalCounter ? data.totalCounter : "0");
+          setAssignQuoteInfo(data.assignQuoteInfo);
         } else {
           setScopeDetails(null); // If no quoteInfo, set scopeDetails to null
         }
@@ -260,7 +273,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     let hasResponse = false;
     try {
       const response = await fetch(
-        'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
+        'https://loopback-skci.onrender.com/api/scope/adminScopeDetails',
         {
           method: 'POST', // Use POST method
           headers: {
@@ -308,7 +321,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     let hasResponse = false;
     try {
       const response = await fetch(
-        'https://loopback-r9kf.onrender.com/api/scope/adminScopeDetails',
+        'https://loopback-skci.onrender.com/api/scope/adminScopeDetails',
         {
           method: 'POST', // Use POST method
           headers: {
@@ -343,14 +356,51 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     }
   };
 
+  const fetchQuoteCountAndFeasStatus = async () => {
+    try {
+      const payload = {
+        ref_id: queryId,
+      };
+
+      const [countRes, feasRes] = await Promise.all([
+        fetch("https://loopback-skci.onrender.com/api/scope/getTotalQuoteCount", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }),
+        fetch("https://loopback-skci.onrender.com/api/scope/getFeasibilityStatus", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }),
+      ]);
+
+      const countData = await countRes.json();
+      const feasData = await feasRes.json();
+
+      if (countData.status) {
+        setTotalCount(countData.totalCounter || "0");
+      }
+
+    } catch (error) {
+      console.error("Error fetching quote count or feasibility status:", error);
+    }
+  };
+
+
+
 
 
 
   useEffect(() => {
     if (queryId) {
       fetchScopeDetails(); // Fetch the scope details when the component mounts
+      fetchTags();
+      fetchQuoteCountAndFeasStatus();
     }
   }, [queryId]);
+
+
 
   useEffect(() => {
     socket.on('quoteReceived', (data) => {
@@ -503,7 +553,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     };
 
     try {
-      const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/submitFeasRequestToAdmintest', {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/submitFeasRequestToAdmintest', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -760,7 +810,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                               </div>
                             )}
 
-                            {quote.timeline  && (
+                            {quote.timeline && (
                               <span
                                 className={`${quote.timeline == 'normal' ? 'text-red-600 bg-red-100' : 'text-blue-600 bg-blue-100'} rounded-full text-sm ml-2 px-1 py-0.5`}
                                 style={{
@@ -772,7 +822,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                 {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
                               </span>
                             )}
-                            
+
                           </p>
                         </td>
                         <td
@@ -1117,35 +1167,41 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                   </div>
                                                 </p>
 
-                                                {quote.tag_names && (
-                                                  <div className="flex items-end  mb-3">
-                                                    <p className=''>
-                                                      <div className=''><strong>Tags</strong></div>
-                                                      {quote.tag_names
+                                                {quote.tags && (
+                                                  <div className="flex items-end mb-3 justify-between">
+                                                    <div>
+                                                      <div><strong>Tags</strong></div>
+                                                      {quote.tags
                                                         .split(",")
-                                                        .map((tag, index) => (
+                                                        .map((tagId) => {
+                                                          const tag = tags.find((t) => t.id == tagId.trim());
+                                                          return tag ? tag.tag_name : null;
+                                                        })
+                                                        .filter(Boolean)
+                                                        .map((tagName, index) => (
                                                           <span
                                                             key={index}
                                                             className="badge badge-primary f-10 mr-1"
                                                           >
-                                                            # {tag.trim()}
+                                                            # {tagName}
                                                           </span>
                                                         ))}
-                                                    </p>
+                                                    </div>
                                                     {quote.tags_updated_time && (
-                                                      <p className="text-gray-500 tenpx">
-                                                        {new Date(quote.tags_updated_time).toLocaleDateString('en-US', {
-                                                          day: 'numeric',
-                                                          month: 'short',
-                                                          year: 'numeric',
-                                                          hour: 'numeric',
-                                                          minute: '2-digit',
-                                                          hour12: true
-                                                        }).replace(',', ',')}
+                                                      <p className="text-gray-500 tenpx whitespace-nowrap">
+                                                        {new Date(quote.tags_updated_time).toLocaleDateString("en-US", {
+                                                          day: "numeric",
+                                                          month: "short",
+                                                          year: "numeric",
+                                                          hour: "numeric",
+                                                          minute: "2-digit",
+                                                          hour12: true,
+                                                        }).replace(",", ",")}
                                                       </p>
                                                     )}
                                                   </div>
                                                 )}
+
                                                 {quote.ptp != null && (
                                                   <div className="bg-white mb-3 rounded-lg p-3 border border-gray-300">
                                                     <h3 className="text-md font-semibold mb-2 text-gray-700">PTP Details</h3>
@@ -1527,7 +1583,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                     </div>
                                                     <div className='flex items-center'>
                                                       <div className='line-h-in'>{quote.demo_id}</div>
-                                                      
+
                                                       <div className="line-h-in badge badge-success ml-2 flex items-center f-10">
                                                         Demo Completed{" "}
                                                         <CheckCircle2
@@ -1551,21 +1607,21 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                     </div>
                                                     <div className='flex items-center'>
                                                       <div className='line-h-in'>{quote.demo_duration}</div>
-                                                      
+
                                                     </div>
                                                   </p>
                                                 </>
                                               )}
                                               {quote.timeline ? (
-                                              <div className="mb-0  mt-0 row p-1 space-y-1  rounded">
-                                                <p className={`font-medium  ${quote.timeline == "urgent" ? "text-red-500" : "text-blue-500"}`}>Timeline : {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}</p>
-                                                {quote.timeline && quote.timeline == 'urgent' && (
-                                                  <span>
-                                                    Timeline Duration : {quote.timeline_days} days
-                                                  </span>
-                                                )}
-                                              </div>
-                                            ) : null}
+                                                <div className="mb-0  mt-0 row p-1 space-y-1  rounded">
+                                                  <p className={`font-medium  ${quote.timeline == "urgent" ? "text-red-500" : "text-blue-500"}`}>Timeline : {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}</p>
+                                                  {quote.timeline && quote.timeline == 'urgent' && (
+                                                    <span>
+                                                      Timeline Duration : {quote.timeline_days} days
+                                                    </span>
+                                                  )}
+                                                </div>
+                                              ) : null}
                                               {quote.quote_status != 0 &&
                                                 quote.quote_price &&
                                                 quote.plan && (
@@ -2159,7 +2215,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                             quote={quote}
                                             showUpload={showUpload}
                                             setShowUpload={changeShowUpload}
-                                              queryInfo={queryInfo}
+                                            queryInfo={queryInfo}
                                           />
 
                                         </>

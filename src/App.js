@@ -57,7 +57,7 @@ function App() {
               token: currentToken,
             };
 
-            const response = await fetch("https://loopback-r9kf.onrender.com/api/scope/saveFcmToken", {
+            const response = await fetch("https://loopback-skci.onrender.com/api/scope/saveFcmToken", {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
@@ -120,7 +120,7 @@ function App() {
       const fetchUserType = async () => {
         try {
           setLoading(true);
-          const response = await fetch("https://loopback-r9kf.onrender.com/api/scope/getusersforscope", {
+          const response = await fetch("https://loopback-skci.onrender.com/api/scope/getusersforscope", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

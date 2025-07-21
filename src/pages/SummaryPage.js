@@ -33,7 +33,7 @@ const SummaryPage = ({ onClose, after,userIdDefined }) => {
         let hasResponse = false;
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getQuoteSummary',
+                'https://loopback-skci.onrender.com/api/scope/getQuoteSummary',
                 {
                     method: 'POST', // Use POST method
                     headers: {

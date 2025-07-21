@@ -25,7 +25,7 @@ function DecryptPage() {
         // First step: Validate credentials (verify email & token)
         const validateCredentials = async () => {
             try {
-                const response = await fetch("https://loopback-r9kf.onrender.com/api/users/loginwebapi", {
+                const response = await fetch("https://loopback-skci.onrender.com/api/users/loginwebapi", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -60,7 +60,7 @@ function DecryptPage() {
         // Second step: Authenticate (send email only)
         const authenticateUser = async () => {
             try {
-                const response = await fetch("https://loopback-r9kf.onrender.com/api/users/loginwebapisecondstep", {
+                const response = await fetch("https://loopback-skci.onrender.com/api/users/loginwebapisecondstep", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

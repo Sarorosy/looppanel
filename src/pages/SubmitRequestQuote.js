@@ -162,7 +162,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
 
     const checkDemoStatus = async () => {
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/checkDemoDoneStatus', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/checkDemoDoneStatus', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -183,7 +183,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
 
     const fetchCurrencies = async () => {
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getCurrencies');
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getCurrencies');
             const data = await response.json();
             if (data.status) {
                 setCurrencies(data.data || []); // Set fetched currencies
@@ -206,7 +206,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                 return;
             }
 
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getAllServices', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getAllServices', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -237,7 +237,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                 return;
             }
 
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getAllUsers', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getAllUsers', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -259,7 +259,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
     };
     const fetchTags = async () => {
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/getTags');
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/getTags');
             const data = await response.json();
             if (data.status) setTags(data.data || []);
         } catch (error) {
@@ -416,7 +416,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
         });
 
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/submitRequestQuoteApiActionNew/', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/submitRequestQuoteApiActionNew/', {
                 method: 'POST',
                 body: formData,
             });

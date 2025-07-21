@@ -50,6 +50,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const [followupCount, setFollowupCount] = useState(0);
     const [requestPendingCount, setRequestPendingCount] = useState(0);
     const [requestAccessCount, setRequestAccessCount] = useState(0);
+    
 
     const [userFeasPageOpen, setUserFeasPageOpen] = useState(false);
     const [nonRequestsOpen, setNonRequestsOpen] = useState(false);
@@ -70,6 +71,10 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const loopuserId = loopuserObject.id;
 
     DataTable.use(DT);
+
+    
+    
+
 
 
     const toggleDetailsPage = () => {
@@ -171,7 +176,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const fetchFollowingTaskCount = async () => {
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getFollowingTasksCount',
+                'https://loopback-skci.onrender.com/api/scope/getFollowingTasksCount',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -200,7 +205,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const fetchFeasibilityRequestCount = async () => {
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getFeasibilityRequestCount',
+                'https://loopback-skci.onrender.com/api/scope/getFeasibilityRequestCount',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -229,7 +234,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
     const fetchReqpendingCount = async () => {
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/getPendingReqCount',
+                'https://loopback-skci.onrender.com/api/scope/getPendingReqCount',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -276,7 +281,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
         try {
             const response = await fetch(
-                'https://loopback-r9kf.onrender.com/api/scope/loadContactMadeQueriesVeryNew',
+                'https://loopback-skci.onrender.com/api/scope/loadContactMadeQueriesVeryNew',
                 {
                     method: 'POST', // Use POST method
                     headers: {
@@ -483,7 +488,7 @@ const ManageContactMadeQueries = ({ notification, sharelinkrefid, sharelinkquote
 
     const handleRequestAccessClick = async (data) => {
         try {
-            const response = await fetch('https://loopback-r9kf.onrender.com/api/scope/requestAccessfortransferredquery', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/requestAccessfortransferredquery', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
