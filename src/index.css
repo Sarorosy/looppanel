@@ -748,10 +748,11 @@ focus-outline-none:focus:not(:focus-visible) {
 .chat-name {
   font-weight: bold;
   color: #333;
+  font-size: 13px;
 }
 
 .chat-timestamp {
-  font-size: 0.75rem;
+  font-size: 11px;
   color: #666;
   margin-left: 0.5rem;
 }
@@ -765,6 +766,7 @@ focus-outline-none:focus:not(:focus-visible) {
   position: relative;
   white-space: normal;
   overflow-wrap: break-word;
+  font-size: 12px;
 }
 
 .chat-text.right {

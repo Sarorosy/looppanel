@@ -62,13 +62,13 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
     };
 
     return (
-        <div className='flex flex-col items-start mt-1 mb-3'>
+        <div className='flex flex-col items-start mt-2 mb-2'>
             <button
                 onClick={handleButtonClick}
-                className="btn text-white bg-red-500 hover:bg-red-600 flex items-center f-12 py-1 px-1.5 btn-sm"
+                className="px-2 py-1 leading-none text-[10px] bg-red-600 hover:bg-red-700 text-white flex gap-1 items-center rounded"
             >
                 {isIssue ? 'Remove Quote Issue' : 'Quote Issue'}
-                <TriangleAlert size={15} className='ml-1' />
+                <TriangleAlert size={11} className='' />
             </button>
 
             {/* Smooth expanding textarea */}
@@ -85,12 +85,14 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
                         rows={3}
                         
                     />
-                    <button
-                        type="submit"
-                        className="btn bg-red-100 text-red-600 hover:bg-red-200 mt-2 py-0.5 px-1 text-sm self-start"
-                    >
-                        Submit Issue
-                    </button>
+                    <div className='flex justify-end '>
+                        <button
+                            type="submit"
+                            className="bg-red-100 hover:bg-red-200 text-red-600 mt-2 py-1 px-2 text-[11px] leading-none rounded "
+                        >
+                            Submit Issue
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

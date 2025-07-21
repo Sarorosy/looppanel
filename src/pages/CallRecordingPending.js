@@ -47,24 +47,25 @@ function CallRecordingPending({ scopeDetails, quoteId, after }) {
     };
 
     return (
-        <div className='flex items-start mt-1 mb-3'>
-            {scopeDetails.callrecordingpending == 0 && (
-                <button 
-                    onClick={handleSubmit} 
-                    className="btn text-white bg-orange-500 hover:bg-orange-600 flex items-center f-12 py-1 px-1.5 btn-sm">
-                    Call Recording Pending <Headset size={15} className='ml-1' />
-                </button>
-            )}
-            {(scopeDetails.callrecordingpending == 1 && scopeDetails.callrecordingpendinguser == loopUserObject.id) && (
-                <button 
-                    onClick={handleSubmit} 
-                    className="btn text-white bg-orange-500 hover:bg-orange-600 flex items-center f-12 py-1 px-1.5 btn-sm">
-                    Remove Call Recording Pending <Headset size={15} className='ml-1' />
-                </button>
-            )}
+        <div></div>
+        // <div className='flex items-start mt-1 mb-3'>
+        //     {scopeDetails.callrecordingpending == 0 && (
+        //         <button 
+        //             onClick={handleSubmit} 
+        //             className="btn text-white bg-orange-500 hover:bg-orange-600 flex items-center f-12 py-1 px-1.5 btn-sm">
+        //             Call Recording Pending <Headset size={15} className='ml-1' />
+        //         </button>
+        //     )}
+        //     {(scopeDetails.callrecordingpending == 1 && scopeDetails.callrecordingpendinguser == loopUserObject.id) && (
+        //         <button 
+        //             onClick={handleSubmit} 
+        //             className="btn text-white bg-orange-500 hover:bg-orange-600 flex items-center f-12 py-1 px-1.5 btn-sm">
+        //             Remove Call Recording Pending <Headset size={15} className='ml-1' />
+        //         </button>
+        //     )}
             
             
-        </div>
+        // </div>
     );
 }
 

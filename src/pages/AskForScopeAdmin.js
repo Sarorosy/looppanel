@@ -1618,7 +1618,7 @@ const AskForScopeAdmin = ({
                                                 </div>
                                               </div>
                                             )}
-                                            <div className="mb-0 mt-0 row px-2 pb-3 space-y-4 ">
+                                            <div className="mb-0 mt-0 space-y-4 ">
                                               {quote.comments &&
                                                 quote.comments != "" &&
                                                 quote.comments != null && (
@@ -1680,11 +1680,11 @@ const AskForScopeAdmin = ({
                                                       </strong>{" "}
                                                       {quote.demo_id}
                                                     </p>{" "}
-                                                    <span className="badge-success px-2 py-0 ml-3 rounded-sm text-white-900 font-semibold flex items-center f-12">
-                                                      Demo Completed{" "}
+                                                    <span className="text-green-900 font-semibold flex items-center ml-1">
+                                                      {" "}
                                                       <CheckCircle2
-                                                        size={12}
-                                                        className="ml-1"
+                                                        size={16}
+                                                        className=""
                                                       />{" "}
                                                     </span>
                                                   </p>
@@ -2205,17 +2205,24 @@ const AskForScopeAdmin = ({
                                                 )}
                                             </div>
                                             {quote.timeline ? (
-                                              <div className="mb-0  mt-0 row p-1 space-y-1  rounded">
-                                                <p className={`font-medium  ${quote.timeline == "urgent" ? "text-red-500" : "text-blue-500"}`}>Timeline : {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}</p>
-                                                {quote.timeline && quote.timeline == 'urgent' && (
-                                                  <span>
-                                                    Timeline Duration : {quote.timeline_days} days
-                                                  </span>
-                                                )}
+                                              <div className="mb-1  mt-2  space-y-1 rounded">
+                                                <div className="flex gap-1 items-center leading-none">
+                                                  Timeline :
+                                                  <div className={`font-medium  ${quote.timeline == "urgent" ? "bg-blue-100 rounded-full text-[11px] px-1 py-1 text-blue-500 leading-none" : "bg-red-100 rounded-full text-[11px] px-1 py-1 text-red-500 leading-none"}`}>
+                                                     {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
+                                                     {quote.timeline && quote.timeline == 'urgent' && (
+                                                    <span className="pl-1">
+                                                      {quote.timeline_days} days
+                                                    </span>
+                                                  )}
+                                                  </div>
+
+                                                  
+                                                </div>
                                               </div>
                                             ) : null}
                                             {quote.quote_issue == 1 ? (
-                                              <div className="mb-0 mx-2 mt-0 row p-1 space-y-4 bg-red-100 rounded">
+                                              <div className="mb-0 mx-0 mt-0 p-1 space-y-4 bg-red-100 rounded">
                                                 <p className="text-red-500 font-medium">Quote Issue !</p>
                                                 {quote.issue_comments && quote.issue_comments != '' && (
                                                   <span>

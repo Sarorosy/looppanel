@@ -396,7 +396,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
     };
 
     return (
-        <div className="bg-white p-x-2 shadow-md border elevenpx">
+        <div className="bg-white p-x-2 elevenpx">
 
             {quote.parent_quote !== 1 && (
                 <>
@@ -433,7 +433,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                 </>
             )}
             {GdriveLink && Array.isArray(GdriveLink) && (
-                <div className="p-4 bg-gray-50 rounded-lg overflow-x-auto">
+                <div className="p-3 bg-gray-50 rounded-lg overflow-x-auto">
                     <p className="font-semibold mb-2 flex items-center"><img src={drivepng} className="h-5 w-5" /> Call Recordings:</p>
                     <ul className="list-disc list-inside space-y-1">
                         {GdriveLink
@@ -461,7 +461,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
 
 
             {relevantFiles.length == 0 && chatFiles.length == 0 && feasFiles.length == 0 && attachedFiles.length == 0 && (
-                <p className="text-gray-500 text-center py-3">No Files Found</p>
+                <p className="text-gray-500 text-center py-2 bg-red-100 mx-1 my-2">No Files Found</p>
             )}
             {relevantFiles.length === 0 ? (
                 <p className="text-gray-500"></p>
@@ -658,21 +658,21 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
             {rcFilesLoading ? (
                 <p>Loading rc files</p>
             ) : (
-                <div className="space-y-4 h-full overflow-y-auto mb-24 pb-24 px-1">
+                <div className="space-y-4 h-full overflow-y-auto pb-2 px-1">
 
                     {accounts.map((account) => {
                         const data = accountData[account.id] || { folders: [], files: [], selectedFolder: 0, selectedFolderName: null };
 
                         return (
-                            <div key={account.id} className="border rounded p-2 shadow-sm space-y-4">
-                                <h3 className="text-blue-800 font-bold flex items-center text-[12px]">
+                            <div key={account.id} className="border rounded shadow-sm">
+                                <h3 className="text-blue-800 font-bold flex items-center gap-1 text-[12px] bg-gray-100 p-2">
                                     <img src={rcfav}
-                                        className="w-8 h-8 mr-1" />
+                                        className="w-6 h-6" />
                                     {account.st_username ?? account.username}
                                 </h3>
-
+                            
                                 {/* Breadcrumb UI */}
-                                <div className="flex justify-between">
+                                <div className="flex justify-between px-2 mt-2">
                                     <div className="flex gap-2 items-center text-[11px] text-gray-500">
                                         <Home size={13} className="cursor-pointer" onClick={() => handleFolderClick(account.id, 0, null)} />
                                         {data.selectedFolderName && <span>/ {data.selectedFolderName}</span>}
@@ -687,7 +687,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                                         </button>
                                     )}
                                 </div>
-
+                            <div className="p-2 overflow-y-auto max-h-[375px]">
                                 {/* Folders */}
                                 {data.selectedFolder === 0 && data.folders?.length > 0 && (
                                     <div className="space-y-2">
@@ -710,7 +710,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                                         <span className="animate-pulse">Loading files...</span>
                                     </div>
                                 ) : data.files?.length === 0 ? (
-                                    <div className="text-sm text-gray-400">No files uploaded yet.</div>
+                                    <div className="text-gray-500 text-center py-2 bg-red-100">No files uploaded yet.</div>
                                 ) : (
                                     <div className="space-y-3">
                                         {data.files.map((file, idx) => {
@@ -746,6 +746,7 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
                                         })}
                                     </div>
                                 )}
+                            </div>
                             </div>
                         );
                     })}
