@@ -192,7 +192,10 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                 setFile('');
                 setFile(null);
                 setFileName('');
-                finalFunction();
+                if (markStatus) {
+
+                    finalFunction();
+                }
                 const user_name = loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name;
                 socket.emit('sendmessage', {
                     quote_id: quoteId,
