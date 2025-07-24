@@ -2769,6 +2769,7 @@ const AskForScopeAdmin = ({
                                                 )}
                                               </div>
                                             ) : null}
+
                                             <QuoteIssue
                                               scopeDetails={quote}
                                               quoteId={quote.quoteid}
@@ -2777,64 +2778,7 @@ const AskForScopeAdmin = ({
                                               }
                                             />
 
-                                            {(() => {
-                                              let parsedHistory = [];
-
-                                              try {
-                                                if (typeof quote.issue_history === "string") {
-                                                  parsedHistory = JSON.parse(quote.issue_history);
-                                                } else if (Array.isArray(quote.issue_history)) {
-                                                  parsedHistory = quote.issue_history;
-                                                }
-                                              } catch (e) {
-                                                console.warn("Invalid JSON in quote.issue_history");
-                                              }
-
-                                              const formatDate = (raw) => {
-                                                try {
-                                                  const date = new Date(raw);
-                                                  return new Intl.DateTimeFormat("en-US", {
-                                                    weekday: "short",
-                                                    year: "numeric",
-                                                    month: "short",
-                                                    day: "2-digit",
-                                                    hour: "numeric",
-                                                    minute: "2-digit",
-                                                    hour12: true,
-                                                  }).format(date);
-                                                } catch (err) {
-                                                  return raw;
-                                                }
-                                              };
-
-                                              return parsedHistory.length > 0 ? (
-                                                <div className="mt-4">
-                                                  <h4 className="text-gray-700 text-[11px] font-semibold mb-1">Issue History</h4>
-                                                  <div className="relative border-l-[1px] border-blue-200 pl-3 space-y-2">
-                                                    {parsedHistory.map((entry, index) => (
-                                                      <div key={index} className="relative">
-                                                        <div className="absolute -left-[7px] top-[6px] w-[8px] h-[8px] bg-blue-500 rounded-full border border-white"></div>
-                                                        <div className="bg-blue-50 p-2 rounded-md shadow-sm">
-                                                          <div className="flex justify-between items-center mb-1">
-                                                            <span className="text-blue-900 text-[11px] font-medium">{entry.user_name}</span>
-                                                            <span className="text-gray-500 text-[11px]">{formatDate(entry.time)}</span>
-                                                          </div>
-                                                          <div className="text-gray-800 text-[11px]">
-                                                            <span className="font-semibold mr-1">
-                                                              {entry.type === "Marked" ? "🟥 Marked" : "✅ Removed"}
-                                                            </span>
-                                                            {entry.comments && (
-                                                              <p className="mt-1 text-[11px] text-gray-700">{entry.comments}</p>
-                                                            )}
-                                                          </div>
-                                                        </div>
-                                                      </div>
-                                                    ))}
-                                                  </div>
-                                                </div>
-                                              ) : null;
-                                            })()}
-
+                                            
 
                                           </div>
 

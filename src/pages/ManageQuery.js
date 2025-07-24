@@ -421,7 +421,6 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         const search_keywords = keyword;
         const service_name = selectedService;
         const subject_area = selectedSubjectArea;
-        const tags = selectedTags;
         const feasability_status = feasStatus;
         const start_date = startDate;
         const end_date = endDate;
@@ -429,7 +428,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         const quote_issue = quoteIssue;
 
         let payload = {
-            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, callrecordingpending, quote_issue
+            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags: selectedTags, feasability_status, start_date, end_date, callrecordingpending, quote_issue
         };
 
         if (nopayload) {
@@ -494,8 +493,16 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         appliedFilters.push(`Services: ${serviceNames}`);
                     }
 
+                    if (selectedTags && selectedTags.length > 0) {
+                        const tagNames = selectedTags
+                            .map(id => {
+                                const tag = tags.find(t => t.id.toString() == id.toString());
+                                return tag ? tag.tag_name : 'N/A';
+                            })
+                            .join(', ');
+                        appliedFilters.push(`Tags: ${tagNames}`);
+                    }
                     if (subject_area && subject_area.length > 0) appliedFilters.push(`Subject: ${subject_area}`);
-                    if (tags.length > 0) appliedFilters.push(`Tags: ${tags.join(', ')}`);
                     if (status && status.length > 0) {
                         const statusLabels = {
                             "PendingAtUser": "Pending at User",
