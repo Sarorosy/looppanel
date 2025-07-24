@@ -37,7 +37,7 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
             quote_id: quoteId,
             user_id: loopUserObject.id,
             user_name: loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name,
-            quote_issue:  1, // Toggle status
+            quote_issue: 1, // Toggle status
             comments: comment || '', // Add comment if present
         };
 
@@ -76,15 +76,15 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
         }
     };
 
-    const handleRemoveAllButtonClick = async () =>{
-        try{
+    const handleRemoveAllButtonClick = async () => {
+        try {
             const response = await fetch('https://loopback-skci.onrender.com/api/scope/removeallquoteissue', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    quote_id : scopeDetails.quoteid,
+                    quote_id: scopeDetails.quoteid,
 
                 }),
             });
@@ -97,25 +97,25 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
             } else {
                 toast.error('Failed to submit the request');
             }
-        }catch(e){
+        } catch (e) {
             console.log(e);
         }
     }
 
-    const handleReoveParticularIssue = async (id) =>{
-        if(!id){
+    const handleReoveParticularIssue = async (id) => {
+        if (!id) {
             return;
         }
-        try{
+        try {
             const response = await fetch('https://loopback-skci.onrender.com/api/scope/removeparticularquoteissue', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    quote_id : scopeDetails.quoteid,
-                    issue_id : id,
-                    
+                    quote_id: scopeDetails.quoteid,
+                    issue_id: id,
+
                 }),
             });
 
@@ -128,7 +128,7 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
                 toast.error('Failed to submit the request');
             }
 
-        }catch(e){
+        } catch (e) {
             console.log(e);
         }
     }
@@ -136,7 +136,7 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
     return (
         <>
             <div className='flex flex-col items-start mt-2 mb-2'>
-                
+
                 <div className='flex items-center space-x-2'>
 
                     <button
@@ -145,16 +145,16 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
                     >
                         + Add Issue <TriangleAlert size={11} />
                     </button>
-                
 
-                {isIssue && hasActiveIssue && (
-                    <button
-                        onClick={handleRemoveAllButtonClick}
-                        className="px-2 py-1 leading-none text-[10px] bg-gray-700 hover:bg-gray-800 text-white flex gap-1 items-center rounded"
-                    >
-                        Remove All Issues <TriangleAlert size={11} />
-                    </button>
-                )}
+
+                    {isIssue && hasActiveIssue && (
+                        <button
+                            onClick={handleRemoveAllButtonClick}
+                            className="px-2 py-1 leading-none text-[10px] bg-gray-700 hover:bg-gray-800 text-white flex gap-1 items-center rounded"
+                        >
+                            Remove All Issues <TriangleAlert size={11} />
+                        </button>
+                    )}
                 </div>
 
                 {/* Smooth expanding textarea */}
@@ -189,14 +189,13 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
 
                 try {
                     if (typeof scopeDetails.issue_history === "string") {
-                        parsedHistory = JSON.parse(scopeDetails.issue_history);
+                        parsedHistory = JSON.parse(scopeDetails.issue_history).reverse();
                     } else if (Array.isArray(scopeDetails.issue_history)) {
-                        parsedHistory = scopeDetails.issue_history;
+                        parsedHistory = [...scopeDetails.issue_history].reverse();
                     }
                 } catch (e) {
                     console.warn("Invalid JSON in quote.issue_history");
                 }
-
                 const formatDate = (raw) => {
                     try {
                         const date = new Date(raw);
@@ -235,7 +234,7 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
                                             )}
                                             {entry.active && entry.active == true && (
                                                 <button
-                                                    onClick={()=>{handleReoveParticularIssue(entry.id)}}
+                                                    onClick={() => { handleReoveParticularIssue(entry.id) }}
                                                     className='bg-red-500 f-11 flex items-center px-1 py-0.5 text-white rounded'>
                                                     <X size={13} /> Remove isue
                                                 </button>

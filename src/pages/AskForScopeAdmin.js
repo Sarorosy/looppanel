@@ -2760,17 +2760,7 @@ const AskForScopeAdmin = ({
                                             </div>
                                           </div>
                                           <div className="px-2 py-2 bg-white">
-                                            {quote.quote_issue == 1 ? (
-                                              <div className="mb-0 mx-0 mt-0 p-1 space-y-4 bg-red-100 rounded">
-                                                <p className="text-red-500 font-medium">Quote Issue !</p>
-                                                {quote.issue_comments && quote.issue_comments != '' && (
-                                                  <span>
-                                                    {quote.issue_comments}
-                                                  </span>
-                                                )}
-                                              </div>
-                                            ) : null}
-
+                                            
                                             <QuoteIssue
                                               scopeDetails={quote}
                                               quoteId={quote.quoteid}

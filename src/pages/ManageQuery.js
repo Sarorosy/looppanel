@@ -63,7 +63,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [endDate, setEndDate] = useState(null);
     const [callOption, setCallOption] = useState('');
     const [quoteIssue, setQuoteIssue] = useState('');
-    const [activeTab, setActiveTab] = useState('all');
+    const [activeTab, setActiveTab] = useState('pendingAdmin');
     const [selectedRows, setSelectedRows] = useState([]);
     const [filterSummary, setFilterSummary] = useState('');
     const [showFilterDiv, setShowFilterDiv] = useState(true);
