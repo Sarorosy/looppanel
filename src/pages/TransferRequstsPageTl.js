@@ -31,7 +31,7 @@ const TransferRequestsPageTl = ({ onClose, after, userIdDefined }) => {
         let hasResponse = false;
         try {
             const response = await fetch(
-                'http://localhost:5000/api/scope/getalltransferrequestsfortl',
+                'https://loopback-skci.onrender.com/api/scope/getalltransferrequestsfortl',
                 {
                     method: 'POST', // Use POST method
                     headers: {

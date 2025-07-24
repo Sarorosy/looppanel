@@ -33,7 +33,7 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
         };
 
         try {
-            const response = await fetch('http://localhost:5000/api/scope/markasquoteissue', {
+            const response = await fetch('https://loopback-skci.onrender.com/api/scope/markasquoteissue', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
