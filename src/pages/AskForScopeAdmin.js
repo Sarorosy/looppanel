@@ -995,12 +995,13 @@ const AskForScopeAdmin = ({
                                 style={{
                                   fontSize: "11px",
                                 }}
-                                data-tooltip-id={quote.timeline == 'normal' ? '' : 'my-tooltip'}
-                                data-tooltip-content={"Timeline: " + quote.timeline_days + " days"}
                               >
-                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
+                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)} 
+
+                                {quote.timeline == "urgent" && quote.timeline_days && ` - ${quote.timeline_days} days`}
                               </span>
                             )}
+                            
 
                             {quote.quote_issue == 1 && (
                               <span

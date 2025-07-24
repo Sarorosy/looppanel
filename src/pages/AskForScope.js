@@ -816,10 +816,10 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                 style={{
                                   fontSize: "11px",
                                 }}
-                                data-tooltip-id={quote.timeline == 'normal' ? '' : 'my-tooltip'}
-                                data-tooltip-content={quote.timeline_days + " days"}
                               >
-                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
+                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)} 
+
+                                {quote.timeline == "urgent" && quote.timeline_days && ` - ${quote.timeline_days} days`}
                               </span>
                             )}
 
