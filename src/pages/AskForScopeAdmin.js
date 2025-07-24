@@ -159,6 +159,7 @@ const AskForScopeAdmin = ({
   const [chatTabVisible, setChatTabVisible] = useState(true);
   const [feasTabVisible, setFeasTabVisible] = useState(false);
   const [fileTabVisible, setFileTabVisible] = useState(true);
+  const [issueTabVisible, setIssueTabVisible] = useState(false);
   const [fullScreenTab, setFullScreenTab] = useState(null);
 
   const [showUpload, setShowUpload] = useState(false);
@@ -183,7 +184,13 @@ const AskForScopeAdmin = ({
       setFullScreenTab(null)
     }
     else if (tab == "file") {
+      // setIssueTabVisible(false)
       setFileTabVisible(!fileTabVisible);
+      setFullScreenTab(null)
+    }
+    else if (tab == "issue") {
+      // setFileTabVisible(false)
+      setIssueTabVisible(!issueTabVisible);
       setFullScreenTab(null)
     }
   };
@@ -207,6 +214,7 @@ const AskForScopeAdmin = ({
     if (chatTabVisible) visibleCount++;
     if (feasTabVisible) visibleCount++;
     if (fileTabVisible) visibleCount++;
+    if (issueTabVisible) visibleCount++;
     return visibleCount;
   };
 
@@ -219,10 +227,12 @@ const AskForScopeAdmin = ({
       return "col-md-6";
     } else if (visibleTabs === 3) {
       return "col-md-4";
+    } else if (visibleTabs === 4) {
+      return "col-md-3";
     } else {
       return "col-md-3";
     }
-  }, [scopeTabVisible, chatTabVisible, feasTabVisible]);
+  }, [scopeTabVisible, chatTabVisible, feasTabVisible, fileTabVisible, issueTabVisible]);
 
   useEffect(() => {
     socket.on("tagsUpdated", (data) => {
@@ -483,6 +493,8 @@ const AskForScopeAdmin = ({
       }
     } catch (error) {
       console.error("Error fetching details:", error);
+    } finally {
+      fetchQuoteCountAndFeasStatus()
     }
   };
 
@@ -528,6 +540,7 @@ const AskForScopeAdmin = ({
       if (hasResponse) {
         setLoading(false); // Hide the loader
       }
+      fetchQuoteCountAndFeasStatus()
     }
   };
 
@@ -559,7 +572,7 @@ const AskForScopeAdmin = ({
       if (response.ok) {
         toast.success("Quote price updated successfully");
         setTimeout(() => {
-          fetchScopeDetails();
+          fetchScopeDetailsForSocket();
         }, 800);
       } else {
         toast.error("Failed to update quote price");
@@ -689,7 +702,7 @@ const AskForScopeAdmin = ({
 
       if (response.ok) {
         setTimeout(() => {
-          fetchScopeDetails();
+          fetchScopeDetailsForSocket();
         }, 800);
         form.reset();
         document.getElementById("amount_Basic").value = "0";
@@ -787,21 +800,7 @@ const AskForScopeAdmin = ({
     };
   }, []);
 
-  const formatDate = (timestamp) => {
-    const date = new Date(timestamp * 1000); // Convert Unix timestamp to Date object
-    return date.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
-  };
 
-  const getStatusText = (status) => {
-    switch (status) {
-      case 0:
-        return "Pending";
-      case 1:
-        return "Submitted";
-      default:
-        return "Unknown";
-    }
-  };
   function capitalizeFirstLetter(str) {
     if (typeof str !== "string") return str;
     return str.charAt(0).toUpperCase() + str.slice(1);
@@ -1255,6 +1254,27 @@ const AskForScopeAdmin = ({
                                 >
                                   Attached Files{" "}
                                   {fileTabVisible ? (
+                                    <Eye
+                                      size={20}
+                                      className="badge badge-dark ml-2"
+                                    />
+                                  ) : (
+                                    <EyeClosed
+                                      size={20}
+                                      className="badge badge-dark ml-2"
+                                    />
+                                  )}
+                                </button>
+
+                                <button
+                                  onClick={() => handleTabButtonClick("issue")}
+                                  className={`px-2 py-1 mr-1 inline-flex items-center f-12 ${issueTabVisible
+                                    ? "btn-info focus-outline-none"
+                                    : "btn-light"
+                                    } btn btn-sm`}
+                                >
+                                  Quote Issue{" "}
+                                  {issueTabVisible ? (
                                     <Eye
                                       size={20}
                                       className="badge badge-dark ml-2"
@@ -2204,23 +2224,7 @@ const AskForScopeAdmin = ({
                                                   </>
                                                 )}
                                             </div>
-                                            {quote.timeline ? (
-                                              <div className="mb-1  mt-2  space-y-1 rounded">
-                                                <div className="flex gap-1 items-center leading-none">
-                                                  Timeline :
-                                                  <div className={`font-medium  ${quote.timeline == "urgent" ? "bg-blue-100 rounded-full text-[11px] px-1 py-1 text-blue-500 leading-none" : "bg-red-100 rounded-full text-[11px] px-1 py-1 text-red-500 leading-none"}`}>
-                                                     {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
-                                                     {quote.timeline && quote.timeline == 'urgent' && (
-                                                    <span className="pl-1">
-                                                      {quote.timeline_days} days
-                                                    </span>
-                                                  )}
-                                                  </div>
-
-                                                  
-                                                </div>
-                                              </div>
-                                            ) : null}
+                                            
                                             {quote.quote_issue == 1 ? (
                                               <div className="mb-0 mx-0 mt-0 p-1 space-y-4 bg-red-100 rounded">
                                                 <p className="text-red-500 font-medium">Quote Issue !</p>
@@ -2241,13 +2245,7 @@ const AskForScopeAdmin = ({
                                                   fetchScopeDetailsForSocket
                                                 }
                                               />
-                                              <QuoteIssue
-                                                scopeDetails={quote}
-                                                quoteId={quote.quoteid}
-                                                after={
-                                                  fetchScopeDetailsForSocket
-                                                }
-                                              />
+
 
                                             </div>
                                             {quote.ptp != null && (
@@ -2730,6 +2728,115 @@ const AskForScopeAdmin = ({
                                             setShowUpload={changeShowUpload}
                                             queryInfo={info}
                                           />
+
+                                        </>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+
+                              {issueTabVisible && (
+                                <div
+                                  className={`${fullScreenTab == "issue"
+                                    ? "custom-modal"
+                                    : colClass
+                                    }`}
+                                >
+                                  <div
+                                    className={`${fullScreenTab == "issue"
+                                      ? "custom-modal-content"
+                                      : ""
+                                      }`}
+                                  >
+                                    <div className={` pr-0`}>
+                                      <div className="bg-white">
+                                        <>
+                                          <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
+                                            <h3 className=""><strong>Quote Issue</strong></h3>
+                                            <div className='flex items-center n-gap-3'>
+
+                                            </div>
+                                          </div>
+                                          <div className="px-2 py-2 bg-white">
+                                            {quote.quote_issue == 1 ? (
+                                              <div className="mb-0 mx-0 mt-0 p-1 space-y-4 bg-red-100 rounded">
+                                                <p className="text-red-500 font-medium">Quote Issue !</p>
+                                                {quote.issue_comments && quote.issue_comments != '' && (
+                                                  <span>
+                                                    {quote.issue_comments}
+                                                  </span>
+                                                )}
+                                              </div>
+                                            ) : null}
+                                            <QuoteIssue
+                                              scopeDetails={quote}
+                                              quoteId={quote.quoteid}
+                                              after={
+                                                fetchScopeDetailsForSocket
+                                              }
+                                            />
+
+                                            {(() => {
+                                              let parsedHistory = [];
+
+                                              try {
+                                                if (typeof quote.issue_history === "string") {
+                                                  parsedHistory = JSON.parse(quote.issue_history);
+                                                } else if (Array.isArray(quote.issue_history)) {
+                                                  parsedHistory = quote.issue_history;
+                                                }
+                                              } catch (e) {
+                                                console.warn("Invalid JSON in quote.issue_history");
+                                              }
+
+                                              const formatDate = (raw) => {
+                                                try {
+                                                  const date = new Date(raw);
+                                                  return new Intl.DateTimeFormat("en-US", {
+                                                    weekday: "short",
+                                                    year: "numeric",
+                                                    month: "short",
+                                                    day: "2-digit",
+                                                    hour: "numeric",
+                                                    minute: "2-digit",
+                                                    hour12: true,
+                                                  }).format(date);
+                                                } catch (err) {
+                                                  return raw;
+                                                }
+                                              };
+
+                                              return parsedHistory.length > 0 ? (
+                                                <div className="mt-4">
+                                                  <h4 className="text-gray-700 text-[11px] font-semibold mb-1">Issue History</h4>
+                                                  <div className="relative border-l-[1px] border-blue-200 pl-3 space-y-2">
+                                                    {parsedHistory.map((entry, index) => (
+                                                      <div key={index} className="relative">
+                                                        <div className="absolute -left-[7px] top-[6px] w-[8px] h-[8px] bg-blue-500 rounded-full border border-white"></div>
+                                                        <div className="bg-blue-50 p-2 rounded-md shadow-sm">
+                                                          <div className="flex justify-between items-center mb-1">
+                                                            <span className="text-blue-900 text-[11px] font-medium">{entry.user_name}</span>
+                                                            <span className="text-gray-500 text-[11px]">{formatDate(entry.time)}</span>
+                                                          </div>
+                                                          <div className="text-gray-800 text-[11px]">
+                                                            <span className="font-semibold mr-1">
+                                                              {entry.type === "Marked" ? "🟥 Marked" : "✅ Removed"}
+                                                            </span>
+                                                            {entry.comments && (
+                                                              <p className="mt-1 text-[11px] text-gray-700">{entry.comments}</p>
+                                                            )}
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                              ) : null;
+                                            })()}
+
+
+                                          </div>
 
                                         </>
                                       </div>

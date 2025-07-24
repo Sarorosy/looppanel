@@ -13,23 +13,27 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
 
     const isIssue = scopeDetails.quote_issue == 1;
 
+    const [marking, setMarking] = useState(false);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (comment.trim() == '') {
+        if (comment.trim() == '' && !isIssue) {
             toast.error('Please enter a comment');
             return;
         }
+        setMarking(true);
 
         const postData = {
             ref_id: scopeDetails.assign_id,
             quote_id: quoteId,
             user_id: loopUserObject.id,
+            user_name : loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name,
             quote_issue: isIssue ? 0 : 1, // Toggle status
             comments: comment || '', // Add comment if present
         };
 
         try {
-            const response = await fetch('https://loopback-skci.onrender.com/api/scope/markasquoteissue', {
+            const response = await fetch('http://localhost:5000/api/scope/markasquoteissue', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -48,6 +52,8 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
         } catch (error) {
             console.error('Error posting data:', error);
             toast.error('An error occurred while submitting the request');
+        }finally{
+            setMarking(false);
         }
     };
 
@@ -76,7 +82,7 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
                 className={`transition-all duration-500 ease-in-out overflow-hidden ${showCommentBox ? 'max-h-40 opacity-100 mt-2' : 'max-h-0 opacity-0'}`}
                 style={{ width: '100%' }}
             >
-                <form onSubmit={handleSubmit} className="flex flex-col">
+                <form  className="flex flex-col">
                     <textarea
                         value={comment}
                         onChange={(e) => setComment(e.target.value)}
@@ -87,10 +93,12 @@ function QuoteIssue({ scopeDetails, quoteId, after }) {
                     />
                     <div className='flex justify-end '>
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={handleSubmit}
+                            disabled={marking}
                             className="bg-red-100 hover:bg-red-200 text-red-600 mt-2 py-1 px-2 text-[11px] leading-none rounded "
                         >
-                            Submit Issue
+                            {marking ? "Submitting..." : "Submit Issue"}
                         </button>
                     </div>
                 </form>

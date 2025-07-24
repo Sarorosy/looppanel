@@ -1129,6 +1129,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setKeyword('');
         setCallOption('');
         setQuoteIssue('');
+        setPtp('');
         setStatus([]);
         setFeasStatus('');
         setStartDate('');
@@ -1161,6 +1162,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setScopeId('');
         setCallOption('');
         setQuoteIssue('');
+        setPtp('');
         setKeyword('');
         setStatus([]);
         setFeasStatus('');
