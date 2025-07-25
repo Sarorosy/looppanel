@@ -652,7 +652,7 @@ const AskForScopeAdmin = ({
     };
   }, []);
 
-  const PriceSubmitValidate = async (refId, quoteId, plans, userId) => {
+  const PriceSubmitValidate = async (refId, quoteId, plans, userId, ptpCount) => {
     const form = document.getElementById("submitQuoteForm");
 
     // Define the amount variables
@@ -694,6 +694,8 @@ const AskForScopeAdmin = ({
             user_id: loopUserObject.id,
             mp_price: selectedMP,
             comment: comments,
+            ptp_count : ptpCount,
+            
           }), // Send the data as JSON
         }
       );
@@ -703,6 +705,7 @@ const AskForScopeAdmin = ({
       if (response.ok) {
         setTimeout(() => {
           fetchScopeDetailsForSocket();
+          continueAferInsert(refId,quoteId,ptpCount);
         }, 800);
         form.reset();
         document.getElementById("amount_Basic").value = "0";
@@ -725,48 +728,47 @@ const AskForScopeAdmin = ({
     }
   };
 
-  const ValidateAssignTask = async () => {
-    if (!selectedUser || !adminComments) {
-      toast.error("Please select a user and provide comments");
-      return; // Prevent form submission if validation fails
-    }
-    const data = {
-      ref_id: scopeDetails.ref_id,
-      quote_id: scopeDetails.id,
-      assign_to_userid: selectedUser,
-      admin_comments: adminComments,
-    };
+  const continueAferInsert = async (refId, quoteId, ptpCount) => {
+    
 
     try {
-      // Show loading spinner
-      setAssignLoading(true);
-
+      
       const response = await fetch(
-        "https://instacrm.rapidcollaborate.com/api/submitassignquote",
+        "https://loopback-skci.onrender.com/api/scope/continueafterinsert",
         {
           method: "POST",
           headers: {
-            "Content-Type": "application/json", // Set content type to JSON
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(data), // Send the data as JSON
+          body: JSON.stringify({
+            ref_id: refId,
+            quote_id: quoteId,
+            user_id: loopUserObject.id,
+            isNew : ptpCount == 0,
+            
+          }), // Send the data as JSON
         }
       );
 
       const responseData = await response.json(); // Parse the response as JSON
 
       if (response.ok) {
-        toast.success("Quote price updated successfully");
+
+        setTimeout(() => {
+          fetchScopeDetailsForSocket();
+        }, 800);
       } else {
-        toast.error("Failed to update quote price");
+        console.error("Failed to update quote price");
       }
     } catch (error) {
       console.error("Error updating price quote:", error);
-      toast.error("Error updating quote price");
     } finally {
       // Hide loading spinner
-      setAssignLoading(false);
+      //setQuoteLoading(false);
     }
   };
+
+  
 
   useEffect(() => {
     if (queryId) {
@@ -2498,7 +2500,8 @@ const AskForScopeAdmin = ({
                                                                     quote.assign_id,
                                                                     quote.quoteid,
                                                                     quote.plan,
-                                                                    quote.user_id
+                                                                    quote.user_id,
+                                                                    quote.ptp_count ?? 0
                                                                   )}
                                                                   disabled={quoteLoading}
                                                                 />
