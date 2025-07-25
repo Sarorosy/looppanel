@@ -608,6 +608,10 @@ video {
   left: -7px;
 }
 
+.bottom-2 {
+  bottom: 0.5rem;
+}
+
 .left-0 {
   left: 0px;
 }
@@ -638,6 +642,14 @@ video {
 
 .z-50 {
   z-index: 50;
+}
+
+.z-\[\] {
+  z-index: ;
+}
+
+.z-\[9999999999999999999999\] {
+  z-index: 9999999999999999999999;
 }
 
 .float-end {
@@ -1319,6 +1331,10 @@ video {
 
 .border-l-\[1px\] {
   border-left-width: 1px;
+}
+
+.border-t {
+  border-top-width: 1px;
 }
 
 .border-t-2 {

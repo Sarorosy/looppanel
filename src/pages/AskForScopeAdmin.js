@@ -721,7 +721,7 @@ const AskForScopeAdmin = ({
       console.error("Error updating price quote:", error);
     } finally {
       // Hide loading spinner
-      setQuoteLoading(false);
+      //setQuoteLoading(false);
     }
   };
 
