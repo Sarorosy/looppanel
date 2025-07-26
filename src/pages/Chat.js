@@ -394,6 +394,17 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
         fetchUsers();
     }, []);
 
+    useEffect(() => {
+    if (
+        (loopUserObject.fld_email === 'puneet@redmarkediting.com' ||
+         loopUserObject.fld_email === 'clientsupport@chankyaresearch.net') &&
+        ((status === 0 && submittedToAdmin === "true") || status === 2)
+    ) {
+        setMarkStatus(true);
+    }
+}, [loopUserObject.fld_email, status, submittedToAdmin]);
+
+
     const formatMessage = (message) => {
         return message.replace(/\{\{\{(.*?),(.*?)\}\}\}/g, (match, name, id) => {
             return `<b style="color:#126dff;cursor:pointer;">${name}</b>`;

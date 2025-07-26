@@ -105,7 +105,7 @@ function App() {
       console.log('Message received. ', payload.notification.body);  // Check this log to see the incoming message
       if (payload && payload.notification) {
         // Handle the notification payload data as needed
-        toast(payload.notification.body);
+        toast(payload.notification.body ?? payload.notification.message);
         //alert(payload.data.google.c.a.c_l)
       }
     });
