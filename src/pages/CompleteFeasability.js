@@ -12,7 +12,7 @@ import 'select2';
 import CustomLoader from '../CustomLoader';
 import { io } from "socket.io-client";
 import { getSocket } from './Socket';
-const CompleteFeasability = ({ refId, quoteId, after, onClose, userId, notification }) => {
+const CompleteFeasability = ({ refId, quoteId, after, onClose, userId, notification, quoteFollowers }) => {
     const socket = getSocket();
     const [feasabilityComments, setFeasabilityComments] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
@@ -63,6 +63,7 @@ const CompleteFeasability = ({ refId, quoteId, after, onClose, userId, notificat
                         formData.append("feasability_comments", feasabilityComments);
                         formData.append("user_id", loopUserObject.id);
                         formData.append("ref_user_id", userId);
+                        formData.append("followers", quoteFollowers);
 
                         if (selectedFile) {
                             formData.append("file", selectedFile); // Append the file if selected

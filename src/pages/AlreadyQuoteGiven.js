@@ -2,29 +2,72 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Globe } from 'lucide-react';
 
 const AlreadyQuoteGiven = ({ email_id, website_id }) => {
     const [quoteDetails, setQuoteDetails] = useState([]);
     const [showModal, setShowModal] = useState(false);
 
+
     useEffect(() => {
         const fetchQuoteData = async () => {
             try {
-                const response = await axios.post('https://loopback-skci.onrender.com/api/scope/checkpresentemail', {
-                    email_id,
-                    website_id,
-                });
+                const response = await axios.post(
+                    "https://loopback-skci.onrender.com/api/scope/checkpresentemail",
+                    { email_id, website_id }
+                );
 
-                if (response.data?.status && response.data.quote_details?.length > 0) {
-                    setQuoteDetails(response.data.quote_details);
-                }
+                const quoteData = response.data?.quote_details || [];
+
+                // For each quote, fetch the detailed data using ref_id
+                const detailedQuotes = await Promise.all(
+                    quoteData.map(async (quote) => {
+                        try {
+                            const detailRes = await fetch(
+                                "https://loopback-skci.onrender.com/api/scope/view_query_details_api",
+                                {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                    body: JSON.stringify({ query_id: quote.ref_id }),
+                                }
+                            );
+
+                            const detailData = await detailRes.json();
+
+                            if (detailData.status && detailData?.queryInfo) {
+                                const website_name = detailData.queryInfo.website_name || null;
+                                return {
+                                    ...quote,
+                                    website_name,
+                                    ...detailData.data,
+                                };
+                            }
+                            else {
+                                console.warn(
+                                    `Detail fetch failed for ref_id ${quote.ref_id}: ${detailData.message}`
+                                );
+                                return { ...quote, website_name: null };
+                            }
+                        } catch (err) {
+                            console.error(`Error fetching details for ref_id ${quote.ref_id}`, err);
+                            return { ...quote, website_name: null };
+                        }
+                    })
+                );
+
+                setQuoteDetails(detailedQuotes);
             } catch (err) {
-                console.error('Error fetching quote data:', err);
+                console.error("Error fetching quote data:", err);
             }
         };
 
-        fetchQuoteData();
+        if (email_id && website_id) {
+            fetchQuoteData();
+        }
     }, [email_id, website_id]);
+
 
     if (!quoteDetails.length) return null;
 
@@ -44,7 +87,7 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
                         exit={{ opacity: 0 }}
                         onClick={() => setShowModal(false)}
                     >
-                       
+
                         <motion.div
                             className="bg-white px-6 rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
                             initial={{ scale: 0.8 }}
@@ -52,8 +95,8 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
                             exit={{ scale: 0.8 }}
                             onClick={(e) => e.stopPropagation()}
                         >
-                             <div className="flex items-center justify-between mb-3 border-b py-3 sticky top-0 bg-white">
-                             <h2 className="  text-gray-800 text-lg font-semibold  ">Quote Details</h2>
+                            <div className="flex items-center justify-between mb-3 border-b py-3 sticky top-0 bg-white">
+                                <h2 className="  text-gray-800 text-lg font-semibold  ">Quote Details</h2>
                                 <button
                                     className="btn btn-danger btn-sm"
                                     onClick={() => setShowModal(false)}
@@ -61,14 +104,17 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
                                     Close
                                 </button>
                             </div>
-                            
+
                             {quoteDetails.map((quote, index) => {
                                 const plans = quote.plan.split(',');
                                 const comments = JSON.parse(quote.plan_comments || '{}');
                                 const wordCounts = JSON.parse(quote.word_counts || '{}');
-
+                                console.log(quote)
                                 return (
                                     <div key={index} className="mb-8 text-gray-800 overflow-y-scroll pr-3 space-y-8 py-6">
+                                        {quote.website_name && (
+                                            <p className='flex items-center text-blue-500'> <Globe size={15} className='text-blue-600 mr-1'/> Website name <span className='text-black font-medium ml-2'>{quote.website_name}</span></p>
+                                        )}
                                         <div className="grid grid-cols-3 md:grid-cols-3 gap-4 mb-4">
                                             <div className="p-2 border rounded bg-gray-50 d-flex gap-x-2">
                                                 <p className="text-sm font-semibold">Quote ID :</p>
@@ -155,7 +201,7 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
                                     </div>
                                 );
                             })}
-                            
+
                         </motion.div>
 
                     </motion.div>

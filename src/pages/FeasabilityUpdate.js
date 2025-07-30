@@ -643,6 +643,7 @@ const FeasabilityUpdate = ({ queryId, userType, quotationId, finalFunction }) =>
                                                         formData.append("feasability_comments", feasabilityComments);
                                                         formData.append("user_id", loopUserObject.id);
                                                         formData.append("ref_user_id", quote.user_id);
+                                                        formData.append("followers", quote.followers);
 
                                                         if (selectedFile) {
                                                             formData.append("file", selectedFile); // Append the file if selected

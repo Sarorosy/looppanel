@@ -11,7 +11,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { FileSpreadsheet, Pencil, CheckCircle, XCircle, Check, RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight, FilterIcon, Users } from 'lucide-react';
+import { FileSpreadsheet, Pencil, CheckCircle, XCircle, Check, RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight, FilterIcon, Users, X } from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -113,8 +113,22 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         return `${start}...${end}`;
     };
 
+      const fetchUsers = async () => {
+        try {
+          const response = await fetch('https://loopback-skci.onrender.com/api/users/allusers', {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+          });
+          const data = await response.json();
+          if (data.status) setUsers(data.data || []);
+        } catch (error) {
+          toast.error('Failed to fetch tags.');
+        }
+      };
+
     useEffect(() => {
         fetchAndDisplayFile();
+        fetchUsers();
     }, []);
 
     const fetchAndDisplayFile = async () => {
@@ -534,7 +548,6 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
                     setAdminPendingQuotes(adminPending);
                 }
-                setUsers(data.users);
                 resetFiltersWithoutApiCall();
             } else {
                 console.error('Failed to fetch quotes:', data.message);
@@ -605,7 +618,6 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
                     setAdminPendingQuotes(adminPending);
                 }
-                setUsers(data.users);
                 setPendingFeasRequestCount(data.pendingFeasRequestCount);
             } else {
                 console.error('Failed to fetch quotes:', data.message);
@@ -1636,7 +1648,14 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 <TableLoader />
             ) : (
                 <div className="bg-white p-4 border-t-2 border-blue-400 rounded">
-                    {filterSummary && <p className="text-gray-600 text-sm mb-3 font-semibold">{filterSummary}</p>}
+                    {filterSummary && <p className="text-gray-600 text-sm mb-3 font-semibold flex items-center">
+                        {filterSummary != "Showing all results" && (
+                        <button className=" bg-red-600 text-white flex items-center  f-12  mr-2" onClick={resetFilters}>
+                            <X size={14} />
+                        </button>
+                        )}
+                        {filterSummary}
+                        </p>}
 
                     {/* Tab Buttons */}
                     <div className="mb-4">
@@ -1748,6 +1767,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         onClose={toggleDetailsPage}
                         quotationId={selectedQuote}
                         queryId={selectedQuery.ref_id}
+                        selectedQuery={selectedQuery}
                         after={() => { fetchQuotes(false) }}
                     />
 

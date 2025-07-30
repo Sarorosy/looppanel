@@ -35,6 +35,8 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
     const [timeline, setTimeline] = useState('');
     const [timelineDays, setTimelineDays] = useState('');
 
+    const [linkedQuotePresent, setLinkedQuotePresent] = useState(false);
+    const [linkedQuoteId, setLinkedQuoteId] = useState('');
 
     const [plan, setPlan] = useState([]);
     const [comments, setComments] = useState('');
@@ -250,17 +252,22 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             return;
         }
 
-        if(!timeline){
+        if (!timeline) {
             toast.error('Please select timeline!');
             setSubmitting(false);
             return;
         }
-        if(timeline == 'urgent' && (!timelineDays || timelineDays == '')){
+        if (timeline == 'urgent' && (!timelineDays || timelineDays == '')) {
             toast.error('Please select timeline days!');
             setSubmitting(false);
             return;
         }
 
+        if (linkedQuotePresent && !linkedQuoteId) {
+            toast.error('Please enter linked quote id!');
+            setSubmitting(false);
+            return;
+        }
 
         try {
             const payload = new FormData();
@@ -270,11 +277,13 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
             payload.append('other_currency', otherCurrency);
             payload.append('service_name', serviceName);
             payload.append('subject_area', selectedSubjectArea);
-            payload.append('client_academic_level',client_academic_level);
+            payload.append('client_academic_level', client_academic_level);
             payload.append('results_section', results_section);
 
             payload.append('timeline', timeline);
-            payload.append('timeline_days',timelineDays);
+            payload.append('timeline_days', timelineDays);
+            payload.append('linked_quote_present', linkedQuotePresent);
+            payload.append('linked_quote_id', linkedQuoteId);
 
 
             payload.append('other_subject_area', otherSubjectArea);
@@ -399,7 +408,9 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                 setResults_section(details.results_section);
 
                 setTimeline(details.timeline ?? "normal");
-                setTimelineDays(details.timeline_days ?? '1')
+                setTimelineDays(details.timeline_days ?? '1');
+                setLinkedQuotePresent(details.linked_quote_id !== null && details.linked_quote_id !== '');
+                setLinkedQuoteId(details.linked_quote_id);
 
                 setTimeout(() => {
                     $(serviceRef.current).val(serviceArray).trigger('change');
@@ -831,6 +842,38 @@ const EditRequestForm = ({ refId, quoteId, after, onClose }) => {
                                             <option key={day} value={day}>{day} {day === 1 ? 'day' : 'days'}</option>
                                         ))}
                                     </select>
+                                </div>
+                            )}
+                        </div>
+                        <div className='flex w-full items-end space-x-2 mt-4'>
+                            <div className='w-1/2'>
+                                <label htmlFor="linkedQuotePresent" className="block text-sm font-medium text-gray-700">
+                                    Any linked quote ID?
+                                </label>
+                                <select
+                                    id="linkedQuotePresent"
+                                    value={linkedQuotePresent ? "yes" : "no"}
+                                    onChange={(e) => setLinkedQuotePresent(e.target.value === "yes")}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                            </div>
+
+                            {linkedQuotePresent && (
+                                <div className='w-1/2'>
+                                    <label htmlFor="linkedQuoteId" className="block text-sm font-medium text-gray-700">
+                                        Enter Scope ID
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="linkedQuoteId"
+                                        value={linkedQuoteId}
+                                        onChange={(e) => setLinkedQuoteId(e.target.value)}
+                                        placeholder="Enter Scope ID"
+                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                    />
                                 </div>
                             )}
                         </div>

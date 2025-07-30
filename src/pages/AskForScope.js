@@ -4,7 +4,7 @@ import CustomLoader from '../CustomLoader';
 import { Chat } from './Chat';
 import AskPtp from './AskPtp';
 import DemoDone from './DemoDone';
-import { CheckCircle2, Info, PlusCircle, Hourglass, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset, Star, Crown, Pen, Upload, Folder, BadgeCheck } from 'lucide-react';
+import { CheckCircle2, Info, PlusCircle, Hourglass, RefreshCcw, ChevronUp, ChevronDown, ArrowDown, ArrowUp, Edit, Settings2, History, Hash, FileDownIcon, Paperclip, UserRoundPlus, Share, Share2, ArrowLeftRight, Eye, EyeClosed, Minimize2, Expand, CheckCircle, XCircle, Copy, Headset, Star, Crown, Pen, Upload, Folder, BadgeCheck, Link } from 'lucide-react';
 import SubmitRequestQuote from './SubmitRequestQuote';
 import { AnimatePresence } from 'framer-motion';
 import EditRequestForm from './EditRequestForm';
@@ -78,6 +78,19 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
       if (data.status) setTags(data.data || []);
     } catch (error) {
 
+    }
+  };
+  const [users, setUsers] = useState([]);
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('https://loopback-skci.onrender.com/api/users/allusers', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      if (data.status) setUsers(data.data || []);
+    } catch (error) {
+      toast.error('Failed to fetch tags.');
     }
   };
 
@@ -164,14 +177,24 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
 
 
 
-  const FollowersList = ({ followerNames }) => {
-    if (!followerNames) return null;
+  const FollowersList = ({ followerIds, users = { users } }) => {
+    if (!followerIds || !users || users.length == 0) return null;
 
-    const followersArray = followerNames.split(",").map((name) => name.trim());
+    const idArray = followerIds
+      .split(",")
+      .map((id) => parseInt(id.trim()))
+      .filter((id) => !isNaN(id));
+
+    const matchedUsers = idArray
+      .map((id) => users.find((user) => user.id == id))
+      .filter((user) => user); // remove any not found
+
+
 
     return (
       <div className="flex gap-2 mt-2">
-        {followersArray.map((fullName, index) => {
+        {matchedUsers.map((user, index) => {
+          const fullName = `${user.fld_first_name} ${user.fld_last_name}`.trim();
           const initials = fullName
             .split(" ")
             .map((word) => word.charAt(0))
@@ -179,14 +202,14 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
             .toUpperCase();
 
           return (
-            <div key={index}>
+            <div key={user.id}>
               <div
-                data-tooltip-id={`tooltip-${index}`}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-500 text-white text-sm  cursor-pointer"
+                data-tooltip-id={`tooltip-${user.id}`}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-500 text-white text-sm cursor-pointer"
               >
                 {initials}
               </div>
-              <Tooltip id={`tooltip-${index}`} place="top" effect="solid">
+              <Tooltip id={`tooltip-${user.id}`} place="top" effect="solid">
                 {fullName}
               </Tooltip>
             </div>
@@ -195,6 +218,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
       </div>
     );
   };
+
 
   function capitalizeFirstLetter(str) {
     if (typeof str !== 'string') return str;
@@ -396,6 +420,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
     if (queryId) {
       fetchScopeDetails(); // Fetch the scope details when the component mounts
       fetchTags();
+      fetchUsers();
       fetchQuoteCountAndFeasStatus();
     }
   }, [queryId]);
@@ -809,6 +834,16 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                 />
                               </div>
                             )}
+                            {quote.linked_quote_id && (
+                              <div className="relative group">
+                                <Link
+                                  size={24}
+                                  className="text-yellow-600  p-1 rounded-full ml-1"
+                                  data-tooltip-id="my-tooltip"
+                                  data-tooltip-content={`Linked ScopeId Present`}
+                                />
+                              </div>
+                            )}
 
                             {quote.timeline && (
                               <span
@@ -817,7 +852,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                   fontSize: "11px",
                                 }}
                               >
-                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)} 
+                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
 
                                 {quote.timeline == "urgent" && quote.timeline_days && ` - ${quote.timeline_days} days`}
                               </span>
@@ -1100,8 +1135,9 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                 </button>
                               </div>
                               <div>
-                                {/* display here follower nams  */}
-                                <FollowersList followerNames={quote.follower_names} />
+                                {users.length > 0 && (
+                                  <FollowersList followerIds={quote.followers} users={users} />
+                                )}
                               </div>
                             </div>
                             <div className="mx-2 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
@@ -1120,7 +1156,19 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                   >
                                     <div className={`  pl-0`}>
                                       <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
-                                        <h3 className=""><strong>Scope Details</strong></h3>
+                                        <h3 className="flex items-center">
+                                          <strong>Scope Details</strong>
+
+                                          {quote.linked_quote_id && (
+                                            <button
+                                              className="ml-2 flex items-center bg-yellow-100 px-2 py-0.5 rounded">
+                                              <Link
+                                                size={15}
+                                                className="text-yellow-600 rounded-full mr-1"
+                                              /> {quote.linked_quote_id}
+                                            </button>
+                                          )}
+                                        </h3>
                                         <button className="">
                                           {fullScreenTab == "scope" ? (<Minimize2 size={23} onClick={() => { handlefullScreenBtnClick(null) }} className="btn btn-sm btn-danger flex items-center p-1" />) : (<Expand size={20} onClick={() => { handlefullScreenBtnClick("scope") }} className="btn btn-sm btn-light flex items-center p-1" />)}
                                         </button>
@@ -1612,7 +1660,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                   </p>
                                                 </>
                                               )}
-                                              
+
                                               {quote.quote_status != 0 &&
                                                 quote.quote_price &&
                                                 quote.plan && (

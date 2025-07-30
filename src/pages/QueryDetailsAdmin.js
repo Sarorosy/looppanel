@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 const QueryDetailsAdmin = ({
   onClose,
   queryId,
+  selectedQuery,
   quotationId,
   after,
   viewAll = true,
@@ -157,6 +158,7 @@ const QueryDetailsAdmin = ({
           clientEmail={queryInfo.email_id}
           clientWebsite ={queryInfo.website_id}
           info={queryInfo}
+          selectedQuery={selectedQuery}
         />
         {detailsTabVisible && (
           <div className="col-md-3">

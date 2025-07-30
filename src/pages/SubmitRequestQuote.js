@@ -43,6 +43,9 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
     const [timeline, setTimeline] = useState('normal');
     const [timelineDays, setTimelineDays] = useState('');
 
+    const [linkedQuotePresent, setLinkedQuotePresent] = useState(false);
+    const [linkedQuoteId, setLinkedQuoteId] = useState('');
+
     const [demoStatus, setDemoStatus] = useState(false);
     const [tags, setTags] = useState([]);
     const tagsRef = useRef(null);
@@ -313,6 +316,11 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
             setSubmitting(false);
             return;
         }
+        if(linkedQuotePresent && !linkedQuoteId){
+            toast.error('Please enter linked quote id!');
+            setSubmitting(false);
+            return;
+        }
         if (isfeasability == 0 && selectedTags.length == 0) {
             toast.error('Please select atleast one Tag!');
             setSubmitting(false);
@@ -334,12 +342,12 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
             setSubmitting(false);
             return;
         }
-        if(!timeline){
+        if (!timeline) {
             toast.error('Please select timeline!');
             setSubmitting(false);
             return;
         }
-        if(timeline == 'urgent' && (!timelineDays || timelineDays == '')){
+        if (timeline == 'urgent' && (!timelineDays || timelineDays == '')) {
             toast.error('Please select timeline days!');
             setSubmitting(false);
             return;
@@ -364,6 +372,8 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
         formData.append('client_name', clientName);
         formData.append('timeline', timeline);
         formData.append('timeline_days', timelineDays);
+        formData.append('linked_quote_present', linkedQuotePresent);
+        formData.append('linked_quote_id', linkedQuoteId);
         let planCommentsJson = {};
         let planWordCountsJson = {};
         let emptyCommentFound = false;
@@ -839,6 +849,38 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                                             <option key={day} value={day}>{day} {day === 1 ? 'day' : 'days'}</option>
                                         ))}
                                     </select>
+                                </div>
+                            )}
+                        </div>
+                        <div className='flex w-full items-end space-x-2 mt-4'>
+                            <div className='w-1/2'>
+                                <label htmlFor="linkedQuotePresent" className="block text-sm font-medium text-gray-700">
+                                    Any linked quote ID?
+                                </label>
+                                <select
+                                    id="linkedQuotePresent"
+                                    value={linkedQuotePresent ? "yes" : "no"}
+                                    onChange={(e) => setLinkedQuotePresent(e.target.value === "yes")}
+                                    className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                >
+                                    <option value="no">No</option>
+                                    <option value="yes">Yes</option>
+                                </select>
+                            </div>
+
+                            {linkedQuotePresent && (
+                                <div className='w-1/2'>
+                                    <label htmlFor="linkedQuoteId" className="block text-sm font-medium text-gray-700">
+                                        Enter Scope ID
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="linkedQuoteId"
+                                        value={linkedQuoteId}
+                                        onChange={(e) => setLinkedQuoteId(e.target.value)}
+                                        placeholder="Enter Scope ID"
+                                        className="mt-1 block w-full border-gray-300 rounded-md shadow-sm form-control form-control-sm"
+                                    />
                                 </div>
                             )}
                         </div>

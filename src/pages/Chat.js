@@ -82,8 +82,14 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
 
             const result = await response.json();
             if (result.status) {
-                console.log("Reply submitted successfully:", result);
-                // Reset the reply input
+                const serializedData = {
+                    ref_id: refId,
+                    quote_id: quoteId,
+                    message: replyText,
+                    user_id: loopUserObject.id,
+                    user_type: userObject.user_type,
+                    category: userObject.category,
+                };
                 setReplyingTo(null);
                 setReplyingToMessage(null);
                 setReplyingOpen(false);
@@ -94,7 +100,10 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                     ref_id: refId,
                     user_name: user_name,
                     all_details: allDetails,
-                    user_id: loopUserObject.id
+                    user_id: loopUserObject.id,
+                    formData: serializedData,
+                    type: "reply",
+                    replyingTo: replyingTo
                 })
             } else {
                 console.error("Failed to submit reply:", result.error);
@@ -127,7 +136,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             });
             const data = await response.json();
             setMessages(data.data);
-            console.log(data.data);
+            // console.log(data.data);
         } catch (error) {
             console.error('Error fetching messages:', error);
         } finally {
@@ -146,7 +155,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             });
             const data = await response.json();
             setMessages(data.data);
-            console.log(data.data);
+            // console.log(data.data);
         } catch (error) {
             console.error('Error fetching messages:', error);
         }
@@ -177,9 +186,24 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
         formData.append('markstatus', markStatus ? '1' : '0');
         formData.append('mention_ids', mentionIds);
         formData.append('mention_users', mentions);
+        formData.append('old_status', allDetails.quote_status);
+        formData.append('quote', JSON.stringify(allDetails));
         if (file) {
             formData.append('file', file);
         }
+
+        const serializedData = {
+            ref_id: refId,
+            quote_id: quoteId,
+            message: formattedMessage,
+            user_id: loopUserObject.id,
+            user_type: userObject.user_type,
+            category: userObject.category,
+            markstatus: markStatus ? '1' : '0',
+            mention_ids: mentionIds,
+            mention_users: mentions,
+            file: null, // or base64 if you really want to send the file via socket
+        };
 
         try {
             setButtonDisabled(true);
@@ -187,7 +211,20 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                 method: 'POST',
                 body: formData,
             });
-            if (response.ok) {
+            const data = await response.json();
+            if (data.status) {
+                const user_name = loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name;
+                socket.emit('sendmessage', {
+                    quote_id: quoteId,
+                    ref_id: refId,
+                    user_name: user_name,
+                    all_details: allDetails,
+                    user_id: loopUserObject.id,
+                    formData: serializedData,
+                    insertedId: data.insertedId ?? 0,
+                    type: "message",
+                })
+
                 setNewMessage('');
                 setFile('');
                 setFile(null);
@@ -196,14 +233,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
 
                     finalFunction();
                 }
-                const user_name = loopUserObject.fld_first_name + " " + loopUserObject.fld_last_name;
-                socket.emit('sendmessage', {
-                    quote_id: quoteId,
-                    ref_id: refId,
-                    user_name: user_name,
-                    all_details: allDetails,
-                    user_id: loopUserObject.id
-                })
+
             } else {
                 toast.error('Failed to send message');
             }
@@ -219,14 +249,38 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
         if (quoteId) {
             fetchMessages();
         }
-        if ((loopUserObject.id == 1 || loopUserObject.id == 342) && allDetails.status == 0) {
-            setMarkStatus(true);
-        }
+
     }, [quoteId]);
 
     useEffect(() => {
         socket.on('chatresponse', (data) => {
             if (data.quote_id == quoteId && data.ref_id == refId) {
+                // console.log("chat response", data)
+
+
+                const formData = data.formData;
+                const user_name = data.user_name || "";
+
+                const nowUnix = Math.floor(Date.now() / 1000); // current datetime in unix seconds
+
+                const newMessage = {
+                    message_id: data.insertedId,
+                    sender_id: formData.user_id,
+                    fld_first_name: user_name,
+                    fld_last_name: "", // or extract from somewhere if available
+                    message: formData.message,
+                    date: nowUnix,
+                    isfile: 0,
+                    filepath: "",
+                    needtoreply: formData.mention_ids ?? null,
+                    isdeleted: 0,
+                    deleted_user_name: null,
+                    replies: [],
+                    pending_responses: formData.mention_users
+                };
+
+                setMessages(prev => [...prev, newMessage]);
+
                 fetchMessagesForSocket();
             }
         });
@@ -234,7 +288,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
         return () => {
             socket.off('chatresponse');
         };
-    }, []);
+    }, [quoteId, refId]);
 
     useEffect(() => {
         if (chatContainerRef.current) {
@@ -395,14 +449,14 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
     }, []);
 
     useEffect(() => {
-    if (
-        (loopUserObject.fld_email === 'puneet@redmarkediting.com' ||
-         loopUserObject.fld_email === 'clientsupport@chankyaresearch.net') &&
-        ((status === 0 && submittedToAdmin === "true") || status === 2)
-    ) {
-        setMarkStatus(true);
-    }
-}, [loopUserObject.fld_email, status, submittedToAdmin]);
+        if (
+            (loopUserObject.fld_email === 'puneet@redmarkediting.com' ||
+                loopUserObject.fld_email === 'clientsupport@chankyaresearch.net') &&
+            ((status === 0 && submittedToAdmin === "true") || status === 2)
+        ) {
+            setMarkStatus(true);
+        }
+    }, [loopUserObject.fld_email, status, submittedToAdmin]);
 
 
     const formatMessage = (message) => {
@@ -596,6 +650,12 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
 
                             setMentions(mentions.map(mention => `@${mention.display}`));
                             setMentionIds(mentions.map(mention => mention.id));
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.ctrlKey && e.key === 'Enter') {
+                                e.preventDefault(); // Prevent newline
+                                if (!buttonDisabled) sendMessage(); // Call your message sending function
+                            }
                         }}
                         placeholder="Use @ to mention someone"
                         className="mentions-input"

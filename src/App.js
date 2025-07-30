@@ -102,7 +102,7 @@ function App() {
     requestPermission();
 
     onMessage(messaging, (payload) => {
-      console.log('Message received. ', payload.notification.body);  // Check this log to see the incoming message
+      console.log('Message received. ', payload.notification);  // Check this log to see the incoming message
       if (payload && payload.notification) {
         // Handle the notification payload data as needed
         toast(payload.notification.body ?? payload.notification.message);

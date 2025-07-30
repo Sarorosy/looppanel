@@ -75,6 +75,20 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
         }
     };
 
+    const [users, setUsers] = useState([]);
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('https://loopback-skci.onrender.com/api/users/allusers', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      if (data.status) setUsers(data.data || []);
+    } catch (error) {
+      toast.error('Failed to fetch tags.');
+    }
+  };
+
 
     const [scopeTabVisible, setScopeTabVisible] = useState(true);
     const [chatTabVisible, setChatTabVisible] = useState(true);
@@ -289,6 +303,7 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
         if (queryId) {
             fetchScopeDetails(); // Fetch the scope details when the component mounts
             fetchTags();
+            fetchUsers();
         }
     }, [queryId]);
     useEffect(() => {

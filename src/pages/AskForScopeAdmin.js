@@ -40,8 +40,9 @@ import {
   Crown,
   Upload,
   TriangleAlert,
+  Link,
 } from "lucide-react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import AddTags from "./AddTags";
 import HistorySideBar from "./HistorySideBar";
 import FeasHistorySideBar from "./FeasHistorySideBar";
@@ -75,9 +76,11 @@ const AskForScopeAdmin = ({
   clientEmail,
   clientWebsite,
   info,
+  selectedQuery
 }) => {
+
   const socket = getSocket();
-  const [scopeDetails, setScopeDetails] = useState(null);
+  const [scopeDetails, setScopeDetails] = useState(selectedQuery ? [selectedQuery] : []);
   const [assignQuoteInfo, setAssignQuoteInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [priceLoading, setPriceLoading] = useState(false);
@@ -92,6 +95,8 @@ const AskForScopeAdmin = ({
   const [amounts, setAmounts] = useState({});
   const [comment, setComment] = useState("");
 
+  const [linkedQuoteId, setLinkedQuoteId] = useState(null)
+
   const [tags, setTags] = useState([]);
   const fetchTags = async () => {
     try {
@@ -100,6 +105,19 @@ const AskForScopeAdmin = ({
       if (data.status) setTags(data.data || []);
     } catch (error) {
 
+    }
+  };
+  const [users, setUsers] = useState([]);
+  const fetchUsers = async () => {
+    try {
+      const response = await fetch('https://loopback-skci.onrender.com/api/users/allusers', {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      if (data.status) setUsers(data.data || []);
+    } catch (error) {
+      toast.error('Failed to fetch tags.');
     }
   };
 
@@ -272,14 +290,24 @@ const AskForScopeAdmin = ({
 
 
 
-  const FollowersList = ({ followerNames }) => {
-    if (!followerNames) return null;
+  const FollowersList = ({ followerIds, users = { users } }) => {
+    if (!followerIds || !users || users.length == 0) return null;
 
-    const followersArray = followerNames.split(",").map((name) => name.trim());
+    const idArray = followerIds
+      .split(",")
+      .map((id) => parseInt(id.trim()))
+      .filter((id) => !isNaN(id));
+
+    const matchedUsers = idArray
+      .map((id) => users.find((user) => user.id == id))
+      .filter((user) => user); // remove any not found
+
+
 
     return (
       <div className="flex gap-2 mt-2">
-        {followersArray.map((fullName, index) => {
+        {matchedUsers.map((user, index) => {
+          const fullName = `${user.fld_first_name} ${user.fld_last_name}`.trim();
           const initials = fullName
             .split(" ")
             .map((word) => word.charAt(0))
@@ -287,14 +315,14 @@ const AskForScopeAdmin = ({
             .toUpperCase();
 
           return (
-            <div key={index}>
+            <div key={user.id}>
               <div
-                data-tooltip-id={`tooltip-${index}`}
-                className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-500 text-white text-sm  cursor-pointer"
+                data-tooltip-id={`tooltip-${user.id}`}
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-yellow-500 text-white text-sm cursor-pointer"
               >
                 {initials}
               </div>
-              <Tooltip id={`tooltip-${index}`} place="top" effect="solid">
+              <Tooltip id={`tooltip-${user.id}`} place="top" effect="solid">
                 {fullName}
               </Tooltip>
             </div>
@@ -303,6 +331,7 @@ const AskForScopeAdmin = ({
       </div>
     );
   };
+
 
   const handleMPChange = (plan) => {
     setSelectedMP(selectedMP === plan ? "" : plan); // Toggle selection
@@ -343,11 +372,13 @@ const AskForScopeAdmin = ({
     setUserIdForTag(user_id);
     setFollowersFormOpen((prev) => !prev);
   };
-  const toggleCompleteFeasability = (id, ref_id, user_id) => {
+  const [quoteFollowers, setQuoteFollowers] = useState(null)
+  const toggleCompleteFeasability = (id, ref_id, user_id, followers) => {
     setSelectedQuoteId(id);
     setSelectedRefId(ref_id);
     setSelectedUser(user_id);
     setCompleteFeasabilityDiv((prev) => !prev);
+    setQuoteFollowers(followers);
   };
 
   const toggleFeasHistoyDiv = (assign_id, quote_id) => {
@@ -365,7 +396,7 @@ const AskForScopeAdmin = ({
     setExpandedRowIndex(expandedRowIndex === index ? null : index);
   };
   const fetchScopeDetails = async () => {
-    setLoading(true); // Show loading spinner
+    //setLoading(true); // Show loading spinner
     let hasResponse = false;
     try {
       const response = await fetch(
@@ -694,8 +725,8 @@ const AskForScopeAdmin = ({
             user_id: loopUserObject.id,
             mp_price: selectedMP,
             comment: comments,
-            ptp_count : ptpCount,
-            
+            ptp_count: ptpCount,
+
           }), // Send the data as JSON
         }
       );
@@ -705,7 +736,7 @@ const AskForScopeAdmin = ({
       if (response.ok) {
         setTimeout(() => {
           fetchScopeDetailsForSocket();
-          continueAferInsert(refId,quoteId,ptpCount);
+          continueAferInsert(refId, quoteId, ptpCount);
         }, 800);
         form.reset();
         document.getElementById("amount_Basic").value = "0";
@@ -729,10 +760,10 @@ const AskForScopeAdmin = ({
   };
 
   const continueAferInsert = async (refId, quoteId, ptpCount) => {
-    
+
 
     try {
-      
+
       const response = await fetch(
         "https://loopback-skci.onrender.com/api/scope/continueafterinsert",
         {
@@ -744,8 +775,8 @@ const AskForScopeAdmin = ({
             ref_id: refId,
             quote_id: quoteId,
             user_id: loopUserObject.id,
-            isNew : ptpCount == 0,
-            
+            isNew: ptpCount == 0,
+
           }), // Send the data as JSON
         }
       );
@@ -768,13 +799,14 @@ const AskForScopeAdmin = ({
     }
   };
 
-  
+
 
   useEffect(() => {
     if (queryId) {
       fetchScopeDetails(); // Fetch the scope details when the component mounts
       fetchQuoteCountAndFeasStatus();
       fetchTags();
+      fetchUsers();
     }
   }, [queryId]);
 
@@ -981,6 +1013,16 @@ const AskForScopeAdmin = ({
                                 <Headset size={13} />
                               </span>
                             )}
+                            {quote.linked_quote_id && (
+                              <div className="relative group">
+                                <Link
+                                  size={24}
+                                  className="text-yellow-600  p-1 rounded-full ml-1"
+                                  data-tooltip-id="my-tooltip"
+                                  data-tooltip-content={`Linked ScopeId Present`}
+                                />
+                              </div>
+                            )}
                             {quote.ownership_transferred == 1 && (
                               <div className="relative group">
                                 <ArrowLeftRight
@@ -998,12 +1040,12 @@ const AskForScopeAdmin = ({
                                   fontSize: "11px",
                                 }}
                               >
-                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)} 
+                                {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}
 
                                 {quote.timeline == "urgent" && quote.timeline_days && ` - ${quote.timeline_days} days`}
                               </span>
                             )}
-                            
+
 
                             {quote.quote_issue == 1 && (
                               <span
@@ -1126,7 +1168,8 @@ const AskForScopeAdmin = ({
                                   toggleCompleteFeasability(
                                     quote.quoteid,
                                     quote.assign_id,
-                                    quote.user_id
+                                    quote.user_id,
+                                    quote.followers
                                   );
                                 }}
                                 className="bg-green-100 text-green-600 px-2 py-1 rounded"
@@ -1291,9 +1334,10 @@ const AskForScopeAdmin = ({
                                 </button>
                               </div>
                               <div>
-                                <FollowersList
-                                  followerNames={quote.follower_names}
-                                />
+                                {users.length > 0 && (
+                                  <FollowersList followerIds={quote.followers} users={users} />
+                                )}
+
                               </div>
                             </div>
                             <div className="mx-2 mb-0 bg-gray-100 pt-3 pb-3 pl-0 pr-2 row ">
@@ -1312,8 +1356,19 @@ const AskForScopeAdmin = ({
                                   >
                                     <div className={`  pl-0`}>
                                       <div className="py-2 px-2 flex items-center justify-between bg-blue-100">
-                                        <h3 className="">
+                                        <h3 className="flex items-center">
                                           <strong>Scope Details</strong>
+
+                                          {quote.linked_quote_id && (
+                                            <button
+                                              onClick={() => { setLinkedQuoteId(quote.linked_quote_id) }}
+                                              className="ml-2 flex items-center bg-yellow-100 px-2 py-0.5 rounded">
+                                              <Link
+                                                size={15}
+                                                className="text-yellow-600 rounded-full mr-1"
+                                              /> {quote.linked_quote_id}
+                                            </button>
+                                          )}
                                         </h3>
                                         <button className="">
                                           {fullScreenTab == "scope" ? (
@@ -2227,7 +2282,7 @@ const AskForScopeAdmin = ({
                                                   </>
                                                 )}
                                             </div>
-                                            
+
                                             {quote.quote_issue == 1 ? (
                                               <div className="mb-0 mx-0 mt-0 p-1 space-y-4 bg-red-100 rounded">
                                                 <p className="text-red-500 font-medium">Quote Issue !</p>
@@ -2763,7 +2818,7 @@ const AskForScopeAdmin = ({
                                             </div>
                                           </div>
                                           <div className="px-2 py-2 bg-white">
-                                            
+
                                             <QuoteIssue
                                               scopeDetails={quote}
                                               quoteId={quote.quoteid}
@@ -2772,7 +2827,7 @@ const AskForScopeAdmin = ({
                                               }
                                             />
 
-                                            
+
 
                                           </div>
 
@@ -2882,6 +2937,7 @@ const AskForScopeAdmin = ({
             refId={selectedRefId}
             userId={selectedUser}
             after={fetchScopeDetailsForSocket}
+            quoteFollowers={quoteFollowers}
           />
         )}
 
@@ -2896,6 +2952,40 @@ const AskForScopeAdmin = ({
             }}
             after={fetchScopeDetailsForSocket}
           />
+        )}
+
+
+        {linkedQuoteId && (
+          <motion.div
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="fixed top-0 right-0 h-full w-full bg-gray-100 shadow-lg z-50 overflow-y-auto "
+          >
+            <div className="flex items-center justify-between bg-blue-400 text-white pnav py-3">
+              <h2 className="text-xl font-semibold">Linked Quote Details </h2>
+              <div className="d-flex align-items-center ">
+
+                <button
+                  onClick={() => { setLinkedQuoteId(null) }}
+                  className="text-white hover:text-red-500 transition-colors p-1 rounded-full bg-red-600 hover:bg-red-500"
+                >
+                  {/* <CircleX size={32} /> */}
+                  <X size={15} />
+                </button>
+              </div>
+            </div>
+            <AskForScopeAdmin
+              queryId={queryId}
+              userType={loopUserObject.fld_admin_type}
+              quotationId={linkedQuoteId}
+              viewAll={viewAll}
+              clientEmail={info.email_id}
+              clientWebsite={info.website_id}
+              info={info}
+            />
+          </motion.div>
         )}
       </AnimatePresence>
       <Tooltip id="my-tooltip" />
