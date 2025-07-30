@@ -1649,12 +1649,13 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             ) : (
                 <div className="bg-white p-4 border-t-2 border-blue-400 rounded">
                     {filterSummary && <p className="text-gray-600 text-sm mb-3 font-semibold flex items-center">
+                        
+                        {filterSummary}
                         {filterSummary != "Showing all results" && (
-                        <button className=" bg-red-600 text-white flex items-center  f-12  mr-2" onClick={resetFilters}>
+                        <button className=" bg-red-600 text-white flex items-center  f-12  ml-2" onClick={resetFilters}>
                             <X size={14} />
                         </button>
                         )}
-                        {filterSummary}
                         </p>}
 
                     {/* Tab Buttons */}

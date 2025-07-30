@@ -95,7 +95,30 @@ const AskForScopeAdmin = ({
   const [amounts, setAmounts] = useState({});
   const [comment, setComment] = useState("");
 
-  const [linkedQuoteId, setLinkedQuoteId] = useState(null)
+  const [linkedQuoteId, setLinkedQuoteId] = useState(null);
+  const [linkedRefId, setLinkedRefId] = useState(null);
+  const [linkedQuoteLoading, setLinkedQuoteLoading] = useState(false);
+
+  const fetchLinkedRefId = async (quoteId) => {
+    try{
+    const response = await fetch('https://loopback-skci.onrender.com/api/scope/getRefId',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({scope_id: quoteId})
+    });
+      const data = await response.json();
+      if(data.status){
+        setLinkedRefId(data.data.ref_id);
+        setLinkedQuoteId(quoteId);
+      }else{
+        toast.error(data.message || "Failed to fetch ref id");
+      }
+    }catch(e){
+      console.log(e);
+    }
+  }
 
   const [tags, setTags] = useState([]);
   const fetchTags = async () => {
@@ -1361,7 +1384,7 @@ const AskForScopeAdmin = ({
 
                                           {quote.linked_quote_id && (
                                             <button
-                                              onClick={() => { setLinkedQuoteId(quote.linked_quote_id) }}
+                                              onClick={() => { fetchLinkedRefId(quote.linked_quote_id) }}
                                               className="ml-2 flex items-center bg-yellow-100 px-2 py-0.5 rounded">
                                               <Link
                                                 size={15}
@@ -2977,7 +3000,7 @@ const AskForScopeAdmin = ({
               </div>
             </div>
             <AskForScopeAdmin
-              queryId={queryId}
+              queryId={linkedRefId}
               userType={loopUserObject.fld_admin_type}
               quotationId={linkedQuoteId}
               viewAll={viewAll}
