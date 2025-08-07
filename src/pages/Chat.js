@@ -397,6 +397,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
 
 
     const fetchUsers = async () => {
+       setUsers([]);
         const { user_id, feasibility_user, followers, isFeasibility } = allDetails;
 
         // Determine if feasibility_user should be included
@@ -437,6 +438,10 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
             return null;
         }
     };
+
+    useEffect(()=>{
+        fetchUsers();
+    },[allDetails])
 
     useEffect(() => {
         console.log("Mentions:", mentions);

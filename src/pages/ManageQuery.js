@@ -492,6 +492,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     if (ptp && ptp == 'Yes') appliedFilters.push(`PTP: YES`);
                     if (callOption && callOption == '1') appliedFilters.push(`Call Recording Pending`);
                     if (quoteIssue && quoteIssue == '1') appliedFilters.push(`Quote Issue`);
+                    if (alreadyGiven && alreadyGiven == '1') appliedFilters.push(`Quote on other website`);
                     if (userid && userid.length > 0) {
                         const userNames = userid
                             .map(id => {
