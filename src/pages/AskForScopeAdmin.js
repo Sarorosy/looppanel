@@ -706,6 +706,8 @@ const AskForScopeAdmin = ({
     };
   }, []);
 
+  const [alreadyGiven, setAlreadyGiven] = useState(false);
+
   const PriceSubmitValidate = async (refId, quoteId, plans, userId, ptpCount) => {
     const form = document.getElementById("submitQuoteForm");
 
@@ -749,6 +751,7 @@ const AskForScopeAdmin = ({
             mp_price: selectedMP,
             comment: comments,
             ptp_count: ptpCount,
+            alreadyGiven
 
           }), // Send the data as JSON
         }
@@ -2425,7 +2428,7 @@ const AskForScopeAdmin = ({
                                                           Submit Price {info.website_name && (" - " + info.website_name)}
                                                         </li>
 
-                                                        <AlreadyQuoteGiven email_id={clientEmail} website_id={clientWebsite} />
+                                                        <AlreadyQuoteGiven email_id={clientEmail} website_id={clientWebsite} setAlreadyGiven={setAlreadyGiven} />
 
                                                       </ul>
 

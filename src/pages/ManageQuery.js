@@ -26,6 +26,8 @@ import TransferRequestsPage from './TransferRequestsPage';
 import TableLoader from '../components/TableLoader';
 import UsersRequestCount from './UsersRequestCount';
 import Xls from './Xls';
+import AlreadyGivenList from './AlreadyGivenList';
+import { Tooltip } from 'react-tooltip';
 const socket = getSocket();
 
 const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
@@ -63,10 +65,13 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [endDate, setEndDate] = useState(null);
     const [callOption, setCallOption] = useState('');
     const [quoteIssue, setQuoteIssue] = useState('');
+    const [alreadyGiven, setAlreadyGiven] = useState('');
     const [activeTab, setActiveTab] = useState('pendingAdmin');
     const [selectedRows, setSelectedRows] = useState([]);
     const [filterSummary, setFilterSummary] = useState('');
     const [showFilterDiv, setShowFilterDiv] = useState(true);
+
+   
 
 
     const navigate = useNavigate();
@@ -442,7 +447,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         const quote_issue = quoteIssue;
 
         let payload = {
-            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags: selectedTags, feasability_status, start_date, end_date, callrecordingpending, quote_issue
+            userid, ref_id, scope_id, subject_area, search_keywords, status, service_name, ptp, tags: selectedTags, feasability_status, start_date, end_date, callrecordingpending, quote_issue, alreadyGiven
         };
 
         if (nopayload) {
@@ -888,6 +893,23 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                         </span>
                     `;
                 }
+                if (row.already_given == "1") {
+                    html += `
+                        <span 
+                        data-tooltip-id="my-tooltip"
+                        data-tooltip-content="Quote on Other Website"
+                            style="
+                                padding: 2px 4px; 
+                                color: #2B9758FF;
+                                font-size: 11px; 
+                                font-weight: bold; 
+                                line-height: 1.2;
+                                z-index: 1 !important;
+                            ">
+                            <i class="fa fa-check-circle text-green-600" aria-hidden="true"></i>
+                        </span>
+                    `;
+                }
                 if (row.callrecordingpending == 1) {
                     html += `
                         <span 
@@ -1148,6 +1170,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setKeyword('');
         setCallOption('');
         setQuoteIssue('');
+        setAlreadyGiven('')
         setPtp('');
         setStatus([]);
         setFeasStatus('');
@@ -1181,6 +1204,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         setScopeId('');
         setCallOption('');
         setQuoteIssue('');
+        setAlreadyGiven('');
         setPtp('');
         setKeyword('');
         setStatus([]);
@@ -1316,6 +1340,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 {pendingTransRequestCount}
                             </span>
                         </button>
+                       
                     </div>
                 </div>
                 <div className={`${showFilterDiv ? 'hidden' : 'flex'} flex-col items-end space-x-2 border py-3 mt-3 px-3 bg-light`}>
@@ -1626,6 +1651,17 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 <option value="1">Yes</option>
                             </select>
                         </div>
+                        <div className=" mb-3" style={{ width: "140px" }}>
+
+                            <select
+                                className="form-control form-control-sm"
+                                value={alreadyGiven}
+                                onChange={(e) => setAlreadyGiven(e.target.value)}
+                            >
+                                <option value="">Quote on Other Website</option>
+                                <option value="1">Yes</option>
+                            </select>
+                        </div>
 
                     </div>
 
@@ -1782,8 +1818,9 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 {usersRequestDivOpen && (
                     <UsersRequestCount users={users} onClose={() => { setUsersRequestDivOpen(!usersRequestDivOpen) }} />
                 )}
-            </AnimatePresence>
 
+            </AnimatePresence>
+<Tooltip id="my-tooltip" />
         </div>
     );
 };

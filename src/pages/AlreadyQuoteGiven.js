@@ -2,74 +2,112 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Globe } from 'lucide-react';
+import { FileText, Globe } from 'lucide-react';
 
-const AlreadyQuoteGiven = ({ email_id, website_id }) => {
-    const [quoteDetails, setQuoteDetails] = useState([]);
+const AlreadyQuoteGiven = ({ email_id, website_id, setAlreadyGiven }) => {
     const [showModal, setShowModal] = useState(false);
+    const [quoteDetails, setQuoteDetails] = useState([]);
+    const [services, setServices] = useState([]);
+    const fetchServices = async () => {
+
+        try {
+            const response = await fetch(
+                'https://loopback-skci.onrender.com/api/scope/getAllServices',
+                {
+                    method: 'POST', // Use POST method
+                    headers: {
+                        'Content-Type': 'application/json', // Set content type to JSON
+                    },
+                    body: JSON.stringify(), // Pass the POST data as JSON
+                }
+            );
+
+            const data = await response.json(); // Parse the response as JSON
+            if (data.status) {
+                setServices(data.data);
+            } else {
+                console.error('Failed to fetch Services:', data.message);
+            }
+        } catch (error) {
+            console.error('Error fetching Services:', error);
+        }
+    };
 
 
     useEffect(() => {
-        const fetchQuoteData = async () => {
-            try {
-                const response = await axios.post(
-                    "https://loopback-skci.onrender.com/api/scope/checkpresentemail",
-                    { email_id, website_id }
-                );
+    const fetchQuoteData = async () => {
+        try {
+            // Step 1: Initial fast quote list fetch
+            const response = await axios.post(
+                "https://loopback-skci.onrender.com/api/scope/checkpresentemail",
+                { email_id, website_id }
+            );
 
-                const quoteData = response.data?.quote_details || [];
+            const quoteData = response.data?.quote_details || [];
 
-                // For each quote, fetch the detailed data using ref_id
-                const detailedQuotes = await Promise.all(
-                    quoteData.map(async (quote) => {
-                        try {
-                            const detailRes = await fetch(
-                                "https://loopback-skci.onrender.com/api/scope/view_query_details_api",
-                                {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json",
-                                    },
-                                    body: JSON.stringify({ query_id: quote.ref_id }),
-                                }
-                            );
+            // Step 2: Set the basic data immediately (without website_name)
+            setQuoteDetails(quoteData);
 
-                            const detailData = await detailRes.json();
-
-                            if (detailData.status && detailData?.queryInfo) {
-                                const website_name = detailData.queryInfo.website_name || null;
-                                return {
-                                    ...quote,
-                                    website_name,
-                                    ...detailData.data,
-                                };
-                            }
-                            else {
-                                console.warn(
-                                    `Detail fetch failed for ref_id ${quote.ref_id}: ${detailData.message}`
-                                );
-                                return { ...quote, website_name: null };
-                            }
-                        } catch (err) {
-                            console.error(`Error fetching details for ref_id ${quote.ref_id}`, err);
-                            return { ...quote, website_name: null };
+            // Step 3: For each quote, fetch its website_name separately
+            quoteData.forEach(async (quote, index) => {
+                try {
+                    const detailRes = await fetch(
+                        "https://loopback-skci.onrender.com/api/scope/view_query_details_api",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ query_id: quote.ref_id }),
                         }
-                    })
-                );
+                    );
 
-                setQuoteDetails(detailedQuotes);
-            } catch (err) {
-                console.error("Error fetching quote data:", err);
-            }
-        };
+                    const detailData = await detailRes.json();
 
-        if (email_id && website_id) {
-            fetchQuoteData();
+                    if (detailData.status && detailData?.queryInfo) {
+                        const website_name = detailData.queryInfo.website_name || null;
+
+                        // Step 4: Update this specific quote with website_name
+                        setQuoteDetails(prev =>
+                            prev.map((q, i) =>
+                                i === index
+                                    ? {
+                                          ...q,
+                                          website_name,
+                                          ...detailData.data,
+                                      }
+                                    : q
+                            )
+                        );
+                    } else {
+                        console.warn(`Detail fetch failed for ref_id ${quote.ref_id}: ${detailData.message}`);
+                    }
+                } catch (err) {
+                    console.error(`Error fetching details for ref_id ${quote.ref_id}`, err);
+                }
+            });
+        } catch (err) {
+            console.error("Error fetching quote data:", err);
         }
-    }, [email_id, website_id]);
+    };
+
+    if (email_id && website_id) {
+        fetchQuoteData();
+    }
+
+    fetchServices();
+}, [email_id, website_id]);
+
+
+    useEffect(() => {
+        setAlreadyGiven(quoteDetails?.length > 0);
+    }, [quoteDetails]);
+
 
 
     if (!quoteDetails.length) return null;
+
+
 
     return (
         <div>
@@ -110,11 +148,24 @@ const AlreadyQuoteGiven = ({ email_id, website_id }) => {
                                 const comments = JSON.parse(quote.plan_comments || '{}');
                                 const wordCounts = JSON.parse(quote.word_counts || '{}');
                                 console.log(quote)
+
+                                const serviceIds = quote?.service_name.split(',').map(id => id.trim());
+
+                                const serviceNames = serviceIds.map(id => {
+                                    const service = services.find(s => String(s.id) === id);
+                                    return service ? service.name : `Service #${id}`;
+                                });
                                 return (
                                     <div key={index} className="mb-8 text-gray-800 overflow-y-scroll pr-3 space-y-8 py-6">
-                                        {quote.website_name && (
-                                            <p className='flex items-center text-blue-500'> <Globe size={15} className='text-blue-600 mr-1'/> Website name <span className='text-black font-medium ml-2'>{quote.website_name}</span></p>
-                                        )}
+                                        <div className='flex items-center'>
+
+                                            {quote.website_name && (
+                                                <p className='flex items-center text-blue-500 bg-gray-100 px-1 rounded border border-gray-200 py-0.5'> <Globe size={15} className='text-blue-600 mr-1' /> Website name <span className='text-black font-medium ml-2'>{quote.website_name}</span></p>
+                                            )}
+                                            {quote.service_name && (
+                                                <p className='flex items-center text-blue-500 ml-1 bg-gray-100 px-1 rounded border border-gray-200 py-0.5'> <FileText size={15} className='text-blue-600 mr-1' /> Service name <span className='text-black font-medium ml-2'>{serviceNames.join(",")}</span></p>
+                                            )}
+                                        </div>
                                         <div className="grid grid-cols-3 md:grid-cols-3 gap-4 mb-4">
                                             <div className="p-2 border rounded bg-gray-50 d-flex gap-x-2">
                                                 <p className="text-sm font-semibold">Quote ID :</p>
