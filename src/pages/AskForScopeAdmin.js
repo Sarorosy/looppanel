@@ -100,22 +100,22 @@ const AskForScopeAdmin = ({
   const [linkedQuoteLoading, setLinkedQuoteLoading] = useState(false);
 
   const fetchLinkedRefId = async (quoteId) => {
-    try{
-    const response = await fetch('https://loopback-skci.onrender.com/api/scope/getRefId',{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
+    try {
+      const response = await fetch('https://loopback-skci.onrender.com/api/scope/getRefId', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({scope_id: quoteId})
-    });
+        body: JSON.stringify({ scope_id: quoteId })
+      });
       const data = await response.json();
-      if(data.status){
+      if (data.status) {
         setLinkedRefId(data.data.ref_id);
         setLinkedQuoteId(quoteId);
-      }else{
+      } else {
         toast.error(data.message || "Failed to fetch ref id");
       }
-    }catch(e){
+    } catch (e) {
       console.log(e);
     }
   }
@@ -2439,6 +2439,18 @@ const AskForScopeAdmin = ({
                                                             name="submitQuoteForm"
                                                             id="submitQuoteForm"
                                                             className="form-horizontal"
+                                                            onKeyDown={(e) => {
+                                                              if (e.ctrlKey && e.key === "Enter") {
+                                                                e.preventDefault(); // prevent accidental form submission
+                                                                PriceSubmitValidate(
+                                                                  quote.assign_id,
+                                                                  quote.quoteid,
+                                                                  quote.plan,
+                                                                  quote.user_id,
+                                                                  quote.ptp_count ?? 0
+                                                                );
+                                                              }
+                                                            }}
                                                           >
                                                             <input
                                                               type="hidden"
