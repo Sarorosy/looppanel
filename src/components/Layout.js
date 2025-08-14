@@ -5,22 +5,39 @@ import { getSocket } from '../pages/Socket';
 
 const Layout = ({ requestPermission }) => {
   const socket = getSocket();
-  const [isConnected, setIsConnected] = useState(false);
   const userData = localStorage.getItem('loopuser');
   const userObject = JSON.parse(userData);
+  
+const [isConnected, setIsConnected] = useState(socket?.connected || false);
 
   useEffect(() => {
     if (!socket) return;
 
-    const handleConnect = () => setIsConnected(true);
-    const handleDisconnect = () => setIsConnected(false);
+    // ✅ Functions to update status
+    const setGreen = () => setIsConnected(true);
+    const setRed = () => setIsConnected(false);
 
-    socket.on('connect', handleConnect);
-    socket.on('disconnect', handleDisconnect);
+    // ✅ Listen to all relevant events
+    socket.on("connect", setGreen);
+    socket.on("disconnect", setRed);
+    socket.on("connect_error", setRed);
+    socket.on("reconnect_attempt", setRed);
+    socket.on("reconnect", setGreen);
+    socket.on("reconnect_failed", setRed);
+    socket.on("reconnect_error", setRed);
 
+    // ✅ Initial check (covers page refresh)
+    setIsConnected(socket.connected);
+
+    // Cleanup
     return () => {
-      socket.off('connect', handleConnect);
-      socket.off('disconnect', handleDisconnect);
+      socket.off("connect", setGreen);
+      socket.off("disconnect", setRed);
+      socket.off("connect_error", setRed);
+      socket.off("reconnect_attempt", setRed);
+      socket.off("reconnect", setGreen);
+      socket.off("reconnect_failed", setRed);
+      socket.off("reconnect_error", setRed);
     };
   }, [socket]);
 
