@@ -282,6 +282,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
                 setMessages(prev => [...prev, newMessage]);
 
                 fetchMessagesForSocket();
+                finalfunctionforsocket();
             }
         });
 

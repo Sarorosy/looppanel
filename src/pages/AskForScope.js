@@ -1661,7 +1661,7 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                 </>
                                               )}
 
-                                              {quote.quote_status != 0 &&
+                                              {
                                                 quote.quote_price &&
                                                 quote.plan && (
                                                   <div className="my-2 rounded border p-2">

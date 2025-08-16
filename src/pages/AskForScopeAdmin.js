@@ -1811,7 +1811,7 @@ const AskForScopeAdmin = ({
                                                   </p>
                                                 </>
                                               )}
-                                              {quote.quote_status != 0 &&
+                                              {
                                                 quote.quote_price &&
                                                 quote.plan && (
                                                   <div className="my-2 rounded border p-2">
