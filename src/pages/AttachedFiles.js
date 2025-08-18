@@ -60,10 +60,10 @@ const AttachedFiles = ({ ref_id, relevant_file, quote, showUpload, setShowUpload
 
     useEffect(() => {
         const fetchGDriveLink = async () => {
-            if (!queryInfo.email_id) return;
+            if (!queryInfo.email_id || !queryInfo.website_name) return;
 
             try {
-                const response = await fetch(`https://www.rapidcollaborate.com/call_calendar/Cronjobs/getCallDriveLink?email=${queryInfo.email_id}`, {
+                const response = await fetch(`https://www.rapidcollaborate.com/call_calendar/Cronjobs/getCallDriveLink?email=${queryInfo.email_id}&website=${queryInfo.website_name}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" },
                 });
