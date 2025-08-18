@@ -557,6 +557,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 resetFiltersWithoutApiCall();
             } else {
                 console.error('Failed to fetch quotes:', data.message);
+                toast.error(data.message || 'Failed to fetch quotes');
             }
         } catch (error) {
             console.error('Error fetching quotes:', error);
