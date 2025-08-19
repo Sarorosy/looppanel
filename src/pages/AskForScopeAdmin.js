@@ -1747,31 +1747,44 @@ const AskForScopeAdmin = ({
                                                   </p>
                                                 </div>
                                               )}
-                                              {quote.relevant_file &&
-                                                quote.relevant_file.length >
-                                                0 && (
-                                                  <div>
-                                                    <strong>
-                                                      Relevant Files:
-                                                    </strong>
-                                                    <div className="space-y-2 mt-2">
-                                                      {quote.relevant_file.map(
-                                                        (file, fileIndex) => (
+                                              {quote.relevant_file && (
+                                                (() => {
+                                                  let files = [];
+                                                  try {
+                                                    // Attempt to parse if it's a string
+                                                    files = typeof quote.relevant_file === "string"
+                                                      ? JSON.parse(quote.relevant_file)
+                                                      : quote.relevant_file;
+                                                  } catch (error) {
+                                                    console.error("Failed to parse relevant_file:", error);
+                                                    files = [];
+                                                  }
+
+                                                  if (files.length === 0) return null;
+
+                                                  return (
+                                                    <div>
+                                                      <strong>Relevant Files:</strong>
+                                                      <div className="space-y-2 mt-2">
+                                                        {files.map((file, fileIndex) => (
                                                           <div key={fileIndex}>
                                                             <a
                                                               href={`https://apacvault.com/public/QuotationFolder/${file.file_path}`}
                                                               download
                                                               target="_blank"
+                                                              rel="noopener noreferrer"
                                                               className="text-blue-500"
                                                             >
                                                               {file.filename}
                                                             </a>
                                                           </div>
-                                                        )
-                                                      )}
+                                                        ))}
+                                                      </div>
                                                     </div>
-                                                  </div>
-                                                )}
+                                                  );
+                                                })()
+                                              )}
+
 
                                               {quote.demodone != 0 && (
                                                 <>
