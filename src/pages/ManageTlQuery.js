@@ -9,7 +9,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { RefreshCcw, Filter, FileQuestion, X, PlusCircle } from 'lucide-react';
+import { RefreshCcw, Filter, FileQuestion, X, PlusCircle, CheckCircle, PercentCircle, Clock } from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -20,6 +20,7 @@ import FeasabilityPage from './FeasabilityPage';
 import QueryDetailsTl from './QueryDetailsTl';
 import SelectUsers from './SelectUsers';
 import TableLoader from '../components/TableLoader';
+import StatsModal from './StatsModal';
 
 const ManageTlQuery = ({ onClose }) => {
     const [quotes, setQuotes] = useState([]);
@@ -46,7 +47,7 @@ const ManageTlQuery = ({ onClose }) => {
     const [isAllFeasOpen, setIsAllFeasOpen] = useState(false);
     const [selectuserDiv, setSelectUserDiv] = useState(false);
     const [quoteIssue, setQuoteIssue] = useState('');
-    
+
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const navigate = useNavigate();
@@ -175,6 +176,7 @@ const ManageTlQuery = ({ onClose }) => {
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
+            fetchStats(true);
         } catch (error) {
             console.error('Error fetching quotes:', error);
         } finally {
@@ -328,28 +330,28 @@ const ManageTlQuery = ({ onClose }) => {
             data: 'client_name',
             orderable: false,
             className: 'text-center',
-            render: function(data, type, row) {
+            render: function (data, type, row) {
                 return data ? data : 'null'; // Check if data exists; if not, return 'null'
             },
-        },        
+        },
         {
             title: 'CRM Name',
             data: 'fld_first_name',
             orderable: false,
             render: (data, type, row) => {
                 let name = row.fld_first_name + " " + (row.fld_last_name != null ? row.fld_last_name : "");
-                
+
                 // Check if the user is deleted
                 if (row.isdeleted == 1) {
                     return `<div style="text-align: left; color: red; text-decoration: line-through;" title="This user was deleted">
                                 ${row.deleted_user_name}
                             </div>`;
                 }
-        
+
                 // If the user is not deleted, just return the normal name
                 return `<div style="text-align: left;">${name}</div>`;
             },
-        },   
+        },
         {
             title: 'Currency',
             data: 'null',
@@ -363,20 +365,21 @@ const ManageTlQuery = ({ onClose }) => {
             },
         },
         {
-            title: 'Comments',
-            data: 'comments',
-            orderable: false,
-            render: (data) => {
-                // Check if the data is not empty and its length is greater than 50 characters
-                const truncatedData = (data && data.length > 40) ? data.substring(0, 40) + '...' : (data || 'N/A');
-                return `<div style="text-align: left;">${truncatedData}</div>`;
-            },
-        },
-        {
             title: 'Service',
-            data: 'service_name',
+            data: 'service_name', // actually holds comma-separated service IDs
             orderable: false,
-            render: (data) => `<div style="text-align: left;">${data || 'N/A'}</div>`,
+            render: function (data, type, row, meta) {
+                if (!data) return '<div style="text-align: left;">N/A</div>';
+
+                const serviceIds = data.split(',').map(id => id.trim());
+
+                const serviceNames = serviceIds.map(id => {
+                    const service = services.find(s => String(s.id) === id);
+                    return service ? service.name : `Service #${id}`;
+                });
+
+                return `<div style="text-align: left;">${serviceNames.join(', ')}</div>`;
+            }
         },
         {
             title: 'Quote Status',
@@ -388,7 +391,7 @@ const ManageTlQuery = ({ onClose }) => {
                 } else {
                     if (data == 0) {
                         return '<span class="text-red-600 font-bold">Pending at Admin</span>';
-                    }else if (data == 1 && row['discount_price'] !== "" && row['discount_price'] !== null) {
+                    } else if (data == 1 && row['discount_price'] !== "" && row['discount_price'] !== null) {
                         return '<span class="text-green-600 font-bold">Discount Submitted</span>';
                     } else if (data == 1) {
                         return '<span class="text-green-600 font-bold">Submitted</span>';
@@ -421,21 +424,23 @@ const ManageTlQuery = ({ onClose }) => {
         },
         {
             title: 'Tags',
-            data: 'tag_names', // Replace with actual field name from your dataset
+            data: 'tag_names',
             orderable: false,
             width: "130px",
             className: "text-sm",
-            render: function (data, type, row) {
-                if (!data) return ''; // Handle empty or null data
+            render: function (data, type, row, meta) {
+                if (!data) return '';
 
-                // Split tags, wrap each in a styled span, and join them
-                return data.split(',')
-                    .map(tag =>
-                        `<span class="text-blue-500 inline-block" style="font-sze:10px">
-                            #${tag.trim()}
-                        </span>`
-                    )
-                    .join(''); // Combine all spans into one HTML string
+                // Access the 'tags' array in your component scope
+                const tagIds = data.split(',').map(id => id.trim());
+
+                const tagElements = tagIds.map(id => {
+                    const tagObj = tags.find(t => String(t.id) === id); // Match by string
+                    const tagName = tagObj ? tagObj.tag_name : `#${id}`; // Fallback to id
+                    return `<span class="text-blue-500 inline-block" style="font-size:10px">#${tagName}</span>`;
+                });
+
+                return tagElements.join('');
             }
         },
 
@@ -486,6 +491,39 @@ const ManageTlQuery = ({ onClose }) => {
         }
     };
 
+    const [statsLoading, setStatsLoading] = useState(null);
+    const [stats, setStats] = useState(null);
+    const [lastUpdated, setLastUpdated] = useState(null);
+    const [statsModalOpen, setStatsModalOpen] = useState(false);
+    const [selectedTabForStats, setSelectedTabForStats] = useState(null);
+    // Function to fetch stats
+    const fetchStats = async (load = true) => {
+
+        try {
+            setStatsLoading(load)
+            const res = await fetch("https://loopback-skci.onrender.com/api/scope/getDailyStatistics", {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json"
+                }
+            });
+            const data = await res.json()
+            if (data.status) {
+                setStats(data.data);
+                setLastUpdated(new Date().toLocaleTimeString());
+            }
+        } catch (e) {
+            console.error("Error fetching stats:", e)
+        } finally {
+            setStatsLoading(false)
+        }
+    };
+
+    // Call fetchStats once when component mounts
+    useEffect(() => {
+        fetchStats();
+    }, []);
+
 
 
     return (
@@ -504,8 +542,53 @@ const ManageTlQuery = ({ onClose }) => {
                     <div className='container flex items-center justify-between p-0'>
                         <h2 className="text-xl font-semibold">All Users Request</h2>
                         <div className='flex items-center justify-between space-x-2'>
-                            
-                            <button disabled={loopuserObject.tl == 1 && loopuserObject.tl_type == 2 } onClick={toggleUsersDiv} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
+                            <div className="bg-white f-12 p-1 rounded">
+                                {stats ? (
+                                    <div className="gap-1 text-gray-900 flex items-center space-x-2">
+                                        <div className='flex gap-2'>
+                                            <p className="flex items-center bg-gray-100 p-1 cursor-pointer"
+                                                onClick={() => {
+                                                    setSelectedTabForStats("submitted");
+                                                    setStatsModalOpen(true)
+                                                }}
+                                            >
+                                                <CheckCircle size={15} className='text-green-700 mr-2' /> <span className="font-semibold">Quote Submitted Today:</span>{" "}
+                                                <span className='ml-2'>
+
+                                                    {stats.submitted}
+                                                </span>
+                                            </p>
+                                            <p className="flex items-center bg-gray-100 p-1 cursor-pointer"
+                                                onClick={() => {
+                                                    setSelectedTabForStats("discount");
+                                                    setStatsModalOpen(true)
+                                                }}
+                                            >
+                                                <PercentCircle size={15} className='text-red-60 mr-2' /> <span className="font-semibold">Discount Submitted:</span>{" "}
+                                                <span className='ml-2'>
+
+                                                    {stats.discount_submitted}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div className='flex  items-center '>
+
+                                            <p className="f-11 text-gray-500  flex items-center">
+                                                <Clock size={15} className='text-red-60 mr-1' /> Last Updated: {lastUpdated}
+                                            </p>
+                                            <button
+                                                onClick={() => { fetchStats(true) }}
+                                                className={`px-2 py-1 text-blue-600 rounded-lg  `}
+                                            >
+                                                <RefreshCcw size={15} className={`${statsLoading ? "animate-spin" : ""}`} />
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <p className="text-gray-500">Loading...</p>
+                                )}
+                            </div>
+                            <button disabled={loopuserObject.tl == 1 && loopuserObject.tl_type == 2} onClick={toggleUsersDiv} className='flex items-center mr-3 rounded px-2 py-1 f-14 btn-light'>
                                 <PlusCircle size={15} className='mr-1' /> <div>Add New</div>
                             </button>
                             <button
@@ -705,7 +788,7 @@ const ManageTlQuery = ({ onClose }) => {
                         queryId={selectedQuery.ref_id}
                         after={() => { fetchQuotes(false) }}
                         tlType={loopuserObject.tl_type}
-                        tagAccess = {loopuserObject.scopetagaccess}
+                        tagAccess={loopuserObject.scopetagaccess}
                     />
 
                 )}
@@ -714,6 +797,16 @@ const ManageTlQuery = ({ onClose }) => {
                 )}
                 {selectuserDiv && (
                     <SelectUsers onClose={toggleUsersDiv} />
+                )}
+
+                {statsModalOpen && (
+                    <StatsModal
+                        onClose={() => setStatsModalOpen(false)}
+                        submitted_quote_ids={stats.submitted_quote_ids}
+                        discount_quote_ids={stats.discount_quote_ids}
+                        activeTab={selectedTabForStats}
+                    />
+
                 )}
             </AnimatePresence>
 
