@@ -11,7 +11,7 @@ import moment from 'moment';
 import 'select2/dist/css/select2.css';
 import 'select2';
 import CustomLoader from '../CustomLoader';
-import { FileSpreadsheet, Pencil, CheckCircle, XCircle, Check, RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight, FilterIcon, Users, X } from 'lucide-react';
+import { FileSpreadsheet, Pencil, CheckCircle, XCircle, Check, RefreshCcw, Filter, FileQuestion, ArrowBigLeft, MoveLeft, ArrowLeftRight, FilterIcon, Users, X, PercentCircle, Clock } from 'lucide-react';
 import QueryDetailsAdmin from './QueryDetailsAdmin';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
@@ -71,7 +71,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [filterSummary, setFilterSummary] = useState('');
     const [showFilterDiv, setShowFilterDiv] = useState(true);
 
-   
+
 
 
     const navigate = useNavigate();
@@ -118,18 +118,52 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
         return `${start}...${end}`;
     };
 
-      const fetchUsers = async () => {
+
+    const [statsLoading, setStatsLoading] = useState(null);
+    const [stats, setStats] = useState(null);
+    const [lastUpdated, setLastUpdated] = useState(null);
+
+    // Function to fetch stats
+    const fetchStats = async (load = true) => {
+
         try {
-          const response = await fetch('https://loopback-skci.onrender.com/api/users/allusers', {
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' }
-          });
-          const data = await response.json();
-          if (data.status) setUsers(data.data || []);
-        } catch (error) {
-          toast.error('Failed to fetch tags.');
+            setStatsLoading(load)
+            const res = await fetch("https://loopback-skci.onrender.com/api/scope/getDailyStatistics", {
+                method: "GET",
+                headers: {
+                    "Content-type": "application/json"
+                }
+            });
+            const data = await res.json()
+            if (data.status) {
+                setStats(data.data);
+                setLastUpdated(new Date().toLocaleTimeString());
+            }
+        } catch (e) {
+            console.error("Error fetching stats:", e)
+        } finally {
+            setStatsLoading(false)
         }
-      };
+    };
+
+    // Call fetchStats once when component mounts
+    useEffect(() => {
+        fetchStats();
+    }, []);
+
+
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch('https://loopback-skci.onrender.com/api/users/allusers', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.status) setUsers(data.data || []);
+        } catch (error) {
+            toast.error('Failed to fetch tags.');
+        }
+    };
 
     useEffect(() => {
         fetchAndDisplayFile();
@@ -555,6 +589,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     setAdminPendingQuotes(adminPending);
                 }
                 resetFiltersWithoutApiCall();
+                fetchStats(false)
             } else {
                 console.error('Failed to fetch quotes:', data.message);
                 toast.error(data.message || 'Failed to fetch quotes');
@@ -1233,70 +1268,107 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
 
     return (
         <div className="container bg-gray-100 w-full">
-            <div className="p-2 flex items-center justify-between bg-white mb-3">
-                <div className="flex items-center justify-end space-x-1">
-                    <FileSpreadsheet size={18} className="text-green-600" />
-                    {uploadedFileInfo ? (
-                        <span className="text-gray-800 font-medium f-14"
+            <div className='flex items-center bg-gray-100 justify-between mb-3'>
+                <div className="p-2 flex items-center justify-between bg-white ">
+                    <div className="flex items-center justify-end space-x-1">
+                        <FileSpreadsheet size={18} className="text-green-600" />
+                        {uploadedFileInfo ? (
+                            <span className="text-gray-800 font-medium f-14"
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-content={uploadedFileInfo}
+                            >{getTrimmedFilename(uploadedFileInfo)}</span>
+                        ) : (
+                            <span className="text-gray-500 italic f-14">No file uploaded</span>
+                        )}
+                        <button
+                            className="btn btn-warning btn-sm ml-2"
                             data-tooltip-id="my-tooltip"
-                            data-tooltip-content={uploadedFileInfo}
-                        >{getTrimmedFilename(uploadedFileInfo)}</span>
-                    ) : (
-                        <span className="text-gray-500 italic f-14">No file uploaded</span>
-                    )}
-                    <button
-                        className="btn btn-warning btn-sm ml-2"
-                        data-tooltip-id="my-tooltip"
-                        data-tooltip-content="Edit"
-                        onClick={() => setShowUpload(true)}>
-                        <Pencil size={11} />
-                    </button>
-                </div>
+                            data-tooltip-content="Edit"
+                            onClick={() => setShowUpload(true)}>
+                            <Pencil size={11} />
+                        </button>
+                    </div>
 
-                {showUpload && (
-                    <div className=" ">
+                    {showUpload && (
+                        <div className=" ">
 
 
-                        <div className="flex justify-end items-center gap-2">
-                            <h2 className="text-md font-semibold text-gray-800 f-14">Upload XLSX File</h2>
-                            <label className="relative cursor-pointer bg-gray-100 hover:bg-gray-200 rounded-md px-3 py-1 text-sm text-gray-700 shadow-inner transition mb-0">
-                                Choose File
-                                <input
-                                    type="file"
-                                    accept=".xlsx"
-                                    onChange={handleFileChange}
-                                    className="absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer"
-                                />
-                            </label>
+                            <div className="flex justify-end items-center gap-2">
+                                <h2 className="text-md font-semibold text-gray-800 f-14">Upload XLSX File</h2>
+                                <label className="relative cursor-pointer bg-gray-100 hover:bg-gray-200 rounded-md px-3 py-1 text-sm text-gray-700 shadow-inner transition mb-0">
+                                    Choose File
+                                    <input
+                                        type="file"
+                                        accept=".xlsx"
+                                        onChange={handleFileChange}
+                                        className="absolute left-0 top-0 w-full h-full opacity-0 cursor-pointer"
+                                    />
+                                </label>
 
-                            <button
-                                onClick={handleUpload}
-                                data-tooltip-id="my-tooltip"
-                                data-tooltip-content="Upload"
-                                className="btn btn-success btn-sm"
-                            >
-                                <Check size={13} />
-                            </button>
-                            <button
-                                data-tooltip-id="my-tooltip"
-                                data-tooltip-place='top'
-                                data-tooltip-content="Cancel & Close"
-                                className="btn btn-danger btn-sm"
-                                onClick={() => setShowUpload(false)}>
-                                <XCircle size={13} />
-                            </button>
+                                <button
+                                    onClick={handleUpload}
+                                    data-tooltip-id="my-tooltip"
+                                    data-tooltip-content="Upload"
+                                    className="btn btn-success btn-sm"
+                                >
+                                    <Check size={13} />
+                                </button>
+                                <button
+                                    data-tooltip-id="my-tooltip"
+                                    data-tooltip-place='top'
+                                    data-tooltip-content="Cancel & Close"
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => setShowUpload(false)}>
+                                    <XCircle size={13} />
+                                </button>
+
+                            </div>
+                            {file && (
+                                <p className="mt-2 text-sm text-gray-600 truncate">
+                                    Selected: <span className="font-medium">{file.name}</span>
+                                </p>
+                            )}
+
 
                         </div>
-                        {file && (
-                            <p className="mt-2 text-sm text-gray-600 truncate">
-                                Selected: <span className="font-medium">{file.name}</span>
+                    )}
+                </div>
+                <div className="bg-white f-12 p-2">
+                    {stats ? (
+                        <div className="space-y-3 text-gray-700 flex items-center space-x-2">
+                            <div className='flex flex-col space-y-2'>
+                                <p className="flex items-center">
+                                    <CheckCircle size={15} className='text-green-700 mr-2' /> <span className="font-semibold">Today Submitted:</span>{" "}
+                                    <span className='ml-2'>
+
+                                    {stats.submitted}
+                                    </span>
+                                </p>
+                                <p className="flex items-center">
+                                    <PercentCircle size={15} className='text-red-60 mr-2' /> <span className="font-semibold">Discount Submitted:</span>{" "}
+                                    <span className='ml-2'>
+
+                                    {stats.discount_submitted}
+                                    </span>
+                                </p>
+                            </div>
+                            <p className="f-11 text-gray-500 ml-4 flex items-center">
+                                <Clock size={15} className='text-red-60 mr-1' /> Last Updated: {lastUpdated}
                             </p>
-                        )}
-
-
-                    </div>
-                )}
+                            <button
+                                onClick={() => { fetchStats(true) }}
+                                className={`px-2 py-1 text-blue-600 rounded-lg  `}
+                            >
+                                <RefreshCcw size={15} className={`${statsLoading ? "animate-spin" : ""}`} />
+                            </button>
+                        </div>
+                    ) : (
+                        <p className="text-gray-500">Loading...</p>
+                    )}
+                </div>
             </div>
+
+
             {/* Filter Section */}
             <div className=" mb-3 bg-white px-3 py-3 rounded ">
 
@@ -1342,7 +1414,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 {pendingTransRequestCount}
                             </span>
                         </button>
-                       
+
                     </div>
                 </div>
                 <div className={`${showFilterDiv ? 'hidden' : 'flex'} flex-col items-end space-x-2 border py-3 mt-3 px-3 bg-light`}>
@@ -1687,14 +1759,14 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
             ) : (
                 <div className="bg-white p-4 border-t-2 border-blue-400 rounded">
                     {filterSummary && <p className="text-gray-600 text-sm mb-3 font-semibold flex items-center">
-                        
+
                         {filterSummary}
                         {filterSummary != "Showing all results" && (
-                        <button className=" bg-red-600 text-white flex items-center  f-12  ml-2" onClick={resetFilters}>
-                            <X size={14} />
-                        </button>
+                            <button className=" bg-red-600 text-white flex items-center  f-12  ml-2" onClick={resetFilters}>
+                                <X size={14} />
+                            </button>
                         )}
-                        </p>}
+                    </p>}
 
                     {/* Tab Buttons */}
                     <div className="mb-4">
@@ -1822,7 +1894,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 )}
 
             </AnimatePresence>
-<Tooltip id="my-tooltip" />
+            <Tooltip id="my-tooltip" />
         </div>
     );
 };
