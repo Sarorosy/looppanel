@@ -1335,32 +1335,35 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 </div>
                 <div className="bg-white f-12 p-2">
                     {stats ? (
-                        <div className="space-y-3 text-gray-700 flex items-center space-x-2">
-                            <div className='flex flex-col space-y-2'>
-                                <p className="flex items-center">
-                                    <CheckCircle size={15} className='text-green-700 mr-2' /> <span className="font-semibold">Today Submitted:</span>{" "}
+                        <div className="gap-1 text-gray-900 flex items-center space-x-2">
+                            <div className='flex gap-2'>
+                                <p className="flex items-center bg-gray-100 p-1">
+                                    <CheckCircle size={15} className='text-green-700 mr-2' /> <span className="font-semibold">Quote Submitted Today:</span>{" "}
                                     <span className='ml-2'>
 
-                                    {stats.submitted}
+                                        {stats.submitted}
                                     </span>
                                 </p>
-                                <p className="flex items-center">
+                                <p className="flex items-center bg-gray-100 p-1">
                                     <PercentCircle size={15} className='text-red-60 mr-2' /> <span className="font-semibold">Discount Submitted:</span>{" "}
                                     <span className='ml-2'>
 
-                                    {stats.discount_submitted}
+                                        {stats.discount_submitted}
                                     </span>
                                 </p>
                             </div>
-                            <p className="f-11 text-gray-500 ml-4 flex items-center">
-                                <Clock size={15} className='text-red-60 mr-1' /> Last Updated: {lastUpdated}
-                            </p>
-                            <button
-                                onClick={() => { fetchStats(true) }}
-                                className={`px-2 py-1 text-blue-600 rounded-lg  `}
-                            >
-                                <RefreshCcw size={15} className={`${statsLoading ? "animate-spin" : ""}`} />
-                            </button>
+                            <div className='flex  items-center '>
+                                
+                                <p className="f-11 text-gray-500  flex items-center">
+                                    <Clock size={15} className='text-red-60 mr-1' /> Last Updated: {lastUpdated}
+                                </p>
+                                <button
+                                    onClick={() => { fetchStats(true) }}
+                                    className={`px-2 py-1 text-blue-600 rounded-lg  `}
+                                >
+                                    <RefreshCcw size={15} className={`${statsLoading ? "animate-spin" : ""}`} />
+                                </button>
+                            </div>
                         </div>
                     ) : (
                         <p className="text-gray-500">Loading...</p>
