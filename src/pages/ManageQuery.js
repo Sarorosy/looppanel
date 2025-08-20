@@ -28,6 +28,7 @@ import UsersRequestCount from './UsersRequestCount';
 import Xls from './Xls';
 import AlreadyGivenList from './AlreadyGivenList';
 import { Tooltip } from 'react-tooltip';
+import StatsModal from './StatsModal';
 const socket = getSocket();
 
 const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
@@ -122,7 +123,8 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
     const [statsLoading, setStatsLoading] = useState(null);
     const [stats, setStats] = useState(null);
     const [lastUpdated, setLastUpdated] = useState(null);
-
+    const [statsModalOpen, setStatsModalOpen] = useState(false);
+    const [selectedTabForStats, setSelectedTabForStats] = useState(null);
     // Function to fetch stats
     const fetchStats = async (load = true) => {
 
@@ -1337,14 +1339,24 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                     {stats ? (
                         <div className="gap-1 text-gray-900 flex items-center space-x-2">
                             <div className='flex gap-2'>
-                                <p className="flex items-center bg-gray-100 p-1">
+                                <p className="flex items-center bg-gray-100 p-1 cursor-pointer"
+                                    onClick={() => {
+                                        setSelectedTabForStats("submitted");
+                                        setStatsModalOpen(true)
+                                    }}
+                                >
                                     <CheckCircle size={15} className='text-green-700 mr-2' /> <span className="font-semibold">Quote Submitted Today:</span>{" "}
                                     <span className='ml-2'>
 
                                         {stats.submitted}
                                     </span>
                                 </p>
-                                <p className="flex items-center bg-gray-100 p-1">
+                                <p className="flex items-center bg-gray-100 p-1 cursor-pointer"
+                                    onClick={() => {
+                                        setSelectedTabForStats("discount");
+                                        setStatsModalOpen(true)
+                                    }}
+                                >
                                     <PercentCircle size={15} className='text-red-60 mr-2' /> <span className="font-semibold">Discount Submitted:</span>{" "}
                                     <span className='ml-2'>
 
@@ -1353,7 +1365,7 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                                 </p>
                             </div>
                             <div className='flex  items-center '>
-                                
+
                                 <p className="f-11 text-gray-500  flex items-center">
                                     <Clock size={15} className='text-red-60 mr-1' /> Last Updated: {lastUpdated}
                                 </p>
@@ -1894,6 +1906,15 @@ const ManageQuery = ({ sharelinkrefid, sharelinkquoteid }) => {
                 )}
                 {usersRequestDivOpen && (
                     <UsersRequestCount users={users} onClose={() => { setUsersRequestDivOpen(!usersRequestDivOpen) }} />
+                )}
+                {statsModalOpen && (
+                    <StatsModal
+                        onClose={() => setStatsModalOpen(false)}
+                        submitted_quote_ids={stats.submitted_quote_ids}
+                        discount_quote_ids={stats.discount_quote_ids}
+                        activeTab={selectedTabForStats}
+                    />
+
                 )}
 
             </AnimatePresence>
