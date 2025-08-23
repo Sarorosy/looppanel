@@ -21,6 +21,7 @@ import QueryDetailsTl from './QueryDetailsTl';
 import SelectUsers from './SelectUsers';
 import TableLoader from '../components/TableLoader';
 import StatsModal from './StatsModal';
+import toast from 'react-hot-toast';
 
 const ManageTlQuery = ({ onClose }) => {
     const [quotes, setQuotes] = useState([]);
@@ -121,6 +122,7 @@ const ManageTlQuery = ({ onClose }) => {
     useEffect(() => {
         fetchQuotes(false);
         fetchServices();
+        fetchUsers();
         fetchTags();
 
     }, []);
@@ -149,9 +151,9 @@ const ManageTlQuery = ({ onClose }) => {
 
         // Define the payload conditionally
         let payload = {
-            userid, ref_id, quote_id, current_tl, search_keywords, status, service_name, ptp, tags, feasability_status, start_date, end_date, assign_users, quote_issue
+            userid : [userid], ref_id, quote_id, current_tl, search_keywords, status : [status], service_name, ptp, tags, feasability_status, start_date, end_date, assign_users, quote_issue
         };
-
+ 
         if (nopayload) {
             // If nopayload is true, send an empty payload
             payload = { assign_users, current_tl };
@@ -172,7 +174,7 @@ const ManageTlQuery = ({ onClose }) => {
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
                 setQuotes(data.allQuoteData); // Update the quotes state
-                setUsers(data.users);
+                
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
@@ -183,7 +185,18 @@ const ManageTlQuery = ({ onClose }) => {
             setLoading(false); // Hide loading spinner
         }
     };
-
+const fetchUsers = async () => {
+        try {
+            const response = await fetch('https://loopback-skci.onrender.com/api/users/allusers', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+            const data = await response.json();
+            if (data.status) setUsers(data.data || []);
+        } catch (error) {
+            console.error('Failed to fetch users.');
+        }
+    };
 
     const fetchServices = async () => {
 
@@ -498,24 +511,28 @@ const ManageTlQuery = ({ onClose }) => {
     const [selectedTabForStats, setSelectedTabForStats] = useState(null);
     // Function to fetch stats
     const fetchStats = async (load = true) => {
-
         try {
-            setStatsLoading(load)
+            setStatsLoading(load);
             const res = await fetch("https://loopback-skci.onrender.com/api/scope/getDailyStatistics", {
                 method: "GET",
                 headers: {
                     "Content-type": "application/json"
                 }
             });
-            const data = await res.json()
+            const data = await res.json();
             if (data.status) {
-                setStats(data.data);
+                // Convert array → object for easier access
+                const statsObj = data.data.reduce((acc, cur) => {
+                    acc[cur.day] = cur;
+                    return acc;
+                }, {});
+                setStats(statsObj);
                 setLastUpdated(new Date().toLocaleTimeString());
             }
         } catch (e) {
-            console.error("Error fetching stats:", e)
+            console.error("Error fetching stats:", e);
         } finally {
-            setStatsLoading(false)
+            setStatsLoading(false);
         }
     };
 
@@ -544,43 +561,78 @@ const ManageTlQuery = ({ onClose }) => {
                         <div className='flex items-center justify-between space-x-2'>
                             <div className="bg-white f-12 p-1 rounded">
                                 {stats ? (
-                                    <div className="gap-1 text-gray-900 flex items-center space-x-2">
-                                        <div className='flex gap-2'>
-                                            <p className="flex items-center bg-gray-100 p-1 cursor-pointer"
-                                                onClick={() => {
-                                                    setSelectedTabForStats("submitted");
-                                                    setStatsModalOpen(true)
-                                                }}
-                                            >
-                                                <CheckCircle size={15} className='text-green-700 mr-2' /> <span className="font-semibold">Quote Submitted Today:</span>{" "}
-                                                <span className='ml-2'>
-
-                                                    {stats.submitted}
-                                                </span>
-                                            </p>
-                                            <p className="flex items-center bg-gray-100 p-1 cursor-pointer"
-                                                onClick={() => {
-                                                    setSelectedTabForStats("discount");
-                                                    setStatsModalOpen(true)
-                                                }}
-                                            >
-                                                <PercentCircle size={15} className='text-red-60 mr-2' /> <span className="font-semibold">Discount Submitted:</span>{" "}
-                                                <span className='ml-2'>
-
-                                                    {stats.discount_submitted}
-                                                </span>
-                                            </p>
+                                    <div className="gap-1 text-gray-900 flex flex-col space-y-2">
+                                        {/* TODAY */}
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex gap-2">
+                                                <p
+                                                    className="flex items-center bg-gray-100 p-1 cursor-pointer"
+                                                    onClick={() => {
+                                                        setSelectedTabForStats("submitted_today");
+                                                        setStatsModalOpen(true);
+                                                    }}
+                                                >
+                                                    <CheckCircle size={15} className="text-green-700 mr-2" />{" "}
+                                                    <span className="font-semibold">Quote Submitted Today:</span>
+                                                    <span className="ml-2">{stats.today?.submitted ?? 0}</span>
+                                                </p>
+                                                <p
+                                                    className="flex items-center bg-gray-100 p-1 cursor-pointer"
+                                                    onClick={() => {
+                                                        setSelectedTabForStats("discount_today");
+                                                        setStatsModalOpen(true);
+                                                    }}
+                                                >
+                                                    <PercentCircle size={15} className="text-red-600 mr-2" />{" "}
+                                                    <span className="font-semibold">Discount Submitted Today:</span>
+                                                    <span className="ml-2">{stats.today?.discount_submitted ?? 0}</span>
+                                                </p>
+                                            </div>
                                         </div>
-                                        <div className='flex  items-center '>
 
-                                            <p className="f-11 text-gray-500  flex items-center">
-                                                <Clock size={15} className='text-red-60 mr-1' /> Last Updated: {lastUpdated}
+                                        {/* YESTERDAY */}
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex gap-2">
+                                                <p
+                                                    className="flex items-center bg-gray-100 p-1 cursor-pointer"
+                                                    onClick={() => {
+                                                        setSelectedTabForStats("submitted_yesterday");
+                                                        setStatsModalOpen(true);
+                                                    }}
+                                                >
+                                                    <CheckCircle size={15} className="text-green-700 mr-2" />{" "}
+                                                    <span className="font-semibold">Quote Submitted Yesterday:</span>
+                                                    <span className="ml-2">{stats.yesterday?.submitted ?? 0}</span>
+                                                </p>
+                                                <p
+                                                    className="flex items-center bg-gray-100 p-1 cursor-pointer"
+                                                    onClick={() => {
+                                                        setSelectedTabForStats("discount_yesterday");
+                                                        setStatsModalOpen(true);
+                                                    }}
+                                                >
+                                                    <PercentCircle size={15} className="text-red-600 mr-2" />{" "}
+                                                    <span className="font-semibold">Discount Submitted Yesterday:</span>
+                                                    <span className="ml-2">{stats.yesterday?.discount_submitted ?? 0}</span>
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        {/* Footer */}
+                                        <div className="flex items-center justify-between">
+                                            <p className="f-11 text-gray-500 flex items-center">
+                                                <Clock size={15} className="text-red-600 mr-1" /> Last Updated: {lastUpdated}
                                             </p>
                                             <button
-                                                onClick={() => { fetchStats(true) }}
-                                                className={`px-2 py-1 text-blue-600 rounded-lg  `}
+                                                onClick={() => {
+                                                    fetchStats(true);
+                                                }}
+                                                className="px-2 py-1 text-blue-600 rounded-lg"
                                             >
-                                                <RefreshCcw size={15} className={`${statsLoading ? "animate-spin" : ""}`} />
+                                                <RefreshCcw
+                                                    size={15}
+                                                    className={`${statsLoading ? "animate-spin" : ""}`}
+                                                />
                                             </button>
                                         </div>
                                     </div>
@@ -802,11 +854,13 @@ const ManageTlQuery = ({ onClose }) => {
                 {statsModalOpen && (
                     <StatsModal
                         onClose={() => setStatsModalOpen(false)}
-                        submitted_quote_ids={stats.submitted_quote_ids}
-                        discount_quote_ids={stats.discount_quote_ids}
-                        activeTab={selectedTabForStats}
+                        dayData={
+                            selectedTabForStats.includes("today") ? stats.today : stats.yesterday
+                        }
+                        activeTab={
+                            selectedTabForStats.includes("submitted") ? "submitted" : "discount"
+                        }
                     />
-
                 )}
             </AnimatePresence>
 
