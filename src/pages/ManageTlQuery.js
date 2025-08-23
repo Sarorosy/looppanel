@@ -151,7 +151,7 @@ const ManageTlQuery = ({ onClose }) => {
 
         // Define the payload conditionally
         let payload = {
-            userid: [userid], ref_id, quote_id, current_tl, search_keywords, status: [status], service_name, ptp, tags, feasability_status, start_date, end_date, assign_users, quote_issue
+            userid: userid ? [userid] : "", ref_id, quote_id, current_tl, search_keywords, status: status ?[status] : null, service_name, ptp, tags, feasability_status, start_date, end_date, assign_users, quote_issue
         };
 
         if (nopayload) {
