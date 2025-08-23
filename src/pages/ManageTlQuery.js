@@ -151,9 +151,9 @@ const ManageTlQuery = ({ onClose }) => {
 
         // Define the payload conditionally
         let payload = {
-            userid : [userid], ref_id, quote_id, current_tl, search_keywords, status : [status], service_name, ptp, tags, feasability_status, start_date, end_date, assign_users, quote_issue
+            userid: [userid], ref_id, quote_id, current_tl, search_keywords, status: [status], service_name, ptp, tags, feasability_status, start_date, end_date, assign_users, quote_issue
         };
- 
+
         if (nopayload) {
             // If nopayload is true, send an empty payload
             payload = { assign_users, current_tl };
@@ -174,7 +174,7 @@ const ManageTlQuery = ({ onClose }) => {
             const data = await response.json(); // Parse the response as JSON
             if (data.status) {
                 setQuotes(data.allQuoteData); // Update the quotes state
-                
+
             } else {
                 console.error('Failed to fetch quotes:', data.message);
             }
@@ -185,7 +185,7 @@ const ManageTlQuery = ({ onClose }) => {
             setLoading(false); // Hide loading spinner
         }
     };
-const fetchUsers = async () => {
+    const fetchUsers = async () => {
         try {
             const response = await fetch('https://loopback-skci.onrender.com/api/users/allusers', {
                 method: 'GET',
@@ -561,7 +561,7 @@ const fetchUsers = async () => {
                         <div className='flex items-center justify-between space-x-2'>
                             <div className="bg-white f-12 p-1 rounded">
                                 {stats ? (
-                                    <div className="gap-1 text-gray-900 flex flex-col space-y-2">
+                                    <div className="gap-1 text-gray-900 flex">
                                         {/* TODAY */}
                                         <div className="flex justify-between items-center">
                                             <div className="flex gap-2">
@@ -571,9 +571,11 @@ const fetchUsers = async () => {
                                                         setSelectedTabForStats("submitted_today");
                                                         setStatsModalOpen(true);
                                                     }}
+                                                    data-tooltip-id='my-tooltip'
+                                                    data-tooltip-content='Quote Submitted Today'
                                                 >
                                                     <CheckCircle size={15} className="text-green-700 mr-2" />{" "}
-                                                    <span className="font-semibold">Quote Submitted Today:</span>
+                                                    <span className="font-semibold"> Today:</span>
                                                     <span className="ml-2">{stats.today?.submitted ?? 0}</span>
                                                 </p>
                                                 <p
@@ -582,9 +584,11 @@ const fetchUsers = async () => {
                                                         setSelectedTabForStats("discount_today");
                                                         setStatsModalOpen(true);
                                                     }}
+                                                    data-tooltip-id='my-tooltip'
+                                                    data-tooltip-content='Discount Submitted Today'
                                                 >
                                                     <PercentCircle size={15} className="text-red-600 mr-2" />{" "}
-                                                    <span className="font-semibold">Discount Submitted Today:</span>
+                                                    <span className="font-semibold"> Today:</span>
                                                     <span className="ml-2">{stats.today?.discount_submitted ?? 0}</span>
                                                 </p>
                                             </div>
@@ -599,9 +603,11 @@ const fetchUsers = async () => {
                                                         setSelectedTabForStats("submitted_yesterday");
                                                         setStatsModalOpen(true);
                                                     }}
+                                                    data-tooltip-id='my-tooltip'
+                                                    data-tooltip-content='Quote Submitted Yesterday'
                                                 >
                                                     <CheckCircle size={15} className="text-green-700 mr-2" />{" "}
-                                                    <span className="font-semibold">Quote Submitted Yesterday:</span>
+                                                    <span className="font-semibold"> Yesterday:</span>
                                                     <span className="ml-2">{stats.yesterday?.submitted ?? 0}</span>
                                                 </p>
                                                 <p
@@ -610,9 +616,11 @@ const fetchUsers = async () => {
                                                         setSelectedTabForStats("discount_yesterday");
                                                         setStatsModalOpen(true);
                                                     }}
+                                                    data-tooltip-id='my-tooltip'
+                                                    data-tooltip-content='Discount Submitted Yesterday'
                                                 >
                                                     <PercentCircle size={15} className="text-red-600 mr-2" />{" "}
-                                                    <span className="font-semibold">Discount Submitted Yesterday:</span>
+                                                    <span className="font-semibold"> Yesterday:</span>
                                                     <span className="ml-2">{stats.yesterday?.discount_submitted ?? 0}</span>
                                                 </p>
                                             </div>
@@ -620,9 +628,9 @@ const fetchUsers = async () => {
 
                                         {/* Footer */}
                                         <div className="flex items-center justify-between">
-                                            <p className="f-11 text-gray-500 flex items-center">
-                                                <Clock size={15} className="text-red-600 mr-1" /> Last Updated: {lastUpdated}
-                                            </p>
+                                            {/* <p className="f-11 text-gray-500 flex items-center">
+                                                                    <Clock size={15} className="text-red-600 mr-1" /> Last Updated: {lastUpdated}
+                                                                </p> */}
                                             <button
                                                 onClick={() => {
                                                     fetchStats(true);
