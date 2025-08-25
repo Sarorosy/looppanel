@@ -148,7 +148,7 @@ function App() {
       };
 
       fetchUserType();
-    }, []);
+    }, [ref_id, quote_id]);
 
     if (loading) return <div className="min-h-80 animate-pulse flex items-center justify-center bg-gray-200">
 
@@ -199,6 +199,7 @@ function App() {
         {/* Public route */}
         <Route path="/:email/:token" element={<DecryptPage />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Protected routes */}

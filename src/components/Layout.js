@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Header from './Header';
 import { getSocket } from '../pages/Socket';
 
 const Layout = ({ requestPermission }) => {
   const socket = getSocket();
   const userData = localStorage.getItem('loopuser');
-  const userObject = JSON.parse(userData);
+  const userObject = userData ? JSON.parse(userData) : null;
+   const navigate = useNavigate();
   
 const [isConnected, setIsConnected] = useState(socket?.connected || false);
+
+ useEffect(() => {
+    if (!userObject) {
+      navigate('/login', { replace: true });
+    }
+  }, [userObject, navigate]);
 
   useEffect(() => {
     if (!socket) return;
@@ -58,7 +65,7 @@ const [isConnected, setIsConnected] = useState(socket?.connected || false);
       </footer>
 
       {/* Socket Indicator */}
-      {userObject.id == 1 && (
+      {userObject?.id == 1 && (
 
         <div className="fixed bottom-2 left-2 z-[9999999999999999999999]">
           <div
