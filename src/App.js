@@ -20,6 +20,12 @@ import { ScanFace } from 'lucide-react';
 import Oops from './Oops';
 import Login from './Login';
 import ForgotPassword from './ForgotPassword';
+import ManageUser from './pages/manageuser/ManageUser';
+import ManageCurrency from './pages/currency/ManageCurrency';
+import ManageOtherTags from './pages/othertags/ManageOtherTags';
+import ManageRequirement from './pages/requirement/ManageRequirement';
+import SetPassword from './pages/manageuser/SetPassword';
+
 
 // basename="/askforscope"
 
@@ -197,10 +203,11 @@ function App() {
     <Router >
       <Routes>
         {/* Public route */}
-        <Route path="/:email/:token" element={<DecryptPage />} />
+        {/* <Route path="/:email/:token" element={<DecryptPage />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/" element={<Login />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/admin/set_password/:token" element={<SetPassword />} />
 
         {/* Protected routes */}
         <Route
@@ -211,6 +218,12 @@ function App() {
           <Route path="/assignquery" element={<ManageContactMadeQueries notification={requestPermission} />} />
           <Route path="/query" element={<ManageQuery />} />
           <Route path="/viewdetails/:ref_id/:quote_id" element={<ViewDetails />} />
+
+          <Route path="/manage-users" element={<ManageUser />} />
+          <Route path="/manage-currency" element={<ManageCurrency />} />
+          <Route path="/manage-requirement" element={<ManageRequirement />} />
+          <Route path="/manage-tags" element={<ManageOtherTags />} />
+
         </Route>
 
         {/* Fallback route */}

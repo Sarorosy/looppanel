@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, Bell, Quote, MessageSquareMore, Megaphone, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight, Hash, UserX } from 'lucide-react';
+import { LogOut, Bell, Quote, MessageSquareMore, Megaphone, MessageSquareText, CircleCheck, BellIcon, CirclePercent, ArrowLeftRight, Hash, UserX, Users, ChevronDown, FileText, Tag, Coins, Settings, ChevronUp } from 'lucide-react';
 import CustomLoader from '../CustomLoader';
 import LogoNew from '../new-logo.png';
 import { AnimatePresence } from 'framer-motion';
@@ -28,9 +28,32 @@ const Header = ({ requestPermission }) => {
   const [isFeasDetailsOpen, setIsFeasDetailsOpen] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState(null);
 
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
 
   const navigate = useNavigate();
+
+
+  const menuItems = [
+    { label: "Users", route: "manage-users", icon: Users },
+    { label: "Currency", route: "manage-currency", icon: Coins },
+    { label: "Tags", route: "manage-tags", icon: Tag },
+    { label: "Requirement", route: "manage-requirement", icon: FileText },
+  ];
+
+
+  // Close menu if clicked outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
 
   useEffect(() => {
     const checkNotificationPermission = () => {
@@ -94,26 +117,26 @@ const Header = ({ requestPermission }) => {
 
   useEffect(() => {
     const checkSessionTimeout = () => {
-        const loginTime = localStorage.getItem("loggedintime");
-        if (loginTime) {
-            const currentTime = Date.now();
-            const FOUR_HOURS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
-            if (currentTime - loginTime > FOUR_HOURS) {
-                localStorage.clear(); // Clear all localStorage
-                window.location.href = "https://apacvault.com/login"; // Redirect
-            }
-        }else{
+      const loginTime = localStorage.getItem("loggedintime");
+      if (loginTime) {
+        const currentTime = Date.now();
+        const FOUR_HOURS = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+        if (currentTime - loginTime > FOUR_HOURS) {
           localStorage.clear(); // Clear all localStorage
           window.location.href = "https://apacvault.com/login"; // Redirect
         }
+      } else {
+        localStorage.clear(); // Clear all localStorage
+        window.location.href = "https://apacvault.com/login"; // Redirect
+      }
     };
 
     checkSessionTimeout(); // Run once on load
 
-    const interval = setInterval(checkSessionTimeout, 5 * 60 * 1000); 
+    const interval = setInterval(checkSessionTimeout, 5 * 60 * 1000);
 
     return () => clearInterval(interval); // Cleanup
-}, []);
+  }, []);
 
 
   const toggleUserMenu = () => {
@@ -270,7 +293,13 @@ const Header = ({ requestPermission }) => {
     setConfirmationModalOpen(true);
   }
 
-
+  const handleGoHome = () => {
+    if (userObject.fld_email === "puneet@redmarkediting.com") {
+      navigate("/query")
+    } else {
+      navigate("/assignquery");
+    }
+  }
 
 
   return (
@@ -282,7 +311,8 @@ const Header = ({ requestPermission }) => {
             <img
               src={LogoNew}
               alt="Company Logo"
-              className="nav-logo"
+              onClick={handleGoHome}
+              className="nav-logo cursor-pointer"
             />
           </h1>
 
@@ -290,6 +320,37 @@ const Header = ({ requestPermission }) => {
 
         {/* User Session Info */}
         <div className="relative n-dp-dn z-50 items-center flex">
+
+          <div className="relative inline-block text-left" ref={dropdownRef}>
+            {/* Dropdown Toggle */}
+            <button
+              onClick={() => setOpen(!open)}
+              className="ml-6 f-11 relative text-orange-800 px-2  py-1 border border-orange-700 bg-orange-50 rounded-md flex items-center hover:bg-orange-100 transition"
+            >
+              <Settings size={16} className="mr-1" /> Manage {open ? (<ChevronUp size={16} className="ml-1" />) : (<ChevronDown size={16} className="ml-1" />)}
+            </button>
+
+            {/* Dropdown Menu */}
+            {open && (
+              <div
+                className="absolute left-0 mt-2 w-48 rounded-xl shadow-lg bg-white border border-gray-200 z-50 animate-fadeIn"
+              >
+                {menuItems.map((item, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      navigate(item.route);
+                      setOpen(false);
+                    }}
+                    className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-800 flex items-center transition"
+                  >
+                    <item.icon size={18} className='mr-1 text-orange-500' />
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
           {userObject.id == 1 && (
             <button
