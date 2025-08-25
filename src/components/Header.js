@@ -48,6 +48,7 @@ const Header = ({ requestPermission }) => {
 
   const handleLogout = () => {
     localStorage.clear();
+    navigate('/login');
     window.close();
   };
 

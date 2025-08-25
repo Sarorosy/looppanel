@@ -6,6 +6,8 @@ import ManageContactMadeQueries from "./pages/ManageContactMadeQueries";
 import ManageQuery from './pages/ManageQuery';
 import './output.css';
 import './index.css';
+import './input.css';
+import './App.css';
 import { getToken } from 'firebase/messaging';
 import { messaging } from './firebase-config';
 import { onMessage } from 'firebase/messaging';
@@ -16,6 +18,8 @@ import FollowingPage from './pages/FollowingPage';
 import FeasabilityPage from './pages/FeasabilityPage';
 import { ScanFace } from 'lucide-react';
 import Oops from './Oops';
+import Login from './Login';
+import ForgotPassword from './ForgotPassword';
 
 // basename="/askforscope"
 
@@ -190,10 +194,12 @@ function App() {
 
 
   return (
-    <Router basename="/askforscope">
+    <Router >
       <Routes>
         {/* Public route */}
         <Route path="/:email/:token" element={<DecryptPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Protected routes */}
         <Route

@@ -1,9 +1,10 @@
 {
   "name": "looppanel",
   "version": "0.1.0",
-  "homepage": "https://apacvault.com/askforscope/",
+  "homepage": "https://apacvault.com/",
   "private": true,
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.12",
     "axios": "^1.7.7",
     "cra-template": "1.2.0",
     "datatables.net": "^2.1.8",
@@ -23,7 +24,7 @@
     "react-data-table-component": "^7.6.2",
     "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
-    "react-hot-toast": "^2.5.1",
+    "react-hot-toast": "^2.6.0",
     "react-loader-spinner": "^6.1.6",
     "react-mentions": "^4.4.10",
     "react-modal": "^3.16.3",
@@ -66,6 +67,8 @@
     ]
   },
   "devDependencies": {
-    "tailwindcss": "^3.4.16"
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17"
   }
 }
