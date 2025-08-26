@@ -323,12 +323,15 @@ const Header = ({ requestPermission }) => {
 
           <div className="relative inline-block text-left" ref={dropdownRef}>
             {/* Dropdown Toggle */}
-            <button
-              onClick={() => setOpen(!open)}
-              className="ml-6 f-11 relative text-orange-800 px-2  py-1 border border-orange-700 bg-orange-50 rounded-md flex items-center hover:bg-orange-100 transition"
-            >
-              <Settings size={16} className="mr-1" /> Manage {open ? (<ChevronUp size={16} className="ml-1" />) : (<ChevronDown size={16} className="ml-1" />)}
-            </button>
+            {(userObject?.fld_admin_type == "SUBADMIN" || userObject?.fld_admin_type == "SUPERADMIN") && (
+
+              <button
+                onClick={() => setOpen(!open)}
+                className="ml-6 f-11 relative text-orange-800 px-2  py-1 border border-orange-700 bg-orange-50 rounded-md flex items-center hover:bg-orange-100 transition"
+              >
+                <Settings size={16} className="mr-1" /> Manage {open ? (<ChevronUp size={16} className="ml-1" />) : (<ChevronDown size={16} className="ml-1" />)}
+              </button>
+            )}
 
             {/* Dropdown Menu */}
             {open && (
