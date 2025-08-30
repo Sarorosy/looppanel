@@ -233,6 +233,7 @@ export const Chat = ({ quoteId, refId, status, submittedToAdmin, finalFunction, 
 
                     finalFunction();
                 }
+                fetchMessagesForSocket();
 
             } else {
                 toast.error('Failed to send message');
