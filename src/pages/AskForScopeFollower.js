@@ -1046,6 +1046,29 @@ const AskForScopeFollower = ({ queryId, userType, quotationId, queryInfo }) => {
                                                                                                             </p>
                                                                                                         </>
                                                                                                     )}
+                                                                                                    {quote.demo_date && (
+                                                <>
+                                                  <p className="mb-3">
+
+                                                    {" "}
+                                                    <div>
+                                                      <strong>
+                                                        Demo Date {" "}
+                                                      </strong>{" "}
+                                                    </div>
+                                                    <div className='flex items-center'>
+                                                      <div className='line-h-in'>
+                                                        {new Date(quote.demo_date).toLocaleDateString('en-GB', {
+                                                          day: '2-digit',
+                                                          month: 'short',
+                                                          year: 'numeric'
+                                                        })}
+                                                      </div>
+
+                                                    </div>
+                                                  </p>
+                                                </>
+                                              )}
                                                                                                     {quote.timeline ? (
                                                                                                         <div className="mb-0  mt-0 row p-1 space-y-1  rounded">
                                                                                                             <p className={`font-medium  ${quote.timeline == "urgent" ? "text-red-500" : "text-blue-500"}`}>Timeline : {quote.timeline.charAt(0).toUpperCase() + quote.timeline.slice(1)}</p>

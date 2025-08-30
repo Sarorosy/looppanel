@@ -1671,7 +1671,13 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                       </strong>{" "}
                                                     </div>
                                                     <div className='flex items-center'>
-                                                      <div className='line-h-in'>{quote.demo_date}</div>
+                                                      <div className='line-h-in'>
+                                                        {new Date(quote.demo_date).toLocaleDateString('en-GB', {
+                                                          day: '2-digit',
+                                                          month: 'short',
+                                                          year: 'numeric'
+                                                        })}
+                                                      </div>
 
                                                     </div>
                                                   </p>

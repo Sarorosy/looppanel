@@ -658,6 +658,29 @@ const AskForScopeTransfer = ({ queryId, userType, quotationId, userIdDefined, cl
                                                                     </p>
                                                                 </>
                                                             )}
+                                                            {quote.demo_date && (
+                                                                <>
+                                                                    <p className="mb-3">
+
+                                                                        {" "}
+                                                                        <div>
+                                                                            <strong>
+                                                                                Demo Date {" "}
+                                                                            </strong>{" "}
+                                                                        </div>
+                                                                        <div className='flex items-center'>
+                                                                            <div className='line-h-in'>
+                                                                                {new Date(quote.demo_date).toLocaleDateString('en-GB', {
+                                                                                    day: '2-digit',
+                                                                                    month: 'short',
+                                                                                    year: 'numeric'
+                                                                                })}
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </p>
+                                                                </>
+                                                            )}
                                                             {quote.quote_status != 0 && quote.quote_price && quote.plan && (
                                                                 <>
                                                                     {quote.old_plan && (
