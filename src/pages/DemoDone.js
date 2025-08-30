@@ -15,6 +15,7 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
      const [btnDisabled, setBtnDisabled] = useState(true); /// true
     const [clientEmail, setClientEmail] = useState(null);
     const [demoDuration, setDemoDuration] = useState(null);
+    const [demoDate, setDemoDate] = useState(null);
     const [isWrong, setIsWrong] = useState(false)
 
     const handleSubmit = async (e) => {
@@ -31,6 +32,7 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
             quote_id: quoteId,
             user_id: scopeDetails.user_id,
             demo_duration : demoDuration,
+            demo_date: demoDate
         };
 
         try {
@@ -55,6 +57,7 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
                 
 
                 updateDemoUsed();
+                after();
             } else {
                 toast.error('Failed to submit the request');
             }
@@ -94,6 +97,7 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
             setClientEmail(null);
             setIsWrong(false);
             setDemoDuration(null);
+            setDemoDate(null);
             const response = await fetch("https://rapidcollaborate.com/rc-main/default/Index/checkdemocode", {
                 method: "POST",
                 headers: {
@@ -111,12 +115,14 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
                 setClientEmail(data.email);
                 setIsWrong(false);
                 setDemoDuration(data.time);
+                setDemoDate(data.date);
             }else{
                 toast.error("Wrong Demo Id")
                 setBtnDisabled(true);
                 setClientEmail(null);
                 setIsWrong(true);
                 setDemoDuration(null);
+                setDemoDate(null);
             }
         } catch (e) {
             console.log(e);
@@ -150,6 +156,9 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
                             )}
                             {demoDuration && (
                                 <p className='text-gray-500 flex items-center'>duration : {demoDuration}</p>
+                            )}
+                            {demoDate && (
+                                <p className='text-gray-500 flex items-center'>date : {demoDate}</p>
                             )}
                         <form onSubmit={handleSubmit} className='flex items-center justify-between mt-2'>
                             <div className="mb-4">

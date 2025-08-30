@@ -1660,6 +1660,23 @@ const AskForScope = ({ queryId, queryInfo, userType, quotationId, userIdDefined,
                                                   </p>
                                                 </>
                                               )}
+                                              {quote.demo_date && (
+                                                <>
+                                                  <p className="mb-3">
+
+                                                    {" "}
+                                                    <div>
+                                                      <strong>
+                                                        Demo Date {" "}
+                                                      </strong>{" "}
+                                                    </div>
+                                                    <div className='flex items-center'>
+                                                      <div className='line-h-in'>{quote.demo_date}</div>
+
+                                                    </div>
+                                                  </p>
+                                                </>
+                                              )}
 
                                               {
                                                 quote.quote_price &&
