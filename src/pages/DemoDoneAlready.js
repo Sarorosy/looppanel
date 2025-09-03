@@ -69,9 +69,9 @@ const DemoDoneAlready = ({ info }) => {
     <table className="min-w-full border border-gray-300">
       <thead className="bg-gray-100">
         <tr>
-          <th className="px-1 py-1.5 border">Demo ID</th>
-          <th className="px-1 py-1.5 border">Duration</th>
-          <th className="px-1 py-1.5 border">Date</th>
+          <th className="px-1 py-1.5 border text-center">Demo ID</th>
+          <th className="px-1 py-1.5 border text-center">Duration</th>
+          <th className="px-1 py-1.5 border text-center">Date</th>
         </tr>
       </thead>
       <tbody>
