@@ -66,6 +66,7 @@ import experiment from '../poll.svg';
 import AttachedFiles from "./AttachedFiles";
 import AlreadyQuoteGiven from "./AlreadyQuoteGiven";
 import QuoteIssue from "./QuoteIssue";
+import DemoDoneAlready from "./DemoDoneAlready";
 
 
 const AskForScopeAdmin = ({
@@ -897,6 +898,7 @@ const AskForScopeAdmin = ({
     setSelectedUser(event.target.value); // Update the state with selected user ID
   };
 
+  
 
 
   return (
@@ -1847,6 +1849,7 @@ const AskForScopeAdmin = ({
                                                   </p>
                                                 </>
                                               )}
+                                              <DemoDoneAlready info={info} /> 
                                               {
                                                 quote.quote_price &&
                                                 quote.plan && (
