@@ -69,17 +69,17 @@ const DemoDoneAlready = ({ info }) => {
     <table className="min-w-full border border-gray-300">
       <thead className="bg-gray-100">
         <tr>
-          <th className="px-4 py-2 border">Demo ID</th>
-          <th className="px-4 py-2 border">Duration</th>
-          <th className="px-4 py-2 border">Date</th>
+          <th className="px-1 py-1.5 border">Demo ID</th>
+          <th className="px-1 py-1.5 border">Duration</th>
+          <th className="px-1 py-1.5 border">Date</th>
         </tr>
       </thead>
       <tbody>
         {demos.map((demo, index) => (
           <tr key={index} className="text-center">
-            <td className="px-4 py-2 border">{demo.demo_id}</td>
-            <td className="px-4 py-2 border">{demo.demo_duration || "N/A"}</td>
-            <td className="px-4 py-2 border">
+            <td className="px-1 py-1.5 border">{demo.demo_id}</td>
+            <td className="px-1 py-1.5 border">{demo.demo_duration || "N/A"}</td>
+            <td className="px-1 py-1.5 border">
               {demo.demo_date
                 ? new Date(demo.demo_date).toLocaleDateString("en-GB", {
                     day: "2-digit",
