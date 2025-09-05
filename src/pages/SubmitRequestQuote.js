@@ -37,6 +37,8 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
     const plans = ['Basic', 'Standard', 'Advanced']; // Hardcoded plans
     const [demodone, setDemodone] = useState('no');
     const [demoId, setDemoId] = useState('');
+    const [demoDuration, setDemoDuration] = useState('');
+    const [demoDate, setDemoDate] = useState('');
     const [client_academic_level, setClient_academic_level] = useState('');
     const [results_section, setResults_section] = useState('');
 
@@ -173,10 +175,16 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
                 body: JSON.stringify({ ref_id: refId }), // Send category in the request body
             });
             const data = await response.json();
-            if (response.ok) {
-                setDemoStatus(data.data || []); // Set fetched currencies
+            if (data.status && data.data.length > 0) {
+                const firstDemo = data.data[0];
+
+                setDemoStatus(true);
+                setDemodone("yes")
+                setDemoId(firstDemo.demo_id || "");
+                setDemoDuration(firstDemo.demo_duration || ""); // ✅ default to empty string if null
+                setDemoDate(firstDemo.demo_date || "")
             } else {
-                toast.error('Failed to check status');
+                // toast.error('Failed to check status');
             }
         } catch (error) {
             console.error('Error checking status:', error);
@@ -316,7 +324,7 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
             setSubmitting(false);
             return;
         }
-        if(linkedQuotePresent && !linkedQuoteId){
+        if (linkedQuotePresent && !linkedQuoteId) {
             toast.error('Please enter linked quote id!');
             setSubmitting(false);
             return;
@@ -418,6 +426,8 @@ const SubmitRequestQuote = ({ refId, after, onClose, userIdDefined, clientName, 
         formData.append('category', userObject.category);
         formData.append('demo_done', demodone);
         formData.append('demo_id', demoId);
+        formData.append('demo_duration', demoDuration);
+        formData.append('demo_date', demoDate);
         formData.append('tags', selectedTags);
         files.forEach((item, index) => {
             if (item.file) {

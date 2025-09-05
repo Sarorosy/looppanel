@@ -16,7 +16,8 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
     const [clientEmail, setClientEmail] = useState(null);
     const [demoDuration, setDemoDuration] = useState(null);
     const [demoDate, setDemoDate] = useState(null);
-    const [isWrong, setIsWrong] = useState(false)
+    const [isWrong, setIsWrong] = useState(false);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -90,7 +91,6 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
         }
     }
 
-   
 
     const handleDemoSubmit = async () => {
         try {
@@ -132,12 +132,45 @@ function DemoDone({ scopeDetails, quoteId, after , emailId}) {
         if(demoId && demoId.length > 0) {
             handleDemoSubmit(); ///remove
         }
-    }, [demoId])
+    }, [demoId]);
+
+    const [opening, setOpening] = useState(false);
+    const handleButtonClick = async () =>{
+        if(!scopeDetails.assign_id || !scopeDetails.quoteid){
+            return;
+        }
+        try{
+            setOpening(true)
+            const res = await fetch("https://loopback-skci.onrender.com/api/scope/checkAndAutoCompleteDemo",{
+                method : "POST",
+                headers : {
+                    "Content-type" : "application/json"
+                },
+                body : JSON.stringify({
+                    ref_id: scopeDetails.assign_id,
+                    quote_id : scopeDetails.quoteid
+                })
+            });
+            const data = await res.json();
+            if(data.status){
+                after();
+            }else{
+                setShowForm(true);
+            }
+
+        }catch(err){
+            console.log("Failed " , err)
+        }finally{
+            setOpening(false);
+        }
+    }
 
     return (
         <div className=' my-2'>
-            <button onClick={() => setShowForm(!showForm)} className="btn btn-success flex items-center f-12 py-0 px-1 btn-sm btn">
-                Mark As RC Demo Done <CheckCircle size={15} className='ml-1' />
+            <button 
+            disabled={opening}
+            onClick={handleButtonClick} className="btn btn-success flex items-center f-12 py-0 px-1 btn-sm btn">
+               {opening ? "Loading..." : <div className='flex items-center'> Mark As RC Demo Done <CheckCircle size={15} className='ml-1' /></div>}
             </button>
 
 
